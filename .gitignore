@@ -1,0 +1,19 @@
+# Python / LTspice virtual environments (regenerable — never commit)
+ltspice-env/
+ltspice_env/
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Simulation outputs
+*.vcd
+
+# Compiled binaries / build artifacts
+a.out
+
+# OpenLane run outputs (large, regenerable)
+OpenLane/**/runs/
+
+# macOS
+.DS_Store
