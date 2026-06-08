@@ -60,3 +60,15 @@ yosys -p "read_verilog -sv sobel_compass_core.sv; synth; stat"
 ```
 Resultado de síntesis (genérico, yosys): `sobel_compass_core` ≈ 2203 compuertas,
 **0 multiplicadores** — coherente con el presupuesto de área de un TinyTapeout.
+
+## Canny N×N en Verilog (nuevo)
+
+| Archivo | Qué hace |
+|---|---|
+| `sobel_grad_core.sv` | Gradiente 3×3 → `|Gx|+|Gy|` (barato) y `√(Gx²+Gy²)` (exacto, usa cuadrados). |
+| `canny_datapath.sv` | Ventana 3×3 **ya suavizada** → magnitud → doble umbral + `√(G_low+G_high)`. |
+| `canny_top_3x3.sv` / `_5x5` / `_7x7` | **Canny N×N combinacional**: ventana `(K+2)×(K+2)` → 9× `gaussianK` (suaviza la vecindad 3×3) → `canny_datapath`. |
+| `tb_canny_top.sv` | Testbench de `canny_top_3x3` vs golden Python → **ALL TESTS PASSED**. |
+
+Síntesis (yosys): `canny_top_3x3` ≈ 8350 celdas, `canny_top_7x7` ≈ 66733 (9× gaussian7x7).
+Cambiar de 3×3 a 5×5/7×7 = cambiar el `gaussianK` del front-end. **NMS + histéresis siguen siendo trabajo futuro** (no son por-pixel).
