@@ -1,0 +1,9 @@
+SIM ?= icarus
+TOPLEVEL_LANG ?= verilog
+PWD = $(shell pwd)
+VERILOG_SOURCES += $(PWD)/../peripheral_sobel_fb.v $(PWD)/../sobel_compass_control.sv \
+  $(PWD)/../sobel_compass_core.sv $(PWD)/../canny_control.sv $(PWD)/../canny_full_core.sv
+TOPLEVEL = peripheral_sobel_fb
+MODULE   = test_fb
+COMPILE_ARGS += -g2012 -Pperipheral_sobel_fb.MAXPX=512
+include $(shell cocotb-config --makefiles)/Makefile.sim

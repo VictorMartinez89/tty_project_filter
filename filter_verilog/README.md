@@ -126,3 +126,14 @@ Salida de la demo (Canny sobre un cuadrado 16×16, interior 10×10):
 ### Histéresis: 1-salto (canny_control) vs transitiva (canny_hysteresis_frame)
 - **1-salto** (`canny_control.sv`): por-ventana, **streamable**, ~99.7% del resultado completo. Para tiempo real.
 - **Transitiva** (`canny_hysteresis_frame.sv`): exacta, pero **frame-buffered + iterativa** (varias pasadas). Para cuando se necesita el resultado de Canny 100% fiel.
+
+## Versión FRAMEBUFFER / DMA — velocidad (rama dev01_install_conda_FrameBuffer) 🚀
+
+| Archivo | Qué hace |
+|---|---|
+| `peripheral_sobel_fb.v` | Peripheral 0x0045 con **buffers internos** (in/out, BRAM en HW) y un **secuenciador (DMA-lite)**: el CPU carga la imagen (WRPIX) y dispara START; el frame se procesa **autónomo a ~1 pixel/ciclo** sin polling por pixel. Ambos filtros con bit de modo, IMG_W/low/high y NPX escribibles. |
+| `cocotb/test_fb.py` (`Makefile.fb`) | Carga imagen → START → lee resultados. **FB COMPASS 36/36, FB CANNY 64/64 (100%)**. Sintetiza (buffers → memoria inferida por yosys). |
+
+**Mapa de registros:** `0x00` CTRL(mode/clear) · `0x04` IMGW · `0x08` NPX · `0x0C` LOW · `0x10` HIGH · `0x14` WRPIX(W, carga) · `0x18` START(W)/STATUS(R: {rescount,done}) · `0x1C` RDRES(R, auto-incremento).
+
+**Pixel-a-pixel vs Framebuffer:** el polling por pixel hace ~10+ transacciones de bus POR pixel (write+poll+read); el framebuffer procesa el frame entero **pipelined a 1px/ciclo** y el CPU sólo carga + lee en lote. Siguiente paso para máxima velocidad: **DMA real** que lea la imagen directo de la RAM principal (sin que el CPU cargue el buffer).
