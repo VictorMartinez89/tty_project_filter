@@ -137,3 +137,20 @@ Salida de la demo (Canny sobre un cuadrado 16×16, interior 10×10):
 **Mapa de registros:** `0x00` CTRL(mode/clear) · `0x04` IMGW · `0x08` NPX · `0x0C` LOW · `0x10` HIGH · `0x14` WRPIX(W, carga) · `0x18` START(W)/STATUS(R: {rescount,done}) · `0x1C` RDRES(R, auto-incremento).
 
 **Pixel-a-pixel vs Framebuffer:** el polling por pixel hace ~10+ transacciones de bus POR pixel (write+poll+read); el framebuffer procesa el frame entero **pipelined a 1px/ciclo** y el CPU sólo carga + lee en lote. Siguiente paso para máxima velocidad: **DMA real** que lea la imagen directo de la RAM principal (sin que el CPU cargue el buffer).
+
+## DMA REAL desde RAM — máxima velocidad (rama FrameBuffer) 🚀🚀
+
+| Archivo | Qué hace |
+|---|---|
+| `filter_dma.sv` | **DMA maestro**: el CPU solo programa `src_addr/dst_addr/npx/mode/low/high` + START. El DMA **lee la imagen directo de la RAM** (canal de lectura), la pasa por el filtro a ~1 px/ciclo y **escribe los resultados de vuelta a la RAM** (canal de escritura). El CPU NO toca ningún pixel. |
+| `dpram.sv` | RAM dual-port (BRAM en HW): src (CPU escribe / DMA lee) y dst (DMA escribe / CPU lee). |
+| `tb_dma_top.sv` + `cocotb/test_dma.py` (`Makefile.dma`) | Precarga imagen en RAM → START → lee resultados de RAM. **DMA COMPASS 36/36 en 77 ciclos (64px); DMA CANNY 64/64 en 209 ciclos (196px)** → throughput ~1 px/ciclo. |
+
+### Los 3 modelos de I/O (mismos filtros, distinta alimentación)
+| Modelo | CPU por pixel | Procesamiento | Archivo |
+|---|---|---|---|
+| Pixel-a-pixel (polling) | write+poll+read (~10+ bus/px) | CPU-paced | `peripheral_sobel.v` (rama base) |
+| Framebuffer (DMA-lite) | solo CARGA el buffer (1 write/px) | pipelined 1px/ciclo | `peripheral_sobel_fb.v` |
+| **DMA real desde RAM** | **NADA** (solo src/dst/start) | pipelined 1px/ciclo, autónomo | `filter_dma.sv` |
+
+Integración al SoC: el DMA necesita **arbitraje de bus** (maestro que comparte el bus con el CPU o BRAM dual-port). Eso es el paso de integración pendiente (no mergeado: revision del profesor Carlos Camargo).
