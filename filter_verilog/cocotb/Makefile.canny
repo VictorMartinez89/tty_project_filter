@@ -1,0 +1,9 @@
+SIM ?= icarus
+TOPLEVEL_LANG ?= verilog
+PWD = $(shell pwd)
+VERILOG_SOURCES += $(PWD)/../canny_control.sv
+VERILOG_SOURCES += $(PWD)/../canny_full_core.sv
+TOPLEVEL = canny_control
+MODULE   = test_canny
+COMPILE_ARGS += -g2012 -Pcanny_control.IMG_W=14
+include $(shell cocotb-config --makefiles)/Makefile.sim

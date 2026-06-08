@@ -72,3 +72,17 @@ Resultado de síntesis (genérico, yosys): `sobel_compass_core` ≈ 2203 compuer
 
 Síntesis (yosys): `canny_top_3x3` ≈ 8350 celdas, `canny_top_7x7` ≈ 66733 (9× gaussian7x7).
 Cambiar de 3×3 a 5×5/7×7 = cambiar el `gaussianK` del front-end. **NMS + histéresis siguen siendo trabajo futuro** (no son por-pixel).
+
+## Canny en STREAMING — NMS + histéresis (nuevo) ⭐
+
+| Archivo | Qué hace |
+|---|---|
+| `canny_full_core.sv` | Canny COMPLETO por pixel, **combinacional**, sobre una ventana **7×7** de gris: gradiente (5×5) → cuadrante del ángulo (fixed-point 106/618, sin atan2) → **NMS** (3×3) → doble umbral → **histéresis 1-salto** (débil = borde si algún vecino es fuerte). Salidas `edge_o` + `class_o`. |
+| `canny_control.sv` | **Streaming**: ventana deslizante 7×7 (6 line buffers) que alimenta `canny_full_core`; entrega `edge_o`/`class_o` en pixeles interiores (borde de 3 px). |
+| `tb_canny_control.sv` | TB iverilog (imagen rampa+escalón 14×14) vs golden Python → **ALL TESTS PASSED** (64/64; clases none=16, weak=32, strong=16). |
+| `cocotb/test_canny.py` + `Makefile.canny` | Mismo test en cocotb → edge 64/64, class 64/64 (100%). |
+
+**¿Por qué ventana 7×7?**  `edge ← histéresis(3×3 de class) ← NMS(3×3 de mag) ← gradiente(3×3 de gris)` = 3+2+2 = 7. Así todo es combinacional con **un solo** windower, sin encadenar 3 ventanas en streaming.
+
+### ⚠️ Honestidad: histéresis 1-salto vs completa
+La histéresis aquí es **1-salto** (un débil se conserva si toca un fuerte en su 3×3). La histéresis de Canny **transitiva** (cadenas largas de débiles que llegan a un fuerte) requiere propagación iterativa / multi-pasada sobre el frame (o union-find). El 1-salto es la aproximación **streamable** estándar en hardware de tiempo real; captura la mayoría de los casos. La pasada transitiva completa queda como extensión (control iterativo + frame buffer).
