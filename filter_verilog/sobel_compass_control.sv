@@ -12,10 +12,11 @@
 `default_nettype none
 module sobel_compass_control #(
     parameter integer PIX   = 8,
-    parameter integer IMG_W = 32          // ancho de imagen (columnas)
+    parameter integer MAX_IMG_W = 1024     // ancho maximo (dimensiona line buffers)
 )(
     input  wire             clk_i,
     input  wire             nreset_i,     // activo-bajo (estilo Diana)
+    input  wire [15:0]      img_w_i,      // ancho de imagen en RUNTIME
     input  wire             px_valid_i,
     input  wire [PIX-1:0]   px_i,
     output reg              out_valid_o,
@@ -24,13 +25,13 @@ module sobel_compass_control #(
     output wire [8*PIX-1:0] mags8_o       // las 8 magnitudes |conv|
 );
     // line buffers: line1 = fila (row-1), line2 = fila (row-2)
-    reg [PIX-1:0] line1 [0:IMG_W-1];
-    reg [PIX-1:0] line2 [0:IMG_W-1];
+    reg [PIX-1:0] line1 [0:MAX_IMG_W-1];
+    reg [PIX-1:0] line2 [0:MAX_IMG_W-1];
 
     // ventana 3x3 (row-major): w0 w1 w2 / w3 w4 w5 / w6 w7 w8
     reg [PIX-1:0] w0,w1,w2,w3,w4,w5,w6,w7,w8;
 
-    reg [$clog2(IMG_W)-1:0] col;
+    reg [$clog2(MAX_IMG_W)-1:0] col;
     reg [15:0]              row;
 
     wire [PIX-1:0] top = line2[col];      // vecino fila-2
@@ -63,7 +64,7 @@ module sobel_compass_control #(
                 // salida valida solo en interior (ventana 3x3 completa)
                 if (row >= 2 && col >= 2) out_valid_o <= 1'b1;
                 // contadores raster
-                if (col == IMG_W-1) begin col <= 0; row <= row + 1; end
+                if (col == img_w_i-1) begin col <= 0; row <= row + 1; end
                 else col <= col + 1;
             end
         end

@@ -31,7 +31,8 @@ async def compass_stream(dut):
     img = make_image(); emag, edir = golden(img)
     cocotb.start_soon(Clock(dut.clk_i, 10, units="ns").start())
     dut.nreset_i.value = 0; dut.px_valid_i.value = 0; dut.px_i.value = 0
-    await FallingEdge(dut.clk_i); dut.nreset_i.value = 1
+    await FallingEdge(dut.clk_i); dut.img_w_i.value = W
+    dut.nreset_i.value = 1
 
     flat = img.flatten().tolist()
     got_mag, got_dir = [], []

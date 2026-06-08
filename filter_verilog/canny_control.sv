@@ -9,10 +9,11 @@
 module canny_control #(
     parameter integer PIX   = 8,
     parameter integer MAGW  = 12,
-    parameter integer IMG_W = 16
+    parameter integer MAX_IMG_W = 1024
 )(
     input  wire           clk_i,
     input  wire           nreset_i,
+    input  wire [15:0]    img_w_i,
     input  wire           px_valid_i,
     input  wire [PIX-1:0] px_i,
     input  wire [MAGW-1:0] low_i, high_i,
@@ -20,10 +21,10 @@ module canny_control #(
     output wire           edge_o,
     output wire [1:0]     class_o
 );
-    reg [PIX-1:0] lb1[0:IMG_W-1], lb2[0:IMG_W-1], lb3[0:IMG_W-1],
-                  lb4[0:IMG_W-1], lb5[0:IMG_W-1], lb6[0:IMG_W-1];
+    reg [PIX-1:0] lb1[0:MAX_IMG_W-1], lb2[0:MAX_IMG_W-1], lb3[0:MAX_IMG_W-1],
+                  lb4[0:MAX_IMG_W-1], lb5[0:MAX_IMG_W-1], lb6[0:MAX_IMG_W-1];
     reg [PIX-1:0] win [0:6][0:6];
-    reg [$clog2(IMG_W)-1:0] col;
+    reg [$clog2(MAX_IMG_W)-1:0] col;
     reg [15:0] row;
 
     // ventana -> vector empacado para el core
@@ -62,7 +63,7 @@ module canny_control #(
                 lb6[col]<=lb5[col]; lb5[col]<=lb4[col]; lb4[col]<=lb3[col];
                 lb3[col]<=lb2[col]; lb2[col]<=lb1[col]; lb1[col]<=px_i;
                 if (row>=6 && col>=6) out_valid_o<=1'b1;
-                if (col==IMG_W-1) begin col<=0; row<=row+1; end
+                if (col==img_w_i-1) begin col<=0; row<=row+1; end
                 else col<=col+1;
             end
         end

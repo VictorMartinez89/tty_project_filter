@@ -6,8 +6,8 @@ module tb_canny_control;
   wire ov, ed; wire [1:0] cl;
   reg [7:0] img [0:NPX-1]; reg [3:0] eedge [0:NOUT-1]; reg [3:0] ecls [0:NOUT-1];
   integer i, oidx=0, errors=0;
-  canny_control #(.PIX(PIX),.MAGW(MAGW),.IMG_W(W)) dut
-    (.clk_i(clk),.nreset_i(nreset),.px_valid_i(pv),.px_i(px),.low_i(low),.high_i(high),
+  canny_control #(.PIX(PIX),.MAGW(MAGW),.MAX_IMG_W(64)) dut
+    (.clk_i(clk),.nreset_i(nreset),.img_w_i(W),.px_valid_i(pv),.px_i(px),.low_i(low),.high_i(high),
      .out_valid_o(ov),.edge_o(ed),.class_o(cl));
   always #5 clk=~clk;
   always @(posedge clk) if (nreset && ov) begin

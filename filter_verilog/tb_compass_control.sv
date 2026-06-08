@@ -8,8 +8,8 @@ module tb_compass_control;
   reg [7:0] emag [0:NOUT-1]; reg [3:0] edir [0:NOUT-1];
   integer i, oidx=0, errors=0;
 
-  sobel_compass_control #(.PIX(PIX), .IMG_W(W)) dut
-    (.clk_i(clk), .nreset_i(nreset), .px_valid_i(pv), .px_i(px),
+  sobel_compass_control #(.PIX(PIX), .MAX_IMG_W(64)) dut
+    (.clk_i(clk), .nreset_i(nreset), .img_w_i(W), .px_valid_i(pv), .px_i(px),
      .out_valid_o(ov), .mag_o(mag), .dir_o(dir), .mags8_o());
 
   always #5 clk = ~clk;

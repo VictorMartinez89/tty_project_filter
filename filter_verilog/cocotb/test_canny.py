@@ -50,6 +50,7 @@ async def canny_stream(dut):
     cocotb.start_soon(Clock(dut.clk_i, 10, units="ns").start())
     dut.nreset_i.value = 0; dut.px_valid_i.value = 0; dut.px_i.value = 0
     dut.low_i.value = LOW; dut.high_i.value = HIGH
+    dut.img_w_i.value = W
     await FallingEdge(dut.clk_i); dut.nreset_i.value = 1
     flat = img.flatten().tolist()
     gE, gC = [], []

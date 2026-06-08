@@ -78,6 +78,7 @@ module SOC_flash (
    wire [31:0] div_dout;
    wire [31:0] bin2bcd_dout;
    wire [31:0] dpram_dout;
+   wire [31:0] sobel_dout;   // <-- filtro Sobel/Canny (0x0045)
 
 
   peripheral_uart #(
@@ -105,7 +106,19 @@ module SOC_flash (
 		.addr(mem_address[4:0]), 
 		.rd(rd), 
 		.wr(wr), 
-		.d_out(mult_dout) 
+		.d_out(mult_dout)
+	);
+
+	// ===== Filtro de imagen (Sobel compass + Canny streaming) en 0x0045 =====
+	peripheral_sobel sobel1 (
+		.clk(clk),
+		.reset(!resetn),
+		.d_in(mem_wdata),
+		.cs(cs[7]),
+		.addr(mem_address[4:0]),
+		.rd(rd),
+		.wr(wr),
+		.d_out(sobel_dout)
 	);
 
 /*
@@ -125,31 +138,33 @@ module SOC_flash (
   // se hace con los 8 bits mas significativos de mem_addr
   // Se asigna el rango de la memoria de programa 0x00000000 - 0x003FFFFF
   // ====================================================================
-  reg [6:0]cs;  // CHIP-SELECT
+  reg [7:0]cs;  // CHIP-SELECT (8 bits: bit7 = sobel)
   always @*
   begin
       case (mem_address[31:16])	// direcciones - chip_select
-        16'h0000: cs= 7'b0000001; 	//RAM
-        16'h0040: cs= 7'b0100000; 	//uart
-        16'h0041: cs= 7'b0010000;	//gpio
-        16'h0042: cs= 7'b0001000;	//mult
-        16'h0043: cs= 7'b0000100;	//div
-        16'h0044: cs= 7'b0000010;	//bin_to_bcd
-        16'h0001: cs= 7'b1000000;   //dpRAM
-        default: cs= 7'b0000001;
+        16'h0000: cs= 8'b00000001; 	//RAM
+        16'h0040: cs= 8'b00100000; 	//uart
+        16'h0041: cs= 8'b00010000;	//gpio
+        16'h0042: cs= 8'b00001000;	//mult
+        16'h0043: cs= 8'b00000100;	//div
+        16'h0044: cs= 8'b00000010;	//bin_to_bcd
+        16'h0001: cs= 8'b01000000;   //dpRAM
+        16'h0045: cs= 8'b10000000;   //sobel/canny (filtro de imagen)
+        default: cs= 8'b00000001;
       endcase
   end
   // ============== MUX ========================  // se encarga de lecturas del RV32
   always @*
   begin
       case (cs)
-        7'b1000000: mem_rdata = dpram_dout;
-        7'b0100000: mem_rdata = uart_dout;
-        7'b0010000: mem_rdata = gpio_dout;
-        7'b0001000: mem_rdata = mult_dout;
-        7'b0000100: mem_rdata = div_dout;
-        7'b0000010: mem_rdata = bin2bcd_dout;
-        7'b0000001: mem_rdata = RAM_rdata;
+        8'b10000000: mem_rdata = sobel_dout;
+        8'b01000000: mem_rdata = dpram_dout;
+        8'b00100000: mem_rdata = uart_dout;
+        8'b00010000: mem_rdata = gpio_dout;
+        8'b00001000: mem_rdata = mult_dout;
+        8'b00000100: mem_rdata = div_dout;
+        8'b00000010: mem_rdata = bin2bcd_dout;
+        8'b00000001: mem_rdata = RAM_rdata;
       endcase
   end
  // ============== MUX ========================  // 

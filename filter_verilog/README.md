@@ -86,3 +86,17 @@ Cambiar de 3×3 a 5×5/7×7 = cambiar el `gaussianK` del front-end. **NMS + hist
 
 ### ⚠️ Honestidad: histéresis 1-salto vs completa
 La histéresis aquí es **1-salto** (un débil se conserva si toca un fuerte en su 3×3). La histéresis de Canny **transitiva** (cadenas largas de débiles que llegan a un fuerte) requiere propagación iterativa / multi-pasada sobre el frame (o union-find). El 1-salto es la aproximación **streamable** estándar en hardware de tiempo real; captura la mayoría de los casos. La pasada transitiva completa queda como extensión (control iterativo + frame buffer).
+
+## Integración al SoC RISC-V — peripheral en 0x0045 ⭐
+
+| Archivo | Qué hace |
+|---|---|
+| `peripheral_sobel.v` | Wrapper memory-mapped (contrato femto: cs/addr/rd/wr/d_in/d_out). Envuelve `sobel_compass_control` **y** `canny_control` con **bit de modo**; **IMG_W/low/high escribibles**; modelo **pixel-a-pixel (polling)** con latch de resultado + `result_ready`. |
+| `cocotb/test_peripheral.py` (`Makefile.peri`) | Maneja el bus como el CPU (escribe CTRL/IMGW/LOW/HIGH, feed pixel-a-pixel, poll STATUS, lee RESULT) y valida **ambos modos** → COMPASS 36/36 y CANNY 64/64 (100%). |
+| `../firmware/sobel.h` | Driver C: `sobel_init(mode,w,low,high)` + `sobel_run_frame()` + macros de decodificación. |
+
+**Mapa de registros (0x0045):** `0x00` CTRL (mode/frame_reset) · `0x04` IMGW · `0x08` LOW · `0x0C` HIGH · `0x10` PIXEL (W) · `0x14` STATUS (R, bit0=ready) · `0x18` RESULT (R).
+
+**Ediciones en el SoC** (`SOC_flash.v` y el top de síntesis `OpenLane/src/femto.v`): se ensanchó `cs` a 8 bits, se añadió el decode `16'h0045`, la instancia `peripheral_sobel sobel1 (.cs(cs[7])...)` y la línea del read-MUX. El SoC integrado **elabora** (los únicos errores de elaboración son del core `femtorv32_quark.v`, ajenos al filtro y propios del flujo de build del CPU).
+
+**Los controladores `sobel_compass_control` / `canny_control`** ahora toman `img_w_i` en **runtime** (line buffers dimensionados a `MAX_IMG_W`); sus testbenches (iverilog y cocotb) siguen pasando.
