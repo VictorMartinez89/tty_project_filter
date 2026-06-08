@@ -100,3 +100,29 @@ La histéresis aquí es **1-salto** (un débil se conserva si toca un fuerte en 
 **Ediciones en el SoC** (`SOC_flash.v` y el top de síntesis `OpenLane/src/femto.v`): se ensanchó `cs` a 8 bits, se añadió el decode `16'h0045`, la instancia `peripheral_sobel sobel1 (.cs(cs[7])...)` y la línea del read-MUX. El SoC integrado **elabora** (los únicos errores de elaboración son del core `femtorv32_quark.v`, ajenos al filtro y propios del flujo de build del CPU).
 
 **Los controladores `sobel_compass_control` / `canny_control`** ahora toman `img_w_i` en **runtime** (line buffers dimensionados a `MAX_IMG_W`); sus testbenches (iverilog y cocotb) siguen pasando.
+
+## (c) Histéresis TRANSITIVA completa + (b) DEMO en Verilog ⭐
+
+| Archivo | Qué hace |
+|---|---|
+| `canny_hysteresis_frame.sv` | Histéresis **transitiva** real (no 1-salto): reconstrucción morfológica de `strong` bajo `weak`, por **propagación iterativa** sobre un frame (`confirmed |= weak & dilata8(confirmed)` hasta estabilizar). Necesita frame buffer (BRAM en HW real). |
+| `cocotb/test_hysteresis.py` (`Makefile.hyst`) | Valida vs golden Python (scipy.label 8-conexo): **5/5 OK**; converge en ~7–10 pasadas para 16×16. |
+| `tb_demo.sv` | **DEMO en Verilog**: emula al CPU manejando `peripheral_sobel` por el bus (CTRL/IMGW/LOW/HIGH, feed pixel-a-pixel, poll STATUS, lee RESULT) y dibuja los bordes en ASCII. Modo Canny sobre un cuadrado → detecta el contorno. Corre con iverilog/vvp. |
+
+Salida de la demo (Canny sobre un cuadrado 16×16, interior 10×10):
+```
+#.######.#
+.########.
+##......##
+##......##
+##......##
+##......##
+##......##
+##......##
+.########.
+#.######.#
+```
+
+### Histéresis: 1-salto (canny_control) vs transitiva (canny_hysteresis_frame)
+- **1-salto** (`canny_control.sv`): por-ventana, **streamable**, ~99.7% del resultado completo. Para tiempo real.
+- **Transitiva** (`canny_hysteresis_frame.sv`): exacta, pero **frame-buffered + iterativa** (varias pasadas). Para cuando se necesita el resultado de Canny 100% fiel.
