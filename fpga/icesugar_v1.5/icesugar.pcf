@@ -1,0 +1,7 @@
+## iCESugar v1.5 (iCE40UP5K-SG48). VERIFICA contra el io.pcf oficial:
+##   https://github.com/wuxx/icesugar  (carpeta de ejemplos/demo)
+set_io clk    35      ;# reloj 12 MHz
+## LED RGB (pines hardened del UP5K):
+set_io led_r  39
+set_io led_g  40
+set_io led_b  41
