@@ -154,3 +154,14 @@ Salida de la demo (Canny sobre un cuadrado 16×16, interior 10×10):
 | **DMA real desde RAM** | **NADA** (solo src/dst/start) | pipelined 1px/ciclo, autónomo | `filter_dma.sv` |
 
 Integración al SoC: el DMA necesita **arbitraje de bus** (maestro que comparte el bus con el CPU o BRAM dual-port). Eso es el paso de integración pendiente (no mergeado: revision del profesor Carlos Camargo).
+
+## Arbitraje de bus — DMA integrado al SoC 🔗 (rama FrameBuffer)
+
+| Archivo | Qué hace |
+|---|---|
+| `bus_arbiter.sv` | Árbitro de un puerto de memoria entre CPU y DMA. **Prioridad al DMA**: mientras el DMA pide el bus, controla la RAM y el **CPU queda en stall** (`cpu_stall`). El CPU se pausa y reanuda al terminar. |
+| `filter_dma_bus.sv` | DMA de **puerto único** (dos fases: READ src→filtro→buffer, WRITE buffer→dst) para no chocar lectura/escritura en el puerto compartido. |
+| `spram.sv` | RAM single-port (BRAM). |
+| `soc_dma_top.sv` + `cocotb/test_soc_dma.py` (`Makefile.soc`) | CPU precarga RAM → programa DMA → START → DMA procesa (CPU stalled) → CPU lee resultados de RAM. **SOC DMA COMPASS 36/36 (114 cyc), CANNY 64/64 (274 cyc), cpu_stall observado**. |
+
+Así el DMA queda integrado al bus del SoC: el CPU programa src/dst/npx/START y el árbitro arbitra el acceso a la RAM compartida. (Modelo simple: el DMA monopoliza el bus mientras corre; una mejora futura sería ceder el bus periódicamente para que el CPU avance en paralelo.)
