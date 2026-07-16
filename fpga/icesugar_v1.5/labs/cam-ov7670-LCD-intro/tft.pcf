@@ -1,0 +1,8 @@
+set_io clk       35
+set_io tft_sck   37
+set_io tft_mosi  36
+set_io tft_cs    25
+set_io tft_dc    23
+set_io led_r     39
+set_io led_g     40
+set_io led_b     41

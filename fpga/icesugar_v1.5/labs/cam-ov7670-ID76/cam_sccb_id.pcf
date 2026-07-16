@@ -1,0 +1,8 @@
+set_io clk      35
+set_io cam_xclk 2
+set_io cam_scl  27
+set_io cam_sda  26
+set_io uart_tx  6
+set_io led_r    39
+set_io led_g    40
+set_io led_b    41

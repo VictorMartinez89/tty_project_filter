@@ -1,0 +1,10 @@
+# icesugar.pcf — iCESugar v1.5 (iCE40UP5K, paquete SG48)
+
+# Reloj de 12 MHz que entrega el iCELink por su salida MCO
+set_io clk 35
+
+# Pines dedicados del driver RGB del UP5K (hard-IP SB_RGBA_DRV).
+# El orden lo fija el silicio: RGB0->39, RGB1->40, RGB2->41.
+set_io led_r 39
+set_io led_g 40
+set_io led_b 41
