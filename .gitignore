@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Backups del notebook (pesan ~27 MB cada uno)
+*.ipynb.bak_*
+
+# Artefactos de simulacion (cocotb / iverilog)
+sim_build/
+results.xml
+*.vcd
+
+# Builds FPGA locales
+*.asc
+*.bin
+!firmware*.hex

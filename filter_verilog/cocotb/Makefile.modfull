@@ -1,0 +1,18 @@
+# cocotb + Icarus para canny_modular_full (cadena + histeresis transitiva)
+#   correr:  make -f Makefile.modfull
+SIM ?= icarus
+TOPLEVEL_LANG ?= verilog
+PWD = $(shell pwd)
+VERILOG_SOURCES += $(PWD)/../canny_modular_full.sv
+VERILOG_SOURCES += $(PWD)/../canny_modular_top.sv
+VERILOG_SOURCES += $(PWD)/../sobel_compass_control.sv
+VERILOG_SOURCES += $(PWD)/../sobel_compass_core.sv
+VERILOG_SOURCES += $(PWD)/../nms_control.sv
+VERILOG_SOURCES += $(PWD)/../nms_core.sv
+VERILOG_SOURCES += $(PWD)/../canny_grad_threshold_core.sv
+VERILOG_SOURCES += $(PWD)/../isqrt.sv
+VERILOG_SOURCES += $(PWD)/../canny_hysteresis_frame.sv
+TOPLEVEL = canny_modular_full
+MODULE   = test_modular_full
+COMPILE_ARGS += -g2012
+include $(shell cocotb-config --makefiles)/Makefile.sim

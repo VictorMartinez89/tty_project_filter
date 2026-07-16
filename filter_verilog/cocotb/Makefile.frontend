@@ -1,0 +1,14 @@
+# cocotb + Icarus para ov7670_frontend (SCCB + captura + RGB565->gris)
+#   correr:  make -f Makefile.frontend
+SIM ?= icarus
+TOPLEVEL_LANG ?= verilog
+PWD = $(shell pwd)
+CAM = $(PWD)/../../cores/camera
+VERILOG_SOURCES += $(CAM)/ov7670_frontend.v
+VERILOG_SOURCES += $(CAM)/ov7670_sccb.v
+VERILOG_SOURCES += $(CAM)/ov7670_capture.v
+VERILOG_SOURCES += $(CAM)/rgb565_to_gray.v
+TOPLEVEL = ov7670_frontend
+MODULE   = test_frontend
+COMPILE_ARGS += -g2012
+include $(shell cocotb-config --makefiles)/Makefile.sim
