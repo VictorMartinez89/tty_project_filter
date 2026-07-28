@@ -1,0 +1,44 @@
+########## CORRIDA EN LA VM UBUNTU (Icarus / oss-cad-suite) ##########
+== uname ==
+Linux vic 7.0.0-22-generic #22-Ubuntu SMP PREEMPT_DYNAMIC Mon May 25 15:37:49 UTC 2026 aarch64 GNU/Linux
+== iverilog ==
+Icarus Verilog version 14.0 (devel) (s20260301-174-gc7530dbcc-dirty)
+== vvp ==
+Icarus Verilog runtime version 14.0 (devel) (s20260301-174-gc7530dbcc-dirty)
+=====================================================================
+== compilando el SoC (iverilog) ==
+== FILTRO SOBEL (mode 0), umbral 90/0 ==
+[check] mode=0 flower_160.hex  ->  99.1 % vs golden
+tb_soc_exp_check.v:59: $finish called at 384176000 (1ps)
+[check] mode=0 monarch_160.hex  ->  98.3 % vs golden
+tb_soc_exp_check.v:59: $finish called at 384176000 (1ps)
+[check] mode=0 butterfly_160.hex  ->  98.1 % vs golden
+tb_soc_exp_check.v:59: $finish called at 384176000 (1ps)
+[check] mode=0 mano_160.hex  ->  98.4 % vs golden
+tb_soc_exp_check.v:59: $finish called at 384176000 (1ps)
+[check] mode=0 hi_160.hex  ->  98.7 % vs golden
+tb_soc_exp_check.v:59: $finish called at 384176000 (1ps)
+== FILTRO CANNY-1-STREAMING (mode 1), umbral 50/20 ==
+[check] mode=1 flower_160.hex  ->  98.5 % vs golden
+tb_soc_exp_check.v:59: $finish called at 384176000 (1ps)
+[check] mode=1 monarch_160.hex  ->  94.9 % vs golden
+tb_soc_exp_check.v:59: $finish called at 384176000 (1ps)
+[check] mode=1 butterfly_160.hex  ->  94.9 % vs golden
+tb_soc_exp_check.v:59: $finish called at 384176000 (1ps)
+[check] mode=1 mano_160.hex  ->  95.9 % vs golden
+tb_soc_exp_check.v:59: $finish called at 384176000 (1ps)
+[check] mode=1 hi_160.hex  ->  95.7 % vs golden
+tb_soc_exp_check.v:59: $finish called at 384176000 (1ps)
+== FILTRO CANNY-TRANSITIVO (mode 2), umbral 110/70 ==
+[check] mode=2 flower_160.hex  ->  98.3 % vs golden
+tb_soc_exp_check.v:59: $finish called at 3134696000 (1ps)
+[check] mode=2 monarch_160.hex  ->  96.2 % vs golden
+tb_soc_exp_check.v:59: $finish called at 2937026000 (1ps)
+[check] mode=2 butterfly_160.hex  ->  96.0 % vs golden
+tb_soc_exp_check.v:59: $finish called at 5704406000 (1ps)
+[check] mode=2 mano_160.hex  ->  95.7 % vs golden
+tb_soc_exp_check.v:59: $finish called at 3925376000 (1ps)
+[check] mode=2 hi_160.hex  ->  95.5 % vs golden
+tb_soc_exp_check.v:59: $finish called at 5111396000 (1ps)
+== LISTO — >90% = el filtro es bueno ==
+########## FIN VM ##########
