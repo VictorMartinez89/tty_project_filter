@@ -1,0 +1,8 @@
+{
+  "DESIGN_NAME": "canny1_top",
+  "VERILOG_FILES": "dir::src/*.v",
+  "CLOCK_PORT": "clk",
+  "CLOCK_PERIOD": 20.0,
+  "FP_CORE_UTIL": 35,
+  "PL_TARGET_DENSITY": 0.45
+}
