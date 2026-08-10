@@ -1,0 +1,8 @@
+{
+  "DESIGN_NAME": "soc_sobel_top",
+  "VERILOG_FILES": ["dir::src/soc_sobel_top.v", "dir::src/femtorv32_quark.v", "dir::src/peripheral_filter.v", "dir::src/linebuf3x3.v"],
+  "CLOCK_PORT": "clk",
+  "CLOCK_PERIOD": 20.0,
+  "FP_CORE_UTIL": 30,
+  "PL_TARGET_DENSITY": 0.40
+}
