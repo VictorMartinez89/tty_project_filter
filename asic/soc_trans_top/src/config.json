@@ -1,0 +1,9 @@
+{
+  "DESIGN_NAME": "soc_trans_top",
+  "VERILOG_FILES": ["dir::src/soc_trans_top.v", "dir::src/trans_engine_top.v", "dir::src/hysteresis_frame_bram_sync.sv", "dir::src/femtorv32_quark.v", "dir::src/peripheral_filter.v"],
+  "CLOCK_PORT": "clk",
+  "CLOCK_PERIOD": 20.0,
+  "FP_CORE_UTIL": 18,
+  "PL_TARGET_DENSITY": 0.25,
+  "GRT_ALLOW_CONGESTION": 1
+}
