@@ -1,8 +1,10 @@
 {
   "DESIGN_NAME": "vision_top",
   "VERILOG_FILES": "dir::src/*.v",
-  "CLOCK_PORT": "clk cam_pclk",
+  "CLOCK_PORT": "clk",
   "CLOCK_PERIOD": 20.0,
+  "BASE_SDC_FILE": "dir::src/vision.sdc",
+  "SDC_FILE": "dir::src/vision.sdc",
   "FP_CORE_UTIL": 18,
   "PL_TARGET_DENSITY": 0.25,
   "GRT_ALLOW_CONGESTION": 1
