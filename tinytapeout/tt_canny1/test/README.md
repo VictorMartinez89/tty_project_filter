@@ -1,10 +1,10 @@
 # Test — tt_um_canny1_vic
 
-Simulacion rapida con iverilog:
-
+**cocotb (estandar de Tiny Tapeout):**
 ```bash
-iverilog -g2012 -o tb.out test/tb.v src/tt_um_canny1_vic.v src/canny1_top.v src/linebuf3x3.v
-vvp tb.out          # genera tb.vcd -> abrir en GTKWave (out_valid = uio_out[1], uo_out)
+cd test && make      # necesita cocotb + iverilog; corre test.py sobre tb.v
 ```
+`test.py` mete un stream de pixeles y verifica que salga `out_valid` (uio_out[1]).
 
-Tiny Tapeout usa cocotb por defecto; este tb en Verilog es un chequeo minimo de humo.
+**iverilog directo (smoke test alternativo):** ver `tb.v` (wrapper) — para un tb con estimulo propio,
+usa el patron del proyecto tt_soc_sobel.
