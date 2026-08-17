@@ -44,7 +44,15 @@ export PDK_ROOT=/home/vic/.ciel
 ./flow.tcl -design vision_top -tag run1 -overwrite -ignore_mismatches
 ```
 
-Documentado en el notebook `conda/TTY_Filter_Sobel/TTY_Filter_Sobel.ipynb`, Partes 121 (proyecto), 122
-(código de cámara+LCD) y 123 (ficha, tras la corrida). Sistema completo también en la Parte 114.
+## Resultado (run1)
+- Die **1.75 mm²** (1307 × 1306 µm) · util 18.4 % · **35 653 celdas** (síntesis 28 253)
+- camino crítico **10.9 ns** (~92 MHz, `clk`) · WNS/TNS = 0 en **ambos** relojes
+- **DRC = 0, LVS = 0, XOR = 0** · **sin max-slew / max-fanout / max-cap** (el signoff más limpio de los grandes)
+- wire **1.85 m** · 229 208 vías · power típ. **66.9 mW** · flujo **22 min 6 s**
+- **Hallazgo:** el framebuffer solo guarda `0x00`/`0xFF` → yosys colapsó los 8 bits/píxel a **~1 bit**
+  (~4 800 FF en vez de 38 400). El sistema completo pesa **menos** que el motor transitivo solo (52 954 /
+  3.13 mm²), porque su framebuffer guarda 1 bit efectivo vs las clases de 2 bits del transitivo.
 
-> **Nota:** resultados (die/celdas/signoff) se añaden aquí tras completar la corrida de OpenLane.
+Documentado en el notebook `conda/TTY_Filter_Sobel/TTY_Filter_Sobel.ipynb`, Partes 121 (proyecto), 122
+(código de cámara+LCD), 123 (tropiezo dual-clock + SDC) y 124 (ficha). Sistema completo también en la
+Parte 114.
