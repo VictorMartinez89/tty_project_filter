@@ -1,0 +1,8 @@
+{
+  "DESIGN_NAME": "cam_frontend_top",
+  "VERILOG_FILES": "dir::src/*.v",
+  "CLOCK_PORT": "sysclk",
+  "CLOCK_PERIOD": 20.0,
+  "FP_CORE_UTIL": 40,
+  "PL_TARGET_DENSITY": 0.55
+}
