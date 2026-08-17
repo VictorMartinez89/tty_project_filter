@@ -1,9 +1,10 @@
-# Test — tt_um_soc_sobel_flash_vic
+# Test — tt_um_soc_sobel_flash_vic (boot desde flash SPI)
 
-El boot desde flash requiere el modelo de flash + un firmware .hex. Para simular:
+**VERIFICADO** ✅: el CPU arranca de la flash externa y configura el Sobel (cpu_wrote_filter=1) en ~203 ciclos.
 ```bash
-iverilog -g2012 -o tb.out test/tb_flash.v src/*.v \
-   /Users/vic/UN/Tesis/Repository/tty_project_filter/cores/sim_spi_flash/spiflash.v
-vvp tb.out
+iverilog -g2012 -o tb.out test/tb_flash.v src/soc_sobel_flash_top.v src/MappedSPIFlash.v \
+    src/femtorv32_quark.v src/peripheral_filter.v src/linebuf3x3.v \
+    /path/to/cores/sim_spi_flash/spiflash.v
+vvp tb.out +firmware=fw_sobel_flash.hex     # imprime "BOOT OK ..."
 ```
-(El .hex del firmware Sobel-config debe cargarse en el modelo de flash — paso iterativo por verificar.)
+`fw_sobel_flash.hex` = las 7 instrucciones del firmware (mismo que la ROM interna), en bytes little-endian.

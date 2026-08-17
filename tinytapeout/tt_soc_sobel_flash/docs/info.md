@@ -18,10 +18,10 @@ then high: the CPU boots from flash and configures the filter (`cpu_wrote_filter
 when it has). Then stream pixels on `ui_in` with `in_valid` (`uio_in[0]`); read edges on `uo_out` when
 `out_valid` (`uio_out[1]`) is high.
 
-> **Nota (honestidad):** el diseño **elabora limpio** (estructura), pero el **boot real desde flash** debe
-> verificarse en simulación con un modelo de flash (`cores/sim_spi_flash/spiflash.v`) + un `.hex` con el
-> firmware de config del Sobel, ANTES de enviarlo a un shuttle. Es un paso iterativo (protocolo SPI +
-> vector de reset + endianness). La versión de ROM interna (`tt_soc_sobel`) ya es autónoma y más segura.
+> **Verificado en simulación** ✅: con el modelo `spiflash.v` (Claire Wolf) + el firmware Sobel en
+> `test/fw_sobel_flash.hex`, el CPU **arranca de la flash y escribe el filtro** (`cpu_wrote_filter=1`)
+> en **~203 ciclos**. Ver `test/tb_flash.v`. (La versión de ROM interna `tt_soc_sobel` sigue siendo la
+> más autónoma; esta demuestra la filosofía de boot externo, estilo Johan.)
 
 ## External hardware
 
