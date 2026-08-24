@@ -20,3 +20,5 @@ __pycache__/
 
 # Salidas de la comparativa 16x12
 comparativa_16x12/out/
+
+comparativa_16x12/exp/out/
