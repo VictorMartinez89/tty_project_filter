@@ -3,6 +3,14 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, ClockCycles
 
+def bit(sig, i):
+    """Bit i de una senal, como '0', '1' o 'x' (no resuelto).
+    Al arrancar las salidas valen X y cocotb 2.x revienta con int(): por eso se lee como texto."""
+    s = str(sig.value)
+    c = s[len(s) - 1 - i]
+    return c if c in "01" else "x"
+
+
 @cocotb.test()
 async def test_soc_sobel_boots_and_streams(dut):
     dut._log.info("Arrancando test del SoC + Sobel")
@@ -15,7 +23,7 @@ async def test_soc_sobel_boots_and_streams(dut):
     booted = False
     for _ in range(300):
         await RisingEdge(dut.clk)
-        if (int(dut.uio_out.value) >> 2) & 1:
+        if bit(dut.uio_out, 2) == "1":
             booted = True; break
     assert booted, "el CPU no configuro el filtro (cpu_wrote_filter nunca subio)"
     dut._log.info("SoC arranco: cpu_wrote_filter=1")
@@ -25,7 +33,7 @@ async def test_soc_sobel_boots_and_streams(dut):
         dut.uio_in.value = 1            # in_valid (bit0)
         dut.ui_in.value = (i * 37) & 0xFF
         await RisingEdge(dut.clk)
-        if (int(dut.uio_out.value) >> 1) & 1:   # out_valid = uio_out[1]
+        if bit(dut.uio_out, 1) == "1":         # out_valid = uio_out[1]
             seen_valid += 1
     dut._log.info(f"out_valid pulses: {seen_valid}")
     assert seen_valid > 0, "no salio ningun out_valid"

@@ -13,3 +13,7 @@ results.xml
 *.asc
 *.bin
 !firmware*.hex
+
+# Python / cocotb
+__pycache__/
+*.pyc
