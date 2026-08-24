@@ -35,7 +35,7 @@ module soc_sobel_flash_top (
     // ---- programa desde flash SPI externa ----
     wire [31:0] flash_rdata;
     MappedSPIFlash u_flash (
-        .clk(clk), .rstrb(mem_rstrb & cs_flash), .word_address(mem_addr[21:2]),
+        .clk(clk), .resetn(resetn), .rstrb(mem_rstrb & cs_flash), .word_address(mem_addr[21:2]),
         .rdata(flash_rdata), .rbusy(flash_rbusy),
         .CLK(flash_clk), .CS_N(flash_cs_n), .MOSI(flash_mosi), .MISO(flash_miso));
 

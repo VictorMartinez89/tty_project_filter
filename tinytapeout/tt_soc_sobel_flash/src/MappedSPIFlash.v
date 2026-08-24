@@ -1,7 +1,12 @@
  `define SPI_FLASH_DUMMY_CLOCKS 0
 
+// VERSION PARA SILICIO: lleva RESET EXPLICITO (asincrono, activo-bajo).
+// El original (learn-fpga, pensado para FPGA) se apoyaba en `initial CS_N = 1'b1` y en que los
+// contadores arrancaran en cero. En un ASIC los flip-flops arrancan aleatorios: CS_N nace en X,
+// rbusy = !CS_N tambien, y el CPU se cuelga esperando una lectura que nunca termina.
 module MappedSPIFlash( 
     input wire 	       clk,          // system clock
+    input wire 	       resetn,       // reset asincrono, activo-bajo
     input wire 	       rstrb,        // read strobe		
     input wire [19:0]  word_address, // address of the word to be read
 
@@ -25,15 +30,20 @@ module MappedSPIFlash(
    assign     rbusy = !CS_N; 
    
    assign  MOSI  = cmd_addr[31];
-   initial CS_N  = 1'b1;
    assign  CLK   = !CS_N && !clk; // CLK needs to be inverted (sample on posedge, shift of negedge) 
                                   // and needs to be disabled when not sending/receiving (&& !CS_N).
 
    // since least significant bytes are read first, we need to swizzle...
    assign rdata = {rcv_data[7:0],rcv_data[15:8],rcv_data[23:16],rcv_data[31:24]};
    
-   always @(negedge clk) begin
-      if(rstrb) begin
+   always @(negedge clk or negedge resetn) begin
+      if(!resetn) begin
+         CS_N <= 1'b1;                 // flash deseleccionada
+         cmd_addr <= 32'd0;
+         snd_bitcount <= 6'd0;
+         rcv_bitcount <= 6'd0;
+         rcv_data <= 32'd0;
+      end else if(rstrb) begin
          CS_N <= 1'b0;
          cmd_addr <= {8'h03, 2'b00,word_address[19:0], 2'b00};
          snd_bitcount <= 6'd32;
