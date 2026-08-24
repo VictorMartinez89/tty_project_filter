@@ -1,10 +1,16 @@
-# Test — tt_um_soc_sobel_flash_vic (boot desde flash SPI)
+# Test — tt_um_soc_sobel_flash_vic
 
-**VERIFICADO** ✅: el CPU arranca de la flash externa y configura el Sobel (cpu_wrote_filter=1) en ~203 ciclos.
+Simulacion con **cocotb** + Icarus Verilog.
+
 ```bash
-iverilog -g2012 -o tb.out test/tb_flash.v src/soc_sobel_flash_top.v src/MappedSPIFlash.v \
-    src/femtorv32_quark.v src/peripheral_filter.v src/linebuf3x3.v \
-    /path/to/cores/sim_spi_flash/spiflash.v
-vvp tb.out +firmware=fw_sobel_flash.hex     # imprime "BOOT OK ..."
+rm -rf sim_build results.xml
+make -B
 ```
-`fw_sobel_flash.hex` = las 7 instrucciones del firmware (mismo que la ROM interna), en bytes little-endian.
+
+Esta variante arranca desde una **flash SPI externa**, asi que sin un modelo de flash conectado el CPU
+no ejecuta firmware. Lo que el test comprueba es el **arranque visto desde afuera**: que al salir del
+reset el SoC baja `cs_n`, genera reloj SPI y envia el comando de lectura por MOSI — es decir, que va a
+buscar su programa. Tambien verifica que `uio_oe` deja los pines en la direccion correcta.
+
+Para una simulacion completa con firmware hay un banco propio con modelo de flash en el monorepo de la
+tesis (`tb_flash.v` + `fw_sobel_flash.hex`).

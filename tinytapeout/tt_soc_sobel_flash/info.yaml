@@ -6,7 +6,7 @@ project:
   description:  "FemtoRV32 SoC that boots firmware from an EXTERNAL SPI flash (like a microcontroller) and configures an on-chip Sobel edge filter. Alternative to the self-contained synthesized-ROM version. Vision MSc thesis."
   language:     "Verilog"
   clock_hz:     10000000
-  tiles:        "6x2"
+  tiles:        "8x2"
   top_module:   "tt_um_soc_sobel_flash_vic"
   source_files:
     - "tt_um_soc_sobel_flash_vic.v"
@@ -40,3 +40,6 @@ pinout:
   uio[5]: "flash_mosi (out)"
   uio[6]: "flash_miso (in)"
   uio[7]: ""
+
+# Do not change!
+yaml_version: 6

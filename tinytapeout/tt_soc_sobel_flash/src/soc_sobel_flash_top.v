@@ -59,7 +59,7 @@ module soc_sobel_flash_top (
     wire vin;
     wire [7:0] w00,w01,w02, w10,w11,w12, w20,w21,w22;
     linebuf3x3 #(.W(60), .DW(8)) LB (
-        .clk(clk), .in_valid(in_valid), .in_pix(in_pix), .valid_o(vin),
+        .clk(clk), .reset(~resetn), .in_valid(in_valid), .in_pix(in_pix), .valid_o(vin),
         .w00(w00),.w01(w01),.w02(w02), .w10(w10),.w11(w11),.w12(w12),
         .w20(w20),.w21(w21),.w22(w22));
     wire [10:0] gxp = w02 + (w12<<1) + w22;

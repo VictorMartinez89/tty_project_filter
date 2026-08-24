@@ -15,7 +15,7 @@ module sobel_top (
     wire [7:0] w00,w01,w02, w10,w11,w12, w20,w21,w22;
     wire       vin;
     linebuf3x3 #(.W(60), .DW(8)) LB (
-        .clk(clk), .in_valid(in_valid), .in_pix(in_pix), .valid_o(vin),
+        .clk(clk), .reset(reset), .in_valid(in_valid), .in_pix(in_pix), .valid_o(vin),
         .w00(w00),.w01(w01),.w02(w02), .w10(w10),.w11(w11),.w12(w12),
         .w20(w20),.w21(w21),.w22(w22));
 

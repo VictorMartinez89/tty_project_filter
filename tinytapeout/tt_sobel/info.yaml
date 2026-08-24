@@ -7,8 +7,9 @@ project:
   language:     "Verilog"
   clock_hz:     10000000
 
-  # ~4 651 std cells -> el mas chico de los tres (ajustar si el Action reporta que no cabe)
-  tiles:        "2x2"
+  # ~4 651 std cells. Con 2x2 (4 tiles = ~1163 celdas/tile) el Action fallo con GPL-0302
+  # (densidad pedida 0.60, sugerida 0.69). Con 3x2 quedan ~775 celdas/tile: comodo para rutear.
+  tiles:        "3x2"
 
   top_module:   "tt_um_sobel_vic"
 

@@ -7,8 +7,8 @@ project:
   language:     "Verilog"
   clock_hz:     10000000
 
-  # ~10 284 std cells -> several tiles (ajustar si el Action reporta que no cabe)
-  tiles:        "4x2"
+  # 10284 celdas en 12 tiles = ~857/tile (regla: ~800/tile). Densidad 65 % en src/config.json.
+  tiles:        "6x2"
 
   top_module:   "tt_um_canny1_vic"
 
@@ -45,3 +45,6 @@ pinout:
   uio[5]: ""
   uio[6]: ""
   uio[7]: ""
+
+# Do not change!
+yaml_version: 6

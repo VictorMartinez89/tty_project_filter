@@ -8,7 +8,7 @@ project:
   clock_hz:     10000000
 
   # ~22 054 std cells: por encima del presupuesto estimado (~1000 celdas/tile x 16 tiles).
-  # Se pide el maximo y se deja que el Action de TT diga la verdad.
+  # 22054 celdas en 16 tiles = ~1378/tile (regla: ~800/tile). Densidad 80 % en src/config.json.
   tiles:        "8x2"
 
   top_module:   "tt_um_soc_canny1_vic"

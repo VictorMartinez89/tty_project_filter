@@ -16,7 +16,7 @@ module canny1_top (
     wire vg;
     wire [7:0] gw00,gw01,gw02,gw10,gw11,gw12,gw20,gw21,gw22;
     linebuf3x3 #(.W(60),.DW(8)) LBG (
-        .clk(clk),.in_valid(in_valid),.in_pix(in_pix),.valid_o(vg),
+        .clk(clk),.reset(reset),.in_valid(in_valid),.in_pix(in_pix),.valid_o(vg),
         .w00(gw00),.w01(gw01),.w02(gw02),.w10(gw10),.w11(gw11),.w12(gw12),
         .w20(gw20),.w21(gw21),.w22(gw22));
     wire [11:0] gsum = gw00+(gw01<<1)+gw02 + (gw10<<1)+(gw11<<2)+(gw12<<1) + gw20+(gw21<<1)+gw22;
@@ -26,7 +26,7 @@ module canny1_top (
     wire vs;
     wire [7:0] sw00,sw01,sw02,sw10,sw11,sw12,sw20,sw21,sw22;
     linebuf3x3 #(.W(60),.DW(8)) LBS (
-        .clk(clk),.in_valid(vg),.in_pix(gout),.valid_o(vs),
+        .clk(clk),.reset(reset),.in_valid(vg),.in_pix(gout),.valid_o(vs),
         .w00(sw00),.w01(sw01),.w02(sw02),.w10(sw10),.w11(sw11),.w12(sw12),
         .w20(sw20),.w21(sw21),.w22(sw22));
     wire [10:0] gxp=sw02+(sw12<<1)+sw22, gxn=sw00+(sw10<<1)+sw20;
@@ -41,7 +41,7 @@ module canny1_top (
     wire vc;
     wire [1:0] cw00,cw01,cw02,cw10,cw11,cw12,cw20,cw21,cw22;
     linebuf3x3 #(.W(60),.DW(2)) LBC (
-        .clk(clk),.in_valid(vs),.in_pix(cls_in),.valid_o(vc),
+        .clk(clk),.reset(reset),.in_valid(vs),.in_pix(cls_in),.valid_o(vc),
         .w00(cw00),.w01(cw01),.w02(cw02),.w10(cw10),.w11(cw11),.w12(cw12),
         .w20(cw20),.w21(cw21),.w22(cw22));
     wire any_strong = (cw00==2'd2)|(cw01==2'd2)|(cw02==2'd2)|(cw10==2'd2)|
