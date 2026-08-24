@@ -17,3 +17,6 @@ results.xml
 # Python / cocotb
 __pycache__/
 *.pyc
+
+# Salidas de la comparativa 16x12
+comparativa_16x12/out/

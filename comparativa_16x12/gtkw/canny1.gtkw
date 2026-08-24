@@ -1,0 +1,19 @@
+[dumpfile] "canny1.vcd"
+[timestart] 0
+[sst_width] 210
+[signals_width] 220
+[pane_width] 1200
+@200
+-canny1  (16x12)
+@22
+tb_canny1.clk
+@22
+tb_canny1.reset
+@22
+tb_canny1.in_valid
+@28
+tb_canny1.in_pix[7:0]
+@22
+tb_canny1.out_valid
+@28
+tb_canny1.out_pix[7:0]
