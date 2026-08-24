@@ -1,4 +1,6 @@
 # cocotb test para tt_um_soc_canny1_vic (SoC RISC-V + Canny 1-streaming, ROM interna).
+import os
+
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, ClockCycles
@@ -33,11 +35,16 @@ async def test_soc_canny1_boots_and_streams(dut):
     # o se lee el valor por defecto del periferico (110/70).
     await ClockCycles(dut.clk, 60)
 
-    # y los umbrales que escribio son los del firmware (90 / 40)
-    thr_hi = int(str(dut.user_project.u_soc.thr_hi_o.value), 2)
-    thr_lo = int(str(dut.user_project.u_soc.thr_lo_o.value), 2)
-    dut._log.info(f"umbrales fijados por el CPU: thr_hi={thr_hi}, thr_lo={thr_lo}")
-    assert (thr_hi, thr_lo) == (90, 40), f"el CPU fijo {thr_hi}/{thr_lo}, se esperaba 90/40"
+    # y los umbrales que escribio son los del firmware (90 / 40).
+    # OJO: esto mira una senal INTERNA, que no existe en el netlist post-sintesis.
+    # En el gl_test de Tiny Tapeout (GATES=yes) el diseno viene aplanado, asi que se salta.
+    if os.environ.get("GATES") != "yes":
+        thr_hi = int(str(dut.user_project.u_soc.thr_hi_o.value), 2)
+        thr_lo = int(str(dut.user_project.u_soc.thr_lo_o.value), 2)
+        dut._log.info(f"umbrales fijados por el CPU: thr_hi={thr_hi}, thr_lo={thr_lo}")
+        assert (thr_hi, thr_lo) == (90, 40), f"el CPU fijo {thr_hi}/{thr_lo}, se esperaba 90/40"
+    else:
+        dut._log.info("gate-level: se omite el chequeo de senales internas")
 
     # stream de pixeles
     seen_valid = 0
