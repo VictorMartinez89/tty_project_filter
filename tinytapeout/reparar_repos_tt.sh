@@ -27,7 +27,8 @@ tt_canny1:tt_canny1_vic
 tt_soc_sobel:tt_soc_sobel_vic
 tt_soc_sobel_flash:tt_soc_sobel_flash_vic
 tt_trans_mini:tt_trans_mini_vic
-tt_soc_canny1:tt_soc_canny1_vic"
+tt_soc_canny1:tt_soc_canny1_vic
+tt_soc_trans_mini:tt_soc_trans_mini_vic"
 
 [ $ARREGLAR -eq 0 ] && echo "== MODO PRUEBA: no toco nada. Agrega --arreglar para hacerlo de verdad."
 

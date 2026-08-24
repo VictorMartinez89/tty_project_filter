@@ -22,7 +22,8 @@ tt_canny1:tt_canny1_vic:Streaming Canny 1-hop edge filter (MSc thesis, UNAL)
 tt_soc_sobel:tt_soc_sobel_vic:RISC-V SoC (FemtoRV32) + Sobel filter, ROM on chip
 tt_soc_sobel_flash:tt_soc_sobel_flash_vic:RISC-V SoC + Sobel, boots from external SPI flash
 tt_trans_mini:tt_trans_mini_vic:Transitive hysteresis engine 32x24 (morphological reconstruction)
-tt_soc_canny1:tt_soc_canny1_vic:RISC-V SoC (FemtoRV32) + streaming Canny filter"
+tt_soc_canny1:tt_soc_canny1_vic:RISC-V SoC (FemtoRV32) + streaming Canny filter
+tt_soc_trans_mini:tt_soc_trans_mini_vic:RISC-V SoC + transitive hysteresis engine 16x12"
 
 echo "== plantilla: $TEMPLATE"
 echo "== cuenta:    $USER_GH"
@@ -56,8 +57,18 @@ echo "$PROYECTOS" | while IFS=: read -r carpeta repo desc; do
     git clone "git@github.com:$USER_GH/$repo.git" "$DESTINO/$repo"
 
     cd "$DESTINO/$repo"
-    rm -rf src docs test info.yaml
-    cp -r "$src/src" "$src/docs" "$src/test" "$src/info.yaml" .
+    # NO borrar las carpetas de la plantilla: trae archivos que las acciones necesitan
+    # (src/config.json, test/requirements.txt, test/Makefile con el gate-level, test/tb.v
+    # con los pines de potencia). Se PARCHEAN: dos lineas y listo.
+    fuentes=$(cd "$src/src" && ls *.v *.sv 2>/dev/null | tr '\n' ' ')
+    sed -i.bak "s|^PROJECT_SOURCES = .*|PROJECT_SOURCES = $fuentes|" test/Makefile && rm -f test/Makefile.bak
+    sed -i.bak "s/tt_um_example/$top/" test/tb.v && rm -f test/tb.v.bak
+    cp "$src/test/test.py" test/test.py
+    cp "$src/docs/info.md" docs/info.md
+    cp "$src/info.yaml" info.yaml
+    rm -f src/project.v
+    cp "$src/src/"*.v src/ 2>/dev/null || true
+    cp "$src/src/"*.sv src/ 2>/dev/null || true
     rm -rf test/__pycache__ test/sim_build test/*.vcd test/results.xml 2>/dev/null || true
 
     git add -A

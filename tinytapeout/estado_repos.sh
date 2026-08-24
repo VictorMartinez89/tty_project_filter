@@ -9,7 +9,8 @@ tt_canny1_vic
 tt_soc_sobel_vic
 tt_soc_sobel_flash_vic
 tt_trans_mini_vic
-tt_soc_canny1_vic"
+tt_soc_canny1_vic
+tt_soc_trans_mini_vic"
 
 printf "%-26s %-10s %-10s %-10s  %s\n" "REPO" "gds" "test" "docs" "ultimo commit"
 printf "%-26s %-10s %-10s %-10s  %s\n" "--------------------------" "----------" "----------" "----------" "-------------"
