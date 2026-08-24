@@ -17,12 +17,12 @@ DESTINO="${DESTINO:-$HOME/UN/Tesis/tt_repos}"
 CREAR=0; [ "$1" = "--crear" ] && CREAR=1
 
 # carpeta_en_el_monorepo : nombre_del_repo : descripcion
-PROYECTOS="tt_sobel:tt_sobel:Sobel 3x3 edge filter (MSc thesis, UNAL)
-tt_canny1:tt_canny1:Streaming Canny 1-hop edge filter (MSc thesis, UNAL)
-tt_soc_sobel:tt_soc_sobel:RISC-V SoC (FemtoRV32) + Sobel filter, ROM on chip
-tt_soc_sobel_flash:tt_soc_sobel_flash:RISC-V SoC + Sobel, boots from external SPI flash
-tt_trans_mini:tt_trans_mini:Transitive hysteresis engine 32x24 (morphological reconstruction)
-tt_soc_canny1:tt_soc_canny1:RISC-V SoC (FemtoRV32) + streaming Canny filter"
+PROYECTOS="tt_sobel:tt_sobel_vic:Sobel 3x3 edge filter (MSc thesis, UNAL)
+tt_canny1:tt_canny1_vic:Streaming Canny 1-hop edge filter (MSc thesis, UNAL)
+tt_soc_sobel:tt_soc_sobel_vic:RISC-V SoC (FemtoRV32) + Sobel filter, ROM on chip
+tt_soc_sobel_flash:tt_soc_sobel_flash_vic:RISC-V SoC + Sobel, boots from external SPI flash
+tt_trans_mini:tt_trans_mini_vic:Transitive hysteresis engine 32x24 (morphological reconstruction)
+tt_soc_canny1:tt_soc_canny1_vic:RISC-V SoC (FemtoRV32) + streaming Canny filter"
 
 echo "== plantilla: $TEMPLATE"
 echo "== cuenta:    $USER_GH"

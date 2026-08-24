@@ -4,12 +4,12 @@
 # Uso:  bash tinytapeout/estado_repos.sh  [usuario]
 USER_GH="${1:-VictorMartinez89}"
 
-REPOS="tt_sobel
-tt_canny1
-tt_soc_sobel
-tt_soc_sobel_flash
-tt_trans_mini
-tt_soc_canny1"
+REPOS="tt_sobel_vic
+tt_canny1_vic
+tt_soc_sobel_vic
+tt_soc_sobel_flash_vic
+tt_trans_mini_vic
+tt_soc_canny1_vic"
 
 printf "%-26s %-10s %-10s %-10s  %s\n" "REPO" "gds" "test" "docs" "ultimo commit"
 printf "%-26s %-10s %-10s %-10s  %s\n" "--------------------------" "----------" "----------" "----------" "-------------"
@@ -40,7 +40,7 @@ done
 cat <<'TXT'
 
 Para ver el detalle de uno:
-  gh run list  --repo VictorMartinez89/tt_sobel
-  gh run view  --repo VictorMartinez89/tt_sobel --log-failed
-  gh run download --repo VictorMartinez89/tt_sobel -n tt_submission   # el GDS y compania
+  gh run list  --repo VictorMartinez89/tt_sobel_vic
+  gh run view  --repo VictorMartinez89/tt_sobel_vic --log-failed
+  gh run download --repo VictorMartinez89/tt_sobel_vic -n tt_submission   # el GDS y compania
 TXT
