@@ -23,10 +23,21 @@ Hold `rst_n` low for a few clocks and release it. Within ~2 µs the CPU has exec
 `cpu_wrote_filter` (`uio_out[2]`) goes high: the filter is configured.
 
 Then feed a raster stream of 8-bit grayscale pixels on `ui_in`, one per clock, with `in_valid`
-(`uio_in[0]`) high. Rows are **60 pixels wide**. Each cycle with `out_valid` (`uio_out[1]`) high presents
+(`uio_in[0]`) high. Rows are **16 pixels wide**. Each cycle with `out_valid` (`uio_out[1]`) high presents
 one output pixel on `uo_out`: `0xFF` = edge, `0x00` = flat.
 
 ## External hardware
 
 None. The firmware lives in on-chip ROM, so the chip needs only a clock, a reset and something to drive
 the pixel bus.
+
+## A note on the row width
+
+The companion project `tt_um_canny1_vic` (no CPU) processes rows of 60 pixels. This one processes rows of
+**16**, and the reason is the processor: a FemtoRV32 with its ROM and peripheral costs about 10 200
+standard cells no matter what, while the filter's line buffers scale with the row width. At 60 pixels the
+whole system needs roughly 1 378 cells per tile — well past what fits — and the flow spent six hours
+failing to place it. At 16 pixels it lands near 914, in the same range as the other designs that closed.
+
+It is the same trade-off the transitive engine faces, in a different disguise: **the CPU does not shrink,
+so the image has to.**

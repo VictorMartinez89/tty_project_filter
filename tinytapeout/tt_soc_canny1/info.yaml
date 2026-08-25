@@ -8,7 +8,8 @@ project:
   clock_hz:     10000000
 
   # ~22 054 std cells: por encima del presupuesto estimado (~1000 celdas/tile x 16 tiles).
-  # 22054 celdas en 16 tiles = ~1378/tile (regla: ~800/tile). Densidad 80 % en src/config.json.
+  # ~14 600 celdas en 16 tiles = ~914/tile. A ancho de fila 60 eran 22 054 (1 378/tile) y
+  # el flow no convergio en 6 h. El piso lo pone el CPU: el FemtoRV32 solo son ~10 200 celdas.
   tiles:        "8x2"
 
   top_module:   "tt_um_soc_canny1_vic"

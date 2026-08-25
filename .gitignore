@@ -22,3 +22,6 @@ __pycache__/
 comparativa_16x12/out/
 
 comparativa_16x12/exp/out/
+
+# Resultados bajados de las Actions (GDS de 20+ MB)
+tinytapeout/resultados_tt/*/gds_render.png
