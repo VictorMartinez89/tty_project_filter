@@ -3,12 +3,12 @@ project:
   title:        "RISC-V SoC + transitive hysteresis engine (mini)"
   author:       "Victor A. Martinez S. (UNAL)"
   discord:      ""
-  description:  "A FemtoRV32 (RV32I) boots from on-chip ROM and configures a morphological-reconstruction engine that sweeps a 16x12 class frame to a fixed point, so a weak edge survives if it connects to a strong one through ANY chain. Completes the 3-filters x with/without-CPU matrix of an MSc thesis."
+  description:  "A FemtoRV32 (RV32I) boots from on-chip ROM and configures a morphological-reconstruction engine that sweeps a 24x18 class frame to a fixed point, so a weak edge survives if it connects to a strong one through ANY chain. Completes the 3-filters x with/without-CPU matrix of an MSc thesis."
   language:     "Verilog"
   clock_hz:     10000000
 
-  # ~14 100 celdas sky130 en 16 tiles = ~882/tile (regla: ~800).
-  # El CPU cuesta ~5 300 celdas y no encoge; por eso este va a 16x12 y el motor SIN cpu va a 32x24.
+  # ~16 800 celdas en 16 tiles = ~1 048/tile. A 16x12 sobraba muchisimo (36 % de utilizacion).
+  # El CPU cuesta ~10 200 celdas fijas; el resto del presupuesto se lo lleva el frame.
   tiles:        "8x2"
 
   top_module:   "tt_um_soc_trans_mini_vic"

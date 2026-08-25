@@ -1,7 +1,7 @@
 // tt_um_trans_mini_vic.v — MOTOR de histeresis TRANSITIVA (reconstruccion morfologica) para Tiny Tapeout.
-//   Version "mini" del motor de la tesis: 32x24 en vez de 80x60. El frame de clase se vuelve
+//   Version "mini" del motor de la tesis: 36x26 en vez de 80x60. El frame de clase se vuelve
 //   flip-flops (no hay SPRAM en el ASIC), asi que la resolucion es lo que decide si cabe:
-//   a 80x60 son ~53 tiles (imposible); a 32x24 son ~10 (entra).
+//   a 80x60 son ~53 tiles (imposible); a 36x26 son ~10 (entra).
 //
 //   Entra un stream de CLASE de 2 bits (0=nada / 1=debil / 2=fuerte) y el motor barre el cuadro
 //   entero K veces hasta el punto fijo: un debil sobrevive si toca a un fuerte, TRANSITIVAMENTE
@@ -19,7 +19,7 @@ module tt_um_trans_mini_vic (
 );
     wire load_ready, out_valid, edge_out, done;
 
-    hysteresis_frame_bram_sync #(.H(32), .W(24)) ENG (
+    hysteresis_frame_bram_sync #(.H(36), .W(26)) ENG (
         .clk_i(clk), .nreset_i(rst_n),              // reset asincrono activo-bajo
         .in_valid_i(uio_in[0]), .class_i(ui_in[1:0]),
         .load_ready_o(load_ready), .out_valid_o(out_valid),

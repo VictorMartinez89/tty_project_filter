@@ -6,9 +6,9 @@
 //   2 bits y barre el cuadro hasta el punto fijo: un debil sobrevive si toca un fuerte por
 //   CUALQUIER cadena de vecinos.
 //
-//   POR QUE 16x12 Y NO 32x24 (que es lo que usa la version sin CPU):
+//   POR QUE 24x18 Y NO 36x26 (que es lo que usa la version sin CPU):
 //   el FemtoRV32 cuesta ~5 300 celdas y NO se puede encoger. El motor si. Con el cerebro adentro,
-//   32x24 se va a ~21 tiles (el techo son 16); a 16x12 el conjunto queda en ~882 celdas/tile.
+//   36x26 se va a ~21 tiles (el techo son 16); a 24x18 el conjunto queda en ~882 celdas/tile.
 //   Es un DEMOSTRADOR de la arquitectura, no un procesador de imagen util: lo que prueba es que
 //   el CPU configura el motor y que la histeresis transitiva propaga la cadena entera.
 `default_nettype none

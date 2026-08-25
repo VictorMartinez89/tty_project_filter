@@ -7,7 +7,7 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, ClockCycles
 
-H, W = 32, 24          # el frame del motor "mini"
+H, W = 36, 26          # el frame del motor "mini"
 NADA, DEBIL, FUERTE = 0, 1, 2
 
 def bit(sig, i):
@@ -17,7 +17,7 @@ def bit(sig, i):
 
 @cocotb.test()
 async def test_transitivo_salva_la_cadena(dut):
-    dut._log.info(f"Motor transitivo mini {H}x{W}: cargando un frame de clase")
+    dut._log.info(f"Motor transitivo {H}x{W}: cargando un frame de clase")
     cocotb.start_soon(Clock(dut.clk, 100, units="ns").start())   # 10 MHz
     dut.ena.value = 1; dut.ui_in.value = 0; dut.uio_in.value = 0
     dut.rst_n.value = 0

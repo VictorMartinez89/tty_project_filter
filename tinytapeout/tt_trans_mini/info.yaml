@@ -3,12 +3,13 @@ project:
   title:        "Transitive hysteresis engine (mini)"
   author:       "Victor A. Martinez S. (UNAL)"
   discord:      ""
-  description:  "Morphological-reconstruction engine for Canny hysteresis: sweeps a whole 32x24 class frame until a fixed point, so a weak pixel survives if it is connected to a strong one through ANY chain of weak neighbours. The full-size 80x60 version needs ~53 tiles; this one fits."
+  description:  "Morphological-reconstruction engine for Canny hysteresis: sweeps a whole 36x26 class frame until a fixed point, so a weak pixel survives if it is connected to a strong one through ANY chain of weak neighbours. The full-size 80x60 version needs ~53 tiles; this one fits."
   language:     "Verilog"
   clock_hz:     10000000
 
-  # ~7 736 celdas genericas (yosys) -> ~10 400 en sky130 -> ~10 tiles
-  tiles:        "6x2"
+  # ~17 100 celdas en 16 tiles = ~1 070/tile, en el rango de los que cerraron.
+  # A 32x24 sobraba espacio (55 % de utilizacion en 6x2): se aprovechan los 16 tiles.
+  tiles:        "8x2"
 
   top_module:   "tt_um_trans_mini_vic"
 
