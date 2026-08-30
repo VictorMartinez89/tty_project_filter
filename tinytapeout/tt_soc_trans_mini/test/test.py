@@ -10,7 +10,7 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, ClockCycles
 
-H, W = 24, 18          # el frame del motor con CPU adentro (mas chico que el de 32x24 sin CPU)
+H, W = 36, 26          # el mismo cuadro que el motor sin CPU (medicion del 30-ago)
 NADA, DEBIL, FUERTE = 0, 1, 2
 
 def bit(sig, i):

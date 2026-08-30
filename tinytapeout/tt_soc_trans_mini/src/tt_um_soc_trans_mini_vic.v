@@ -6,9 +6,14 @@
 //   2 bits y barre el cuadro hasta el punto fijo: un debil sobrevive si toca un fuerte por
 //   CUALQUIER cadena de vecinos.
 //
-//   POR QUE 24x18 Y NO 36x26 (que es lo que usa la version sin CPU):
-//   el FemtoRV32 cuesta ~5 300 celdas y NO se puede encoger. El motor si. Con el cerebro adentro,
-//   36x26 se va a ~21 tiles (el techo son 16); a 24x18 el conjunto queda en ~882 celdas/tile.
+//   CUADRO 36x26 — EL MISMO QUE LA VERSION SIN CPU, Y NO CABE (medido el 2026-08-30):
+//   16 528 celdas genericas -> ~22 855 instancias finales -> 1 428 celdas/tile en los 16 tiles del
+//   maximo 8x2. El shuttle ya fallo (GPL-0302 / sin converger) a 1 378 y a 1 163 celdas/tile, asi
+//   que este cuadro pide ~25 tiles y el techo son 16. Se deja MEDIDO, no para submitir: la version
+//   submitible es 24x18 (16 870 instancias, 1 054/tile) -> `git checkout -- .` para volver a ella.
+//   El numero es el argumento de la tesis: en los MISMOS 16 tiles, el motor solo guarda 36x26 = 936
+//   pixeles (14 004 instancias reales, 875/tile) y con el FemtoRV32 adentro solo 24x18 = 432. La
+//   diferencia, ~8 850 celdas, es el cerebro: cuesta fijo y NO encoge. El cuadro si.
 //   Es un DEMOSTRADOR de la arquitectura, no un procesador de imagen util: lo que prueba es que
 //   el CPU configura el motor y que la histeresis transitiva propaga la cadena entera.
 `default_nettype none
