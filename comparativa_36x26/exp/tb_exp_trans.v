@@ -6,7 +6,7 @@
 `timescale 1ns/1ps
 `default_nettype none
 module tb_exp_trans;
-    localparam H = 24, W = 18, N = H*W;
+    localparam H = 36, W = 26, N = H*W;
     reg clk = 0, reset = 1;
     reg cls_in_valid = 0;
     reg [7:0] cls_in_pix = 0;

@@ -1,0 +1,23 @@
+[dumpfile] "soc_sobel.vcd"
+[timestart] 0
+[sst_width] 210
+[signals_width] 220
+[pane_width] 1200
+@200
+-soc_sobel  (16x12)
+@22
+tb_soc_sobel.clk
+@22
+tb_soc_sobel.resetn
+@22
+tb_soc_sobel.cpu_wrote_filter
+@28
+tb_soc_sobel.thr_o[7:0]
+@22
+tb_soc_sobel.in_valid
+@28
+tb_soc_sobel.in_pix[7:0]
+@22
+tb_soc_sobel.out_valid
+@28
+tb_soc_sobel.out_pix[7:0]

@@ -1,0 +1,29 @@
+[dumpfile] "soc_trans.vcd"
+[timestart] 0
+[sst_width] 210
+[signals_width] 220
+[pane_width] 1200
+@200
+-soc_trans  (16x12)
+@22
+tb_soc_trans.clk
+@22
+tb_soc_trans.nreset
+@22
+tb_soc_trans.cpu_wrote_filter
+@28
+tb_soc_trans.mode_o[1:0]
+@28
+tb_soc_trans.thr_hi_o[7:0]
+@22
+tb_soc_trans.load_ready
+@22
+tb_soc_trans.in_valid
+@28
+tb_soc_trans.class_in[1:0]
+@22
+tb_soc_trans.out_valid
+@22
+tb_soc_trans.edge_out
+@22
+tb_soc_trans.done

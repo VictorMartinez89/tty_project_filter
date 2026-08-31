@@ -1,0 +1,23 @@
+[dumpfile] "trans.vcd"
+[timestart] 0
+[sst_width] 210
+[signals_width] 220
+[pane_width] 1200
+@200
+-trans  (16x12)
+@22
+tb_trans.clk
+@22
+tb_trans.nreset
+@22
+tb_trans.load_ready
+@22
+tb_trans.in_valid
+@28
+tb_trans.class_in[1:0]
+@22
+tb_trans.out_valid
+@22
+tb_trans.edge_out
+@22
+tb_trans.done
