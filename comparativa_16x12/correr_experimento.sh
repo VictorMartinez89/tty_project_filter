@@ -37,7 +37,10 @@ for img in $IMAGENES; do
     echo "$DISENOS" | while IFS=: read -r nom banco flags fuentes; do
         [ -z "$nom" ] && continue
         iverilog -g2012 $flags -o exp/out/$nom.vvp -s tb_exp_$banco exp/tb_exp_$banco.v $fuentes 2>/dev/null
-        salida=$(vvp exp/out/$nom.vvp +IMG=img/$img.hex +OUT=exp/out/${img}_${nom}.txt | grep bordes)
+        # El firmware del SoC+Canny1 escribe 90/40; sin +TLO el banco le daria 90/45 al
+        # filtro suelto y la comparacion con/sin CPU no seria justa.
+        extra=""; [ "$nom" = "canny1" ] && extra="+TLO=40"
+        salida=$(vvp exp/out/$nom.vvp +IMG=img/$img.hex +OUT=exp/out/${img}_${nom}.txt $extra | grep bordes)
         n=$(echo "$salida" | grep -oE "^[0-9]+")
         printf "%12s" "$n"
         pct=$(python3 -c "print(f'{100*$n/192:.1f}')")

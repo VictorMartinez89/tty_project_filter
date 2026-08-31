@@ -13,8 +13,10 @@ module tb_exp_trans;
     wire cls_v; wire [1:0] cls_p;
 
     // 1) generador de CLASE (con umbrales altos, los del transitivo)
+    // umbrales del generador de clase, ajustables con +THI= / +TLO= (por defecto 110/70)
+    integer thi_arg = 110, tlo_arg = 70;
     grad_class_top GC (.clk(clk), .reset(reset), .in_valid(cls_in_valid), .in_pix(cls_in_pix),
-                       .thr_hi(8'd110), .thr_lo(8'd70), .out_valid(cls_v), .class_out(cls_p));
+                       .thr_hi(thi_arg[7:0]), .thr_lo(tlo_arg[7:0]), .out_valid(cls_v), .class_out(cls_p));
 
     // 2) el motor
     reg eng_nreset = 0, eng_in_valid = 0;
@@ -62,6 +64,8 @@ module tb_exp_trans;
     initial begin
         if (!$value$plusargs("IMG=%s", f_img)) begin $display("falta +IMG"); $finish; end
         if (!$value$plusargs("OUT=%s", f_out)) begin $display("falta +OUT"); $finish; end
+        void'($value$plusargs("THI=%d", thi_arg));
+        void'($value$plusargs("TLO=%d", tlo_arg));
         $readmemh(f_img, img);
         for (i = 0; i < N; i = i + 1) begin clases[i] = 2'd0; salida[i] = 1'b0; end
 

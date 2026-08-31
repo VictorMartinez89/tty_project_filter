@@ -8,6 +8,8 @@
 sim_build/
 results.xml
 *.vcd
+*.vvp
+src_cal/          # copia con el firmware recalibrado que arma correr_calibrado.sh
 
 # Builds FPGA locales
 *.asc

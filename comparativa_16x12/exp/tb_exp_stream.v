@@ -14,7 +14,13 @@ module tb_exp_stream;
     reg [7:0] salida [0:N-1];
     integer i, rep, n_val = 0, n_out = 0, bordes = 0, fd;
     reg [1023:0] f_img, f_out;
-    integer thr_arg = 90;                     // umbral, ajustable con +THR=
+    integer thr_arg = 90;                     // umbral alto, ajustable con +THR=
+    integer tlo_arg = -1;                     // umbral bajo, ajustable con +TLO= (por defecto THR/2)
+    // OJO: el firmware del SoC escribe 90/40, no 90/45. Sin +TLO= el banco le daria al
+    // filtro suelto un umbral bajo distinto al que el CPU le da al del SoC, y la
+    // comparacion con/sin CPU dejaria de ser justa.
+
+    wire [31:0] tlo_eff = (tlo_arg < 0) ? (thr_arg >> 1) : tlo_arg;
 
     always #5 clk = ~clk;
 
@@ -32,7 +38,7 @@ module tb_exp_stream;
     reg reset = 1;
     `DISENO DUT (.clk(clk), .reset(reset), .in_valid(in_valid), .in_pix(in_pix),
 `ifdef DOS_UMBRALES
-                .thr_hi(thr_arg[7:0]), .thr_lo(thr_arg[7:0] >> 1),
+                .thr_hi(thr_arg[7:0]), .thr_lo(tlo_eff[7:0]),
 `else
                 .thr(thr_arg[7:0]),
 `endif
@@ -56,6 +62,7 @@ module tb_exp_stream;
         if (!$value$plusargs("IMG=%s", f_img)) begin $display("falta +IMG"); $finish; end
         if (!$value$plusargs("OUT=%s", f_out)) begin $display("falta +OUT"); $finish; end
         void'($value$plusargs("THR=%d", thr_arg));
+        void'($value$plusargs("TLO=%d", tlo_arg));
         $readmemh(f_img, img);
         for (i = 0; i < N; i = i + 1) salida[i] = 8'h00;
 
