@@ -6,14 +6,20 @@
 //   2 bits y barre el cuadro hasta el punto fijo: un debil sobrevive si toca un fuerte por
 //   CUALQUIER cadena de vecinos.
 //
-//   CUADRO 36x26 — EL MISMO QUE LA VERSION SIN CPU, Y NO CABE (medido el 2026-08-30):
-//   16 528 celdas genericas -> ~22 855 instancias finales -> 1 428 celdas/tile en los 16 tiles del
-//   maximo 8x2. El shuttle ya fallo (GPL-0302 / sin converger) a 1 378 y a 1 163 celdas/tile, asi
-//   que este cuadro pide ~25 tiles y el techo son 16. Se deja MEDIDO, no para submitir: la version
-//   submitible es 24x18 (16 870 instancias, 1 054/tile) -> `git checkout -- .` para volver a ella.
-//   El numero es el argumento de la tesis: en los MISMOS 16 tiles, el motor solo guarda 36x26 = 936
-//   pixeles (14 004 instancias reales, 875/tile) y con el FemtoRV32 adentro solo 24x18 = 432. La
-//   diferencia, ~8 850 celdas, es el cerebro: cuesta fijo y NO encoge. El cuadro si.
+//   CUADRO 24x18 (432 px) — ES EL SUBMITIBLE, Y ESTA MEDIDO POR QUE:
+//   ~16 870 instancias = 1 054 celdas/tile en los 16 tiles del maximo 8x2. El mismo cuadro que
+//   usa la version SIN CPU (36x26) se midio el 2026-08-30 y da 22 855 instancias = 1 428/tile:
+//   NO cabe (el shuttle ya fallo a 1 378 y a 1 163). Desglose de esa medicion, en celdas
+//   genericas de yosys:
+//                       FemtoRV32   periferico   motor    total
+//        16x12 (192 px)     6 858        111     3 042   10 122
+//        24x18 (432 px)     6 915        111     5 063   12 200
+//        36x26 (936 px)     6 915        111     9 391   16 528
+//   El CPU es PLANO (6 858 -> 6 915 -> 6 915); el motor cuesta 8.53 celdas por pixel. Y de esas
+//   8.53 solo ~2.2 son flip-flops del frame: el 74 % restante es la LOGICA DE ACCESO (el OR de
+//   8 vecinos por celda y el mux de lectura). Sin macro de SRAM, un pixel no cuesta 2 bits.
+//   OJO al submitir: 24x18 queda en ~43.5 % de utilizacion y el muro empirico esta en ~45 %.
+//   El unico run real de este proyecto es el de 16x12 -> conviene correr el flujo antes de fiarse.
 //   Es un DEMOSTRADOR de la arquitectura, no un procesador de imagen util: lo que prueba es que
 //   el CPU configura el motor y que la histeresis transitiva propaga la cadena entera.
 `default_nettype none

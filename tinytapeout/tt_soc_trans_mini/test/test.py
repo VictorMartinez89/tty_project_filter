@@ -10,7 +10,7 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, ClockCycles
 
-H, W = 36, 26          # el mismo cuadro que el motor sin CPU (medicion del 30-ago)
+H, W = 24, 18          # el cuadro submitible: 1 054 celdas/tile (36x26 da 1 428 y no cabe)
 NADA, DEBIL, FUERTE = 0, 1, 2
 
 def bit(sig, i):

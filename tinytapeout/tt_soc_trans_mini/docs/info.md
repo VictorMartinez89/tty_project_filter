@@ -10,7 +10,7 @@ with random contents and there is no bitstream to load a program. The firmware w
 peripheral at `0x0045_0000`, selecting **transitive mode** and setting both hysteresis thresholds
 (110 / 70).
 
-**The engine.** It stores a **36x26 frame of pixel classes** (0 = none, 1 = weak, 2 = strong) and sweeps it
+**The engine.** It stores a **24x18 frame of pixel classes** (0 = none, 1 = weak, 2 = strong) and sweeps it
 repeatedly until nothing changes:
 
 ```
@@ -26,8 +26,10 @@ cells no matter what, while the engine's cost scales with the pixel count (its f
 there is no SRAM macro here). The companion project `tt_um_trans_mini_vic`, without a CPU, fits a 36x26
 frame in the same budget at **875 cells per tile**; add the brain to that very same 36x26 frame and the
 design measures **~22 855 instances = 1 428 cells per tile**, while the shuttle already failed to converge
-at 1 378 and at 1 163. That is roughly 25 tiles against a 16-tile ceiling. The submittable frame is 24x18
-(~16 870 instances, 1 054 cells per tile); this 36x26 build is the measurement, kept for the thesis.
+at 1 378 and at 1 163 — roughly 25 tiles against a 16-tile ceiling. So this project ships the **24x18**
+frame instead: ~16 870 instances, **1 054 cells per tile**. Measured, not guessed: the CPU is flat at
+6 915 generic cells while the engine costs **8.53 cells per pixel**, and only ~2.2 of those are the
+frame's flip-flops — the other 74 % is the logic that reaches them (the 8-neighbour OR and the read mux).
 
 So this chip is a **demonstrator of the architecture**, not a useful image processor: it proves the CPU can
 configure the engine at run time and that the engine propagates a full chain — on a toy-sized image.
@@ -38,7 +40,7 @@ configure the engine at run time and that the engine propagates a full chain —
    its firmware and configured the filter.
 2. The engine first **clears** its padded frame, so wait for `load_ready` (`uio_out[3]`).
 3. Load the frame: drive the 2-bit class on `ui_in[1:0]` with `in_valid` (`uio_in[0]`) high, one pixel per
-   clock, raster order — 36 rows of 26.
+   clock, raster order — 24 rows of 18.
 4. The engine sweeps, then streams the result: each cycle with `out_valid` (`uio_out[1]`) high presents one
    pixel on `uo_out[0]` (1 = edge). `done` (`uio_out[2]`) marks the end of the frame.
 
