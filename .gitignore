@@ -27,3 +27,7 @@ comparativa_16x12/exp/out/
 
 # Resultados bajados de las Actions (GDS de 20+ MB)
 tinytapeout/resultados_tt/*/gds_render.png
+
+# Datos de MNIST (regenerables con clasificador_mnist/bajar_mnist.sh)
+clasificador_mnist/*.gz
+clasificador_mnist/mnist.npz
