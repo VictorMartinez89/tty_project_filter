@@ -16,11 +16,16 @@ AQUI="$(cd "$(dirname "$0")" && pwd)"; cd "$AQUI"
 #   bash build_fpga.sh uart    -> los 10 digitos de la ROM por el puerto serie
 #   bash build_fpga.sh cam     -> la camara: escribi un digito y miralo en el TFT
 #   bash build_fpga.sh crudo   -> DIAGNOSTICO: la camara sin invertir, para ver exposicion/foco
+#   bash build_fpga.sh raw     -> REFERENCIA: cam_display.v, el diseno de camara cruda que YA
+#                                 funcionaba antes de todo esto. Si este muestra imagen y el
+#                                 'crudo' no, el problema es mio; si tampoco, es de camara/luz.
 DEMO="${1:-cam}"
 COMUN="linebuf3x3.v mnist_feat.v mnist_clf.v mnist_top.v"
 if [ "$DEMO" = "uart" ]; then
     TOP=top; FUENTES="rom_digitos.v uart_tx.v fpga_mnist_top.v $COMUN"; PCF=fpga_mnist.pcf
     SALIDA=mnist_uart
+elif [ "$DEMO" = "raw" ]; then
+    TOP=top; FUENTES="cam_display.v"; PCF=cam_display.pcf; SALIDA=cam_raw
 elif [ "$DEMO" = "crudo" ]; then
     TOP=top; FUENTES="mnist_cam_display.v cam_win28.v glifo.v $COMUN";  PCF=mnist_cam.pcf
     SALIDA=mnist_crudo; PARAM="-p INVERTIR=0"
