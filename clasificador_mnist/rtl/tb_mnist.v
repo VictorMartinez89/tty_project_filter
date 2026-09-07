@@ -35,12 +35,18 @@ module tb_mnist;
         // las Partes 29-35, y por la misma razon. El reset del extractor se suelta recien al
         // empezar la segunda pasada, asi que el histograma solo cuenta datos buenos.
         repeat (4) @(posedge clk); reset = 0; @(posedge clk);
-        for (rep = 0; rep < 2; rep = rep + 1) begin
+        // TRES pasadas, no dos: la primera ceba los line-buffers, la segunda es la que se
+        // cuenta, y la tercera existe solo para DRENAR. El linebuf3x3 emite una salida por
+        // cada entrada, asi que las ultimas muestras de un cuadro solo salen cuando entran
+        // los primeros pixeles del siguiente. Sin la tercera pasada faltan 2 muestras de 784
+        // y el ultimo pixel del raster nunca llega: `ult_pix` no dispara.
+        for (rep = 0; rep < 3; rep = rep + 1) begin
             if (rep == 1) begin                     // limpiar contadores, dejar los line-buffers cargados
                 clr <= 1'b1; @(posedge clk); clr <= 1'b0;
             end
             for (i = 0; i < N; i = i + 1) begin
                 in_valid <= 1'b1; in_pix <= img[i]; @(posedge clk);
+                if (done) i = N;                       // ya clasifico: no hace falta seguir
             end
             in_valid <= 1'b0; @(posedge clk);
         end

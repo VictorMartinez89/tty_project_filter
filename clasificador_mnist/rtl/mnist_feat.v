@@ -70,11 +70,15 @@ module mnist_feat #(
 
     // ---------------- posicion, y la latencia del pipeline ----------------
     //   El linebuf3x3 emite UNA salida por cada entrada: el raster de salida tiene la misma
-    //   forma HxW que el de entrada, con basura en el borde. Cada etapa 3x3 retrasa W+1
-    //   muestras -una fila y una columna- que es exactamente lo que se midio en la Parte 168.
-    //   Con dos etapas: LAT = 2(W+1). Se descartan esas muestras y despues se rastrea normal,
-    //   contando SOLO el interior [2..H-3] x [2..W-3], que es el area 'valid' del golden.
-    localparam integer LAT = 2*(W+1);
+    //   forma HxW que el de entrada, con basura en el borde. Cada etapa retrasa W+2 muestras:
+    //   W+1 porque la ventana centrada en (r,c) recien esta cuando entro (r+1,c+1) -eso es lo
+    //   que midio la Parte 168- MAS 2 por el pipeline interno del propio linebuf (etapa de
+    //   lectura + etapa de ventana)... y de esos 2 solo se ve 1 en el indice de muestra.
+    //   El valor exacto se CALIBRO contra el golden barriendo LAT: 60 para W=28, o sea 2*(W+2).
+    //   Con LAT=2*(W+1)=58 el histograma queda corrido DOS COLUMNAS y las zonas se mezclan,
+    //   aunque el total de bordes sea correcto. Es la misma trampa de la Parte 168: el total
+    //   no cambia con un corrimiento, asi que hay que mirar la distribucion, no la suma.
+    localparam integer LAT = 2*(W+2);
     reg [$clog2(LAT+1)-1:0] lat_cnt;
     wire arrancado = (lat_cnt == LAT);
     reg [$clog2(W)-1:0] cx;

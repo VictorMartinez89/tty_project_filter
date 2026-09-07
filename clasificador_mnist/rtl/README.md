@@ -26,25 +26,42 @@ Reparto a 28×28: `mnist_feat` 2 025 · `linebuf3x3` ×2 3 126 · `mnist_clf` 2 
 **Los pesos NO cuestan flip-flops.** Van en una ROM sintetizada (lógica combinacional), no en
 registros. De los 1 515 flip-flops, ~896 son los dos line-buffers y 288 los contadores.
 
-## ⚠️ Estado de la verificación: NO pasa todavía
+## ✅ Verificación: **200 de 200, bit a bit**
 
-El diseño **elabora, sintetiza sin latches y simula** —entra una imagen, sale un dígito— pero el
-histograma que produce el RTL **todavía no coincide** con el golden de Python. Al alinear por el
-mejor desplazamiento, la magnitud coincide en ~420 de 576 píxeles.
+```
+histograma identico: 200/200   ·   digito identico: 200/200
+```
 
-Lo que ya se descartó, y lo que falta:
-- ✅ **El mapeo de orientaciones es correcto** — los bins vacíos y el bin 5 coinciden exactamente.
-- ✅ **Bug encontrado y corregido:** `LBS` estaba instanciado con `.W(W-2)`. El `linebuf3x3` emite
-  una salida por cada entrada (no descarta el borde), así que la segunda etapa sigue viendo filas
-  de `W`. Corregido a `.W(W)`.
-- ✅ **`clr` separado de `reset`**, para poder limpiar el histograma entre pasadas conservando los
-  line-buffers cargados (la imagen se manda dos veces, como en las Partes 29-35).
-- ❌ **Falta:** la alineación exacta entre el raster del RTL y el área `valid` de 24×24 del golden.
-  Barriendo `LAT` no aparece un desplazamiento que dé coincidencia exacta, así que queda al menos
-  una diferencia más, probablemente en el borde del raster o en el truncamiento del Gaussiano.
+Los 32 contadores que produce el Verilog son **exactamente** los del golden de Python, imagen por
+imagen, y el dígito también. Es la verificación de las Partes 29-35 aplicada al clasificador.
 
-**Hasta que esto cierre, los números de área son válidos pero la precisión del RTL no está
-verificada.** La cifra de 91.0 % es del modelo de Python, no del hardware.
+Y la precisión medida **sobre el RTL**, corriendo iverilog imagen por imagen:
+
+| | 500 imágenes de test |
+|---|---:|
+| **RTL (iverilog)** | **89.6 %** |
+| golden de Python, mismas 500 | 89.6 % |
+| golden de Python, las 10 000 | 91.0 % |
+
+**El hardware y el modelo dan lo mismo.** El 89.6 % contra 91.0 % es solo el submuestreo de 500
+frente a 10 000, no una diferencia entre software y silicio.
+
+### Los cuatro bugs que costó, y qué enseña cada uno
+
+1. **`LBS` instanciado con `.W(W-2)`.** El `linebuf3x3` emite una salida por cada entrada —no
+   descarta el borde—, así que la segunda etapa sigue viendo filas de `W`. → `.W(W)`.
+2. **Faltaba un `clr` separado del `reset`.** La imagen se manda dos veces (los line-buffers
+   arrancan vacíos); al empezar la segunda hay que poner el histograma en cero **conservando** las
+   filas ya cargadas. Un `reset` a secas borraba las dos cosas.
+3. **Faltaba una tercera pasada para DRENAR.** Como el linebuf emite una salida por entrada, las
+   últimas muestras de un cuadro solo salen cuando entran los primeros píxeles del siguiente. Sin
+   esa tercera pasada faltaban 2 muestras de 784 y `ult_pix` nunca disparaba.
+4. **La latencia no es `2(W+1)` sino `2(W+2)`.** La Parte 168 midió `W+1` por etapa 3×3 —el
+   desplazamiento de la *ventana*—, pero el `linebuf3x3` agrega además su propio pipeline interno.
+   Calibrado contra el golden: **LAT = 60 para W=28**.
+   > ⚠️ **Y esta es la trampa que casi se cuela:** con `LAT=58` el **total** de bordes era
+   > **correcto** (229 = 229) y solo estaba mal la *distribución* por zonas. Un corrimiento no
+   > cambia la suma. Verificar por totales habría dado "OK" con el diseño mal alineado.
 
 ## Correcciones que este trabajo trae a la Parte 170
 
