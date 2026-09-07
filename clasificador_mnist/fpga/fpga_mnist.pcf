@@ -1,0 +1,8 @@
+# fpga_mnist.pcf — iCESugar v1.5 (iCE40UP5K, sg48)
+#   Solo hacen falta el reloj, el UART y los LEDs: los digitos van en el bitstream.
+#   OJO: en esta placa RGB0/39 es VERDE y RGB1/40 es ROJO (verificado en la Parte 59).
+set_io clk          35
+set_io uart_tx_pin   6
+set_io led_g        39
+set_io led_r        40
+set_io led_b        41

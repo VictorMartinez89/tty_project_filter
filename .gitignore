@@ -34,3 +34,9 @@ clasificador_mnist/mnist.npz
 clasificador_mnist/rtl/tmp/
 clasificador_mnist/rtl/tmp/
 clasificador_mnist/pesos_hw.npz
+
+# Artefactos del build de FPGA del clasificador (regenerables)
+clasificador_mnist/fpga/mnist.json
+clasificador_mnist/fpga/mnist.asc
+clasificador_mnist/fpga/mnist.bin
+clasificador_mnist/fpga/*.log
