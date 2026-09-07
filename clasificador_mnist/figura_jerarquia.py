@@ -11,10 +11,8 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
-ns = {}; exec(open("entrenar_hw.py").read().split("d = np.load")[0], ns)
-frente = ns["frente"]
-d = np.load("mnist.npz"); Xte, yte = d["Xt"], d["yt"]
-P = np.load("pesos_hw.npz"); Wq, bq = P["W"], P["b"]
+import frente_golden as fg
+_, _, Xte, yte = fg.cargar_mnist()
 
 # un ejemplar de cada digito
 ejemplos = [int(np.where(yte == k)[0][0]) for k in range(10)]
@@ -35,7 +33,7 @@ fig, ejes = plt.subplots(4, 10, figsize=(17.2, 8.0))
 aciertos = 0
 for c, idx in enumerate(ejemplos):
     img = Xte[idx]
-    m, o = frente(img[None]); m, o = m[0], o[0]
+    m, o = fg.frente(img); m, o = m[0], o[0]
     cnt, dig = rtl(img)
     aciertos += (dig == yte[idx])
 

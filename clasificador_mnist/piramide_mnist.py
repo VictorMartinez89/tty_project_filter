@@ -10,61 +10,23 @@
 import numpy as np, sys
 from sklearn.linear_model import LogisticRegression
 
-rng = np.random.default_rng(0)
-d = np.load(sys.argv[1] if len(sys.argv) > 1 else "mnist.npz")
-Xtr, ytr, Xte, yte = d["X"], d["y"], d["Xt"], d["yt"]
+import frente_golden as fg
 
-GAUSS = np.array([[1,2,1],[2,4,2],[1,2,1]], float)          # /16, el del RTL
-GX    = np.array([[-1,0,1],[-2,0,2],[-1,0,1]], float)       # Sobel estandar
-GY    = np.array([[-1,-2,-1],[0,0,0],[1,2,1]], float)
+Xtr, ytr, Xte, yte = fg.cargar_mnist(sys.argv[1] if len(sys.argv) > 1 else "mnist.npz")
 
-def conv3(img, k):
-    """3x3 valida sobre el stack (N,H,W), como la ventana del linebuf3x3."""
-    N,H,W = img.shape
-    out = np.zeros((N,H-2,W-2))
-    for i in range(3):
-        for j in range(3):
-            if k[i,j]: out += k[i,j]*img[:, i:i+H-2, j:j+W-2]
-    return out
-
+# OJO: este experimento es el ORIGINAL, con la orientacion por atan2 redondeado. Se conserva
+# porque es el que dio los numeros de la Parte 170, pero atan2 NO es implementable barato en
+# silicio -pediria un CORDIC o una tabla-. El front-end que de verdad corre en el chip usa el
+# OCTANTE y vive en frente_golden.py; con el, la precision a 4 bits es 91.0 %, no 94.2 %.
 def frente(img, thr):
-    """El front-end del chip: Gauss -> Sobel -> magnitud saturada -> umbral -> orientacion."""
-    g  = conv3(img.astype(float), GAUSS)/16.0
-    gx = conv3(g, GX); gy = conv3(g, GY)
-    mag = np.minimum(np.abs(gx)+np.abs(gy), 255.0)           # |Gx|+|Gy| saturado a 8 bits
-    ori = (np.round(np.arctan2(gy, gx)/(2*np.pi)*8) % 8).astype(np.int8)   # 8 direcciones
-    return mag > thr, ori                                    # mascara de borde + orientacion
+    g  = fg.conv3(img.astype(float), fg.GAUSS) / 16.0
+    gx = fg.conv3(g, fg.SOBEL_X); gy = fg.conv3(g, fg.SOBEL_Y)
+    mag = np.minimum(np.abs(gx) + np.abs(gy), 255.0)
+    ori = (np.round(np.arctan2(gy, gx) / (2*np.pi) * 8) % 8).astype(np.int8)
+    return mag > thr, ori
 
-def piramide(mask, ori, niveles):
-    """Histograma de orientaciones por zona, concatenando los niveles 0..niveles."""
-    N,H,W = mask.shape
-    feats = []
-    for L in range(niveles+1):
-        n = 2**L                                             # n x n zonas
-        for zy in range(n):
-            for zx in range(n):
-                ys, ye = zy*H//n, (zy+1)*H//n
-                xs, xe = zx*W//n, (zx+1)*W//n
-                m = mask[:, ys:ye, xs:xe]; o = ori[:, ys:ye, xs:xe]
-                for b in range(8):
-                    feats.append(((o == b) & m).sum(axis=(1,2)))
-    return np.stack(feats, axis=1).astype(np.float32)
-
-def cuantizar(W, bits):
-    """Cuantizacion simetrica. La escala NO se toma del maximo -un solo peso grande
-    mandaria el resto a cero, que es justo lo que arruinaba la fila de 2 bits-, sino
-    buscando la que menos error cuadratico deja. Es lo que haria un buen flujo de
-    cuantizacion, y en hardware cuesta lo mismo: la escala es un desplazamiento."""
-    if bits is None: return W
-    lim = 2**(bits-1) - 1
-    if lim == 0: return np.sign(W)*np.abs(W).mean()          # 1 bit = solo el signo
-    mejor, mejor_err = None, np.inf
-    for f in np.linspace(0.05, 1.0, 40):
-        esc = np.abs(W).max()*f/lim
-        Wq  = np.round(W/esc).clip(-lim, lim)*esc
-        err = ((Wq-W)**2).sum()
-        if err < mejor_err: mejor, mejor_err = Wq, err
-    return mejor
+piramide  = fg.piramide
+cuantizar = lambda W, bits: (W if bits is None else fg.cuantizar(W, bits)[0] * fg.cuantizar(W, bits)[1])
 
 THR = 60
 print(f"front-end: Gauss 3x3 -> Sobel -> |Gx|+|Gy| sat 255 -> umbral {THR} -> 8 orientaciones\n")

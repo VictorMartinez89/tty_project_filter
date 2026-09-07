@@ -1,8 +1,9 @@
 // mnist_weights.vh — GENERADO por entrenar_hw.py. No editar a mano.
 //   10 clases x 40 caracteristicas, 4 bits con signo.
-//   Entrenado sobre MNIST (60 000) con el front-end del RTL: Gauss/16 -> Sobel ->
-//   |Gx|+|Gy| sat 255 -> umbral 60 -> octante. Precision de test: 91.0%.
-//   Escala del cuantizador: 0.039073 (no hace falta en el RTL: el argmax es invariante a escala).
+//   Entrenado sobre MNIST (60 000) con el front-end de frente_golden.py, que es el
+//   mismo que implementa mnist_feat.v. Precision de test: 91.0%.
+//   Escala del cuantizador: 0.039073 — no hace falta en el RTL: el argmax es
+//   invariante a una escala positiva comun.
 localparam integer N_CLASE = 10;
 localparam integer N_CARAC = 40;
 localparam integer WB      = 4;
