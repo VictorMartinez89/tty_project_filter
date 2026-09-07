@@ -40,3 +40,7 @@ clasificador_mnist/fpga/mnist.json
 clasificador_mnist/fpga/mnist.asc
 clasificador_mnist/fpga/mnist.bin
 clasificador_mnist/fpga/*.log
+clasificador_mnist/fpga/escena.hex
+clasificador_mnist/fpga/vista28.txt
+clasificador_mnist/fpga/*.json
+clasificador_mnist/fpga/*.asc

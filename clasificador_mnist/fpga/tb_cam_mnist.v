@@ -1,0 +1,63 @@
+// tb_cam_mnist.v — la cadena ENTERA en simulacion: camara emulada -> ventana -> clasificador.
+//   No se simula el TFT (son 76 800 pixeles por SPI, eterno): se observan directamente la
+//   ventana de 28x28, el digito reconocido y lo que se dibujaria. Es el test que dice si vale
+//   la pena grabar la placa.
+`timescale 1ns/1ps
+`default_nettype none
+module tb_cam_mnist;
+    localparam integer CAM_W = 640, CAM_H = 480;
+    reg pclk = 0, reset = 1;
+    reg [7:0] mem [0:CAM_W*CAM_H-1];
+
+    // --- camara emulada: YUV422, un byte de luma y uno de croma por pixel ---
+    reg        href = 0, py_valid = 0;
+    reg [7:0]  curY = 0;
+    reg        sync = 0;
+    always #5 pclk = ~pclk;
+
+    wire       w_valid; wire [7:0] w_pix; wire w_fin;
+    cam_win28 #(.CAM_W(CAM_W),.CAM_H(CAM_H),.WIN(448),.N(28)) WIN (
+        .pclk(pclk), .reset(reset), .sync(sync),
+        .pix_y(curY), .pix_valid(py_valid), .invertir(1'b1),
+        .out_valid(w_valid), .out_pix(w_pix), .frame_fin(w_fin));
+
+    wire done; wire [3:0] digito;
+    // clr cuando el clasificador TERMINA, no en cada cuadro: el video es continuo y el
+    // raster se encadena solo. Con clr por cuadro la latencia se reinicia y nunca se
+    // completa el barrido (784 muestras no alcanzan para 60 de latencia + 784 de raster).
+    reg clr = 0;
+    always @(posedge pclk) clr <= done;
+    mnist_top #(.H(28),.W(28),.CW(9)) CLF (
+        .clk(pclk), .reset(reset), .clr(clr),
+        .in_valid(w_valid), .in_pix(w_pix), .thr(8'd60),
+        .done(done), .digito(digito));
+
+    // capturar las 28x28 que salen de la ventana, para compararlas con Python
+    reg [7:0] vista [0:783];
+    integer nv = 0;
+    always @(posedge pclk) if (w_valid && nv < 784) begin vista[nv] = w_pix; nv = nv + 1; end
+
+    integer i, f, fd;
+    initial begin
+        $readmemh("escena.hex", mem);
+        repeat (4) @(posedge pclk); reset = 0; @(posedge pclk);
+        // TRES cuadros: ceba line-buffers, cuenta, drena — igual que en el banco del RTL
+        for (f = 0; f < 3; f = f + 1) begin
+            if (f > 0) begin sync <= 1'b1; @(posedge pclk); sync <= 1'b0; end
+            nv = (f == 1) ? 0 : nv;
+            for (i = 0; i < CAM_W*CAM_H; i = i + 1) begin
+                href <= 1'b1; curY <= mem[i]; py_valid <= 1'b1; @(posedge pclk);
+                py_valid <= 1'b0; @(posedge pclk);          // el byte de croma
+            end
+            href <= 1'b0; @(posedge pclk);
+        end
+        repeat (600) @(posedge pclk);
+        fd = $fopen("vista28.txt", "w");
+        for (i = 0; i < 784; i = i + 1) $fwrite(fd, "%0d\n", vista[i]);
+        $fclose(fd);
+        $display("pixeles emitidos por la ventana: %0d", nv);
+        $display(">>> DIGITO RECONOCIDO: %0d   (done=%b) <<<", digito, done);
+        $finish;
+    end
+endmodule
+`default_nettype wire

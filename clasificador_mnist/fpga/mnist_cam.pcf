@@ -1,0 +1,25 @@
+# mnist_cam.pcf — iCESugar v1.5 (iCE40UP5K sg48): camara OV7670 + TFT ILI9341.
+#   ES EL PINOUT PROBADO de la Parte 59, sin cambios. En particular:
+#   SIOC=27 / SIOD=26 es la orientacion que lee el ID 0x76 — durante semanas estuvo cruzada
+#   y la camara nunca se configuraba (ruido en pantalla sin importar umbral ni foco).
+set_io clk        35
+set_io cam_xclk    2
+set_io cam_scl    27
+set_io cam_sda    26
+set_io cam_pclk   28
+set_io cam_href   32
+set_io cam_d[0]   48
+set_io cam_d[1]   46
+set_io cam_d[2]   44
+set_io cam_d[3]   43
+set_io cam_d[4]   38
+set_io cam_d[5]   34
+set_io cam_d[6]   31
+set_io cam_d[7]   42
+set_io tft_sck    37
+set_io tft_mosi   36
+set_io tft_cs     25
+set_io tft_dc     23
+set_io led_r      40
+set_io led_g      39
+set_io led_b      41

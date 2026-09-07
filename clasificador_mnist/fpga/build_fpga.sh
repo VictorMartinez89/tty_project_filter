@@ -12,25 +12,38 @@
 #   Para ver el resultado: terminal serie a 115200 8N1 en el puerto de la iCESugar.
 set -e
 AQUI="$(cd "$(dirname "$0")" && pwd)"; cd "$AQUI"
-TOP=top
-FUENTES="rom_digitos.v uart_tx.v fpga_mnist_top.v linebuf3x3.v mnist_feat.v mnist_clf.v mnist_top.v"
+# Dos demos. Se elige con el primer argumento:
+#   bash build_fpga.sh uart    -> los 10 digitos de la ROM por el puerto serie
+#   bash build_fpga.sh cam     -> la camara: escribi un digito y miralo en el TFT
+DEMO="${1:-cam}"
+COMUN="linebuf3x3.v mnist_feat.v mnist_clf.v mnist_top.v"
+if [ "$DEMO" = "uart" ]; then
+    TOP=top; FUENTES="rom_digitos.v uart_tx.v fpga_mnist_top.v $COMUN"; PCF=fpga_mnist.pcf
+    SALIDA=mnist_uart
+else
+    TOP=top; FUENTES="mnist_cam_display.v cam_win28.v glifo.v $COMUN";  PCF=mnist_cam.pcf
+    SALIDA=mnist_cam
+fi
+echo "== demo: $DEMO -> $SALIDA.bin"
 
 command -v nextpnr-ice40 >/dev/null || {
     echo "!! nextpnr-ice40 no esta en el PATH."
     echo "   source ~/Documents/UN/oss-cad-suite/environment"; exit 1; }
 
 echo "== 1/3 sintesis (yosys)"
-yosys -p "read_verilog $FUENTES; synth_ice40 -top $TOP -json mnist.json" | tee yosys.log | tail -20
+yosys -p "read_verilog $FUENTES; synth_ice40 -top $TOP -json $SALIDA.json" | tee yosys.log | tail -20
 
 echo
 echo "== 2/3 place & route (nextpnr)"
 nextpnr-ice40 --up5k --package sg48 --freq 12 \
-    --json mnist.json --pcf fpga_mnist.pcf --asc mnist.asc 2>&1 | tee nextpnr.log | \
+    --json $SALIDA.json --pcf $PCF --asc $SALIDA.asc 2>&1 | tee nextpnr.log | \
     grep -E "Device utilisation|ICESTORM|SB_RAM|Max frequency|ERROR" || true
 
 echo
 echo "== 3/3 bitstream (icepack)"
-icepack mnist.asc mnist.bin
-ls -la mnist.bin
+icepack $SALIDA.asc $SALIDA.bin
+ls -la $SALIDA.bin
 echo
-echo "listo. Copiar mnist.bin al disco iCELink y abrir la terminal serie a 115200."
+echo "listo. Copiar $SALIDA.bin al disco iCELink."
+[ "$DEMO" = "uart" ] && echo "  y abrir la terminal serie a 115200 8N1."
+[ "$DEMO" = "cam" ] && echo "  escribi un digito GRUESO y OSCURO en papel blanco y llena el marco verde."
