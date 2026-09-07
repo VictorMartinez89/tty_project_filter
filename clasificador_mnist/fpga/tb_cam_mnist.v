@@ -10,14 +10,16 @@ module tb_cam_mnist;
     reg [7:0] mem [0:CAM_W*CAM_H-1];
 
     // --- camara emulada: YUV422, un byte de luma y uno de croma por pixel ---
+    // href y BLANKING modelados de verdad: la version anterior alimentaba pixeles seguidos y
+    // por eso no podia cazar el bug de sincronia. Una linea real tiene 640 pixeles activos con
+    // href alto y despues un tramo de blanking con href bajo.
     reg        href = 0, py_valid = 0;
     reg [7:0]  curY = 0;
-    reg        sync = 0;
     always #5 pclk = ~pclk;
 
     wire       w_valid; wire [7:0] w_pix; wire w_fin;
     cam_win28 #(.CAM_W(CAM_W),.CAM_H(CAM_H),.WIN(448),.N(28)) WIN (
-        .pclk(pclk), .reset(reset), .sync(sync),
+        .pclk(pclk), .reset(reset), .href(href),
         .pix_y(curY), .pix_valid(py_valid), .invertir(1'b1),
         .out_valid(w_valid), .out_pix(w_pix), .frame_fin(w_fin));
 
@@ -37,19 +39,23 @@ module tb_cam_mnist;
     integer nv = 0;
     always @(posedge pclk) if (w_valid && nv < 784) begin vista[nv] = w_pix; nv = nv + 1; end
 
-    integer i, f, fd;
+    integer i, f, r, fd;
     initial begin
         $readmemh("escena.hex", mem);
         repeat (4) @(posedge pclk); reset = 0; @(posedge pclk);
         // TRES cuadros: ceba line-buffers, cuenta, drena — igual que en el banco del RTL
         for (f = 0; f < 3; f = f + 1) begin
-            if (f > 0) begin sync <= 1'b1; @(posedge pclk); sync <= 1'b0; end
             nv = (f == 1) ? 0 : nv;
-            for (i = 0; i < CAM_W*CAM_H; i = i + 1) begin
-                href <= 1'b1; curY <= mem[i]; py_valid <= 1'b1; @(posedge pclk);
-                py_valid <= 1'b0; @(posedge pclk);          // el byte de croma
+            for (r = 0; r < CAM_H; r = r + 1) begin
+                href <= 1'b1;
+                for (i = 0; i < CAM_W; i = i + 1) begin
+                    curY <= mem[r*CAM_W + i]; py_valid <= 1'b1; @(posedge pclk);
+                    py_valid <= 1'b0; @(posedge pclk);      // el byte de croma
+                end
+                href <= 1'b0;                                // BLANKING horizontal
+                repeat (40) @(posedge pclk);
             end
-            href <= 1'b0; @(posedge pclk);
+            repeat (200) @(posedge pclk);                    // blanking vertical
         end
         repeat (600) @(posedge pclk);
         fd = $fopen("vista28.txt", "w");

@@ -128,21 +128,17 @@ module top (
     reg cam_sync = 1'b0;
     reg [16:0] pcount = 17'd0;                      // auto-sync: la OV7670 clon no da VSYNC usable
     always @(posedge cam_pclk) begin
-        href_d <= cam_href; py_valid <= 1'b0; cam_sync <= 1'b0;
+        href_d <= cam_href; py_valid <= 1'b0;
         if (~cam_href) parity <= 1'b0;
         else begin
             if (parity == 1'b0) begin curY <= cam_d; py_valid <= 1'b1; end
             parity <= ~parity;
         end
-        if (py_valid) begin
-            if (pcount == 17'd307199) begin pcount <= 17'd0; cam_sync <= 1'b1; end  // 640*480
-            else pcount <= pcount + 17'd1;
-        end
     end
 
     wire       w_valid; wire [7:0] w_pix; wire w_fin;
     cam_win28 #(.CAM_W(640),.CAM_H(480),.WIN(448),.N(28)) WIN (
-        .pclk(cam_pclk), .reset(~cfg_done), .sync(cam_sync),
+        .pclk(cam_pclk), .reset(~cfg_done), .href(cam_href),
         .pix_y(curY), .pix_valid(py_valid), .invertir(1'b1),
         .out_valid(w_valid), .out_pix(w_pix), .frame_fin(w_fin));
 

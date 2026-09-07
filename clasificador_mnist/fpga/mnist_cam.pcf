@@ -20,6 +20,9 @@ set_io tft_sck    37
 set_io tft_mosi   36
 set_io tft_cs     25
 set_io tft_dc     23
-set_io led_r      40
-set_io led_g      39
+# MAPEO PROBADO, identico al de cam_femto_display.pcf. En la primera version estaban
+# CRUZADOS (led_r=40) y por eso `cfg_done` -que deberia verse verde- salia rojo.
+# Recordar: RGB0/pin39 se ve VERDE y RGB1/pin40 se ve ROJO en esta placa.
+set_io led_r      39
+set_io led_g      40
 set_io led_b      41

@@ -21,7 +21,7 @@ module cam_win28 #(
 )(
     input  wire       pclk,
     input  wire       reset,
-    input  wire       sync,           // pulso: arranca cuadro nuevo
+    input  wire       href,           // alto durante los pixeles activos de la linea
     input  wire [7:0] pix_y,
     input  wire       pix_valid,
     input  wire       invertir,
@@ -43,26 +43,44 @@ module cam_win28 #(
     reg        emitiendo;
     integer i;
 
+    reg  href_d;
+    wire fin_linea = href_d & ~href;                 // flanco de bajada: termino la linea
     wire dentro_x = (cx >= X0) && (cx < X0 + WIN);
     wire dentro_y = (cy >= Y0) && (cy < Y0 + WIN);
-    wire fin_fila = pix_valid && (cx == CAM_W-1);
-    wire fin_blk  = fin_fila && dentro_y && (sub_y == BLK-1);   // se completo una fila de salida
+    wire fin_blk  = fin_linea && dentro_y && (sub_y == BLK-1);  // se completo una fila de salida
 
     always @(posedge pclk) begin
-        if (reset || sync) begin
-            cx <= 0; cy <= 0; ox <= 0; ex <= 0; oy <= 0;
+        href_d <= href;
+        if (reset) begin
+            cx <= 0; cy <= 0; ox <= 0; ex <= 0; oy <= 0; href_d <= 1'b0;
             sub_x <= 0; sub_y <= 0; emitiendo <= 1'b0;
             out_valid <= 1'b0; out_pix <= 8'd0; frame_fin <= 1'b0;
             for (i = 0; i < N; i = i + 1) begin acc[i] <= 16'd0; fila[i] <= 16'd0; end
         end else begin
             out_valid <= 1'b0; frame_fin <= 1'b0;
 
+            // ---- la columna se re-sincroniza CON CADA LINEA ----
+            //   Contar 640x480 pixeles y confiar en que la cuenta salga justa NO funciona: un
+            //   solo pixel de desvio corre la ventana y la imagen se vuelve ruido. La OV7670
+            //   marca cada linea activa con `href`, asi que la columna se pone en cero ahi y el
+            //   error no se acumula. Es exactamente lo que hace el cam_sobel_display probado.
+            if (!href) begin cx <= 0; ox <= 0; sub_x <= 0; end
+
+            // ---- fin de linea: avanzar fila ----
+            if (fin_linea) begin
+                if (cy == CAM_H-1) begin cy <= 0; sub_y <= 0; end   // auto-sync: envuelve solo
+                else begin
+                    cy <= cy + 10'd1;
+                    if (dentro_y) sub_y <= (sub_y == BLK-1) ? 5'd0 : sub_y + 5'd1;
+                end
+            end
+
             // ---- acumulacion: NUNCA se detiene ----
             //   La version anterior paraba de acumular mientras emitia, y los 28 ciclos del
             //   volcado se comian 28 pixeles de la camara: la imagen salia corrida y comprimida.
             //   Ahora la fila terminada se COPIA a `fila` en un ciclo y se emite desde ahi,
             //   mientras `acc` sigue sumando la fila siguiente. Cuesta 28 registros mas.
-            if (pix_valid) begin
+            if (pix_valid && href) begin
                 if (dentro_x && dentro_y) begin
                     acc[ox] <= acc[ox] + {8'd0, pix_y};
                     if (sub_x == BLK-1) begin
@@ -70,12 +88,10 @@ module cam_win28 #(
                         if (ox != N-1) ox <= ox + 5'd1;
                     end else sub_x <= sub_x + 5'd1;
                 end
-                if (cx == CAM_W-1) begin
-                    cx <= 0; ox <= 0; sub_x <= 0;
-                    cy <= (cy == CAM_H-1) ? 10'd0 : cy + 10'd1;
-                    if (dentro_y) sub_y <= (sub_y == BLK-1) ? 5'd0 : sub_y + 5'd1;
-                end else cx <= cx + 10'd1;
+                if (cx != CAM_W-1) cx <= cx + 10'd1;
+            end
 
+            if (1'b1) begin
                 if (fin_blk) begin
                     emitiendo <= 1'b1; ex <= 0;
                     for (i = 0; i < N; i = i + 1) begin fila[i] <= acc[i]; acc[i] <= 16'd0; end
