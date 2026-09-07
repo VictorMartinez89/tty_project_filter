@@ -1,5 +1,10 @@
 # Esqueleto de capítulos — Tesis de maestría (formato UNAL)
 ### *SoC RISC-V con filtros de detección de bordes: de FPGA a ASIC*
+> ⚠️ **Título provisional.** Depende del Pendiente #6 (decisión de encuadre). Si se adopta el de la
+> Parte 169, sería algo como *"Reconocimiento de patrones en silicio: de un detector de bordes escrito
+> a mano a un clasificador entrenado — un SoC RISC-V de FPGA a ASIC"*.
+*Actualizado 2026-09-07: §5.6 nueva, tabla maestra hecha, pendientes al día.*
+
 Mapa **cuaderno → capítulos**. Cada sección dice: qué va, de qué Partes sale, qué hay que escribir de cero,
 y qué figura/tabla la sostiene. Estado: `♻️` = ya escrito en el cuaderno (pasar a prosa) · `✍️` = escribir de cero.
 
@@ -91,9 +96,26 @@ Tabla de área/celdas/cp/potencia de los 6 filtros + 2 de pegamento + 2 sistemas
 | #4 `soc_sobel_completo` | ♻️ P162 |
 | #5 `soc_canny1_completo` | ♻️ **P163-164** (incluye el hallazgo del reloj) |
 | #6 `soc_trans_completo` | ♻️ **P165** (+ ficha, pendiente del run) |
-Tabla resumen de los 6 + la figura de áreas y del costo del cerebro. — ♻️ **P165 (figura)**
+**✅ TABLA MAESTRA HECHA (7-sep):** `asic/tabla_maestra/tabla_6_chips.py` la genera desde los
+`metrics.csv` reales (4 de 6) + las fichas del cuaderno (los 2 archivados sin reports, marcados como
+tales). Salida en markdown lista para pegar + `tabla_6_chips.png` con las dos figuras.
+**El hallazgo que la tabla habilita y que no estaba escrito:** el cerebro cuesta **casi constante**
+—+9 289, +8 456, +9 124 celdas— o sea **~9 000 sin importar el filtro**, mientras el salto de patrón
+local a global cuesta **+94 511**. Un procesador entero pesa **una décima parte** de lo que pesa
+mirar el cuadro completo en vez de una ventana 3×3. — ♻️ **P157-165** + la tabla nueva
 ### 5.5 Rendimiento
 Throughput y latencia medidos de los 6; streaming vs transitivo (miles de veces). — ♻️ **P154, P155, P156**
+### 5.6 Reconocimiento de patrones: del borde al dígito  ⭐ **nuevo (sep-2026)**
+La última fila de resultados, y la que conecta con el capítulo 1. Son **resultados medidos**, no
+trabajo futuro: 90 simulaciones RTL y un experimento sobre MNIST completo.
+| Sub | Contenido | Fuente |
+|---|---|---|
+| 5.6.1 Tiny Tapeout | Los 7 proyectos con `precheck` 14/14 y sus `metrics.csv` reales; el presupuesto medido (1 023-1 183 inst/tile, 45-61 % util.); los **dos bugs de silicio** que solo cazó el `gl_test` (`initial` heredado de FPGA) | ♻️ **P167** |
+| 5.6.2 El experimento 5×6 a tres resoluciones | 16×12, 24×18, 36×26 → **90 simulaciones, 45 pares con/sin CPU idénticos píxel a píxel**; la serie de densidades y el piso de clipeo | ♻️ **P167-168** |
+| 5.6.3 Recalibración y latencia de pipeline | 250/210; recalibrar un SoC = recompilar firmware; **cada etapa 3×3 cuesta W+1 píxeles** de latencia, medido | ♻️ **P168** |
+| 5.6.4 El clasificador de dígitos | Pirámide espacial + lineal cuantizado sobre el front-end de la tesis: **94.2 % con 1 600 flip-flops**, contra 91.9 % de los 784 píxeles crudos | ♻️ **P170** |
+⚠️ **Decisión de encuadre pendiente:** si esta sección entra, el título y el capítulo 1 tienen que
+cambiar con ella (ver Pendientes #6). Sin eso, 5.6 queda colgando de un documento que promete otra cosa.
 
 ---
 
@@ -118,17 +140,27 @@ Throughput y latencia medidos de los 6; streaming vs transitivo (miles de veces)
 - Trabajo futuro: **Tiny Tapeout** (fabricar de verdad), macro de SRAM en vez de flip-flops
   (la respuesta directa al hallazgo del reloj), resoluciones mayores. — ♻️ **P132-134**
 
-## Referencias  ♻️ — P200 (27 fuentes, formato IEEE)
+## Referencias  ♻️ — P200 (**36 fuentes**, formato IEEE) — se agregaron 33-36 (Lazebnik 2006, Csurka 2004, LeCun 1998, scikit-learn)
 ## Anexos  ♻️ — mapa de registros, pinout, recetas de OpenLane, el cuaderno completo como material reproducible
 
 ---
 
 ## 📋 Pendientes concretos
-1. **Ficha del chip #6** — en cuanto termine el run (`ficha_run.sh`) + fotos de KLayout.
-2. **Limpiar la "Parte 100 — Referencias" huérfana** del cuaderno (idx≈153, id `p100-md`), duplicada de una reorganización. La buena es la P200.
-3. **Tabla maestra de los 6 chips** de la cadena completa (área, celdas, reloj de signoff, DRC/LVS/XOR, potencia estimada, estado) — hoy los datos están repartidos entre P157-165.
-4. **Citas en el texto**: la P200 tiene las fuentes pero el cuerpo no las cita todavía.
+1. ~~**Ficha del chip #6**~~ — ✅ **hecha**, P165 (GDS firmado 23-ago, con nota honesta de timing).
+2. ~~**Limpiar la "Parte 100 — Referencias" huérfana**~~ — ✅ **ya no está**. Queda solo un comentario mal
+   numerado (`# === Parte 100: diagrama...`) en una celda de código que vive dentro de la Parte 101. Cosmético.
+3. ~~**Tabla maestra de los 6 chips**~~ — ✅ **hecha** (7-sep), `asic/tabla_maestra/tabla_6_chips.py`.
+4. **Citas en el texto**: la P200 tiene las 36 fuentes pero el cuerpo no las cita todavía.
 5. **Escribir de cero**: Resumen/Abstract, Introducción completa, y el tono académico del Cap. 2.
+6. ⭐ **DECISIÓN DE ENCUADRE — bloquea el Cap. 1 y el título.** La Parte 169 propone que la tesis no es
+   "un filtro Sobel llevado a ASIC" sino *reconocimiento de patrones en silicio bajo restricciones duras:
+   el mismo datapath sirve para un patrón escrito a mano, uno buscado y uno aprendido, y lo que decide
+   cuál cabe no es el algoritmo sino la memoria*. Está respaldado por la propuesta de 2017 (esta tesis es
+   su "Trabajo Futuro" literal) y por la §5.6. **Si se adopta, cambian el título, el Cap. 1 y el Cap. 2**;
+   si no, la §5.6 sobra. Hay que decidirlo ANTES de escribir el Cap. 1 — no antes del Cap. 5.
+7. **Dos datos que faltan** para cerrar la tabla maestra: el `spef_wns` de los chips #1 y #2 (se
+   archivaron sin `reports/`; su ficha solo tiene el WNS nominal). Se resuelve re-corriendo esos dos
+   diseños, o se documenta el hueco tal como está ahora.
 
 ## 🗺️ Orden sugerido de escritura
 **Cap. 5 → Cap. 4 → Cap. 6 → Cap. 3 → Cap. 2 → Cap. 7 → Cap. 1 → Resumen.**
