@@ -15,11 +15,15 @@ AQUI="$(cd "$(dirname "$0")" && pwd)"; cd "$AQUI"
 # Dos demos. Se elige con el primer argumento:
 #   bash build_fpga.sh uart    -> los 10 digitos de la ROM por el puerto serie
 #   bash build_fpga.sh cam     -> la camara: escribi un digito y miralo en el TFT
+#   bash build_fpga.sh crudo   -> DIAGNOSTICO: la camara sin invertir, para ver exposicion/foco
 DEMO="${1:-cam}"
 COMUN="linebuf3x3.v mnist_feat.v mnist_clf.v mnist_top.v"
 if [ "$DEMO" = "uart" ]; then
     TOP=top; FUENTES="rom_digitos.v uart_tx.v fpga_mnist_top.v $COMUN"; PCF=fpga_mnist.pcf
     SALIDA=mnist_uart
+elif [ "$DEMO" = "crudo" ]; then
+    TOP=top; FUENTES="mnist_cam_display.v cam_win28.v glifo.v $COMUN";  PCF=mnist_cam.pcf
+    SALIDA=mnist_crudo; PARAM="-p INVERTIR=0"
 else
     TOP=top; FUENTES="mnist_cam_display.v cam_win28.v glifo.v $COMUN";  PCF=mnist_cam.pcf
     SALIDA=mnist_cam
@@ -31,7 +35,7 @@ command -v nextpnr-ice40 >/dev/null || {
     echo "   source ~/Documents/UN/oss-cad-suite/environment"; exit 1; }
 
 echo "== 1/3 sintesis (yosys)"
-yosys -p "read_verilog $FUENTES; synth_ice40 -top $TOP -json $SALIDA.json" | tee yosys.log | tail -20
+yosys -p "read_verilog $FUENTES; chparam ${PARAM:+-set INVERTIR 0} $TOP; synth_ice40 -top $TOP -json $SALIDA.json" | tee yosys.log | tail -20
 
 echo
 echo "== 2/3 place & route (nextpnr)"

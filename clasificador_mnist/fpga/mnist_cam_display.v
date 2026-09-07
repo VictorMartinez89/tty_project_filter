@@ -21,7 +21,12 @@
 //   Adaptado de cam_sobel_display.v: el SCCB y el driver ILI9341 van VERBATIM -estan probados en
 //   la placa-. Lo unico nuevo es el medio: la ventana, el clasificador y el dibujo.
 `default_nettype none
-module top (
+module top #(
+    // INVERTIR=1: trazo claro sobre fondo oscuro, como MNIST (modo normal).
+    // INVERTIR=0: la camara TAL CUAL, para diagnosticar exposicion y foco. Si en modo crudo
+    //             se ve una foto normal, la cadena optica esta bien y el problema es de nivel.
+    parameter INVERTIR = 1
+) (
     input  wire       clk,
     output wire       cam_xclk,
     output wire       cam_scl,
@@ -139,7 +144,7 @@ module top (
     wire       w_valid; wire [7:0] w_pix; wire w_fin;
     cam_win28 #(.CAM_W(640),.CAM_H(480),.WIN(448),.N(28)) WIN (
         .pclk(cam_pclk), .reset(~cfg_done), .href(cam_href),
-        .pix_y(curY), .pix_valid(py_valid), .invertir(1'b1),
+        .pix_y(curY), .pix_valid(py_valid), .invertir(INVERTIR[0]),
         .out_valid(w_valid), .out_pix(w_pix), .frame_fin(w_fin));
 
     // ======== el clasificador (el MISMO verificado bit a bit contra el golden) ========
@@ -243,7 +248,10 @@ module top (
 
     localparam integer IMG = 224;              // 28 * 8
     localparam integer BORDE = 3;
-    wire en_img  = (ycol < IMG);
+    // en_img mira las DOS coordenadas. Antes solo miraba ycol, asi que las columnas 224..239
+    // -que estan fuera de la imagen- caian en el marco derecho y pintaban una franja verde de
+    // 19 px en vez de 3. Se veia clarito en la placa.
+    wire en_img  = (ycol < IMG) && (xcol < IMG);
     wire [4:0] ix = xcol[7:3];                 // /8
     wire [4:0] iy = ycol[7:3];
     wire [9:0] fbaddr = iy*28 + ix;
