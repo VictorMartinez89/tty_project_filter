@@ -31,3 +31,5 @@ tinytapeout/resultados_tt/*/gds_render.png
 # Datos de MNIST (regenerables con clasificador_mnist/bajar_mnist.sh)
 clasificador_mnist/*.gz
 clasificador_mnist/mnist.npz
+clasificador_mnist/rtl/tmp/
+clasificador_mnist/pesos_hw.npz
