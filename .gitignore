@@ -32,4 +32,5 @@ tinytapeout/resultados_tt/*/gds_render.png
 clasificador_mnist/*.gz
 clasificador_mnist/mnist.npz
 clasificador_mnist/rtl/tmp/
+clasificador_mnist/rtl/tmp/
 clasificador_mnist/pesos_hw.npz
