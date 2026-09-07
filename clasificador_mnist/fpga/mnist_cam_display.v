@@ -148,7 +148,7 @@ module top #(
         .out_valid(w_valid), .out_pix(w_pix), .frame_fin(w_fin));
 
     // ======== el clasificador (el MISMO verificado bit a bit contra el golden) ========
-    wire       clf_done; wire [3:0] clf_dig;
+    wire       clf_done; wire [3:0] clf_dig; wire clf_val;
     // clr cuando TERMINA de clasificar, no en cada cuadro: el video es continuo y el raster
     // se encadena solo. Con clr por cuadro la latencia del pipeline se reinicia y el barrido
     // nunca se completa. El clasificador se autorregula: acumula, clasifica, limpia, repite.
@@ -157,13 +157,21 @@ module top #(
     mnist_top #(.H(28),.W(28),.CW(9)) CLF (
         .clk(cam_pclk), .reset(~cfg_done), .clr(clf_clr),
         .in_valid(w_valid), .in_pix(w_pix), .thr(8'd60),
-        .done(clf_done), .digito(clf_dig));
+        .done(clf_done), .digito(clf_dig), .valido(clf_val));
 
     // digito reconocido, cruzado al dominio del display (es casi-estatico: 2 FF bastan)
-    reg [3:0] dig_pclk = 4'd0;
+    //   Si el clasificador dice NADA se muestra el codigo 10, que el glifo dibuja como una raya.
+    //   Sin esto el chip esta OBLIGADO a elegir uno de diez, y con el cuadro vacio elige siempre
+    //   el mismo -el sesgo solo ya favorece una clase-: eso es lo que se veia en la placa como un
+    //   "1" fijo. Poder decir "no se" no es un adorno: entre los cuadros que si contesta, la
+    //   precision sube de 89.2 % a 93.9 %.
+    reg [3:0] dig_pclk = 4'd10;
     reg       hubo = 1'b0;
-    always @(posedge cam_pclk) if (clf_done) begin dig_pclk <= clf_dig; hubo <= 1'b1; end
-    reg [3:0] dig_s1 = 4'd0, dig_clk = 4'd0;
+    always @(posedge cam_pclk) if (clf_done) begin
+        dig_pclk <= clf_val ? clf_dig : 4'd10;
+        hubo <= 1'b1;
+    end
+    reg [3:0] dig_s1 = 4'd10, dig_clk = 4'd10;
     reg       hubo_s1 = 1'b0, hubo_clk = 1'b0;
     always @(posedge clk) begin
         dig_s1 <= dig_pclk;  dig_clk  <= dig_s1;

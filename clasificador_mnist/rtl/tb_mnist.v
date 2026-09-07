@@ -11,13 +11,14 @@ module tb_mnist;
     reg [7:0] in_pix = 0;
     wire done; wire [3:0] digito;
     wire [32*CW-1:0] cnt;
+    wire [10:0] n_bordes;
     wire fdone;
 
     always #5 clk = ~clk;
 
     mnist_feat #(.H(H),.W(W),.CW(CW)) FEAT (
         .clk(clk),.reset(reset),.clr(clr),.in_valid(in_valid),.in_pix(in_pix),.thr(8'd60),
-        .frame_done(fdone),.cnt_o(cnt));
+        .frame_done(fdone),.cnt_o(cnt),.n_bordes(n_bordes));
     mnist_clf #(.CW(CW)) CLF (
         .clk(clk),.reset(reset),.start(fdone),.cnt_i(cnt),
         .done(done),.digito(digito),.score());

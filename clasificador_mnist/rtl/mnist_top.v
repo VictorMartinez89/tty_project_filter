@@ -14,15 +14,17 @@ module mnist_top #(
     input  wire [7:0] in_pix,
     input  wire [7:0] thr,
     output wire       done,
-    output wire [3:0] digito
+    output wire [3:0] digito,
+    output wire       valido      // 0 = NADA
 );
     wire [32*CW-1:0] cnt;
+    wire [10:0] n_bordes;
     wire fdone;
     mnist_feat #(.H(H),.W(W),.CW(CW)) FEAT (
         .clk(clk),.reset(reset),.clr(clr),.in_valid(in_valid),.in_pix(in_pix),.thr(thr),
-        .frame_done(fdone),.cnt_o(cnt));
+        .frame_done(fdone),.cnt_o(cnt),.n_bordes(n_bordes));
     mnist_clf #(.CW(CW)) CLF (
-        .clk(clk),.reset(reset),.start(fdone),.cnt_i(cnt),
-        .done(done),.digito(digito),.score());
+        .clk(clk),.reset(reset),.start(fdone),.cnt_i(cnt),.n_bordes(n_bordes),
+        .done(done),.digito(digito),.valido(valido),.score());
 endmodule
 `default_nettype wire

@@ -23,7 +23,7 @@ module tb_cam_mnist;
         .pix_y(curY), .pix_valid(py_valid), .invertir(1'b1),
         .out_valid(w_valid), .out_pix(w_pix), .frame_fin(w_fin));
 
-    wire done; wire [3:0] digito;
+    wire done; wire [3:0] digito; wire valido;
     // clr cuando el clasificador TERMINA, no en cada cuadro: el video es continuo y el
     // raster se encadena solo. Con clr por cuadro la latencia se reinicia y nunca se
     // completa el barrido (784 muestras no alcanzan para 60 de latencia + 784 de raster).
@@ -32,7 +32,7 @@ module tb_cam_mnist;
     mnist_top #(.H(28),.W(28),.CW(9)) CLF (
         .clk(pclk), .reset(reset), .clr(clr),
         .in_valid(w_valid), .in_pix(w_pix), .thr(8'd60),
-        .done(done), .digito(digito));
+        .done(done), .digito(digito), .valido(valido));
 
     // capturar las 28x28 que salen de la ventana, para compararlas con Python
     reg [7:0] vista [0:783];
@@ -62,7 +62,7 @@ module tb_cam_mnist;
         for (i = 0; i < 784; i = i + 1) $fwrite(fd, "%0d\n", vista[i]);
         $fclose(fd);
         $display("pixeles emitidos por la ventana: %0d", nv);
-        $display(">>> DIGITO RECONOCIDO: %0d   (done=%b) <<<", digito, done);
+        $display(">>> DIGITO: %0d  valido=%b <<<", digito, valido);
         $finish;
     end
 endmodule

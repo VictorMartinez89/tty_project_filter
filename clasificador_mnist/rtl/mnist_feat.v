@@ -33,7 +33,8 @@ module mnist_feat #(
     input  wire [7:0]      in_pix,
     input  wire [7:0]      thr,            // umbral de borde (el CPU lo puede escribir)
     output reg             frame_done,     // se conto el ultimo pixel util del cuadro
-    output wire [32*CW-1:0] cnt_o          // 4 cuadrantes x 8 orientaciones, empaquetados
+    output wire [32*CW-1:0] cnt_o,         // 4 cuadrantes x 8 orientaciones, empaquetados
+    output reg  [10:0]      n_bordes       // total de pixeles de borde del cuadro (0..576)
 );
     localparam integer HV = H-4, WV = W-4;   // area valida tras dos convoluciones 3x3
 
@@ -93,19 +94,23 @@ module mnist_feat #(
     //   debajo. Cuesta UN flip-flop y evita latchear los 32 contadores (288 FF).
     reg listo;
     reg [CW-1:0] cnt [0:31];
+    // el total NO se deriva sumando los 32 contadores -serian 32 sumandos de 9 bits-:
+    // sale gratis llevando un contador aparte que sube con cada pixel contado.
     wire [4:0] dir = {zona, bin};
     integer i;
     always @(posedge clk) begin
         if (reset || clr) begin
-            cx <= 0; cy <= 0; lat_cnt <= 0; frame_done <= 1'b0; listo <= 1'b0;
+            cx <= 0; cy <= 0; lat_cnt <= 0; frame_done <= 1'b0; listo <= 1'b0; n_bordes <= 11'd0;
             for (i = 0; i < 32; i = i + 1) cnt[i] <= {CW{1'b0}};
         end else begin
             frame_done <= 1'b0;
             if (vs && !listo) begin
                 if (!arrancado) lat_cnt <= lat_cnt + 1'b1;   // tragarse la latencia
                 else begin
-                    if (es_borde && interior && cnt[dir] != {CW{1'b1}})
+                    if (es_borde && interior && cnt[dir] != {CW{1'b1}}) begin
                         cnt[dir] <= cnt[dir] + 1'b1;         // satura, no envuelve
+                        n_bordes <= n_bordes + 11'd1;
+                    end
                     if (cx == W-1) begin
                         cx <= 0;
                         cy <= (cy == H-1) ? 0 : cy + 1'b1;

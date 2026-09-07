@@ -28,6 +28,7 @@ module glifo #(
         4'd7: seg = 7'b0000111;
         4'd8: seg = 7'b1111111;
         4'd9: seg = 7'b1101111;
+        4'd10: seg = 7'b1000000;      // NADA: solo el segmento del medio -> una raya
         default: seg = 7'b0000000;
     endcase
 
