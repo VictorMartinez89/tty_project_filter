@@ -16,7 +16,11 @@
 //   Pines (iCESugar v1.5, sg48): clk=35, uart_tx=6, leds 39=VERDE 40=ROJO 41=AZUL.
 //   OJO con los LEDs: en esta placa RGB0/pin39 es VERDE y RGB1/pin40 es ROJO (verificado).
 `default_nettype none
-module top (
+module top #(
+    // ciclos de pausa entre rondas. 12e6 a 12 MHz = 1 segundo, comodo para leer en el terminal.
+    // En simulacion se baja para poder ver la repeticion sin simular segundos enteros.
+    parameter [23:0] PAUSA = 24'd12_000_000
+) (
     input  wire clk,
     output wire uart_tx_pin,
     output wire led_g, led_r, led_b
@@ -61,6 +65,7 @@ module top (
     reg [2:0] st;
     reg [2:0] msg_i;                     // caracter dentro de la linea
     reg [3:0] guardado;                  // el digito predicho, congelado
+    reg [23:0] pausa;          // declarada ANTES de usarse (la leccion de la Parte 179)
     reg [3:0] aciertos;
     reg       hubo_error;
 
@@ -80,7 +85,7 @@ module top (
         if (reset) begin
             st <= S_INIT; sel <= 4'd0; px <= 10'd0; pasada <= 2'd0;
             clr <= 1'b0; feed <= 1'b0; tx_env <= 1'b0; msg_i <= 3'd0;
-            aciertos <= 4'd0; hubo_error <= 1'b0; guardado <= 4'd0;
+            aciertos <= 4'd0; hubo_error <= 1'b0; guardado <= 4'd0; pausa <= 24'd0;
         end else begin
             tx_env <= 1'b0; clr <= 1'b0; feed <= 1'b0;
             case (st)
@@ -111,7 +116,16 @@ module top (
                     if (sel == N_DIG-1) st <= S_TOT;
                     else begin sel <= sel + 4'd1; px <= 10'd0; pasada <= 2'd0; st <= S_CLR; end
                 end
-                S_TOT: st <= S_TOT;      // terminado: los LEDs cuentan la historia
+                S_TOT: begin
+                    // REPITE la ronda para siempre, con una pausa de ~1 s. Sin esto el demo
+                    // corre UNA sola vez al encender: los diez digitos se clasifican en ~2 ms y
+                    // el UART termina antes de que uno alcance a abrir el terminal. Es un
+                    // problema de USABILIDAD, no de diseno, y cuesta un contador.
+                    if (pausa == PAUSA) begin
+                        pausa <= 24'd0; sel <= 4'd0; px <= 10'd0; pasada <= 2'd0;
+                        aciertos <= 4'd0; hubo_error <= 1'b0; st <= S_CLR;
+                    end else pausa <= pausa + 24'd1;
+                end
                 default: st <= S_INIT;   // sin default se infieren latches (la leccion de la quark)
             endcase
         end

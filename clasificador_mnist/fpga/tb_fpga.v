@@ -9,7 +9,7 @@ module tb_fpga;
     wire tx, lg, lr, lb;
     always #41.667 clk = ~clk;              // 12 MHz
 
-    top DUT (.clk(clk), .uart_tx_pin(tx), .led_g(lg), .led_r(lr), .led_b(lb));
+    top #(.PAUSA(24'd200_000)) DUT (.clk(clk), .uart_tx_pin(tx), .led_g(lg), .led_r(lr), .led_b(lb));
 
     // --- receptor UART: 115200 8N1 a 12 MHz -> 104 ciclos por bit ---
     localparam integer DIV = 104;
@@ -28,7 +28,7 @@ module tb_fpga;
 
     initial begin
         $display("--- salida del UART de la iCESugar (simulada) ---");
-        #300_000_000;                       // 300 ms simulados: alcanza para los 10 digitos
+        #700_000_000;                       // 300 ms simulados: alcanza para los 10 digitos
         $display("\n--- LEDs: verde=%b (termino)  rojo=%b (hubo error) ---", lg, lr);
         $finish;
     end
