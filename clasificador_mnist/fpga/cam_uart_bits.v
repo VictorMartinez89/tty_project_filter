@@ -331,9 +331,21 @@ module top (
     always @(posedge clk) u_tomado <= nuevo;
 
     // ---- transmisor: manda "AND=xx OR=xx\n" ----
+    // RESET DE ENCENDIDO para el UART. Estaba con .reset(1'b0) -o sea nunca-, y funcionaba
+    // solo porque el bitstream de la FPGA inicializa los flip-flops. En simulacion arrancan en
+    // x, `listo` queda x y el transmisor no manda nunca. Es la misma leccion de la Parte 167:
+    // un modulo que depende de que alguien le inicialice los registros es un bug esperando el
+    // silicio, donde los flops arrancan aleatorios.
+    reg        u_rst = 1'b1;
+    reg [7:0]  u_rcnt = 8'd0;
+    always @(posedge clk) begin
+        if (u_rcnt != 8'hFF) begin u_rcnt <= u_rcnt + 8'd1; u_rst <= 1'b1; end
+        else u_rst <= 1'b0;
+    end
+
     reg [7:0] u_dato; reg u_env; wire u_listo;
     uart_tx #(.DIVISOR(104)) UART (
-        .clk(clk), .reset(1'b0), .dato(u_dato), .enviar(u_env), .tx(uart_tx_pin), .listo(u_listo));
+        .clk(clk), .reset(u_rst), .dato(u_dato), .enviar(u_env), .tx(uart_tx_pin), .listo(u_listo));
 
     function [7:0] hex; input [3:0] n; begin hex = (n<10) ? (8'h30+n) : (8'h41+n-10); end endfunction
 
@@ -348,7 +360,8 @@ module top (
     end
     always @(posedge clk) begin
         u_env <= 1'b0;
-        if (nuevo && !mandando) begin mandando <= 1'b1; mi <= 4'd0; end
+        if (u_rst) begin mandando <= 1'b0; mi <= 4'd0; end
+        else if (nuevo && !mandando) begin mandando <= 1'b1; mi <= 4'd0; end
         else if (mandando && u_listo && !u_env) begin
             u_dato <= linea[mi]; u_env <= 1'b1;
             if (mi == 4'd13) mandando <= 1'b0; else mi <= mi + 4'd1;
