@@ -18,6 +18,8 @@ AQUI="$(cd "$(dirname "$0")" && pwd)"; cd "$AQUI"
 #   bash build_fpga.sh crudo   -> DIAGNOSTICO: la camara sin invertir, para ver exposicion/foco
 #   bash build_fpga.sh bits    -> DIAGNOSTICO DEL BUS: solo los 4 bits altos de cam_d.
 #                                 Si con esto la imagen se limpia, los bits bajos estan flojos.
+#   bash build_fpga.sh fase    -> LA CORRECCION: la luma es el 2do byte del par YUV422.
+#                                 Una linea de diferencia con el cam_display probado.
 #   bash build_fpga.sh pix     -> LA PLACA IMPRIME PIXELES VECINOS por serie. Si se parecen
 #                                 entre si es una imagen; si saltan al azar, el muestreo esta mal.
 #   bash build_fpga.sh neg     -> EL SOSPECHOSO ACTUAL: muestrear cam_d en el flanco de BAJADA
@@ -42,6 +44,9 @@ COMUN="linebuf3x3.v mnist_feat.v mnist_clf.v mnist_top.v"
 if [ "$DEMO" = "uart" ]; then
     TOP=top; FUENTES="rom_digitos.v uart_tx.v fpga_mnist_top.v $COMUN"; PCF=fpga_mnist.pcf
     SALIDA=mnist_uart
+elif [ "$DEMO" = "fase" ]; then
+    TOP=top; FUENTES="cam_fase.v"; PCF=cam_display.pcf; SALIDA=cam_fase
+    OFS=${2:-2400}; PARAM="ofs"; echo "   OFFSET de encuadre = $OFS"
 elif [ "$DEMO" = "pix" ]; then
     TOP=top; FUENTES="cam_uart_pix.v uart_tx.v"; PCF=cam_uart.pcf; SALIDA=cam_pix
 elif [ "$DEMO" = "neg" ]; then
@@ -74,7 +79,7 @@ command -v nextpnr-ice40 >/dev/null || {
     echo "   source ~/Documents/UN/oss-cad-suite/environment"; exit 1; }
 
 echo "== 1/3 sintesis (yosys)"
-yosys -p "read_verilog $FUENTES; chparam ${PARAM:+$([ "$PARAM" = patron ] && echo "-set FUENTE 1" || echo "-set INVERTIR 0")} $TOP; synth_ice40 -top $TOP -json $SALIDA.json" | tee yosys.log | tail -20
+yosys -p "read_verilog $FUENTES; chparam ${PARAM:+$(case $PARAM in patron) echo "-set FUENTE 1";; ofs) echo "-set OFS $OFS";; *) echo "-set INVERTIR 0";; esac)} $TOP; synth_ice40 -top $TOP -json $SALIDA.json" | tee yosys.log | tail -20
 
 echo
 echo "== 2/3 place & route (nextpnr)"

@@ -1,31 +1,35 @@
-// mnist_cam_display.v — ESCRIBI UN DIGITO Y LA FPGA TE DICE CUAL ES.
+// cam_fase.v — LA LUMA ES EL SEGUNDO BYTE DEL PAR, NO EL PRIMERO.
 //
-//   camara OV7670 -> ventana cuadrada central -> 28x28 -> clasificador -> TFT ILI9341
+//   El diagnostico por UART (cam_uart_pix) lo dijo con numeros:
+//       PIX=80 80 80 80 81 80 83
+//   Todos ~0x80, que es el valor de la CROMA de una escena gris. El diseno venia capturando el
+//   byte equivocado del par YUV422.
 //
-//   La pantalla muestra TRES cosas:
-//     1. lo que el clasificador ve de verdad: las 28x28, ampliadas x8 (224x224 px)
-//     2. un MARCO VERDE alrededor -la guia de encuadre-
-//     3. el digito reconocido, grande, en siete segmentos, debajo
+//   La OV7670 en modo YUV emite el orden **U Y V Y**: la luminancia es el SEGUNDO byte, no el
+//   primero. Capturar en `parity == 0` toma U y V; hay que capturar en `parity == 1`.
 //
-//   EL MARCO NO ES ADORNO. MNIST viene normalizado en tamano y centrado por centro de masa; lo
-//   que ve una camara no. En vez de normalizar en hardware -caro y fragil- se hace lo que hace un
-//   lector de QR: se fija una ventana y el centrado lo hace la persona metiendo el digito adentro.
-//   Es co-diseno en su forma mas barata: mover un requisito del silicio a la interfaz de uso.
+//   Eso explica TODO lo que se vio durante la depuracion, sin forzar nada:
+//     * imagen uniforme gris medio  -> la croma de una escena gris es ~0x80 constante
+//     * moteado encima              -> U y V varian un poco (7F, 81, 83, 86)
+//     * AND=00 OR=FF                -> los bits igual cambian: el bus siempre estuvo sano
+//     * el negedge cambiaba algo    -> movia la fase, pero no la corregia
 //
-//   Escribir el digito GRUESO y OSCURO sobre papel blanco, llenando el marco. El modulo invierte
-//   -MNIST es trazo claro sobre fondo oscuro- y promedia bloques de 16x16.
-//
-//   Pines: los mismos del cam_sobel_display probado (Parte 59). LEDs: verde=camara OK,
-//   rojo=clasifico al menos una vez, azul=latido.
-//
-//   Adaptado de cam_sobel_display.v: el SCCB y el driver ILI9341 van VERBATIM -estan probados en
-//   la placa-. Lo unico nuevo es el medio: la ventana, el clasificador y el dibujo.
-`default_nettype none
+//   ES EL cam_display.v DE VICTOR CON UNA SOLA LINEA CAMBIADA.
+// cam_display.v — CAMARA -> frame buffer -> PANTALLA. Sincronismo de cuadro por
+// CONTEO DE FILAS (480 filas activas = 1 cuadro), determinístico (sin VSYNC ni
+// umbrales de blanking). Llena el buffer completo -> imagen a pantalla llena.
+//   VERDE = camara configurada, AZUL = heartbeat.
+// Pines: clk=35, cam_xclk=2, cam_scl=26, cam_sda=27, cam_pclk=28, cam_href=32,
+//        cam_d[0..7]=48,46,44,43,38,34,31,42,
+//        tft_sck=37, tft_mosi=36, tft_cs=25, tft_dc=23, leds=39/40/41
+
 module top #(
-    // INVERTIR=1: trazo claro sobre fondo oscuro, como MNIST (modo normal).
-    // INVERTIR=0: la camara TAL CUAL, para diagnosticar exposicion y foco. Si en modo crudo
-    //             se ve una foto normal, la cadena optica esta bien y el problema es de nivel.
-    parameter INVERTIR = 1
+    // OFFSET de encuadre, en pixeles del framebuffer de 60x80. Mover de a 60 corre UNA fila.
+    // La costura se ve al ~40 % de la altura = fila 32 -> 32*60 = 1920 de correccion.
+    //   2400 = el valor original (imagen partida al 40 %)
+    //    480 = 2400 - 1920   ·   4320 = 2400 + 1920
+    // Se prueba con:  bash build_fpga.sh fase <valor>
+    parameter [13:0] OFS = 14'd2400
 ) (
     input  wire       clk,
     output wire       cam_xclk,
@@ -125,73 +129,45 @@ module top #(
         endcase
     end
 
-    // ======== ventana central 448x448 -> 28x28 promediado e invertido (dominio pclk) ========
-    //   La camara entrega YUV422: el byte de luminancia es uno de cada dos (parity).
-    reg parity = 1'b0, href_d = 1'b0;
-    reg [7:0] curY = 8'd0;
-    reg py_valid = 1'b0;
-    reg cam_sync = 1'b0;
-    reg [16:0] pcount = 17'd0;                      // auto-sync: la OV7670 clon no da VSYNC usable
+    // ============ captura camara -> frame buffer (dominio pclk) ============
+    // AUTO-SINCRONIZADO: el puntero envuelve en 4800 (=1 cuadro) y se alinea
+    // solo. No usa VSYNC (el clon no lo entrega bien).
+    reg href_d = 1'b0;
+    reg        parity  = 1'b0;
+    reg [7:0]  curY    = 8'd0;
+    reg [3:0]  colkeep = 4'd0;
+    reg [2:0]  rowkeep = 3'd0;
+    reg [6:0]  fbx     = 7'd0;
+    reg [12:0] waddr_wr= 13'd0;
+    reg        we      = 1'b0;
+    reg [12:0] wadr    = 13'd0;
+    reg [7:0]  wdat    = 8'd0;
+
     always @(posedge cam_pclk) begin
-        href_d <= cam_href; py_valid <= 1'b0;
-        if (~cam_href) parity <= 1'b0;
-        else begin
-            // La luma es el SEGUNDO byte del par: la OV7670 emite U Y V Y. Capturar en
-            // parity==0 tomaba la CROMA (~0x80 constante), que es lo que el diagnostico por
-            // UART mostro con numeros: PIX=80 80 80 80 81 80 83.
-            if (parity == 1'b1) begin curY <= cam_d; py_valid <= 1'b1; end
+        href_d <= cam_href;
+        we     <= 1'b0;
+        if (~cam_href) begin
+            parity <= 1'b0; colkeep <= 4'd0; fbx <= 7'd0;
+        end else begin
+            if (parity == 1'b1) curY <= cam_d;   // <- LA UNICA DIFERENCIA: la luma es el 2do byte
+            else begin
+                if (rowkeep==3'd0 && colkeep==4'd0 && fbx<7'd60) begin
+                    we <= 1'b1; wadr <= waddr_wr; wdat <= curY;
+                    waddr_wr <= (waddr_wr==13'd4799) ? 13'd0 : waddr_wr + 1'b1;
+                    fbx <= fbx + 1'b1;
+                end
+                colkeep <= (colkeep==4'd9) ? 4'd0 : colkeep + 1'b1;
+            end
             parity <= ~parity;
         end
+        if (href_d & ~cam_href)
+            rowkeep <= (rowkeep==3'd5) ? 3'd0 : rowkeep + 1'b1;
     end
 
-    wire       w_valid; wire [7:0] w_pix; wire w_fin;
-    cam_win28 #(.CAM_W(640),.CAM_H(480),.WIN(448),.N(28)) WIN (
-        .pclk(cam_pclk), .reset(~cfg_done), .href(cam_href),
-        .pix_y(curY), .pix_valid(py_valid), .invertir(INVERTIR[0]),
-        .out_valid(w_valid), .out_pix(w_pix), .frame_fin(w_fin));
-
-    // ======== el clasificador (el MISMO verificado bit a bit contra el golden) ========
-    wire       clf_done; wire [3:0] clf_dig; wire clf_val;
-    // clr cuando TERMINA de clasificar, no en cada cuadro: el video es continuo y el raster
-    // se encadena solo. Con clr por cuadro la latencia del pipeline se reinicia y el barrido
-    // nunca se completa. El clasificador se autorregula: acumula, clasifica, limpia, repite.
-    reg        clf_clr = 1'b0;
-    always @(posedge cam_pclk) clf_clr <= clf_done;
-    mnist_top #(.H(28),.W(28),.CW(9)) CLF (
-        .clk(cam_pclk), .reset(~cfg_done), .clr(clf_clr),
-        .in_valid(w_valid), .in_pix(w_pix), .thr(8'd60),
-        .done(clf_done), .digito(clf_dig), .valido(clf_val));
-
-    // digito reconocido, cruzado al dominio del display (es casi-estatico: 2 FF bastan)
-    //   Si el clasificador dice NADA se muestra el codigo 10, que el glifo dibuja como una raya.
-    //   Sin esto el chip esta OBLIGADO a elegir uno de diez, y con el cuadro vacio elige siempre
-    //   el mismo -el sesgo solo ya favorece una clase-: eso es lo que se veia en la placa como un
-    //   "1" fijo. Poder decir "no se" no es un adorno: entre los cuadros que si contesta, la
-    //   precision sube de 89.2 % a 93.9 %.
-    reg [3:0] dig_pclk = 4'd10;
-    reg       hubo = 1'b0;
-    always @(posedge cam_pclk) if (clf_done) begin
-        dig_pclk <= clf_val ? clf_dig : 4'd10;
-        hubo <= 1'b1;
-    end
-    reg [3:0] dig_s1 = 4'd10, dig_clk = 4'd10;
-    reg       hubo_s1 = 1'b0, hubo_clk = 1'b0;
-    always @(posedge clk) begin
-        dig_s1 <= dig_pclk;  dig_clk  <= dig_s1;
-        hubo_s1 <= hubo;     hubo_clk <= hubo_s1;
-    end
-
-    // ======== framebuffer de las 28x28 (784 bytes, doble puerto) ========
-    reg [7:0]  fb [0:783];
-    reg [9:0]  wadr = 10'd0;
-    always @(posedge cam_pclk) begin
-        if (w_valid) begin
-            fb[wadr] <= w_pix;
-            wadr <= (wadr == 10'd783) ? 10'd0 : wadr + 10'd1;
-        end
-        if (w_fin) wadr <= 10'd0;
-    end
+    // ==================== frame buffer 60x80 (doble puerto) ====================
+    reg [7:0] fb [0:4799];
     reg [7:0] fb_rd = 8'd0;
+    always @(posedge cam_pclk) if (we) fb[wadr] <= wdat;
 
     // ==================== display ILI9341 (dominio clk) ====================
     reg        spi_start = 1'b0;
@@ -251,44 +227,17 @@ module top #(
         endcase
     end
 
-    // ======== que color va en cada pixel de la pantalla (240x320) ========
-    //   filas   0..223 : las 28x28 ampliadas x8, con marco verde de 3 px
-    //   filas 232..319 : el digito reconocido en siete segmentos
+    // OFFSET de encuadre: ajustar de a ~600 para centrar la imagen partida.
+    localparam [13:0] OFFSET = OFS;
+
     reg [7:0] xcol = 8'd0;
     reg [8:0] ycol = 9'd0;
-
-    localparam integer IMG = 224;              // 28 * 8
-    localparam integer BORDE = 3;
-    // en_img mira las DOS coordenadas. Antes solo miraba ycol, asi que las columnas 224..239
-    // -que estan fuera de la imagen- caian en el marco derecho y pintaban una franja verde de
-    // 19 px en vez de 3. Se veia clarito en la placa.
-    wire en_img  = (ycol < IMG) && (xcol < IMG);
-    wire [4:0] ix = xcol[7:3];                 // /8
-    wire [4:0] iy = ycol[7:3];
-    wire [9:0] fbaddr = iy*28 + ix;
-    always @(posedge clk) fb_rd <= fb[fbaddr];
-
-    wire en_marco = en_img && ((xcol < BORDE) || (xcol >= IMG-BORDE) ||
-                               (ycol < BORDE) || (ycol >= IMG-BORDE));
-
-    // zona del glifo
-    localparam integer GY0 = 232, GW = 60, GH = 80;
-    wire en_glifo_caja = (ycol >= GY0) && (ycol < GY0+GH) &&
-                         (xcol >= (240-GW)/2) && (xcol < (240-GW)/2 + GW);
-    wire glifo_on;
-    glifo #(.ANCHO(GW),.ALTO(GH),.GRUESO(11)) G (
-        .digito(dig_clk),
-        .gx(en_glifo_caja ? (xcol - (240-GW)/2) : 8'd0),
-        .gy(en_glifo_caja ? (ycol - GY0)        : 8'd0),
-        .encendido(glifo_on));
-
-    wire [15:0] gris  = {fb_rd[7:3], fb_rd[7:2], fb_rd[7:3]};
-    wire [15:0] VERDE = 16'b00000_111111_00000;
-    wire [15:0] AMBAR = 16'b11111_101101_00000;
-    wire [15:0] NEGRO = 16'h0000;
-    wire [15:0] pcolor = en_marco                        ? VERDE :
-                         en_img                          ? gris  :
-                         (en_glifo_caja && glifo_on && hubo_clk) ? AMBAR : NEGRO;
+    wire [6:0] fx = xcol[7:2];
+    wire [6:0] fy = ycol[8:2];
+    wire [13:0] rsum  = fy*60 + fx + OFFSET;                 // desplaza la lectura
+    wire [12:0] raddr = (rsum >= 14'd4800) ? (rsum - 14'd4800) : rsum[12:0];
+    always @(posedge clk) fb_rd <= fb[raddr];
+    wire [15:0] pcolor = {fb_rd[7:3], fb_rd[7:2], fb_rd[7:3]};
 
     reg [20:0] dcnt = 21'd0;
     reg [16:0] px   = 17'd0;
