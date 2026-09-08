@@ -18,6 +18,8 @@ AQUI="$(cd "$(dirname "$0")" && pwd)"; cd "$AQUI"
 #   bash build_fpga.sh crudo   -> DIAGNOSTICO: la camara sin invertir, para ver exposicion/foco
 #   bash build_fpga.sh bits    -> DIAGNOSTICO DEL BUS: solo los 4 bits altos de cam_d.
 #                                 Si con esto la imagen se limpia, los bits bajos estan flojos.
+#   bash build_fpga.sh bandas  -> QUE CABLE FALLA: los 8 bits de cam_d, uno por banda.
+#                                 Tapando y destapando el lente se ve cual responde y cual no.
 #   bash build_fpga.sh patron  -> DIAGNOSTICO DE PCLK: escribe una RAMPA generada adentro,
 #                                 sin tocar cam_d. Si sale limpia el problema son los cables de
 #                                 datos; si sale ruidosa, el problema es PCLK.
@@ -29,6 +31,8 @@ COMUN="linebuf3x3.v mnist_feat.v mnist_clf.v mnist_top.v"
 if [ "$DEMO" = "uart" ]; then
     TOP=top; FUENTES="rom_digitos.v uart_tx.v fpga_mnist_top.v $COMUN"; PCF=fpga_mnist.pcf
     SALIDA=mnist_uart
+elif [ "$DEMO" = "bandas" ]; then
+    TOP=top; FUENTES="cam_bandas.v"; PCF=cam_display.pcf; SALIDA=cam_bandas
 elif [ "$DEMO" = "patron" ]; then
     TOP=top; FUENTES="cam_patron.v"; PCF=cam_display.pcf; SALIDA=cam_patron; PARAM="patron"
 elif [ "$DEMO" = "bits" ]; then
