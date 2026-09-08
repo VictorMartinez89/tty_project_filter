@@ -308,6 +308,11 @@ module top (
 
     // ==================== DIAGNOSTICO POR UART ====================
     //   Acumula AND y OR de cam_d sobre el cuadro, y los reporta al terminar.
+    // OJO: `u_tomado` se DECLARA ACA, antes de usarse mas abajo. Estaba declarado despues y
+    // yosys lo acepto en silencio creando un cable implicito distinto del registro: el
+    // transmisor se reiniciaba a mitad de mensaje y el puerto serie escupia basura. iverilog
+    // si lo rechaza -"declaration after use"-, que es la razon de simular ANTES de grabar.
+    reg       u_tomado = 1'b0;
     reg [7:0] acc_and = 8'hFF, acc_or = 8'h00;      // neutros de cada operacion
     reg [7:0] rep_and = 8'h00, rep_or = 8'h00;
     reg       hay_reporte = 1'b0;
@@ -336,7 +341,6 @@ module top (
         h1<=hay_reporte; h2<=h1; h3<=h2;
     end
     wire nuevo = h2 & ~h3;
-    reg u_tomado = 1'b0;
     always @(posedge clk) u_tomado <= nuevo;
 
 
@@ -350,8 +354,11 @@ module top (
         if (~cam_href) begin
             tomando <= (linea_n == 9'd240);                      // una linea del medio
             mi_idx  <= 3'd0;
-        end else if (tomando && parity == 1'b0 && mi_idx != 3'd7) begin
-            muestra[mi_idx] <= cam_d;
+        end else if (tomando && parity == 1'b1 && mi_idx != 3'd7) begin
+            // OJO: se captura en parity==1, que es cuando `curY` YA tiene la luma del pixel.
+            // En parity==0 el byte todavia esta llegando y se tomaba el de CROMA (0x80 fijo),
+            // que fue justo lo que mostro la simulacion: muestra = 80 80 80 80.
+            muestra[mi_idx] <= curY;
             mi_idx <= mi_idx + 3'd1;
         end
         if (linea_n >= 9'd480) linea_n <= 9'd0;
