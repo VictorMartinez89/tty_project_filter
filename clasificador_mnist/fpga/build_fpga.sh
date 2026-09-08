@@ -18,6 +18,8 @@ AQUI="$(cd "$(dirname "$0")" && pwd)"; cd "$AQUI"
 #   bash build_fpga.sh crudo   -> DIAGNOSTICO: la camara sin invertir, para ver exposicion/foco
 #   bash build_fpga.sh bits    -> DIAGNOSTICO DEL BUS: solo los 4 bits altos de cam_d.
 #                                 Si con esto la imagen se limpia, los bits bajos estan flojos.
+#   bash build_fpga.sh neg     -> EL SOSPECHOSO ACTUAL: muestrear cam_d en el flanco de BAJADA
+#                                 de PCLK. Una linea de diferencia con el cam_display probado.
 #   bash build_fpga.sh uartbits-> EL DEFINITIVO: la placa reporta por SERIE que bits estan
 #                                 pegados. AND=xx dice cuales valen 1 SIEMPRE. Sin fotos.
 #   bash build_fpga.sh swap    -> DE QUE LADO ESTA: franjas verticales con cam_d[7] y cam_d[6]
@@ -38,6 +40,8 @@ COMUN="linebuf3x3.v mnist_feat.v mnist_clf.v mnist_top.v"
 if [ "$DEMO" = "uart" ]; then
     TOP=top; FUENTES="rom_digitos.v uart_tx.v fpga_mnist_top.v $COMUN"; PCF=fpga_mnist.pcf
     SALIDA=mnist_uart
+elif [ "$DEMO" = "neg" ]; then
+    TOP=top; FUENTES="cam_negedge.v"; PCF=cam_display.pcf; SALIDA=cam_neg
 elif [ "$DEMO" = "uartbits" ]; then
     TOP=top; FUENTES="cam_uart_bits.v uart_tx.v"; PCF=cam_uart.pcf; SALIDA=cam_uartbits
 elif [ "$DEMO" = "swap" ]; then
