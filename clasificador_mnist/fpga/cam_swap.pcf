@@ -1,0 +1,37 @@
+# cam_swap.pcf — IGUAL AL PROBADO PERO CON cam_d[7] Y cam_d[6] INTERCAMBIADOS.
+#
+#   La franja vertical dice que cam_d[7] esta pegado en 1, pero la continuidad del cable dio
+#   bien y cambiarlo no arreglo nada. Un "pegado en 1" no es un cable roto sino un cable DE MAS:
+#   la continuidad pasa porque el cable si conecta; lo que sobra es un contacto a 3V3.
+#
+#   Este pcf separa de que lado esta el problema, en una sola corrida:
+#       cam_d[7] -> pin 31   (era 42)
+#       cam_d[6] -> pin 42   (era 31)
+#
+#   COMO SE LEE, mirando de nuevo las franjas verticales:
+#     * la franja pegada SE MUEVE a la posicion del bit 6  -> el problema viaja con el PIN 42:
+#       es del lado FPGA / conector / protoboard.
+#     * la franja pegada SE QUEDA en el bit 7              -> el problema viaja con la senal D7
+#       de la camara: es el cable de ese lado o la salida del propio sensor.
+#   Es la misma idea de intercambiar dos cables para ver si el fallo los sigue.
+set_io clk       35
+set_io cam_xclk  2
+set_io cam_scl   27
+set_io cam_sda   26
+set_io cam_pclk  28
+set_io cam_href  32
+set_io cam_d[0]  48
+set_io cam_d[1]  46
+set_io cam_d[2]  44
+set_io cam_d[3]  43
+set_io cam_d[4]  38
+set_io cam_d[5]  34
+set_io cam_d[6]  42     # <- INTERCAMBIADO (era 31)
+set_io cam_d[7]  31     # <- INTERCAMBIADO (era 42)
+set_io tft_sck   37
+set_io tft_mosi  36
+set_io tft_cs    25
+set_io tft_dc    23
+set_io led_r     39
+set_io led_g     40
+set_io led_b     41
