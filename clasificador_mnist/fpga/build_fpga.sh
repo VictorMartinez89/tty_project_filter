@@ -18,6 +18,9 @@ AQUI="$(cd "$(dirname "$0")" && pwd)"; cd "$AQUI"
 #   bash build_fpga.sh crudo   -> DIAGNOSTICO: la camara sin invertir, para ver exposicion/foco
 #   bash build_fpga.sh bits    -> DIAGNOSTICO DEL BUS: solo los 4 bits altos de cam_d.
 #                                 Si con esto la imagen se limpia, los bits bajos estan flojos.
+#   bash build_fpga.sh patron  -> DIAGNOSTICO DE PCLK: escribe una RAMPA generada adentro,
+#                                 sin tocar cam_d. Si sale limpia el problema son los cables de
+#                                 datos; si sale ruidosa, el problema es PCLK.
 #   bash build_fpga.sh raw     -> REFERENCIA: cam_display.v, el diseno de camara cruda que YA
 #                                 funcionaba antes de todo esto. Si este muestra imagen y el
 #                                 'crudo' no, el problema es mio; si tampoco, es de camara/luz.
@@ -26,6 +29,8 @@ COMUN="linebuf3x3.v mnist_feat.v mnist_clf.v mnist_top.v"
 if [ "$DEMO" = "uart" ]; then
     TOP=top; FUENTES="rom_digitos.v uart_tx.v fpga_mnist_top.v $COMUN"; PCF=fpga_mnist.pcf
     SALIDA=mnist_uart
+elif [ "$DEMO" = "patron" ]; then
+    TOP=top; FUENTES="cam_patron.v"; PCF=cam_display.pcf; SALIDA=cam_patron; PARAM="patron"
 elif [ "$DEMO" = "bits" ]; then
     TOP=top; FUENTES="cam_bits.v"; PCF=cam_display.pcf; SALIDA=cam_bits
 elif [ "$DEMO" = "raw" ]; then
@@ -44,7 +49,7 @@ command -v nextpnr-ice40 >/dev/null || {
     echo "   source ~/Documents/UN/oss-cad-suite/environment"; exit 1; }
 
 echo "== 1/3 sintesis (yosys)"
-yosys -p "read_verilog $FUENTES; chparam ${PARAM:+-set INVERTIR 0} $TOP; synth_ice40 -top $TOP -json $SALIDA.json" | tee yosys.log | tail -20
+yosys -p "read_verilog $FUENTES; chparam ${PARAM:+$([ "$PARAM" = patron ] && echo "-set FUENTE 1" || echo "-set INVERTIR 0")} $TOP; synth_ice40 -top $TOP -json $SALIDA.json" | tee yosys.log | tail -20
 
 echo
 echo "== 2/3 place & route (nextpnr)"
