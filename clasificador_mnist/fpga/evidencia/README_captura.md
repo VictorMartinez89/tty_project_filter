@@ -39,3 +39,18 @@ y 0 y 8 son las dos clases "iman" (recall alto, precision baja).
 El archivo captura_uart_ice40up5k.txt es el flujo de bytes crudo, sin editar.
 Los caracteres faltantes en algunas lineas son perdidas del CDC del USB, no
 del circuito: ninguna linea bien formada contradice a otra.
+
+---
+
+## Evidencia visual del sistema completo (demo de camara)
+
+- `foto_placa_icesugar.jpeg` / `foto_placa_web.jpg` — la iCESugar con el PMOD-TFTLCD v1.1.
+  El recuadro verde delimita la ventana de 28x28 que se le entrega al clasificador; el digito
+  naranja debajo es el veredicto que el propio circuito dibuja en la pantalla.
+- `video_placa_icesugar.mp4` — 1.75 s del mismo montaje en funcionamiento.
+
+Esto documenta la cadena COMPLETA en hardware: sensor OV7670 -> sincronizacion por href ->
+Sobel -> magnitud -> octantes -> piramide 2x2 -> 32 contadores -> 400 MAC -> argmax -> ILI9341.
+Sobre la exactitud frente a la camara vale lo medido en la Parte 181 (nivel de azar por
+desplazamiento de dominio); esta evidencia prueba que el camino de datos funciona de punta a
+punta, no que la clasificacion desde camara sea correcta.
