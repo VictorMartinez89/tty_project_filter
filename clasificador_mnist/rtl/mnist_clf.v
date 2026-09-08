@@ -90,7 +90,19 @@ module mnist_clf #(
                 S_ARGMAX: begin
                     // el acumulado de la clase c ya esta completo: comparar y guardar los DOS
                     // mejores, que es lo que permite medir la confianza sin dividir nada.
+                    // Las DOS primeras clases se tratan aparte, y no es un capricho:
+                    //   * con `segundo` arrancando en CERO, si el segundo mejor puntaje real era
+                    //     negativo nunca lo superaba y `mejor - segundo` valia `mejor`, un numero
+                    //     grande: el margen siempre pasaba y la clase NADA aceptaba el 100 %.
+                    //   * con `segundo` arrancando en el MINIMO con signo, la resta DESBORDA los
+                    //     AW bits y el resultado sale indefinido.
+                    // Sin centinela no hay ninguno de los dos problemas: en c==1 ya hay dos
+                    // puntajes reales y se ordenan directamente.
                     if (c == 4'd0) begin mejor <= acc; mejor_c <= c; end
+                    else if (c == 4'd1) begin
+                        if (acc > mejor) begin segundo <= mejor; mejor <= acc; mejor_c <= c; end
+                        else segundo <= acc;
+                    end
                     else if (acc > mejor) begin segundo <= mejor; mejor <= acc; mejor_c <= c; end
                     else if (acc > segundo) segundo <= acc;
                     if (c == N_CLASE-1) begin

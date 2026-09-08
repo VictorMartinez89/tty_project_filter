@@ -9,7 +9,7 @@ module tb_mnist;
     localparam integer H = 28, W = 28, N = H*W, CW = 9;
     reg clk = 0, reset = 1, clr = 0, in_valid = 0;
     reg [7:0] in_pix = 0;
-    wire done; wire [3:0] digito;
+    wire done; wire [3:0] digito; wire valido;
     wire [32*CW-1:0] cnt;
     wire [10:0] n_bordes;
     wire fdone;
@@ -20,8 +20,8 @@ module tb_mnist;
         .clk(clk),.reset(reset),.clr(clr),.in_valid(in_valid),.in_pix(in_pix),.thr(8'd60),
         .frame_done(fdone),.cnt_o(cnt),.n_bordes(n_bordes));
     mnist_clf #(.CW(CW)) CLF (
-        .clk(clk),.reset(reset),.start(fdone),.cnt_i(cnt),
-        .done(done),.digito(digito),.score());
+        .clk(clk),.reset(reset),.start(fdone),.cnt_i(cnt),.n_bordes(n_bordes),
+        .done(done),.digito(digito), .valido(valido),.score());
 
     reg [7:0] img [0:N-1];
     integer i, rep, fd, espera;
@@ -55,9 +55,9 @@ module tb_mnist;
         while (!done && espera < 5000) begin @(posedge clk); espera = espera + 1; end
         fd = $fopen(f_out, "w");
         for (i = 0; i < 32; i = i + 1) $fwrite(fd, "%0d\n", cnt[i*CW +: CW]);
-        $fwrite(fd, "digito %0d\n", digito);
+        $fwrite(fd, "digito %0d\n", valido ? digito : 4'd10);   // 10 = NADA
         $fclose(fd);
-        $display("digito=%0d  (listo en %0d ciclos tras el ultimo pixel)", digito, espera);
+        $display("digito=%0d valido=%b bordes=%0d mejor=%0d segundo=%0d margen=%0d", digito, valido, FEAT.n_bordes, CLF.mejor, CLF.segundo, CLF.mejor-CLF.segundo);
         $finish;
     end
 endmodule
