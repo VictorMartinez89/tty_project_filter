@@ -1,0 +1,1 @@
+../../clasificador_mnist/canny1_mnist.py

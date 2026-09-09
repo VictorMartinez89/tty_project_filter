@@ -1,0 +1,1 @@
+../../clasificador_mnist/frente_golden.py

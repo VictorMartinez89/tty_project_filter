@@ -59,28 +59,29 @@ def evalua(mtr, otr, mte, ote, ytr, yte, etiqueta):
     return acc_q, acc_f, mtr.mean()
 
 
-Xtr, ytr, Xte, yte = fg.cargar_mnist()
-Xtr, ytr = Xtr[:N_TR], ytr[:N_TR]
-print(f"entrenando con {N_TR} imagenes, evaluando sobre las 10 000 de test\n")
+if __name__ == "__main__":       # sin este guard, importar el modulo re-corre el barrido
+    Xtr, ytr, Xte, yte = fg.cargar_mnist()
+    Xtr, ytr = Xtr[:N_TR], ytr[:N_TR]
+    print(f"entrenando con {N_TR} imagenes, evaluando sobre las 10 000 de test\n")
 
-print("REFERENCIA — Sobel con umbral simple (el front-end actual de la tesis)")
-t0 = time.time()
-mtr, otr = fg.frente(Xtr); mte, ote = fg.frente(Xte)
-base = evalua(mtr, otr, mte, ote, ytr, yte, f"Sobel  thr={fg.UMBRAL}  ({mtr.shape[1]}x{mtr.shape[2]})")
+    print("REFERENCIA — Sobel con umbral simple (el front-end actual de la tesis)")
+    t0 = time.time()
+    mtr, otr = fg.frente(Xtr); mte, ote = fg.frente(Xte)
+    base = evalua(mtr, otr, mte, ote, ytr, yte, f"Sobel  thr={fg.UMBRAL}  ({mtr.shape[1]}x{mtr.shape[2]})")
 
-print("\nCANNY 1-SALTO — barrido de (thr_hi, thr_lo)")
-res = []
-for hi, lo in [(90, 30), (90, 45), (75, 25), (75, 40), (60, 20), (60, 30),
-               (60, 45), (45, 15), (45, 25), (110, 40)]:
-    mtr, otr = frente_canny1(Xtr, hi, lo); mte, ote = frente_canny1(Xte, hi, lo)
-    a = evalua(mtr, otr, mte, ote, ytr, yte, f"Canny1 hi={hi:3d} lo={lo:3d} ({mtr.shape[1]}x{mtr.shape[2]})")
-    res.append(((hi, lo), a))
+    print("\nCANNY 1-SALTO — barrido de (thr_hi, thr_lo)")
+    res = []
+    for hi, lo in [(90, 30), (90, 45), (75, 25), (75, 40), (60, 20), (60, 30),
+                   (60, 45), (45, 15), (45, 25), (110, 40)]:
+        mtr, otr = frente_canny1(Xtr, hi, lo); mte, ote = frente_canny1(Xte, hi, lo)
+        a = evalua(mtr, otr, mte, ote, ytr, yte, f"Canny1 hi={hi:3d} lo={lo:3d} ({mtr.shape[1]}x{mtr.shape[2]})")
+        res.append(((hi, lo), a))
 
-print(f"\n({time.time()-t0:.0f}s)")
-mejor = max(res, key=lambda r: r[1][0])
-print(f"\nMEJOR Canny1: hi={mejor[0][0]} lo={mejor[0][1]}  ->  {mejor[1][0]:.2%} a 4 bits")
-print(f"Sobel de referencia:                    {base[0]:.2%} a 4 bits")
-d = mejor[1][0] - base[0]
-print(f"DIFERENCIA: {d:+.2%}  ->  {'el Canny GANA' if d > 0.002 else 'el Canny NO mejora' if d > -0.002 else 'el Canny PIERDE'}")
-np.savez("canny1_barrido.npz", res=np.array([[*k, v[0], v[1], v[2]] for k, v in res]),
-         base=np.array(base))
+    print(f"\n({time.time()-t0:.0f}s)")
+    mejor = max(res, key=lambda r: r[1][0])
+    print(f"\nMEJOR Canny1: hi={mejor[0][0]} lo={mejor[0][1]}  ->  {mejor[1][0]:.2%} a 4 bits")
+    print(f"Sobel de referencia:                    {base[0]:.2%} a 4 bits")
+    d = mejor[1][0] - base[0]
+    print(f"DIFERENCIA: {d:+.2%}  ->  {'el Canny GANA' if d > 0.002 else 'el Canny NO mejora' if d > -0.002 else 'el Canny PIERDE'}")
+    np.savez("canny1_barrido.npz", res=np.array([[*k, v[0], v[1], v[2]] for k, v in res]),
+             base=np.array(base))
