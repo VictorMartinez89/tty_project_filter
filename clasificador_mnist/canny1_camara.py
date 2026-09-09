@@ -41,10 +41,18 @@ def degrada(X, modo, s):
     elif modo == "contraste":
         Y = Y * (1 - 0.75 * s) + 255 * 0.12 * s          # comprime hacia el gris
     elif modo == "desenfoque":
-        for _ in range(int(round(s * 3))):               # 0..3 pasadas de 3x3
-            P = np.pad(Y, ((0, 0), (1, 1), (1, 1)), mode="edge")
-            Y = sum(P[:, i:i+H, j:j+W] * k for i, j, k in
-                    [(0,0,1),(0,1,2),(0,2,1),(1,0,2),(1,1,4),(1,2,2),(2,0,1),(2,1,2),(2,2,1)]) / 16
+        # gaussiana separable con sigma CONTINUO. La primera version aplicaba
+        # `int(round(s*3))` pasadas de un 3x3, asi que s=0.2 y s=0.4 daban la MISMA
+        # imagen: la curva salia plana de a pares y eso era un artefacto de
+        # discretizacion, no un resultado. Un eje que no es continuo no es un eje.
+        sig = 1.6 * s
+        if sig > 0.01:
+            r = int(np.ceil(3 * sig))
+            k = np.exp(-np.arange(-r, r + 1) ** 2 / (2 * sig * sig)); k /= k.sum()
+            P = np.pad(Y, ((0, 0), (0, 0), (r, r)), mode="edge")
+            Y = sum(k[t] * P[:, :, t:t + W] for t in range(2 * r + 1))
+            P = np.pad(Y, ((0, 0), (r, r), (0, 0)), mode="edge")
+            Y = sum(k[t] * P[:, t:t + H, :] for t in range(2 * r + 1))
     elif modo == "ruido":
         Y = Y + rng.normal(0, 40 * s, Y.shape)
     return np.clip(Y, 0, 255).astype(np.uint8)
