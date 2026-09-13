@@ -51,6 +51,10 @@ elif [ "$DEMO" = "pix" ]; then
     TOP=top; FUENTES="cam_uart_pix.v uart_tx.v"; PCF=cam_uart.pcf; SALIDA=cam_pix
 elif [ "$DEMO" = "neg" ]; then
     TOP=top; FUENTES="cam_negedge.v"; PCF=cam_display.pcf; SALIDA=cam_neg
+elif [ "$DEMO" = "camcanny" ]; then
+    # la cadena ENTERA con front-end Canny: camara -> ventana -> Canny -> clasificador -> TFT
+    TOP=top; FUENTES="mnist_cam_canny.v cam_win28.v glifo.v ../rtl/mnist_top_canny.v ../rtl/mnist_feat_canny.v ../rtl/mnist_clf_canny.v ../rtl/linebuf3x3.v"
+    PCF=mnist_cam.pcf; SALIDA=mnist_cam_canny
 elif [ "$DEMO" = "win" ]; then
     # vuelca la ventana de 28x28 por UART, para el experimento de las 3 iluminaciones
     TOP=top; FUENTES="cam_uart_win.v cam_win28.v uart_tx.v"; PCF=cam_uart_win.pcf; SALIDA=cam_win
@@ -82,7 +86,7 @@ command -v nextpnr-ice40 >/dev/null || {
     echo "   source ~/Documents/UN/oss-cad-suite/environment"; exit 1; }
 
 echo "== 1/3 sintesis (yosys)"
-yosys -p "read_verilog $FUENTES; chparam ${PARAM:+$(case $PARAM in patron) echo "-set FUENTE 1";; ofs) echo "-set OFS $OFS";; *) echo "-set INVERTIR 0";; esac)} $TOP; synth_ice40 -top $TOP -json $SALIDA.json" | tee yosys.log | tail -20
+yosys -p "read_verilog -I../rtl $FUENTES; chparam ${PARAM:+$(case $PARAM in patron) echo "-set FUENTE 1";; ofs) echo "-set OFS $OFS";; *) echo "-set INVERTIR 0";; esac)} $TOP; synth_ice40 -top $TOP -json $SALIDA.json" | tee yosys.log | tail -20
 
 echo
 echo "== 2/3 place & route (nextpnr)"
