@@ -30,6 +30,10 @@ module cam_win28 #(
     output reg        frame_fin       // pulso tras emitir el ultimo pixel de las 28x28
 );
     localparam integer BLK = WIN / N;
+    // El divisor del promedio son BLK*BLK pixeles. Estaba FIJO en /256 (`fila[ex][15:8]`), que
+    // solo es correcto para WIN=448 -bloques de 16x16-. Con cualquier otro WIN la imagen salia
+    // casi negra, y el modulo se anunciaba parametrico igual. Ahora sale de BLK.
+    localparam integer SH  = $clog2(BLK*BLK);
     localparam integer X0  = (CAM_W - WIN) / 2;
     localparam integer Y0  = (CAM_H - WIN) / 2;
 
@@ -42,6 +46,9 @@ module cam_win28 #(
     reg [4:0]  sub_y;
     reg        emitiendo;
     integer i;
+
+    wire [15:0] prom_w = fila[ex] >> SH;
+    wire [7:0]  prom   = (prom_w > 16'd255) ? 8'd255 : prom_w[7:0];
 
     reg  href_d;
     wire fin_linea = href_d & ~href;                 // flanco de bajada: termino la linea
@@ -99,9 +106,10 @@ module cam_win28 #(
             end
 
             // ---- volcado en PARALELO a la acumulacion, desde la copia ----
+            // prom = suma >> SH, saturado: el shift es la division por BLK*BLK
             if (emitiendo) begin
                 out_valid <= 1'b1;
-                out_pix   <= invertir ? (8'd255 - fila[ex][15:8]) : fila[ex][15:8];  // /256 = shift
+                out_pix   <= invertir ? (8'd255 - prom) : prom;
                 if (ex == N-1) begin
                     emitiendo <= 1'b0; ex <= 0;
                     oy <= (oy == N-1) ? 5'd0 : oy + 5'd1;

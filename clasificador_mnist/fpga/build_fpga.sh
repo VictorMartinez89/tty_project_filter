@@ -51,6 +51,9 @@ elif [ "$DEMO" = "pix" ]; then
     TOP=top; FUENTES="cam_uart_pix.v uart_tx.v"; PCF=cam_uart.pcf; SALIDA=cam_pix
 elif [ "$DEMO" = "neg" ]; then
     TOP=top; FUENTES="cam_negedge.v"; PCF=cam_display.pcf; SALIDA=cam_neg
+elif [ "$DEMO" = "win" ]; then
+    # vuelca la ventana de 28x28 por UART, para el experimento de las 3 iluminaciones
+    TOP=top; FUENTES="cam_uart_win.v cam_win28.v uart_tx.v"; PCF=cam_uart_win.pcf; SALIDA=cam_win
 elif [ "$DEMO" = "uartbits" ]; then
     TOP=top; FUENTES="cam_uart_bits.v uart_tx.v"; PCF=cam_uart.pcf; SALIDA=cam_uartbits
 elif [ "$DEMO" = "swap" ]; then
