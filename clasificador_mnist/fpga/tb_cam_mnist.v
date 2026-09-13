@@ -19,7 +19,7 @@ module tb_cam_mnist;
 
     wire       w_valid; wire [7:0] w_pix; wire w_fin;
     cam_win28 #(.CAM_W(CAM_W),.CAM_H(CAM_H),.WIN(448),.N(28)) WIN (
-        .pclk(pclk), .reset(reset), .href(href),
+        .pclk(pclk), .sync(1'b0), .reset(reset), .href(href),
         .pix_y(curY), .pix_valid(py_valid), .invertir(1'b1),
         .out_valid(w_valid), .out_pix(w_pix), .frame_fin(w_fin));
 

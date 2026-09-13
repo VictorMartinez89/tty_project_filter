@@ -146,7 +146,7 @@ module top #(
 
     wire       w_valid; wire [7:0] w_pix; wire w_fin;
     cam_win28 #(.CAM_W(640),.CAM_H(480),.WIN(448),.N(28)) WIN (
-        .pclk(cam_pclk), .reset(~cfg_done), .href(cam_href),
+        .pclk(cam_pclk), .sync(1'b0), .reset(~cfg_done), .href(cam_href),
         .pix_y(curY), .pix_valid(py_valid), .invertir(INVERTIR[0]),
         .out_valid(w_valid), .out_pix(w_pix), .frame_fin(w_fin));
 

@@ -151,11 +151,27 @@ module top #(
     // curY vale durante el ciclo de parity==0, que es cuando se entrega
     wire pix_valid = cam_href & (parity == 1'b0);
 
+    // ============ enganche de cuadro SIN VSYNC ============
+    //   El OV7670 clon no entrega VSYNC usable, pero el hueco entre CUADROS es mucho mas largo
+    //   que el hueco entre LINEAS: ~144 pclk contra >= 14 000. Contando cuanto tiempo `href`
+    //   queda en bajo, el comienzo de cuadro se detecta solo, sin calibrar nada.
+    localparam integer UMBRAL_V = 2000;        // 7x mas chico que el hueco vertical real
+    reg [15:0] sin_href = 16'd0;
+    reg        sync     = 1'b0;
+    always @(posedge cam_pclk) begin
+        sync <= 1'b0;
+        if (cam_href) sin_href <= 16'd0;
+        else if (sin_href != 16'hffff) begin
+            sin_href <= sin_href + 1'b1;
+            if (sin_href == UMBRAL_V-1) sync <= 1'b1;   // UN pulso por cuadro
+        end
+    end
+
     // ============ ventana de 28x28, el MISMO modulo que usa el clasificador ============
     wire       w_val, w_fin;
     wire [7:0] w_pix;
     cam_win28 #(.CAM_W(CAM_W), .CAM_H(CAM_H), .WIN(WIN)) WIN28 (
-        .pclk(cam_pclk), .reset(rst_p), .href(cam_href),
+        .pclk(cam_pclk), .reset(rst_p), .href(cam_href), .sync(sync),
         .pix_y(curY), .pix_valid(pix_valid), .invertir(INVERTIR[0]),
         .out_valid(w_val), .out_pix(w_pix), .frame_fin(w_fin));
 
@@ -169,10 +185,17 @@ module top #(
     reg [9:0]  wcnt  = 10'd0;
     reg        lleno_p = 1'b0;              // dominio pclk: hay un cuadro listo
     reg        ack_s1 = 1'b0, ack_s2 = 1'b0;   // ack del dominio clk, sincronizado a pclk
+    // `armado` impide empezar a capturar A MITAD DE CUADRO. Sin el, al terminar un volcado la
+    // captura se reanudaba donde estuviera el sensor en ese momento: las primeras filas salian
+    // de un cuadro y el resto del siguiente, y como la fase depende de cuando termino el
+    // volcado, la COSTURA se mueve en cada captura. Es lo que se vio en la placa: costura en
+    // las filas 1,2,3,4,6,9,19,26. Ahora la captura solo arranca con el pulso de cuadro.
+    reg armado = 1'b0;
     always @(posedge cam_pclk) begin
         ack_s1 <= ack_c; ack_s2 <= ack_s1;
-        if (ack_s2) begin lleno_p <= 1'b0; wcnt <= 10'd0; end
-        else if (!lleno_p) begin
+        if (ack_s2) begin lleno_p <= 1'b0; wcnt <= 10'd0; armado <= 1'b0; end
+        else if (sync && !lleno_p) begin armado <= 1'b1; wcnt <= 10'd0; end
+        else if (!lleno_p && armado) begin
             if (w_val && wcnt < 10'd784) begin
                 imgbuf[wcnt] <= w_pix; wcnt <= wcnt + 1'b1;
             end

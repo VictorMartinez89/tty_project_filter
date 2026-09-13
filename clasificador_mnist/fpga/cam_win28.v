@@ -13,6 +13,15 @@
 //   el bloque es 16x16 = 256 y el divisor es un shift de 8.
 //
 //   INVERSION: MNIST es trazo CLARO sobre fondo OSCURO; tinta sobre papel es al reves.
+//
+//   ENGANCHE DE CUADRO (`sync`): sin el, este modulo contaba filas LIBREMENTE y las reiniciaba
+//   al llegar a CAM_H. Como el OV7670 clon no entrega VSYNC usable, nada le decia donde empieza
+//   el cuadro: la ventana de 28x28 tomaba pedazos de DOS cuadros distintos y el punto de corte
+//   derivaba. Medido sobre capturas reales, la costura aparecia en las filas 1,2,3,4,6,9,19,26
+//   -- se movia en cada captura.
+//   `sync` es un pulso de comienzo de cuadro. Se genera afuera midiendo cuanto tiempo `href`
+//   queda en bajo: entre lineas son ~144 pclk, entre cuadros son >= 14 000. Un umbral de 2 000
+//   separa los dos casos con 7x de holgura, y no hace falta VSYNC ni calibrar nada a ojo.
 `default_nettype none
 module cam_win28 #(
     parameter integer CAM_W = 640, parameter integer CAM_H = 480,
@@ -22,6 +31,7 @@ module cam_win28 #(
     input  wire       pclk,
     input  wire       reset,
     input  wire       href,           // alto durante los pixeles activos de la linea
+    input  wire       sync,           // pulso: empieza un cuadro nuevo (ver cabecera)
     input  wire [7:0] pix_y,
     input  wire       pix_valid,
     input  wire       invertir,
@@ -65,6 +75,14 @@ module cam_win28 #(
             for (i = 0; i < N; i = i + 1) begin acc[i] <= 16'd0; fila[i] <= 16'd0; end
         end else begin
             out_valid <= 1'b0; frame_fin <= 1'b0;
+
+            // ---- el CUADRO se engancha con `sync` ----
+            //   Lo mismo que `href` hace por la columna, pero para la fila. Sin esto el error
+            //   vertical no se acumula: directamente nunca se sabe donde estaba el origen.
+            if (sync) begin
+                cy <= 0; oy <= 0; sub_y <= 0; emitiendo <= 1'b0;
+                for (i = 0; i < N; i = i + 1) acc[i] <= 16'd0;
+            end
 
             // ---- la columna se re-sincroniza CON CADA LINEA ----
             //   Contar 640x480 pixeles y confiar en que la cuenta salga justa NO funciona: un

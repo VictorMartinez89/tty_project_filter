@@ -5,7 +5,9 @@
 `timescale 1ns/1ps
 `default_nettype none
 module tb_uart_win;
-    localparam integer CW = 112, CH = 112, WIN = 56, DIV = 104;
+    // DIV chico SOLO en el banco: a 38400 reales un volcado son 75 ms simulados y no
+    // entran dos capturas. El decodificador usa el mismo DIV, asi que sigue siendo exacto.
+    localparam integer CW = 112, CH = 112, WIN = 56, DIV = 8;
     reg clk = 0, pclk = 0;
     reg href = 0;
     reg [7:0] cam_d = 0;
@@ -25,7 +27,7 @@ module tb_uart_win;
     integer f, y, x;
     initial begin
         href = 0; #200;
-        for (f = 0; f < 3; f = f + 1)
+        for (f = 0; f < 40; f = f + 1)
             for (y = 0; y < CH; y = y + 1) begin
                 // href se levanta JUNTO con el primer byte de croma. Levantarlo un flanco
                 // ANTES invierte la paridad y el diseno captura croma (0x80 constante) en vez
@@ -33,14 +35,20 @@ module tb_uart_win;
                 // del bug real de la camara. El banco tambien es hardware.
                 @(negedge pclk); href = 1; cam_d = 8'h80;    // croma del pixel 0
                 for (x = 0; x < CW; x = x + 1) begin
-                    @(negedge pclk); cam_d = x[7:0];         // LUMA del pixel x = rampa
+                    // patron 2D: asi un desalineamiento VERTICAL tambien se nota
+                    // la escena cambia con el CUADRO: asi, una captura que tome pedazos de dos
+                    // cuadros distintos se delata sola (salto de 16 en parte de la imagen).
+                    @(negedge pclk); cam_d = (x + 2*y + 16*f) & 8'hff;
                     if (x != CW-1) begin
                         @(negedge pclk); cam_d = 8'h80;      // croma del pixel x+1
                     end
                 end
                 @(negedge pclk); href = 0;
-                repeat (8) @(negedge pclk);
+                repeat (8) @(negedge pclk);          // hueco entre LINEAS: corto
             end
+            // hueco entre CUADROS: largo. Es lo unico que separa un cuadro del siguiente
+            // cuando no hay VSYNC, y es lo que detecta el enganche.
+            repeat (2500) @(negedge pclk);
     end
 
     // ---------- decodificador de UART ----------
@@ -61,7 +69,7 @@ module tb_uart_win;
     end
 
     initial begin
-        #40_000_000;                             // tope duro
+        #600_000_000;                             // tope duro
         $fclose(fd);
         $display("fin por tiempo · bytes recibidos: %0d", n_by);
         $finish;
