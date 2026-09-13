@@ -11,14 +11,16 @@ import numpy as np, warnings, time; warnings.filterwarnings("ignore")
 from sklearn.linear_model import LogisticRegression
 import frente_golden as fg
 from canny1_mnist import frente_canny1
+from transitivo_mnist import frente_transitivo
 
 NIVEL, BITS = 1, 4
 # Los dos filtros, CON LOS PARAMETROS DE SUS DISENOS REALES: el Sobel de la tesis usa
 # thr=60 (es lo que tiene mnist_feat.v) y el Canny 110/40. Un barrido sobre 20 000 habia
 # sugerido thr=110 para el Sobel, pero con las 60 000 ese umbral HUNDE el recall del 9
 # de 89.5 % a 40.6 % y cuesta 4.75 puntos: el optimo de la muestra chica no transfiere.
-FRENTES = {"Sobel":  lambda X: fg.frente(X, 60),
-           "Canny1": lambda X: frente_canny1(X, 110, 40)}
+FRENTES = {"Sobel":      lambda X: fg.frente(X, 60),
+           "Canny1":     lambda X: frente_canny1(X, 110, 40),
+           "Transitivo": lambda X: frente_transitivo(X, 110, 40)}
 
 Xtr, ytr, Xte, yte = fg.cargar_mnist()
 R = {}
@@ -67,9 +69,9 @@ def metricas(p, y, val):
                 prec=(p[val]==y[val]).mean(), **b2)
 
 Z = {n: metricas(R[n]["pte"], yte, R[n]["val"]) for n in R}
-print("\n" + "="*74)
-print(f"{'':<34}{'Sobel':>18}{'Canny1':>18}")
-print("="*74)
+print("\n" + "="*73)
+print(f"{'':<28}" + "".join(f"{n:>15}" for n in R))
+print("="*73)
 fil = [("area util (px)", lambda n: f"{R[n]['area']}", ""),
        ("exactitud (accuracy) test", lambda n: f"{Z[n]['acc']:.2%}", ""),
        ("exactitud train", lambda n: f"{R[n]['acc_tr']:.2%}", ""),
@@ -83,14 +85,12 @@ fil = [("area util (px)", lambda n: f"{R[n]['area']}", ""),
        ("  errores filtrados", lambda n: f"{Z[n]['nVN']/(Z[n]['nVN']+Z[n]['nFP']):.1%}", ""),
        ("  aciertos sacrificados", lambda n: f"{Z[n]['nFN']/(Z[n]['nFN']+Z[n]['nVP']):.1%}", "")]
 for et, f, _ in fil:
-    print(f"{et:<34}{f('Sobel'):>18}{f('Canny1'):>18}")
-print("="*74)
+    print(f"{et:<28}" + "".join(f"{f(n):>15}" for n in R))
+print("="*73)
 print("\nPOR CLASE  (precision / recall / F1)")
-print(f"{'dig':>4}{'Sobel P':>10}{'Sobel R':>10}{'Sobel F1':>10}   {'Canny P':>9}{'Canny R':>9}{'Canny F1':>9}")
+print(f"{'dig':>4}" + "".join(f"{n[:10]+' F1':>16}" for n in Z))
 for c in range(10):
-    s,k = Z["Sobel"], Z["Canny1"]
-    print(f"{c:>4}{s['P'][c]:10.2%}{s['R'][c]:10.2%}{s['F'][c]:10.3f}   "
-          f"{k['P'][c]:9.2%}{k['R'][c]:9.2%}{k['F'][c]:9.3f}")
+    print(f"{c:>4}" + "".join(f"{Z[n]['P'][c]:6.1%}/{Z[n]['R'][c]:5.1%}={Z[n]['F'][c]:.3f}" for n in Z))
 np.savez("comparar_metricas.npz",
          **{f"{n}_{k}": v for n in Z for k,v in Z[n].items() if isinstance(v,np.ndarray)},
          **{f"{n}_esc": np.array([Z[n]['acc'],Z[n]['f1'],Z[n]['cob'],Z[n]['prec'],
