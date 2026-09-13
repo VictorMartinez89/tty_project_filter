@@ -199,10 +199,16 @@ module top #(
     reg [4:0]  col = 5'd0;   // columna 0..27. NO se puede usar rd[4:0]: eso es modulo 32,
                              // y sacaba la primera linea de 28 y las demas de 32.
     reg [2:0]  ci  = 3'd0;                      // indice dentro de "IMG\n" / "END\n"
-    reg [7:0]  byt = 8'd0;
+    // Lectura REGISTRADA, incondicional y con UNA sola direccion. Antes el buffer se leia
+    // dentro del case con enables (`imgbuf[rd+1]` bajo `if (u_listo && !u_env)`) y yosys NO
+    // infirio BRAM: puso los 784 bytes en flip-flops -6 403 SB_DFFE- y el diseno pedia el
+    // 278 % de la iCE40. Un buffer que no entra en BRAM no entra en el chip.
+    reg [9:0]  raddr = 10'd0;
+    reg [7:0]  rdata = 8'd0;
+    always @(posedge clk) rdata <= imgbuf[raddr];
     // Los dos nibbles de `byt` en ASCII, como expresion en vez de funcion (misma razon que
     // los rotulos: yosys avisaba sobre los argumentos de la funcion).
-    wire [3:0] nib_hi = byt[7:4], nib_lo = byt[3:0];
+    wire [3:0] nib_hi = rdata[7:4], nib_lo = rdata[3:0];
     wire [7:0] hex_hi = (nib_hi < 4'd10) ? (8'd48 + nib_hi) : (8'd87 + nib_hi);
     wire [7:0] hex_lo = (nib_lo < 4'd10) ? (8'd48 + nib_lo) : (8'd87 + nib_lo);
 
@@ -217,10 +223,10 @@ module top #(
         u_env <= 1'b0;
         ack_c <= 1'b0;
         case (st)
-        D_ESPERA: if (lleno_s2) begin st <= D_CAB; ci <= 3'd0; rd <= 10'd0; col <= 5'd0; end
+        D_ESPERA: if (lleno_s2) begin st <= D_CAB; ci <= 3'd0; rd <= 10'd0; col <= 5'd0; raddr <= 10'd0; end
         D_CAB: if (u_listo && !u_env) begin
                    u_dato <= ROT_IMG[{~ci[1:0], 3'd0} +: 8]; u_env <= 1'b1;
-                   if (ci == 3'd3) begin st <= D_HI; byt <= imgbuf[10'd0]; end
+                   if (ci == 3'd3) st <= D_HI;
                    else ci <= ci + 1'b1;
                end
         D_HI:  if (u_listo && !u_env) begin u_dato <= hex_hi; u_env <= 1'b1; st <= D_LO; end
@@ -231,10 +237,10 @@ module top #(
                    u_env  <= 1'b1;
                    if (rd == 10'd783) begin st <= D_FIN; ci <= 3'd0; end
                    else begin
-                       col <= (col == 5'd27) ? 5'd0 : col + 5'd1;
-                       rd  <= rd + 1'b1;
-                       byt <= imgbuf[rd + 10'd1];
-                       st  <= D_HI;
+                       col   <= (col == 5'd27) ? 5'd0 : col + 5'd1;
+                       rd    <= rd + 1'b1;
+                       raddr <= rd + 10'd1;     // el dato llega al ciclo siguiente; sobra tiempo
+                       st    <= D_HI;
                    end
                end
         D_FIN: if (u_listo && !u_env) begin
