@@ -23,6 +23,13 @@
 //   costo cuatro dias de biseccion (el OV7670 emite UYVY: la luma es el SEGUNDO byte)-.
 `default_nettype none
 module top #(
+    // BAUDIOS: el CDC del USB de la iCESugar NO sostiene 115200 con 2.4 kB seguidos. En rafagas
+    // cortas (la demo ROM) anda; con un volcado largo se desincroniza y despues de ~1.5 kB solo
+    // llegan 0x00 y bytes altos. A 38400 el caudal baja a 4.8 kB/s y aguanta.
+    //   DIVISOR = f_clk / baudios = 12e6 / 38400 = 312
+    parameter integer DIV = 312,
+    // Pausa entre capturas, para que el CDC drene. 12e6 = 1 segundo.
+    parameter [23:0] PAUSA = 24'd6_000_000,
     // CAM_W/CAM_H se exponen para poder SIMULAR con un cuadro chico: un cuadro real de
     // 640x480 son 614 400 ciclos de pclk y el banco tardaria minutos por captura.
     parameter integer CAM_W = 640,
@@ -188,12 +195,13 @@ module top #(
     reg  [7:0] u_dato = 8'd0;
     reg        u_env  = 1'b0;
     wire       u_listo;
-    uart_tx #(.DIVISOR(104)) TX (.clk(clk), .reset(rst), .dato(u_dato),
+    uart_tx #(.DIVISOR(DIV)) TX (.clk(clk), .reset(rst), .dato(u_dato),
                                  .enviar(u_env), .tx(uart_tx_pin), .listo(u_listo));
 
 
     localparam D_ESPERA=3'd0, D_CAB=3'd1, D_HI=3'd2, D_LO=3'd3, D_SEP=3'd4,
-               D_FIN=3'd5, D_ACK=3'd6;
+               D_FIN=3'd5, D_PAUSA=3'd6, D_ACK=3'd7;
+    reg [23:0] pausa = 24'd0;
     reg [2:0]  st  = D_ESPERA;
     reg [9:0]  rd  = 10'd0;
     reg [4:0]  col = 5'd0;   // columna 0..27. NO se puede usar rd[4:0]: eso es modulo 32,
@@ -245,8 +253,10 @@ module top #(
                end
         D_FIN: if (u_listo && !u_env) begin
                    u_dato <= ROT_END[{~ci[1:0], 3'd0} +: 8]; u_env <= 1'b1;
-                   if (ci == 3'd3) st <= D_ACK; else ci <= ci + 1'b1;
+                   if (ci == 3'd3) begin st <= D_PAUSA; pausa <= 24'd0; end
+                   else ci <= ci + 1'b1;
                end
+        D_PAUSA: if (pausa == PAUSA) st <= D_ACK; else pausa <= pausa + 24'd1;
         D_ACK: begin ack_c <= 1'b1; if (!lleno_s2) st <= D_ESPERA; end
         default: st <= D_ESPERA;
         endcase

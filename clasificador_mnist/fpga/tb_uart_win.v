@@ -16,7 +16,7 @@ module tb_uart_win;
     always #5  clk  = ~clk;              // 100 MHz nominal (el divisor del UART es lo que importa)
     always #5  pclk = ~pclk;
 
-    top #(.CAM_W(CW), .CAM_H(CH), .WIN(WIN), .INVERTIR(0)) DUT (
+    top #(.CAM_W(CW), .CAM_H(CH), .WIN(WIN), .INVERTIR(0), .DIV(DIV), .PAUSA(24'd50)) DUT (
         .clk(clk), .cam_xclk(), .cam_scl(scl), .cam_sda(sda_w),
         .cam_pclk(pclk), .cam_href(href), .cam_d(cam_d),
         .uart_tx_pin(tx), .led_r(led_r), .led_g(led_g), .led_b(led_b));
