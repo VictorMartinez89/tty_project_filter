@@ -27,6 +27,10 @@ module top #(
     // cortas (la demo ROM) anda; con un volcado largo se desincroniza y despues de ~1.5 kB solo
     // llegan 0x00 y bytes altos. A 38400 el caudal baja a 4.8 kB/s y aguanta.
     //   DIVISOR = f_clk / baudios = 12e6 / 38400 = 312
+    // ENGANCHE=0 desactiva el enganche de cuadro. Existe para poder correr la
+    // CONTRAPRUEBA: si el banco no muestra diferencia entre 0 y 1, el banco no esta
+    // midiendo lo que dice medir.
+    parameter integer ENGANCHE = 1,
     parameter integer DIV = 312,
     // Pausa entre capturas, para que el CDC drene. 12e6 = 1 segundo.
     parameter [23:0] PAUSA = 24'd6_000_000,
@@ -185,21 +189,27 @@ module top #(
     reg [9:0]  wcnt  = 10'd0;
     reg        lleno_p = 1'b0;              // dominio pclk: hay un cuadro listo
     reg        ack_s1 = 1'b0, ack_s2 = 1'b0;   // ack del dominio clk, sincronizado a pclk
-    // `armado` impide empezar a capturar A MITAD DE CUADRO. Sin el, al terminar un volcado la
-    // captura se reanudaba donde estuviera el sensor en ese momento: las primeras filas salian
-    // de un cuadro y el resto del siguiente, y como la fase depende de cuando termino el
-    // volcado, la COSTURA se mueve en cada captura. Es lo que se vio en la placa: costura en
-    // las filas 1,2,3,4,6,9,19,26. Ahora la captura solo arranca con el pulso de cuadro.
-    reg armado = 1'b0;
     always @(posedge cam_pclk) begin
         ack_s1 <= ack_c; ack_s2 <= ack_s1;
-        if (ack_s2) begin lleno_p <= 1'b0; wcnt <= 10'd0; armado <= 1'b0; end
-        else if (sync && !lleno_p) begin armado <= 1'b1; wcnt <= 10'd0; end
-        else if (!lleno_p && armado) begin
-            if (w_val && wcnt < 10'd784) begin
-                imgbuf[wcnt] <= w_pix; wcnt <= wcnt + 1'b1;
+        if (ack_s2) begin lleno_p <= 1'b0; wcnt <= 10'd0; end
+        else if (!lleno_p) begin
+            // Cada pulso de cuadro REINICIA la captura. cam_win28 emite exactamente 784
+            // muestras por cuadro, asi que si al llegar `w_fin` el contador vale 784, las
+            // 784 son de UN SOLO cuadro: no hace falta ninguna otra comprobacion.
+            // (La version con `armado` dejaba pixeles VIEJOS en el buffer cuando una captura
+            //  no completaba, y la imagen salia mezclada de tres capturas distintas.)
+            if (sync && ENGANCHE != 0) wcnt <= 10'd0;
+            else begin
+                if (w_val && wcnt < 10'd784) begin
+                    imgbuf[wcnt] <= w_pix; wcnt <= wcnt + 1'b1;
+                end
+                // OJO con el error por uno: cuando llega `w_fin`, el ultimo pixel se esta
+                // escribiendo EN ESE CICLO, asi que `wcnt` todavia vale 783. Con la
+                // condicion `>= 784` la captura no cerraba en este cuadro: seguia
+                // acumulando y recien cerraba en el `w_fin` del cuadro SIGUIENTE.
+                // Esa era la costura: un error por uno, no un problema de sincronismo.
+                if (w_fin && wcnt == 10'd783) lleno_p <= 1'b1;
             end
-            if (w_fin && wcnt >= 10'd784) lleno_p <= 1'b1;
         end
     end
 

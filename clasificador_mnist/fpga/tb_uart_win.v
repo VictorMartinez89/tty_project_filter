@@ -5,9 +5,10 @@
 `timescale 1ns/1ps
 `default_nettype none
 module tb_uart_win;
+    parameter integer ENG = 1;   // 0 = contraprueba
     // DIV chico SOLO en el banco: a 38400 reales un volcado son 75 ms simulados y no
     // entran dos capturas. El decodificador usa el mismo DIV, asi que sigue siendo exacto.
-    localparam integer CW = 112, CH = 112, WIN = 56, DIV = 8;
+    localparam integer CW = 112, CH = 112, WIN = 56, DIV = 4;
     reg clk = 0, pclk = 0;
     reg href = 0;
     reg [7:0] cam_d = 0;
@@ -18,7 +19,8 @@ module tb_uart_win;
     always #5  clk  = ~clk;              // 100 MHz nominal (el divisor del UART es lo que importa)
     always #5  pclk = ~pclk;
 
-    top #(.CAM_W(CW), .CAM_H(CH), .WIN(WIN), .INVERTIR(0), .DIV(DIV), .PAUSA(24'd50)) DUT (
+    top #(.CAM_W(CW), .CAM_H(CH), .WIN(WIN), .INVERTIR(0), .DIV(DIV),
+        .PAUSA(24'd50), .ENGANCHE(ENG)) DUT (
         .clk(clk), .cam_xclk(), .cam_scl(scl), .cam_sda(sda_w),
         .cam_pclk(pclk), .cam_href(href), .cam_d(cam_d),
         .uart_tx_pin(tx), .led_r(led_r), .led_g(led_g), .led_b(led_b));
@@ -27,7 +29,10 @@ module tb_uart_win;
     integer f, y, x;
     initial begin
         href = 0; #200;
-        for (f = 0; f < 40; f = f + 1)
+        // OJO con el begin/end: sin el, el `repeat(2500)` de abajo queda FUERA del bucle
+        // de cuadros y el hueco vertical ocurre UNA sola vez al final. Sintoma: un solo
+        // pulso de enganche en 40 cuadros, y el diseno nunca completa una captura.
+        for (f = 0; f < 40; f = f + 1) begin
             for (y = 0; y < CH; y = y + 1) begin
                 // href se levanta JUNTO con el primer byte de croma. Levantarlo un flanco
                 // ANTES invierte la paridad y el diseno captura croma (0x80 constante) en vez
@@ -38,7 +43,12 @@ module tb_uart_win;
                     // patron 2D: asi un desalineamiento VERTICAL tambien se nota
                     // la escena cambia con el CUADRO: asi, una captura que tome pedazos de dos
                     // cuadros distintos se delata sola (salto de 16 en parte de la imagen).
-                    @(negedge pclk); cam_d = (x + 2*y + 16*f) & 8'hff;
+                    // El patron NO debe desbordar 8 bits: si lo hace, un bloque que cruza el
+                    // 255->0 promedia cualquier cosa y el analisis ve cortes que no existen.
+                    //   x/4 + y/4 + 32*(f%4)  ->  maximo 27+27+96 = 150 < 256
+                    // periodo 8, NO 4: el volcado dura ~4 cuadros, asi que con periodo 4 las
+                    // capturas caian siempre en el mismo y el patron no distinguia nada.
+                    @(negedge pclk); cam_d = (x/4) + (y/4) + 16*(f%8);
                     if (x != CW-1) begin
                         @(negedge pclk); cam_d = 8'h80;      // croma del pixel x+1
                     end
@@ -49,6 +59,7 @@ module tb_uart_win;
             // hueco entre CUADROS: largo. Es lo unico que separa un cuadro del siguiente
             // cuando no hay VSYNC, y es lo que detecta el enganche.
             repeat (2500) @(negedge pclk);
+        end
     end
 
     // ---------- decodificador de UART ----------
@@ -69,7 +80,7 @@ module tb_uart_win;
     end
 
     initial begin
-        #600_000_000;                             // tope duro
+        #25_000_000;                             // tope duro
         $fclose(fd);
         $display("fin por tiempo · bytes recibidos: %0d", n_by);
         $finish;
