@@ -10,11 +10,13 @@ module tb_canny_map;
     integer HI, LO;
     wire [32*CW-1:0] cnt; wire [10:0] nb; wire fdone;
     wire dval, dbor, darr; wire [4:0] dcx, dcy;
+    wire [44:0] dwin; wire [7:0] dmag; wire [1:0] dcls; wire dvs, dvc;
     always #5 clk = ~clk;
     mnist_feat_canny #(.H(H),.W(W),.CW(CW)) FEAT (
         .clk(clk),.reset(reset),.clr(clr),.in_valid(in_valid),.in_pix(in_pix),
         .thr_hi(HI[7:0]),.thr_lo(LO[7:0]),.frame_done(fdone),.cnt_o(cnt),.n_bordes(nb),
-        .dbg_val(dval),.dbg_borde(dbor),.dbg_cx(dcx),.dbg_cy(dcy),.dbg_arr(darr));
+        .dbg_val(dval),.dbg_borde(dbor),.dbg_cx(dcx),.dbg_cy(dcy),.dbg_arr(darr),
+        .dbg_mag(dmag),.dbg_cls(dcls),.dbg_vs(dvs),.dbg_vc(dvc),.dbg_win(dwin));
     reg [7:0] img [0:N-1];
     integer i, rep, fd;
     reg [1023:0] f_img, f_out;
@@ -30,7 +32,13 @@ module tb_canny_map;
             if (rep == 2) begin clr <= 1'b1; @(posedge clk); clr <= 1'b0; end
             for (i = 0; i < N; i = i + 1) begin
                 in_valid <= 1'b1; in_pix <= img[i]; @(posedge clk);
-                if (rep == 2 && dval && darr) $fwrite(fd, "%0d %0d %0d\n", dcy, dcx, dbor);
+                // DOS pasadas: con una sola, una ventana contigua da la vuelta al raster
+                // volcar SIEMPRE que la tercera ventana sea valida, sin esperar `darr` ni
+                // frenar con `listo`: con 696 muestras el offset correcto quedaba
+                // FUERA DE RANGO por dos muestras, y el buscador nunca lo evaluaba.
+                if (rep >= 2 && dvc) $fwrite(fd, "%0d %0d %0d %0d %0d %0d %0d %0d %0d %0d %0d %0d\n", dcy, dcx, dbor,
+                            dwin[4:0],dwin[9:5],dwin[14:10],dwin[19:15],dwin[24:20],
+                            dwin[29:25],dwin[34:30],dwin[39:35],dwin[44:40]);
             end
             in_valid <= 1'b0; @(posedge clk);
         end

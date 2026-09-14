@@ -51,7 +51,12 @@ module mnist_feat_canny #(
     output wire             dbg_borde,     // (diagnostico) esa muestra es borde
     output wire [4:0]       dbg_cx,
     output wire [4:0]       dbg_cy,
-    output wire             dbg_arr        // ya se trago la latencia
+    output wire             dbg_arr,       // ya se trago la latencia
+    output wire [7:0]       dbg_mag,       // (diag) magnitud |Gx|+|Gy| saturada
+    output wire [1:0]       dbg_cls,       // (diag) clase del doble umbral
+    output wire             dbg_vs,        // (diag) valida la etapa Sobel
+    output wire             dbg_vc,        // (diag) valida la tercera ventana
+    output wire [44:0]      dbg_win        // (diag) las 9 celdas de la tercera ventana
 );
     localparam integer HV = H-6, WV = W-6;   // area valida tras TRES convoluciones 3x3
 
@@ -154,6 +159,11 @@ module mnist_feat_canny #(
     end
     // se empaquetan en un bus: yosys no admite puertos de array en Verilog-2005, y un bus
     // plano es ademas lo que espera cualquier flujo de sintesis.
+    assign dbg_win   = {c22,c21,c20,c12,c11,c10,c02,c01,c00};
+    assign dbg_mag   = mag;
+    assign dbg_cls   = cls_in;
+    assign dbg_vs    = vs;
+    assign dbg_vc    = vc;
     assign dbg_val   = vc && !listo;
     assign dbg_borde = es_borde;
     assign dbg_cx    = cx;
