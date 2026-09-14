@@ -1,0 +1,11 @@
+0->0 o
+1->1 o
+2->2 o
+3->2 X
+4->4 o
+5->5 o
+6->6 o
+7->7 o
+8->8 o
+9->9 o
+(la secuencia se repite identica ~14 veces en la captura completa)
