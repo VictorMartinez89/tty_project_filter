@@ -163,8 +163,13 @@ module top #(
     //   de descuido que en silicio se vuelve un bug (la leccion de los `initial` heredados).
     reg [23:0] latido;
     always @(posedge clk) latido <= reset ? 24'd0 : latido + 24'd1;
-    assign led_g = (st == S_TOT);
-    assign led_r = hubo_error & latido[22];
+    // LEDs: que cuenten lo que ESTE diseno tiene de nuevo, el CPU.
+    //   verde  = el FemtoRV32 ya arranco y escribio el umbral en el periferico 0x0045.
+    //            Se enciende ~11 ciclos despues del reset y queda fijo: es el RISC-V vivo.
+    //   azul   = latido, para ver que el diseno corre.
+    //   rojo   = hubo algun error en la ronda (el 2 y el 3, que ya sabemos).
+    assign led_g = cpu_wrote;
     assign led_b = latido[23];
+    assign led_r = hubo_error & latido[22];
 endmodule
 `default_nettype wire
