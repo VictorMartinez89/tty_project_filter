@@ -34,12 +34,10 @@ module soc_mnist_top #(
 );
     // ---- el SoC: corre el firmware y fija el umbral por el periferico 0x0045 ----
     wire [7:0] thr_cpu;
-    wire soc_ov; wire [7:0] soc_op;
-    soc_sobel_top SOC (
-        .clk(clk), .resetn(~reset),
-        .in_valid(in_valid), .in_pix(in_pix),
-        .out_valid(soc_ov), .out_pix(soc_op),
-        .cpu_wrote_filter(cpu_escribio), .thr_o(thr_cpu));
+    // soc_ctrl = FemtoRV32 + ROM + periferico, SIN el datapath Sobel duplicado.
+    // Ese filtro sobra aca (mnist_feat tiene el suyo) y son ~1 300 LUT4 de mas.
+    soc_ctrl SOC (.clk(clk), .resetn(~reset),
+                  .thr_o(thr_cpu), .cpu_wrote(cpu_escribio));
 
     assign thr_usado = (FUENTE_THR == 0) ? thr_cpu : THR_FIJO;
 

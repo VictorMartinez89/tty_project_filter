@@ -51,6 +51,10 @@ elif [ "$DEMO" = "pix" ]; then
     TOP=top; FUENTES="cam_uart_pix.v uart_tx.v"; PCF=cam_uart.pcf; SALIDA=cam_pix
 elif [ "$DEMO" = "neg" ]; then
     TOP=top; FUENTES="cam_negedge.v"; PCF=cam_display.pcf; SALIDA=cam_neg
+elif [ "$DEMO" = "soc" ]; then
+    # EL SoC COMPLETO: FemtoRV32 + clasificador + 10 digitos en ROM -> UART
+    TOP=top; FUENTES="fpga_mnist_soc.v rom_digitos.v uart_tx.v ../rtl/soc_ctrl.v ../rtl/mnist_top.v ../rtl/mnist_feat.v ../rtl/mnist_clf.v ../rtl/linebuf3x3.v ../../comparativa_24x18/src/femtorv32_quark.v ../../comparativa_24x18/src/peripheral_filter.v"
+    PCF=fpga_mnist.pcf; SALIDA=mnist_soc
 elif [ "$DEMO" = "camcanny" ]; then
     # la cadena ENTERA con front-end Canny: camara -> ventana -> Canny -> clasificador -> TFT
     TOP=top; FUENTES="mnist_cam_canny.v cam_win28.v glifo.v ../rtl/mnist_top_canny.v ../rtl/mnist_feat_canny.v ../rtl/mnist_clf_canny.v ../rtl/linebuf3x3.v"
