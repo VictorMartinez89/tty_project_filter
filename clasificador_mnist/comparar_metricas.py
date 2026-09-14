@@ -25,6 +25,9 @@ NIVEL, BITS = 1, 4
 FRENTES = {"Sobel":      lambda X: fg.frente(X, 60),
            "SoC+Sobel":  lambda X: fg.frente(X, 90),
            "Canny1":     lambda X: frente_canny1(X, 110, 40),
+           # SoC+Canny = el mismo Canny con los umbrales que escribe el firmware
+           # corregido (constante 0x5A20 -> hi=90, lo=32). Ver §16.
+           "SoC+Canny1": lambda X: frente_canny1(X, 90, 32),
            "Transitivo": lambda X: frente_transitivo(X, 110, 40)}
 
 Xtr, ytr, Xte, yte = fg.cargar_mnist()
