@@ -26,9 +26,8 @@ module soc_mnist_canny_top #(
 );
     wire [7:0] thr_hi, thr_lo;
     soc_ctrl #(.UMBRALES(UMBRALES)) SOC (
-        .clk(clk), .resetn(~reset), .thr_o(thr_hi), .cpu_wrote(cpu_escribio));
-    // soc_ctrl expone thr_hi; el thr_lo sale del mismo periferico
-    assign thr_lo   = SOC.flt_tlo;
+        .clk(clk), .resetn(~reset),
+        .thr_o(thr_hi), .thr_lo_o(thr_lo), .cpu_wrote(cpu_escribio));
     assign thr_hi_o = thr_hi;
     assign thr_lo_o = thr_lo;
 

@@ -19,7 +19,11 @@ module soc_ctrl #(
 ) (
     input  wire       clk,
     input  wire       resetn,        // 0 = reset, 1 = corre
-    output wire [7:0] thr_o,         // el umbral que fijo el CPU
+    output wire [7:0] thr_o,         // thr_hi: el umbral ALTO que fijo el CPU
+    output wire [7:0] thr_lo_o,      // thr_lo: el BAJO. Es un PUERTO, no una referencia
+                                     // jerarquica: `SOC.flt_tlo` funciona en iverilog
+                                     // pero yosys lo declara como cable implicito de 1
+                                     // bit SIN DRIVER, y el chip corre con thr_lo=0.
     output wire       cpu_wrote      // ya escribio el periferico
 );
     // el inmediato de 12 bits que lleva x3 de 0x6000 a UMBRALES
@@ -61,7 +65,8 @@ module soc_ctrl #(
         .mode(flt_mode), .enable(flt_enable), .eng_reset(flt_engrst),
         .thr_hi(flt_thi), .thr_lo(flt_tlo),
         .cfg_done(1'b1), .eng_busy(1'b0), .vsync_alive(1'b1), .frame_count(16'd0));
-    assign thr_o = flt_thi;
+    assign thr_o    = flt_thi;
+    assign thr_lo_o = flt_tlo;
 
     always @(*) mem_rdata = cs_filter ? filt_dout : rom_q;
 
