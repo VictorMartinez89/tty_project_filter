@@ -1,4 +1,4 @@
-# === Cuaderno 2 · figura 19: la jerarquia de 3Blue1Brown, esperada vs construida ===
+# === Cuaderno 2 · figura 20: la jerarquia de 3Blue1Brown, esperada vs construida ===
 import numpy as np, matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
 
