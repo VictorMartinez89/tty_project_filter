@@ -18,7 +18,12 @@ NIVEL, BITS = 1, 4
 # thr=60 (es lo que tiene mnist_feat.v) y el Canny 110/40. Un barrido sobre 20 000 habia
 # sugerido thr=110 para el Sobel, pero con las 60 000 ese umbral HUNDE el recall del 9
 # de 89.5 % a 40.6 % y cuesta 4.75 puntos: el optimo de la muestra chica no transfiere.
+# "SoC+Sobel" NO es otro datapath: es el MISMO Sobel con el umbral que escribe el firmware
+# (thr=90 en vez de 60). La tesis ya midio que con y sin CPU el mapa de bordes es identico
+# pixel a pixel; lo unico que el CPU cambia es el numero. Por eso entra en esta tabla como
+# una cuarta columna y no como un filtro distinto.
 FRENTES = {"Sobel":      lambda X: fg.frente(X, 60),
+           "SoC+Sobel":  lambda X: fg.frente(X, 90),
            "Canny1":     lambda X: frente_canny1(X, 110, 40),
            "Transitivo": lambda X: frente_transitivo(X, 110, 40)}
 
