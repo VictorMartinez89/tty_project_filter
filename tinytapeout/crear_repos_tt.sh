@@ -12,7 +12,7 @@
 set -e
 AQUI="$(cd "$(dirname "$0")" && pwd)"
 USER_GH="${USER_GH:-VictorMartinez89}"
-TEMPLATE="${TEMPLATE:-TinyTapeout/tt10-verilog-template}"
+TEMPLATE="${TEMPLATE:-TinyTapeout/tt10-verilog-template}"   # <- VERIFICAR cual shuttle esta abierto
 DESTINO="${DESTINO:-$HOME/UN/Tesis/tt_repos}"
 CREAR=0; [ "$1" = "--crear" ] && CREAR=1
 
@@ -23,7 +23,9 @@ tt_soc_sobel:tt_soc_sobel_vic:RISC-V SoC (FemtoRV32) + Sobel filter, ROM on chip
 tt_soc_sobel_flash:tt_soc_sobel_flash_vic:RISC-V SoC + Sobel, boots from external SPI flash
 tt_trans_mini:tt_trans_mini_vic:Transitive hysteresis engine 32x24 (morphological reconstruction)
 tt_soc_canny1:tt_soc_canny1_vic:RISC-V SoC (FemtoRV32) + streaming Canny filter
-tt_soc_trans_mini:tt_soc_trans_mini_vic:RISC-V SoC + transitive hysteresis engine 16x12"
+tt_soc_trans_mini:tt_soc_trans_mini_vic:RISC-V SoC + transitive hysteresis engine 16x12
+tt_mnist_sobel:tt_mnist_sobel_vic:MNIST digit recogniser: Sobel + spatial pyramid + 400 4-bit MACs
+tt_mnist_canny:tt_mnist_canny_vic:MNIST digit recogniser: Canny 1-hop front-end"
 
 echo "== plantilla: $TEMPLATE"
 echo "== cuenta:    $USER_GH"
@@ -62,6 +64,12 @@ echo "$PROYECTOS" | while IFS=: read -r carpeta repo desc; do
     # con los pines de potencia). Se PARCHEAN: dos lineas y listo.
     fuentes=$(cd "$src/src" && ls *.v *.sv 2>/dev/null | tr '\n' ' ')
     sed -i.bak "s|^PROJECT_SOURCES = .*|PROJECT_SOURCES = $fuentes|" test/Makefile && rm -f test/Makefile.bak
+    # si el proyecto trae un .vh, el compilador necesita -I del directorio de fuentes
+    if ls "$src/src/"*.vh >/dev/null 2>&1; then
+        grep -q "COMPILE_ARGS += -I" test/Makefile || \
+          sed -i.bak "s|^VERILOG_SOURCES += \$(PWD)/tb.v|VERILOG_SOURCES += \$(PWD)/tb.v\nCOMPILE_ARGS += -I\$(SRC_DIR)|" test/Makefile
+        rm -f test/Makefile.bak
+    fi
     sed -i.bak "s/tt_um_example/$top/" test/tb.v && rm -f test/tb.v.bak
     cp "$src/test/test.py" test/test.py
     cp "$src/docs/info.md" docs/info.md
@@ -69,6 +77,8 @@ echo "$PROYECTOS" | while IFS=: read -r carpeta repo desc; do
     rm -f src/project.v
     cp "$src/src/"*.v src/ 2>/dev/null || true
     cp "$src/src/"*.sv src/ 2>/dev/null || true
+    # los reconocedores MNIST llevan los 400 pesos en un .vh incluido: sin esto no compila
+    cp "$src/src/"*.vh src/ 2>/dev/null || true
     rm -rf test/__pycache__ test/sim_build test/*.vcd test/results.xml 2>/dev/null || true
 
     git add -A
