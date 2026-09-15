@@ -1,7 +1,6 @@
 # fig_celdas_ihp.py — de que esta hecho cada reconocedor, celda por celda.
 # Datos: resumen de LibreLane 3.0.5 en la accion de Tiny Tapeout (lanza IHP26b, SG13G2).
 import numpy as np, matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 CAT = ["Combo Logic","NOR","Misc (dlygate4sd3)","Flip-Flops (dfrbpq)",
@@ -117,4 +116,5 @@ ax.text(0, .93, txt, va="top", family="monospace", fontsize=9.1, linespacing=1.5
 fig.suptitle("Los dos reconocedores MNIST en Tiny Tapeout · IHP SG13G2 · LibreLane 3.0.5",
              fontsize=13.5, y=.985)
 plt.savefig("fig_celdas_ihp.png", dpi=140, bbox_inches="tight")
+plt.show()
 print("ok")

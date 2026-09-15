@@ -7,8 +7,6 @@
 #
 # Entrada: /Users/vic/utm-share/pan_planos/pan_{sobel,canny}.def.gz   (traer_pan.sh)
 import gzip, os, re, collections
-import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
@@ -107,4 +105,5 @@ if resumen:
         logi = sum(v for f, v in c.items() if f not in ("relleno", "tap"))
         print("  %s: lógica %s · taps %s · relleno %s"
               % (n, format(logi, ","), format(c["tap"], ","), format(c["relleno"], ",")))
+plt.show()
 print("ok")
