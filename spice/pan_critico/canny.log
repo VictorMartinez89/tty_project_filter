@@ -1,0 +1,15 @@
+camino de pan_canny: _30855_ -> 36 etapas
+  A  puertas solas               4.424 ns
+  B  + capacitancia extraída     7.552 ns
+  C  + flanco real de entrada    7.588 ns
+
+  el STA, para la misma lógica       9.890 ns
+  (+ 0.410 ns de reloj a dato del biestable = 10.300 ns de camino completo)
+
+  desglose de los 9.890 ns que predice el STA:
+    puertas                     4.424 ns   44.7 %
+    carga de cable y fanout     3.128 ns   31.6 %
+    flanco de entrada           0.036 ns    0.4 %
+    ─────────────────────────────────────────────
+    SPICE explica               7.588 ns   76.7 %
+    sin explicar (R del cable)  2.302 ns   23.3 %
