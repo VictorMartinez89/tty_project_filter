@@ -15,7 +15,9 @@ OUT="$AQUI/resultados_tt"
 TMP=$(mktemp -d)
 mkdir -p "$OUT"
 
-REPOS="tt_sobel_vic tt_canny1_vic tt_trans_mini_vic tt_soc_sobel_vic tt_soc_sobel_flash_vic tt_soc_canny1_vic tt_soc_trans_mini_vic"
+REPOS="tt_sobel_vic tt_canny1_vic tt_trans_mini_vic tt_soc_sobel_vic tt_soc_sobel_flash_vic tt_soc_canny1_vic tt_soc_trans_mini_vic
+tt_mnist_sobel_vic
+tt_mnist_canny_vic"
 
 for r in $REPOS; do
     echo "== $r"
