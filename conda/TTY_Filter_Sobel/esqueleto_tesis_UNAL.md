@@ -3,7 +3,12 @@
 > ⚠️ **Título provisional.** Depende del Pendiente #6 (decisión de encuadre). Si se adopta el de la
 > Parte 169, sería algo como *"Reconocimiento de patrones en silicio: de un detector de bordes escrito
 > a mano a un clasificador entrenado — un SoC RISC-V de FPGA a ASIC"*.
-*Actualizado 2026-09-07: §5.6 nueva, tabla maestra hecha, pendientes al día.*
+*Actualizado 2026-09-14: §5.6 ampliada con el cuaderno 2 (§1-§26), §2.7 nueva (linaje del
+descriptor), §3.5 nueva (disciplina de medición y las 5 retractaciones), §6.9-§6.11 nuevas.*
+
+> ⏳ **16 días para el 30 de septiembre.** 56 secciones están marcadas ♻️ —ya escritas en los
+> cuadernos, falta pasarlas a prosa— y 11 ✍️. **El cuello de botella ya no es la evidencia: es la
+> escritura.** Orden acordado: **5 → 4 → 6 → 3 → 2 → 7 → 1 → Resumen**.
 
 Mapa **cuaderno → capítulos**. Cada sección dice: qué va, de qué Partes sale, qué hay que escribir de cero,
 y qué figura/tabla la sostiene. Estado: `♻️` = ya escrito en el cuaderno (pasar a prosa) · `✍️` = escribir de cero.
@@ -38,6 +43,8 @@ y qué figura/tabla la sostiene. Estado: `♻️` = ya escrito en el cuaderno (p
 | 2.4 Arquitecturas de cómputo de imagen | Streaming vs framebuffer; line-buffers; latencia vs throughput | ♻️ **P142, P154, P156** |
 | 2.5 RISC-V y núcleos mínimos | RV32I, FemtoRV32 Quark | ♻️ P53-56 + refs 1-6 |
 | 2.6 Del RTL al silicio | FPGA (yosys/nextpnr) vs ASIC (OpenLane/sky130); qué cambia | ♻️ **P84-87** |
+| 2.7 **Descriptores de imagen: de SIFT a HOG y la pirámide espacial** ⭐ **nuevo** | La receta *rejilla espacial × histograma de orientaciones*: SIFT (Lowe 2004, 4×4×8=128), HOG (Dalal & Triggs 2005), pirámide espacial (Lazebnik 2006). **El descriptor de esta tesis es HOG + pirámide con 4 decisiones propias de hardware.** Y la clase NADA como *reject option* (Chow 1970) | ♻️ **C2 §22** |
+| 2.8 **Rasgo, clase y mapa de características** ⭐ **nuevo** | El vocabulario, con la distinción que ordena el capítulo 5: *feature map* (una imagen) vs *feature vector* (una lista). Las dos escuelas de la visión artificial y dónde queda esta tesis | ♻️ **C2 §22.1, §22.6** |
 | 2.7 Trabajos relacionados | `tt06_grayscale_sobel` de Diana (mismo `\|Gx\|+\|Gy\|`, sin CPU, TT06) y `tt_um_femto` de Johan; **posicionamiento: referencia, no extensión** | ♻️ **P84-85** |
 
 > ⚠️ Es el capítulo con más trabajo de escritura nueva: el cuaderno tiene el *contenido* pero no el
@@ -52,7 +59,9 @@ y qué figura/tabla la sostiene. Estado: `♻️` = ya escrito en el cuaderno (p
 | 3.2 Modelo golden | Python como verdad de referencia; por qué "se ve bien" no es una medida | ♻️ **P1-24, P29-34** |
 | 3.3 Verificación por comparación | Bit a bit contra golden; el criterio de *best-shift* y por qué un desfase constante NO es error | ♻️ **P29-34** |
 | 3.4 Bring-up incremental | blinky → reloj → SCCB → gris → line-buffers → Sobel → doble umbral → motor → CPU → SoC | ♻️ **P199 §2, P59-76** |
-| 3.5 Herramientas y entorno | oss-cad-suite, Icarus, GTKWave, OpenLane/sky130, cocotb; las dos máquinas | ♻️ + ✍️ |
+| 3.5 **Disciplina de medición: σ, significancia y puntos de operación** ⭐⭐ **nuevo** | Por qué una diferencia sin σ no es un resultado. La σ medida por **validación cruzada de 10 pliegues sobre las 60 000: 1.32 pp**, y por qué las 5 semillas sobre submuestras solapadas la subestimaban 1.8×. El criterio de 2σ. Y **la regla que este trabajo aprendió tres veces: dos cosas solo se comparan en el mismo punto de operación** (igual área §3, igual umbral §6, igual implementación §25) | ♻️ **C2 §3, §19, §24.3, §25.1** |
+| 3.6 **El instrumento antes que el dato** ⭐ **nuevo** | Tres episodios en que el instrumento inventó resultados: los cinco bugs entre el circuito y el dato (10.4 % → 99.7 % de muestras válidas); el **97.3 % falso** que bloqueó una línea de trabajo durante días; y el atajo con `np.roll` que habría inventado 2.4 puntos inexistentes. **La regla operativa: verificar el instrumento contra números ya publicados antes de leer nada nuevo** | ♻️ **C2 §7, §17, §25.1** |
+| 3.7 Herramientas y entorno | oss-cad-suite, Icarus, GTKWave, OpenLane/sky130, cocotb; las dos máquinas | ♻️ + ✍️ |
 
 ---
 
@@ -107,15 +116,33 @@ mirar el cuadro completo en vez de una ventana 3×3. — ♻️ **P157-165** + l
 Throughput y latencia medidos de los 6; streaming vs transitivo (miles de veces). — ♻️ **P154, P155, P156**
 ### 5.6 Reconocimiento de patrones: del borde al dígito  ⭐ **nuevo (sep-2026)**
 La última fila de resultados, y la que conecta con el capítulo 1. Son **resultados medidos**, no
-trabajo futuro: 90 simulaciones RTL y un experimento sobre MNIST completo.
+trabajo futuro: 90 simulaciones RTL, un clasificador de 11 clases **corriendo en la iCE40 a 9/10
+frente a la cámara**, y el cuaderno 2 completo (§1-§26) con métricas avanzadas y validación cruzada.
 | Sub | Contenido | Fuente |
 |---|---|---|
 | 5.6.1 Tiny Tapeout | Los 7 proyectos con `precheck` 14/14 y sus `metrics.csv` reales; el presupuesto medido (1 023-1 183 inst/tile, 45-61 % util.); los **dos bugs de silicio** que solo cazó el `gl_test` (`initial` heredado de FPGA) | ♻️ **P167** |
 | 5.6.2 El experimento 5×6 a tres resoluciones | 16×12, 24×18, 36×26 → **90 simulaciones, 45 pares con/sin CPU idénticos píxel a píxel**; la serie de densidades y el piso de clipeo | ♻️ **P167-168** |
 | 5.6.3 Recalibración y latencia de pipeline | 250/210; recalibrar un SoC = recompilar firmware; **cada etapa 3×3 cuesta W+1 píxeles** de latencia, medido | ♻️ **P168** |
 | 5.6.4 El clasificador de dígitos | Pirámide espacial + lineal cuantizado sobre el front-end de la tesis: **94.2 % con 1 600 flip-flops**, contra 91.9 % de los 784 píxeles crudos | ♻️ **P170** |
+| 5.6.5 **Cómo reconoce, de punta a punta** ⭐ | 784 px → 32 contadores → 40 rasgos → 10 puntajes → 1 dígito. Las **11 clases** atravesando el circuito con los pesos reales de la ROM (11/11). Los 40 rasgos dibujados uno por uno. **400 pesos de 4 bits = 200 bytes** | ♻️ **C2 §21, §23** |
+| 5.6.6 **El sistema en silicio** ⭐ | RISC-V + Canny + clasificador en la iCE40UP5K: **9/10 frente a la cámara**, coincidiendo exactamente con la simulación. El periférico `0x0045` escribiendo los dos umbrales en un solo `word` | ♻️ **C2 §14, §18** |
+| 5.6.7 **Los cinco front-ends, mismo procedimiento** ⭐ | Sobel / SoC+Sobel / Canny1 / SoC+Canny1 / Transitivo sobre 60 000 + 10 000. Exactitud, F1, matriz de confusión, FP/VN, **AUC, Brier, Brier skill** y **validación cruzada de 10 pliegues (σ = 1.32 pp)** | ♻️ **C2 §15, §18, §19** |
+| 5.6.8 **El punto de operación pesa más que el filtro** ⭐⭐ | Barrido del umbral dentro de cada filtro: mueve al Sobel **5.79 pp (4.4 σ)** y al Canny **0.90 pp (0.7 σ)**; entre filtros, **0.38 pp (0.3 σ)**. **El Sobel vive en un pico, el Canny en una meseta** | ♻️ **C2 §25** |
+| 5.6.9 **El CPU sobre el Canny** ⭐⭐ | El umbral adaptativo le resta al Canny en las **18 condiciones**. Con ruido severo el Canny **sin** CPU (74.12 %) queda a **1.06 pp** del Sobel **con** CPU (75.18 %) | ♻️ **C2 §26** |
 ⚠️ **Decisión de encuadre pendiente:** si esta sección entra, el título y el capítulo 1 tienen que
 cambiar con ella (ver Pendientes #6). Sin eso, 5.6 queda colgando de un documento que promete otra cosa.
+
+> 🔧 **OJO al escribir la §5.6 y el capítulo 6:** el arco del argumento **cambió el 14-sep**. La
+> versión vieja era *«el Canny no mejora la exactitud (§3) PERO bajo condiciones de cámara sí (§6)»*.
+> **La §6 quedó retractada** —comparaba dos puntos de operación, no dos filtros— así que esa
+> justificación ya no existe. **El arco correcto es:**
+>
+> `§3 no mejora la exactitud` → `§25 pero es INSENSIBLE al umbral` → `§26 y por eso reemplaza al CPU
+> bajo ruido, sin CPU` → `§9 y además entra en la FPGA`
+>
+> Es un argumento **más fuerte**, porque se apoya en una propiedad estructural del algoritmo (la
+> histéresis es un mecanismo de recuperación) y no en una condición simulada. **No escribir el
+> capítulo traduciendo sección por sección: escribirlo con el arco nuevo.**
 
 ---
 
@@ -129,11 +156,21 @@ cambiar con ella (ver Pendientes #6). Sin eso, 5.6 queda colgando de un document
 | 6.5 Co-diseño HW/SW | El transitivo no cupo con CPU (127 %) → motor en hardware. Los píxeles no pasan por el bus | ♻️ P53-56, P162 |
 | 6.6 Sobel "gana" a baja resolución | El hallazgo empírico: a 60×80 la magnitud graduada sobrevive y el borde binario de 1 px casi no se ve; justifica la histéresis transitiva | ♻️ P25-28 ⭐ |
 | 6.7 Comparación con el trabajo de Diana | Misma RTL de Sobel, dos destinos; la diferencia es alcance, no calidad | ♻️ **P84-85** |
+| 6.9 **El front-end y el registro escribible son ALTERNATIVAS, no complementos** ⭐⭐ | El Canny compra **en hardware** (+16 % de área en ASIC, +0.5 % en FPGA) buena parte de la robustez que el Sobel necesita **un CPU** (~9 000 celdas) para conseguir. Los dos resuelven el mismo problema por dos caminos. **Es el aporte de ingeniería del cuaderno 2** | ♻️ **C2 §25.4, §26** ⭐ |
+| 6.10 **Mejor detección de bordes ≠ mejor reconocimiento** | El transitivo **ordena bien** (AUC 4.º, por encima del SoC+Sobel) y **calibra mal** (Brier 5.º por amplio margen): sus 139 falsos positivos son la consecuencia mecánica de engordar los contornos. Y **no puede transmitir**: memoria de cuadro + barridos hasta punto fijo. No es un filtro más caro — **es otra clase de objeto computacional** | ♻️ **C2 §11, §19, §20.5** ⭐ |
+| 6.11 **La jerarquía de 3Blue1Brown, construida en vez de esperada** | Sanderson propone *bordes → trazos → dígito* como una esperanza sobre las capas ocultas de un MLP, y muestra que no ocurre. Acá **sí ocurre, porque está escrita**. 13 002 parámetros (52 KB) contra **400 pesos de 4 bits (220 bytes)**, con la salvedad honesta: las capas cableadas cuestan 36 730 celdas — el costo se **movió** de memoria a lógica, no se eliminó | ♻️ **C2 §21** |
 | 6.8 Limitaciones | Ningún chip fabricado; 60×80/160×120; magnitud de 8 bits satura (monarch); XCLK = clk/4 al relajar el reloj; hold del #3 | ♻️ **P164** + ✍️ |
 
 ---
 
 ## 7. Conclusiones y trabajo futuro  ♻️ (≈ 4-5 pág.)
+
+> ⭐ **Incluir una subsección de retractaciones.** El cuaderno 2 corrigió **cinco** afirmaciones
+> propias, con fecha y evidencia: el VSYNC que era un off-by-one (§7.4); el `thr=110` que no
+> transfiere de 20 000 a 60 000 (§3); el **97.3 % falso** (§17); la **σ subestimada 1.8×** (§19); y la
+> **§6 entera**, que comparaba dos puntos de operación y no dos filtros (§26). *Un documento que lista
+> cinco errores propios con evidencia es mucho más difícil de atacar que uno que no lista ninguno —
+> y un jurado que encuentra un error por su cuenta es mucho peor que uno que lo ve ya corregido.*
 - Conclusiones por objetivo específico (cerrar el círculo con §1.4). — ♻️ **P199**
 - Contribuciones: el SoC con 3 filtros vivo en FPGA; el motor transitivo en hardware con su hallazgo de
   co-diseño; los chips con GDSII firmado; el cuaderno reproducible.
@@ -158,7 +195,18 @@ cambiar con ella (ver Pendientes #6). Sin eso, 5.6 queda colgando de un document
    cuál cabe no es el algoritmo sino la memoria*. Está respaldado por la propuesta de 2017 (esta tesis es
    su "Trabajo Futuro" literal) y por la §5.6. **Si se adopta, cambian el título, el Cap. 1 y el Cap. 2**;
    si no, la §5.6 sobra. Hay que decidirlo ANTES de escribir el Cap. 1 — no antes del Cap. 5.
-7. **Dos datos que faltan** para cerrar la tabla maestra: el `spef_wns` de los chips #1 y #2 (se
+7. ⭐ **AVISARLE A CARLOS — lo más urgente (14-sep).** No vio nada del cuaderno 2 §19-§26, y sobre
+   todo **no sabe que la §6 está retractada**. Esa sección justificaba toda la línea del Canny.
+   Republicar la página del tutor con: las métricas avanzadas, el pico-vs-meseta, el CPU sobre el
+   Canny, y **la retractación de la §6 con el arco nuevo del argumento**.
+8. **Experimento barato que queda abierto:** medir en la placa `110/40` contra `170/61`. En Python el
+   segundo gana **18 pp** con ruido severo y empata en limpio (C2 §26.5). Cuesta cambiar la constante
+   `UMBRALES` del `soc_ctrl` — **es exactamente el experimento para el que se construyó el
+   periférico `0x0045`**. No está medido en silicio; la §3 ya enseñó que los óptimos no transfieren.
+9. **Auditoría pendiente sobre el cuaderno 1:** las tres comparaciones inválidas halladas (igual área,
+   igual umbral, igual implementación) son **el mismo modo de fallo**. El cuaderno 1 nunca se revisó
+   con esa pregunta. Es barato y puede evitar que el jurado encuentre la cuarta.
+10. **Dos datos que faltan** para cerrar la tabla maestra: el `spef_wns` de los chips #1 y #2 (se
    archivaron sin `reports/`; su ficha solo tiene el WNS nominal). Se resuelve re-corriendo esos dos
    diseños, o se documenta el hueco tal como está ahora.
 
