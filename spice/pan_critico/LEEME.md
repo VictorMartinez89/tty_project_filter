@@ -64,3 +64,17 @@ Si la sensibilización estuviera mal, la salida no conmutaría y `.meas` devolve
 en vez de un número plausible y falso. Eso es una comprobación, no un fallo silencioso —y
 de hecho saltó con el canny, donde señaló un problema real (el de la medida, no el de la
 sensibilización).
+
+## Las ondas
+
+`ondas_ngspice.py` genera las formas de onda **con el propio NGSpice**, no con matplotlib:
+usa la orden `hardcopy` en SVG, que es el plotter nativo del simulador. Diez trazas de las
+~37 del camino, escalonadas 2 V. La escalera descendente ES el retardo del camino.
+
+    python3 ondas_ngspice.py          # -> pan_{sobel,canny}_ng.svg
+    python3 -c "import cairosvg; cairosvg.svg2png(url='pan_sobel_ng.svg',
+                write_to='pan_sobel_ng.png', scale=2.2, background_color='black')"
+
+Se ven tres cosas que un numero no dice: los flancos no son verticales, se DEGRADAN al
+avanzar por la cadena (por eso las tablas Liberty interpolan por pendiente de entrada), y
+el reposo despues de ~10 ns es graficamente la holgura con la que el chip cerro la firma.
