@@ -10,6 +10,11 @@ import gzip, os, re, collections
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
+# El dpi se fija aqui a proposito: con el dpi por defecto de Jupyter (72) un punto
+# de 0.3 pt^2 cae por debajo de un pixel y el plano sale VACIO, aunque los datos
+# esten. Fijandolo, la celda y el PNG rinden igual.
+plt.rcParams["figure.dpi"] = 120
+
 DIR = "/Users/vic/utm-share/pan_planos"
 
 # --- clasificación de celdas de sky130_fd_sc_hd -----------------------------
@@ -74,7 +79,7 @@ for ax, nom, tit in zip(axes, ["pan_sobel", "pan_canny"],
     for f in ORDEN:
         if f not in pts: continue
         xs, ys = pts[f]
-        ax.scatter(xs, ys, s=.30, c=COL[f], marker="s", lw=0,
+        ax.scatter(xs, ys, s=1.1, c=COL[f], marker="s", lw=0,
                    label="%s (%s)" % (f, format(len(xs), ",").replace(",", " ")))
 
     ax.set_aspect("equal"); ax.set_xlabel("µm"); ax.set_ylabel("µm")
