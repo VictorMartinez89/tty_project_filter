@@ -94,6 +94,15 @@ Los 4 cambios obligatorios (ROM sintetizada, sin tri-state interno, reset explí
 - ⚠️ **Precisión de escritura:** eso es *concordancia hardware↔golden*, **no "exactitud"**; y la densidad de bordes (~2 %) no es una medida de calidad. — ♻️ **P29-35**
 ### 5.2 Resultados en FPGA
 Utilización real (LC/BRAM/SPRAM), fotos del TFT con los 3 filtros vivos, el experimento 5 imágenes × 3 filtros. — ♻️ **P25-28, P68-82**
+> ⚠️ **AL ESCRIBIR LA §5.3 Y LA §5.4: hay DOS recuentos de celdas y NO son comparables.**
+> La tabla de los 10 chips usa **celdas COLOCADAS**; la tabla maestra de los 6 usa **celdas de
+> SÍNTESIS**. El emplazamiento agrega 19-23 % (medido en tres diseños: ×1.23, ×1.19, ×1.23).
+> Cruzar una cifra de una tabla con otra produce un 20 % fantasma. Ver cuaderno 2 §29.4.
+>
+> **Y dos `spef_wns` que faltaban:** `soc_canny1_top` y `soc_trans_top` cierran los dos con
+> parásitos (0.00 ns), pese a que el segundo tiene wns nominal de −0.93. Cuaderno 2 §29.5.
+> De los 16 directorios de resultados, **12 tienen GDS y solo 3 conservan `metrics.csv`**.
+
 ### 5.3 Resultados en ASIC — los 10 chips base
 Tabla de área/celdas/cp/potencia de los 6 filtros + 2 de pegamento + 2 sistemas. — ♻️ **P86-131**
 ### 5.4 Resultados en ASIC — la cadena completa (6 chips)
