@@ -22,3 +22,21 @@ Para rehacerlos: `bash /mnt/share/utm-share/traer_pan.sh` en la VM.
 `dlxtp`/`dlrtp` son CERROJOS y `dlygate4sd3`/`dlymetal6s2s` son RETARDOS. Una regex que
 capture `__dl` recoge las dos cosas: en pan_sobel eso contaba 2 573 retardos como
 biestables e inflaba el registro de 3 175 a 5 753, un 81 % de mas. Ver §32.2.
+
+## Las fotos
+`fotos/pan_{sobel,canny}_{die,zoom}.png` — capturas de KLayout con GUI sobre el GDS de
+fabricacion, con las capas de sky130A cargadas (§32.6 del cuaderno 2).
+
+KLayout en modo DESATENDIDO (`klayout -z -r guion.py`) sin encontrar el .lyp devuelve una
+mancha verde inservible; con la GUI y las capas cargadas sale bien. La limitacion es del
+modo de invocarlo, no de la herramienta.
+
+Las cuatro capturas pesaban 43 MB. Recortadas al lienzo, a media resolucion y cuantizadas
+a 64 colores ocupan 2.5 MB (-94 %) sin perder legibilidad de ninguna etiqueta de pin: el
+tramado de KLayout usa pocos colores reales sobre mucho patron repetido.
+
+## Los pines delatan el front-end
+    pan_sobel   thr_usado[7:0]                    <- UN umbral
+    pan_canny   thr_hi_o[7:0], thr_lo_o[7:0]      <- DOS: la histeresis del Canny
+El resto coincide: pclk reset href sync pix_y[7:0] pix_valid / done digito[3:0] valido
+cpu_escribio. Ningun pin de video de salida: estos chips no dibujan.
