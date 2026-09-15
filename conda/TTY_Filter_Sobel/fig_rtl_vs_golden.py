@@ -13,10 +13,11 @@ GLD = {"sobel":     ["0","1","NADA","NADA","4","5","6","7","8","NADA","NADA"],
        "soc_sobel": ["0","1","NADA","NADA","4","5","6","7","8","NADA","NADA"],
        "canny1":    ["0","NADA","NADA","NADA","4","5","6","7","NADA","9","NADA"],
        "soc_canny1":["0","NADA","NADA","NADA","4","5","6","7","NADA","NADA","NADA"]}
-RB = {"sobel":[327,149,299,352,267,308,328,229,316,234,0],
-      "soc_sobel":[306,140,289,344,254,292,312,219,303,223,0],
-      "canny1":[312,142,291,326,251,277,317,221,297,231,0],
-      "soc_canny1":[318,144,294,330,255,280,322,226,300,236,0]}
+# CORREGIDO: el conteo del `done` que da el veredicto, no el del final de la simulacion
+RB = {"sobel":[334,154,311,360,273,319,336,237,316,239,0],
+      "soc_sobel":[313,145,301,352,256,303,320,227,303,228,0],
+      "canny1":[329,153,305,341,267,296,326,229,309,243,0],
+      "soc_canny1":[335,155,308,346,271,299,331,235,312,248,0]}
 GB = {"sobel":[339,158,310,367,270,324,343,229,326,234,0],
       "soc_sobel":[317,148,301,357,256,303,326,219,311,223,0],
       "canny1":[337,155,300,360,273,319,342,232,324,235,0],
@@ -33,12 +34,13 @@ for k,(n,tit,col) in enumerate(CAD):
     ax.bar(x+(k-1.5)*w, d, w, color=col, ec="#37474f", lw=.5, label=tit)
 ax.set_xticks(x); ax.set_xticklabels(ESC, fontsize=9)
 ax.set_xlabel("escena", fontsize=10); ax.axhline(0, color="#37474f", lw=1.1)
-ax.set_ylabel("bordes que el RTL NO cuenta  (golden − RTL)", fontsize=10)
+ax.set_ylabel("golden − RTL  (bordes)", fontsize=10)
 ax.grid(axis="y", alpha=.28); ax.legend(fontsize=8.8, ncol=2)
-ax.set_title("A · El déficit es SISTEMÁTICO y siempre POSITIVO\n"
-             "en las 44 combinaciones, el golden nunca cuenta menos que el RTL",
+ax.set_title("A · La diferencia NO es sistemática en signo\n"
+             "10 de 40 comparaciones son negativas · el Sobel prácticamente coincide",
              fontsize=11.2, weight="bold", pad=12, linespacing=1.5)
-ax.text(.03,.95, "Sobel  medio +9.1\nCanny  medio +21.2   ←  2.3×", transform=ax.transAxes,
+ax.text(.03,.95, "Sobel  medio +2.1  (0.7 % de ~300)\nCanny  medio +7.9  (2.6 %)   ←  3.8×",
+        transform=ax.transAxes,
         va="top", fontsize=9.4, weight="bold", color="#263238", linespacing=1.6,
         bbox=dict(fc="#fff3e0", ec="#ffb74d", lw=1.0, boxstyle="round,pad=0.5"))
 
