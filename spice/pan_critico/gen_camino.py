@@ -56,19 +56,20 @@ def leer_camino(rpt, cual=None):
         arranque = blk[0].split(": ", 1)[1].split()[0]
         # las lineas de net traen el fanout y la capacitancia REAL del cable:
         #    "     4    0.02                           _11526_ (net)"
-        red = re.compile(r"^\s+(\d+)\s+([\d.]+)\s+\S+\s+\(net\)")
+        red = re.compile(r"^\s+(\d+)\s+([\d.]+)\s+(\S+)\s+\(net\)")
         fil = []
         for l in blk[:fin[0]]:
             m = pat.search(l)
             if m:
                 fil.append(dict(slew=float(m[1]), d=float(m[2]), t=float(m[3]),
                                 borde=m[4], inst=m[5], pin=m[6],
-                                tipo=m[7].replace(PRE, ""), fo=0, cap=0.0))
+                                tipo=m[7].replace(PRE, ""), fo=0, cap=0.0, net=None))
                 continue
             n = red.match(l)
             if n and fil:
                 fil[-1]["fo"] = int(n[1])
                 fil[-1]["cap"] = float(n[2])      # pF
+                fil[-1]["net"] = n[3]             # el nombre, para buscarla en el SPEF
         # el dato nace en la salida Q del biestable de arranque
         q = [i for i, f in enumerate(fil) if f["inst"] == arranque and f["pin"] in SAL]
         if not q:
@@ -79,12 +80,18 @@ def leer_camino(rpt, cual=None):
         for i, f in enumerate(fil):
             if f["pin"] not in SAL:
                 continue
-            ent = None
+            ent, slew_ent, borde_ent = None, None, None
             if i and fil[i - 1]["inst"] == f["inst"]:
                 ent = fil[i - 1]["pin"]
-            etapas.append(dict(f, pin_ent=ent, pin_sal=f["pin"]))
+                slew_ent = fil[i - 1]["slew"]   # la pendiente CON QUE LLEGA el dato
+                borde_ent = fil[i - 1]["borde"]  # y en que SENTIDO llega
+            etapas.append(dict(f, pin_ent=ent, pin_sal=f["pin"], slew_ent=slew_ent,
+                               borde_ent=borde_ent))
         slack = float(re.search(r"(-?\d+\.\d+)\s+slack", slk[-1]).group(1))
-        cands.append(dict(arranque=arranque, etapas=etapas, slack=slack,
+        # el pin de datos del biestable de llegada: es el receptor de la ULTIMA
+        # net del camino, y por tanto donde hay que medir cuando se modela el cable
+        dest = (fil[-1]["inst"], fil[-1]["pin"]) if fil[-1]["pin"] not in SAL else None
+        cands.append(dict(arranque=arranque, etapas=etapas, slack=slack, destino=dest,
                           retardo=etapas[-1]["t"] - etapas[0]["t"] + etapas[0]["d"]))
 
     cands.sort(key=lambda c: -c["retardo"])
@@ -181,7 +188,46 @@ def sensibilizar(tipo, pin_camino, pines, b_ent=None, b_sal=None):
 # --------------------------------------------------------------------------
 # 3 · el banco
 # --------------------------------------------------------------------------
-def generar(cam, sub, salida, rpt, con_cap=True, slew_real=True):
+def red_rc(lin, k, f, red, rec, cap_rpt, con_r=True):
+    """Vuelca en el banco la red RC que el SPEF da para la net de la etapa k.
+
+    El nodo n{k+1} pasa a ser el RECEPTOR (la entrada de la etapa siguiente) y el
+    driver pasa a n{k+1}d: entre los dos ya no hay un cortocircuito con una C
+    colgando, sino el arbol de resistencias y capacidades que el extractor midio
+    sobre la geometria.  Eso es exactamente lo que el STA leyo y SPICE no tenia.
+    """
+    drv = "%s:%s" % (f["inst"], f["pin_sal"])
+    sig, sigd = "n%03d" % (k + 1), "n%03dd" % (k + 1)
+    nodos = {n for a, b, _ in red["res"] for n in (a, b)} | set(red["cap"])
+    nom = {drv: sigd, rec: sig}
+    for i, n in enumerate(sorted(nodos - set(nom))):
+        nom[n] = "n%03d_%d" % (k + 1, i)
+    ren = lambda n: nom.setdefault(n, "n%03d_x%d" % (k + 1, len(nom)))
+
+    lin.append("* net %s: %d nodos, %d resistencias, %.4f pF de cable"
+               % (f["net"], len(nodos), len(red["res"]), red["total"]))
+    for j, (a, b, r) in enumerate(red["res"]):
+        # con_r=False: misma topologia y mismas C, resistencias a cero.  Es el
+        # control que separa lo que aporta la R de lo que aporta REPARTIR la C.
+        lin.append("R%d_%-3d %s %s %g" % (k, j, ren(a), ren(b),
+                                          max(r, 1e-3) if con_r else 1e-3))
+    for j, (n, c) in enumerate(sorted(red["cap"].items())):
+        if c > 0:
+            lin.append("C%d_%-3d %s 0 %gp" % (k, j, ren(n), c))
+    # el SPEF se extrajo con PIN_CAP NONE: la C de los pines receptores no esta.
+    # La del receptor del camino la pone su propio subcircuito; la de los OTROS
+    # destinos de la net hay que ponerla a mano, cada una en SU nodo.
+    otros = [n for n, d in red["conn"] if d == "I" and n != rec]
+    extra = max(cap_rpt - red["total"], 0.0)
+    if otros and extra > 0:
+        for j, n in enumerate(otros):
+            lin.append("Cp%d_%-2d %s 0 %gp   $ pin de %s"
+                       % (k, j, ren(n), extra / (len(otros) + 1), n))
+    return sigd
+
+
+def generar(cam, sub, salida, rpt, con_cap=True, slew_real=True, rc=None,
+            con_r=True, inc=None):
     et = cam["etapas"]
     logica = et[1:]                          # la etapa 0 es el clk->Q del biestable
     clkq = et[0]["d"]                        # retardo de reloj a dato del biestable
@@ -191,7 +237,12 @@ def generar(cam, sub, salida, rpt, con_cap=True, slew_real=True):
             "* %d etapas de lógica · el STA predice %.3f ns de reloj a dato"
             % (len(logica), cam["retardo"]),
             "*",
-            '.include "%s"' % PDK,
+            # sin `inc`: el .spice unico del PDK, que es el ESQUEMATICO.  Con
+            # `inc`: un fichero por celda, EXTRAIDO del layout con Magic, que es
+            # lo que la Liberty vio al caracterizarse.
+            "\n".join('.include "%s"' % f for f in
+                       (sorted({inc[e["tipo"]] for e in cam["etapas"][1:]
+                                if e["tipo"] in inc}) if inc else [PDK])),
             '.lib "%s" tt' % LIB,
             "",
             ".param VDD=1.8",
@@ -242,11 +293,24 @@ def generar(cam, sub, salida, rpt, con_cap=True, slew_real=True):
             else:
                 con.append("BAJO")
                 avisos.append("%s/%s sin valor asignado -> a 0" % (f["inst"], p))
+        red = rc.get(f.get("net")) if rc else None
+        if red and red["res"]:
+            # con el SPEF: la salida de la celda va al nodo del DRIVER, y el
+            # cable de por medio.  Hay que saber a que pin entra la etapa
+            # siguiente, porque en un arbol RC no todos los destinos ven lo mismo.
+            sgte = logica[k + 1] if k + 1 < len(logica) else None
+            rec = ("%s:%s" % (sgte["inst"], sgte["pin_ent"]) if sgte
+                   else "%s:%s" % cam["destino"] if cam.get("destino") else None)
+            if rec is None or rec not in {n for n, d in red["conn"]}:
+                red = None                       # no se sabe donde medir: C agrupada
+        if red and red["res"]:
+            con[con.index(sig)] = red_rc(lin, k, f, red, rec, f.get("cap", 0.0),
+                                         con_r)
         lin.append("X%-3d %s %s%s   $ %s  STA %.3f ns"
                    % (k, " ".join(con), PRE, tipo, f["inst"], f["d"]))
-        # la capacitancia que el reporte post-extraccion atribuye a ESTE nodo:
-        # es la carga de cable + fanout que la etapa tiene que mover de verdad
-        if con_cap and f.get("cap"):
+        # sin SPEF: la capacitancia que el reporte post-extraccion atribuye a ESTE
+        # nodo, agrupada.  Es la carga de cable + fanout, pero sin la R ni el reparto
+        if not (red and red["res"]) and con_cap and f.get("cap"):
             lin.append("C%-3d %s 0 %gp   $ fanout %d" % (k, sig, f["cap"], f["fo"]))
         nodo = sig
 

@@ -44,3 +44,11 @@ clasificador_mnist/fpga/escena.hex
 clasificador_mnist/fpga/vista28.txt
 clasificador_mnist/fpga/*.json
 clasificador_mnist/fpga/*.asc
+
+# Salidas de los bancos de NGSpice (spice/pan_critico/): se regeneran corriendo
+# correr.py / celda.py / pincap.py. perfil.dat solo pesa 34 MB.
+spice/pan_critico/*.spice
+spice/pan_critico/perfil.dat
+# copias de trabajo
+*.py.v2
+*.bak_pre_*

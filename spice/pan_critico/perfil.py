@@ -7,14 +7,23 @@ tomó de las tablas Liberty con el que SPICE obtiene resolviendo el transistor.
 Si la discrepancia fuese uniforme apuntaría al modelo de celda; si se concentra
 en unas pocas etapas, apunta a los parásitos de esas nets concretas.
 """
-import re, subprocess, sys
+import os, re, subprocess, sys
 import numpy as np
 import gen_camino as G
+import spef as S
 
-RPT = "/Users/vic/utm-share/asic_pan_sobel/results_final/signoff/31-rcx_sta.max.rpt"
+RPT = sys.argv[1] if len(sys.argv) > 1 else \
+    "/Users/vic/utm-share/asic_pan_sobel/results_final/signoff/31-rcx_sta.max.rpt"
+NOM = sys.argv[2] if len(sys.argv) > 2 else "pan_sobel"
 cam, _ = G.leer_camino(RPT, 0)
 sub = G.leer_subckts(G.PDK)
-inf = G.generar(cam, sub, "perfil.spice", RPT, con_cap=True, slew_real=True)
+
+# con el SPEF, cada net lleva su arbol RC en vez de una C agrupada
+SPEF = os.path.expanduser("~/ASIC_planos/%s/%s.spef" % (NOM, NOM))
+rc = S.leer(SPEF, [e["net"] for e in cam["etapas"] if e.get("net")]) \
+    if os.path.exists(SPEF) else None
+print("perfil de %s  ·  %s" % (NOM, "con red RC del SPEF" if rc else "C agrupada"))
+inf = G.generar(cam, sub, "perfil.spice", RPT, con_cap=True, slew_real=True, rc=rc)
 subprocess.run(["ngspice", "-b", "perfil.spice"], capture_output=True, text=True)
 
 # ngspice escribe pares (tiempo, valor) por columna

@@ -18,10 +18,24 @@ Impracticable. El camino crítico son 37 celdas y 48 segundos.
 ## Uso
 
     python3 gen_camino.py <reporte_sta.rpt> <salida.spice>   # genera el banco
-    python3 correr.py [rpt] [nombre]                          # las 3 variantes
-    python3 perfil.py                                         # etapa por etapa
+    python3 correr.py [rpt] [nombre] [cual] [spef]            # las 5 variantes
+    python3 perfil.py [rpt] [nombre]                          # etapa por etapa
+    python3 celda.py [celda pin_ent pin_sal slew cap]         # UNA celda: Liberty vs SPICE
+    python3 pincap.py [celda pin]                             # C de pin: Liberty vs esquematico
+
+Las variantes de `correr.py`:
+
+    A   cadena desnuda, flanco ideal        -> solo las puertas
+    B   + la capacitancia agrupada del rpt  -> + la carga de cable y fanout
+    C   + el flanco real de entrada         -> + la degradacion del frente de onda
+    D0  + la topologia RC del SPEF, R = 0   -> + repartir la C donde de verdad esta
+    D   + la resistencia medida del SPEF    -> + la R de la interconexion
+
+D0 es el CONTROL: identico a D salvo las resistencias a cero. Es lo que separa lo que
+aporta la R de lo que aporta repartir la C, y sin el las dos cosas se confunden.
 
 Necesita `ngspice` y el PDK en `~/.volare/sky130A`. Corre en el Mac; no hace falta la VM.
+El SPEF se busca en `~/ASIC_planos/<nombre>/<nombre>.spef`; sin el, D y D0 se saltan.
 
 Los reportes de entrada son los que `traer_pan.sh` deja en
 `/mnt/share/utm-share/asic_pan_{sobel,canny}/results_final/signoff/31-rcx_sta.max.rpt`.
@@ -51,12 +65,29 @@ El de `pan_canny` arranca con flanco de BAJADA. Con `RISE=1` la medida fallaba y
 informaba «NO CONMUTA», aunque el perfil mostraba los 36 nodos conmutando perfectamente.
 Se usa `CROSS=1`, que vale para los dos sentidos.
 
-**3. La diferencia con el STA no es la capacitancia.**
+**3. La diferencia con el STA no es la capacitancia. Tampoco es la resistencia.**
     correlación desviación-capacitancia   r = -0.15
     correlación desviación-fanout         r = -0.06
-Ninguna. Por eliminación es la RESISTENCIA del cable, que el reporte de texto no publica:
-vive en el SPEF, y el de `pan_*` no se conservó (`limpiar_disco.sh` lo borra por
-regenerable). Con el SPEF la comparación sería concluyente.
+Ninguna de las dos. La primera version de esta seccion concluyo, POR ELIMINACION, que
+tenia que ser la RESISTENCIA del cable, que el reporte de texto no publica y solo vive en
+el SPEF. Recuperado el SPEF, se midio -- y era falso:
+
+    topologia real del SPEF, R = 0        7.603 ns
+    topologia real del SPEF, con la R     7.620 ns
+    aporte de la resistencia              0.017 ns   (0.1 %)
+
+Lo decia el propio reporte del STA, y no se leyo: imputa 12.18 ns a pines de SALIDA
+(celda) y 0.04 ns a pines de ENTRADA (cable). La diferencia estaba DENTRO de las celdas.
+
+Lo que es: el `.subckt` del PDK es el netlist ESQUEMATICO, sin un solo parasito, mientras
+que la Liberty se caracterizo sobre la celda dibujada. Medido con `celda.py` (una celda
+sola, mismo arco, misma pendiente, misma carga) la razon Liberty/SPICE es 1.31 de media
+sobre las 37 etapas; y con `pincap.py`, la capacitancia que la Liberty declara para un pin
+llega a ser 1.8x la que el esquematico tiene.
+
+**Moraleja de forma:** una conclusion por eliminacion vale lo que valga la lista de
+alternativas. Aquella lista no incluia "el modelo de celda", y por eso senalo al cable.
+Escribir las deducciones como hipotesis hasta que haya una medida que las sostenga.
 
 ## El banco se auto-verifica
 
