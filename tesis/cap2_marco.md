@@ -203,10 +203,51 @@ diferencia medida a una causa concreta.
 
 ---
 
-> ⚠️ **Nota sobre las referencias de este capítulo.** Las citas se escribieron desde el conocimiento
-> del área y **no se han contrastado con las fuentes**. Antes de la versión final debe comprobarse
-> autor, año y publicación exacta de cada una, y verificarse cuáles de las 36 referencias ya
-> recopiladas en formato IEEE cubren estas casillas y cuáles hay que añadir. La afirmación de la §2.8
-> sobre el estado de la literatura —que la mayoría de los trabajos se detienen en FPGA— requiere
-> además una búsqueda bibliográfica que **no se ha realizado**, y debe atenuarse o sostenerse con
-> citas antes de publicarse.
+## Referencias citadas en este capítulo
+
+**Las catorce se verificaron contra la fuente el 21 de septiembre de 2026.** Volumen, número y
+páginas están comprobados salvo donde se indica.
+
+| Cita | Referencia |
+|---|---|
+| Hu 1962 | M.-K. Hu, «Visual Pattern Recognition by Moment Invariants», *IRE Trans. Information Theory*, vol. 8, n.º 2, pp. 179–187, 1962. |
+| Sobel y Feldman 1968 | I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», **charla en el Stanford Artificial Intelligence Laboratory**, 1968. *No es una publicación formal* (véase la nota). |
+| Prewitt 1970 | J. M. S. Prewitt, «Object Enhancement and Extraction», en B. Lipkin y A. Rosenfeld (eds.), *Picture Processing and Psychopictorics*, Academic Press, pp. 75–149, 1970. |
+| Kirsch 1971 | R. A. Kirsch, «Computer determination of the constituent structure of biological images», *Computers and Biomedical Research*, vol. 4, n.º 3, pp. 315–328, 1971. |
+| Otsu 1979 | N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Trans. Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. |
+| Canny 1986 | J. Canny, «A Computational Approach to Edge Detection», *IEEE Trans. Pattern Analysis and Machine Intelligence*, vol. PAMI-8, n.º 6, pp. 679–698, nov. 1986. |
+| Vincent 1993 | L. Vincent, «Morphological Grayscale Reconstruction in Image Analysis: Applications and Efficient Algorithms», *IEEE Trans. Image Processing*, vol. 2, n.º 2, pp. 176–201, abr. 1993. |
+| LeCun *et al.* 1998 | Y. LeCun, L. Bottou, Y. Bengio y P. Haffner, «Gradient-Based Learning Applied to Document Recognition», *Proceedings of the IEEE*, vol. 86, n.º 11, pp. 2278–2324, 1998. |
+| Lowe 2004 | D. G. Lowe, «Distinctive Image Features from Scale-Invariant Keypoints», *International Journal of Computer Vision*, vol. 60, n.º 2, pp. 91–110, 2004. |
+| Dalal y Triggs 2005 | N. Dalal y B. Triggs, «Histograms of Oriented Gradients for Human Detection», *IEEE CVPR*, vol. 1, pp. 886–893, 2005. |
+| Lazebnik *et al.* 2006 | S. Lazebnik, C. Schmid y J. Ponce, «Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories», *IEEE CVPR*, vol. 2, pp. 2169–2178, 2006. |
+| Chen *et al.* 2016 | Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *ISCA*, 2016. |
+| Sze *et al.* 2017 | V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017. |
+| Waterman *et al.* | A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: Unprivileged ISA*, RISC-V International. **Indicar la versión y el año de la edición efectivamente consultada.** |
+
+### Tres precisiones que la verificación produjo
+
+**Sobel y Feldman nunca publicaron su operador.** Fue una charla en el Stanford Artificial
+Intelligence Laboratory en 1968, descrita después por terceros —Pingle en 1969 y Duda y Hart en su
+libro de 1973—. Por eso buena parte de la literatura lo cita como «Duda y Hart 1973», o directamente
+como «el operador de Sobel» sin referencia. **Citar la charla de 1968 es correcto siempre que se
+indique que no es una publicación formal**, y conviene hacerlo explícito para que un revisor no lo
+tome por un descuido.
+
+**El artículo de Eyeriss que corresponde citar es el de ISCA 2016**, no el de ISSCC del mismo año.
+Los dos existen y describen el mismo sistema, pero el que desarrolla el argumento sobre el flujo de
+datos —que es el que la §2.6 invoca— es el de ISCA.
+
+**Otsu aparece con dos numeraciones de volumen en la literatura**, «vol. 9» y «vol. SMC-9». Ambas
+remiten al mismo artículo; se adopta la segunda por ser la que figura en el índice de la revista.
+
+---
+
+> ⚠️ **Lo que sigue pendiente en este capítulo.** La afirmación de la §2.8 sobre el estado de la
+> literatura —que la mayoría de los trabajos publicados se detienen en FPGA o en simulación—
+> **requiere una búsqueda bibliográfica que no se ha realizado**. Verificar una cita y sostener una
+> afirmación sobre un campo entero son cosas distintas: lo primero está hecho, lo segundo no. Debe
+> atenuarse la frase o sostenerse con citas antes de publicarse.
+>
+> Queda además por contrastar qué referencias de las 36 ya recopiladas en formato IEEE cubren estas
+> catorce casillas, para no duplicar entradas en la bibliografía final.
