@@ -24,16 +24,42 @@ Compila ahí mismo, que es lo que este Mac no puede hacer por no tener LaTeX.
 | No hay LaTeX en el Mac, luego no hay PDF | Overleaf compila en su servidor |
 | La plantilla de la Facultad no está en la máquina | Overleaf tiene plantillas de la Universidad Nacional en su galería |
 
-## Cómo aplicar la plantilla de la Facultad
+## Cómo trabajar con la plantilla oficial
 
-1. Buscar la plantilla en la galería de Overleaf, o pedirla en la Facultad.
-2. Crear el proyecto **desde la plantilla**, no desde el zip.
-3. Copiar el **cuerpo** de `tesis.tex` —lo que va entre `\begin{document}` y `\end{document}`—
-   dentro del documento de la plantilla. **No se copia el preámbulo**: el de la plantilla manda.
-4. La numeración de capítulos y secciones va **escrita a mano en los títulos** («5.2 Resultados en
-   FPGA») y el preámbulo generado desactiva la de LaTeX con
-   `\setcounter{secnumdepth}{-\maxdimen}`. Si la plantilla numera por su cuenta, hay que elegir:
-   o se quita esa línea y se borran los números de los títulos, o se conserva tal cual.
+**La plantilla es el proyecto; este zip es sólo el contenido.** El orden correcto es abrir la
+plantilla y meterle el contenido, nunca al revés.
+
+> **Plantilla Tesis Trabajo Final UNAL 2023** — la mantiene la Dirección Nacional de Bibliotecas,
+> cubre explícitamente Magíster, y trae márgenes, estilos y páginas de declaración oficiales.
+> `overleaf.com/latex/templates/plantilla-tesis-trabajo-final-unal-2023/dpzjnmzwmmrg`
+
+1. Abrir ese enlace y pulsar **Open as Template**. Eso crea *tu* proyecto con el formato ya puesto.
+2. Descomprimir este zip y **arrastrar la carpeta `figuras/`** al panel de ficheros del proyecto.
+3. Arrastrar también **`cuerpo.tex`**, que es el texto sin preámbulo. En el fichero principal de la
+   plantilla, donde ésta pone el contenido de los capítulos, escribir una línea:
+
+       \input{cuerpo}
+
+   Y nada más. Si se prefiere no usar `\input`, se abre `cuerpo.tex` y se pega su contenido ahí
+   mismo: es exactamente lo que va entre `\begin{document}` y `\end{document}`.
+
+**Nunca se copia el preámbulo de `tesis.tex`.** El de la plantilla manda, y mezclarlos rompe el
+formato oficial, que es justamente lo que se quería conservar.
+
+### Dos cosas que hay que ajustar a mano
+
+**La numeración.** Los números de capítulo y sección van **escritos dentro de los títulos**
+(«5.2 Resultados en FPGA»), y el preámbulo generado desactiva la de LaTeX con
+`\setcounter{secnumdepth}{-\maxdimen}`. Al usar la plantilla ese preámbulo se descarta, así que
+**la plantilla numerará por su cuenta** y se verá «Capítulo 5 · 5.2 Resultados…». Se arregla de una
+de dos formas, y conviene decidirlo antes de empezar:
+
+- **dejar que numere LaTeX** —lo ortodoxo— borrando los números de los títulos de `cuerpo.tex`, o
+- **conservar los manuales** añadiendo esa línea `\setcounter` al preámbulo de la plantilla.
+
+**La tipografía.** Si se quiere la fuente oficial **Ancizar Sans**, hay que cambiar el compilador a
+**XeLaTeX** o **LuaLaTeX** en *Menu → Compiler*. Con pdfLaTeX compila igual, pero con fuentes
+estándar.
 
 ## Si algo no compila
 

@@ -3,8 +3,8 @@
 > **Cómo se construyó esta lista.** Reúne las **36 referencias** recopiladas a lo largo del cuaderno
 > de laboratorio y las **17 verificadas contra la fuente** el 21 de septiembre de 2026 al redactar el
 > Capítulo 2. Ocho obras aparecían en ambas listas y se han fundido en una sola entrada, conservando
-> siempre los datos verificados; nueve son aportación de la verificación, y una —el libro de texto del que procede la arquitectura
-> de bus— se añadió al documentar el linaje del SoC en la §4.5. El total son **46 entradas sin
+> siempre los datos verificados; nueve son aportación de la verificación, y dos —el libro de texto del que procede la arquitectura
+> de bus y el que fundó el diseño estructurado— se añadieron al documentar el linaje del SoC en la §4.5. El total son **47 entradas sin
 > duplicados**.
 >
 > Las marcadas con **✓** tienen volumen, número, páginas y año comprobados contra la fuente. Las
@@ -37,60 +37,61 @@
 
 ## Diseño digital y arquitectura de sistemas en silicio
 
-14. C. I. Camargo Bareño, *Diseño de Sistemas Digitales*, Universidad Nacional de Colombia, 21 de enero de 2025. Licencia Creative Commons BY-SA. — §1.2.1, «Sistemas sobre Silicio SoC», y la figura 1.3: **el SoC de referencia cuyo mapa de direcciones y arquitectura de bus extiende este trabajo**.
+14. **✓** C. Mead y L. Conway, *Introduction to VLSI Systems*, Addison-Wesley, 1980. — El texto que estableció el diseño estructurado: reglas escalables, separación entre diseño y fabricación, y la oblea compartida.
+15. C. I. Camargo Bareño, *Diseño de Sistemas Digitales*, Universidad Nacional de Colombia, 21 de enero de 2025. Licencia Creative Commons BY-SA. — §1.2.1, «Sistemas sobre Silicio SoC», y la figura 1.3: **el SoC de referencia cuyo mapa de direcciones y arquitectura de bus extiende este trabajo**.
 
 ## Flujo a silicio y procesos abiertos
 
-15. SkyWater Technology y Google, *SKY130 Open Source PDK*, 2020. Primer kit de diseño de un proceso comercial publicado sin acuerdo de confidencialidad. https://github.com/google/skywater-pdk
-16. **✓** M. Shalan y T. Edwards, «Building OpenLANE: A 130nm OpenROAD-based Tapeout-Proven Flow», *IEEE/ACM International Conference on Computer-Aided Design (ICCAD)*, 2020.
-17. *OpenLane* — implementación del flujo RTL→GDSII. https://github.com/The-OpenROAD-Project/OpenLane
-18. *OpenROAD* — motor de emplazamiento y ruteado físico. https://theopenroadproject.org
-19. M. Venn *et al.*, *Tiny Tapeout* — fabricación educativa de circuitos integrados. https://tinytapeout.com
-20. *KLayout* — visor y editor de *layout* GDSII. https://www.klayout.de
+16. SkyWater Technology y Google, *SKY130 Open Source PDK*, 2020. Primer kit de diseño de un proceso comercial publicado sin acuerdo de confidencialidad. https://github.com/google/skywater-pdk
+17. **✓** M. Shalan y T. Edwards, «Building OpenLANE: A 130nm OpenROAD-based Tapeout-Proven Flow», *IEEE/ACM International Conference on Computer-Aided Design (ICCAD)*, 2020.
+18. *OpenLane* — implementación del flujo RTL→GDSII. https://github.com/The-OpenROAD-Project/OpenLane
+19. *OpenROAD* — motor de emplazamiento y ruteado físico. https://theopenroadproject.org
+20. M. Venn *et al.*, *Tiny Tapeout* — fabricación educativa de circuitos integrados. https://tinytapeout.com
+21. *KLayout* — visor y editor de *layout* GDSII. https://www.klayout.de
 
 ## Detección de bordes y procesamiento de imagen
 
-21. **✓** I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», charla en el Stanford Artificial Intelligence Laboratory, 1968. ▸ **No es una publicación formal**; se describe después en Pingle (1969) y en Duda y Hart (1973), razón por la cual buena parte de la literatura la cita de forma indirecta.
-22. **✓** J. M. S. Prewitt, «Object Enhancement and Extraction», en B. Lipkin y A. Rosenfeld (eds.), *Picture Processing and Psychopictorics*, Academic Press, pp. 75–149, 1970.
-23. **✓** R. A. Kirsch, «Computer determination of the constituent structure of biological images», *Computers and Biomedical Research*, vol. 4, n.º 3, pp. 315–328, 1971.
-24. **✓** N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Transactions on Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. ▸ Aparece también como «vol. 9»; se adopta «SMC-9», que es la numeración del índice de la revista.
-25. **✓** J. Canny, «A Computational Approach to Edge Detection», *IEEE Transactions on Pattern Analysis and Machine Intelligence*, vol. PAMI-8, n.º 6, pp. 679–698, nov. 1986.
-26. **✓** L. Vincent, «Morphological Grayscale Reconstruction in Image Analysis: Applications and Efficient Algorithms», *IEEE Transactions on Image Processing*, vol. 2, n.º 2, pp. 176–201, abr. 1993.
-27. R. C. Gonzalez y R. E. Woods, *Digital Image Processing*, Pearson — histéresis, umbral doble, reconstrucción morfológica y componentes conexas.
+22. **✓** I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», charla en el Stanford Artificial Intelligence Laboratory, 1968. ▸ **No es una publicación formal**; se describe después en Pingle (1969) y en Duda y Hart (1973), razón por la cual buena parte de la literatura la cita de forma indirecta.
+23. **✓** J. M. S. Prewitt, «Object Enhancement and Extraction», en B. Lipkin y A. Rosenfeld (eds.), *Picture Processing and Psychopictorics*, Academic Press, pp. 75–149, 1970.
+24. **✓** R. A. Kirsch, «Computer determination of the constituent structure of biological images», *Computers and Biomedical Research*, vol. 4, n.º 3, pp. 315–328, 1971.
+25. **✓** N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Transactions on Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. ▸ Aparece también como «vol. 9»; se adopta «SMC-9», que es la numeración del índice de la revista.
+26. **✓** J. Canny, «A Computational Approach to Edge Detection», *IEEE Transactions on Pattern Analysis and Machine Intelligence*, vol. PAMI-8, n.º 6, pp. 679–698, nov. 1986.
+27. **✓** L. Vincent, «Morphological Grayscale Reconstruction in Image Analysis: Applications and Efficient Algorithms», *IEEE Transactions on Image Processing*, vol. 2, n.º 2, pp. 176–201, abr. 1993.
+28. R. C. Gonzalez y R. E. Woods, *Digital Image Processing*, Pearson — histéresis, umbral doble, reconstrucción morfológica y componentes conexas.
 
 ## Reconocimiento y clasificación de patrones
 
-28. **✓** M.-K. Hu, «Visual Pattern Recognition by Moment Invariants», *IRE Transactions on Information Theory*, vol. 8, n.º 2, pp. 179–187, 1962.
-29. **✓** Y. LeCun, L. Bottou, Y. Bengio y P. Haffner, «Gradient-Based Learning Applied to Document Recognition», *Proceedings of the IEEE*, vol. 86, n.º 11, pp. 2278–2324, 1998. — el conjunto MNIST.
-30. G. Csurka, C. Dance, L. Fan, J. Willamowski y C. Bray, «Visual Categorization with Bags of Keypoints», *ECCV Workshop on Statistical Learning in Computer Vision*, 2004. — el *bag of visual words* original.
-31. **✓** D. G. Lowe, «Distinctive Image Features from Scale-Invariant Keypoints», *International Journal of Computer Vision*, vol. 60, n.º 2, pp. 91–110, 2004.
-32. **✓** N. Dalal y B. Triggs, «Histograms of Oriented Gradients for Human Detection», *IEEE Conference on Computer Vision and Pattern Recognition (CVPR)*, vol. 1, pp. 886–893, 2005.
-33. **✓** S. Lazebnik, C. Schmid y J. Ponce, «Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories», *IEEE CVPR*, vol. 2, pp. 2169–2178, 2006.
-34. F. Pedregosa *et al.*, «Scikit-learn: Machine Learning in Python», *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011. https://scikit-learn.org
+29. **✓** M.-K. Hu, «Visual Pattern Recognition by Moment Invariants», *IRE Transactions on Information Theory*, vol. 8, n.º 2, pp. 179–187, 1962.
+30. **✓** Y. LeCun, L. Bottou, Y. Bengio y P. Haffner, «Gradient-Based Learning Applied to Document Recognition», *Proceedings of the IEEE*, vol. 86, n.º 11, pp. 2278–2324, 1998. — el conjunto MNIST.
+31. G. Csurka, C. Dance, L. Fan, J. Willamowski y C. Bray, «Visual Categorization with Bags of Keypoints», *ECCV Workshop on Statistical Learning in Computer Vision*, 2004. — el *bag of visual words* original.
+32. **✓** D. G. Lowe, «Distinctive Image Features from Scale-Invariant Keypoints», *International Journal of Computer Vision*, vol. 60, n.º 2, pp. 91–110, 2004.
+33. **✓** N. Dalal y B. Triggs, «Histograms of Oriented Gradients for Human Detection», *IEEE Conference on Computer Vision and Pattern Recognition (CVPR)*, vol. 1, pp. 886–893, 2005.
+34. **✓** S. Lazebnik, C. Schmid y J. Ponce, «Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories», *IEEE CVPR*, vol. 2, pp. 2169–2178, 2006.
+35. F. Pedregosa *et al.*, «Scikit-learn: Machine Learning in Python», *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011. https://scikit-learn.org
 
 ## Aceleradores de redes neuronales
 
-35. **✓** Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *International Symposium on Computer Architecture (ISCA)*, 2016. ▸ Existe un artículo homónimo en ISSCC 2016 sobre el mismo sistema; el que desarrolla el argumento sobre el flujo de datos es el de ISCA.
-36. **✓** V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017.
+36. **✓** Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *International Symposium on Computer Architecture (ISCA)*, 2016. ▸ Existe un artículo homónimo en ISSCC 2016 sobre el mismo sistema; el que desarrolla el argumento sobre el flujo de datos es el de ISCA.
+37. **✓** V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017.
 
 ## Periféricos
 
-37. OmniVision, *OV7670 CMOS VGA Image Sensor — Datasheet* (protocolo SCCB, salida YUV/RGB).
-38. ILITEK, *ILI9341 — a-Si TFT LCD Single Chip Driver, 240×320 — Datasheet* (interfaz SPI); módulo PMOD-TFTLCD v1.1.
+38. OmniVision, *OV7670 CMOS VGA Image Sensor — Datasheet* (protocolo SCCB, salida YUV/RGB).
+39. ILITEK, *ILI9341 — a-Si TFT LCD Single Chip Driver, 240×320 — Datasheet* (interfaz SPI); módulo PMOD-TFTLCD v1.1.
 
 ## Verificación y modelo de referencia
 
-39. S. Williams, *Icarus Verilog* (`iverilog`, `vvp`). https://github.com/steveicarus/iverilog
-40. T. Bybell, *GTKWave* — visor de formas de onda. https://gtkwave.sourceforge.net
-41. C. R. Harris *et al.*, «Array programming with NumPy», *Nature*, vol. 585, pp. 357–362, 2020. https://numpy.org
-42. P. Virtanen *et al.*, «SciPy 1.0: fundamental algorithms for scientific computing in Python», *Nature Methods*, vol. 17, pp. 261–272, 2020. https://scipy.org
-43. J. D. Hunter, «Matplotlib: A 2D Graphics Environment», *Computing in Science & Engineering*, vol. 9, n.º 3, pp. 90–95, 2007. https://matplotlib.org
-44. S. van der Walt *et al.*, «scikit-image: image processing in Python», *PeerJ*, vol. 2, e453, 2014. https://scikit-image.org
+40. S. Williams, *Icarus Verilog* (`iverilog`, `vvp`). https://github.com/steveicarus/iverilog
+41. T. Bybell, *GTKWave* — visor de formas de onda. https://gtkwave.sourceforge.net
+42. C. R. Harris *et al.*, «Array programming with NumPy», *Nature*, vol. 585, pp. 357–362, 2020. https://numpy.org
+43. P. Virtanen *et al.*, «SciPy 1.0: fundamental algorithms for scientific computing in Python», *Nature Methods*, vol. 17, pp. 261–272, 2020. https://scipy.org
+44. J. D. Hunter, «Matplotlib: A 2D Graphics Environment», *Computing in Science & Engineering*, vol. 9, n.º 3, pp. 90–95, 2007. https://matplotlib.org
+45. S. van der Walt *et al.*, «scikit-image: image processing in Python», *PeerJ*, vol. 2, e453, 2014. https://scikit-image.org
 
 ## Trabajos de comparación
 
-45. D. N. Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130. https://github.com/DianaNatali/tt06_grayscale_sobel
-46. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. https://github.com/kayaleitner/FPGA_MNIST ▸ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
+46. D. N. Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130. https://github.com/DianaNatali/tt06_grayscale_sobel
+47. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. https://github.com/kayaleitner/FPGA_MNIST ▸ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
 
 ---
 

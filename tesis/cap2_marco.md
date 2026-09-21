@@ -1,7 +1,7 @@
 # 2. Marco teórico y estado del arte
 
 > **Estado:** borrador 2, 2026-09-21. **Las diecisiete citas están verificadas contra la fuente** y
-> cotejadas con las 36 ya recopiladas; el resultado son las 46 entradas de `bibliografia.md`. Ver la
+> cotejadas con las 36 ya recopiladas; el resultado son las 47 entradas de `bibliografia.md`. Ver la
 > nota al final del capítulo para las tres precisiones que la verificación produjo.
 
 Este capítulo establece el andamiaje conceptual del trabajo. Su estructura obedece a una afirmación
@@ -173,6 +173,26 @@ con LibreLane sobre IHP SG13G2 para la segunda tecnología. La disponibilidad de
 reciente y es lo que hace posible que un trabajo de maestría produzca GDSII verificado sin licencias
 comerciales.
 
+Conviene precisar qué es lo reciente, porque el arreglo que este trabajo emplea no es nuevo: lo nuevo
+es que sea abierto. **Mead y Conway** establecieron en 1980 los tres elementos que lo sostienen
+[Mead y Conway 1980]. El primero es un conjunto de **reglas de diseño escalables**, expresadas en una
+unidad normalizada, que permite razonar sobre el circuito sin conocer la física del proceso. El
+segundo es la consecuencia de lo anterior: la **separación entre diseñar y fabricar**, que convierte
+el plano en un objeto intercambiable entre dos organizaciones distintas. Y el tercero es la **oblea
+compartida**, que reparte el costo de una máscara entre muchos diseños pequeños y fue lo que puso el
+silicio al alcance de un curso universitario.
+
+Los tres reaparecen, cuatro décadas después, en la forma que este trabajo utiliza: el kit de diseño
+cumple el papel de las reglas, el fichero de plano el del objeto intercambiable, y las lanzas
+educativas el de la oblea compartida. **La novedad no es la posibilidad sino el precio de entrada**,
+y es sobre esa distinción que se apoya la §2.8.
+
+> Merece señalarse, además, que la §5.7 de este trabajo mide un **límite** de la primera de esas tres
+> ideas. La abstracción que permite diseñar sin conocer el proceso funciona porque alguien
+> caracterizó cada celda sobre su dibujo; cuando el modelo que se entrega a una herramienta es el
+> esquema y no el dibujo, la abstracción se rompe, y lo hace **en silencio y en un 22 % del
+> retardo**.
+
 Entre una FPGA y un ASIC cambian cosas que el RTL no expresa: la inicialización de los registros, la
 existencia de memoria en el sustrato, la disponibilidad de tri-estado interno y las primitivas
 específicas del fabricante. La §4.8 las enumera; aquí basta señalar que **ninguna de ellas produce un
@@ -298,7 +318,7 @@ comparación de una colección de implementaciones.
 
 ## Referencias citadas en este capítulo
 
-**Las diecisiete se verificaron contra la fuente el 21 de septiembre de 2026.** Volumen, número y
+**Las dieciocho se verificaron contra la fuente el 21 de septiembre de 2026.** Volumen, número y
 páginas están comprobados salvo donde se indica.
 
 | Cita | Referencia |
@@ -308,6 +328,7 @@ páginas están comprobados salvo donde se indica.
 | Prewitt 1970 | J. M. S. Prewitt, «Object Enhancement and Extraction», en B. Lipkin y A. Rosenfeld (eds.), *Picture Processing and Psychopictorics*, Academic Press, pp. 75–149, 1970. |
 | Kirsch 1971 | R. A. Kirsch, «Computer determination of the constituent structure of biological images», *Computers and Biomedical Research*, vol. 4, n.º 3, pp. 315–328, 1971. |
 | Otsu 1979 | N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Trans. Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. |
+| Mead y Conway 1980 | C. Mead y L. Conway, *Introduction to VLSI Systems*, Addison-Wesley, 1980. |
 | Canny 1986 | J. Canny, «A Computational Approach to Edge Detection», *IEEE Trans. Pattern Analysis and Machine Intelligence*, vol. PAMI-8, n.º 6, pp. 679–698, nov. 1986. |
 | Vincent 1993 | L. Vincent, «Morphological Grayscale Reconstruction in Image Analysis: Applications and Efficient Algorithms», *IEEE Trans. Image Processing*, vol. 2, n.º 2, pp. 176–201, abr. 1993. |
 | LeCun *et al.* 1998 | Y. LeCun, L. Bottou, Y. Bengio y P. Haffner, «Gradient-Based Learning Applied to Document Recognition», *Proceedings of the IEEE*, vol. 86, n.º 11, pp. 2278–2324, 1998. |
@@ -356,6 +377,6 @@ remiten al mismo artículo; se adopta la segunda por ser la que figura en el ín
 >
 > **Las diecisiete citas del capítulo están verificadas contra la fuente** y cotejadas con las 36 ya
 > recopiladas: ocho obras coincidían y se fundieron conservando los datos verificados, nueve son
-> aportación de esta verificación, y el resultado son las **46 entradas sin duplicados** de
+> aportación de esta verificación, y el resultado son las **47 entradas sin duplicados** de
 > `bibliografia.md`. Se comprobó además, en las dos direcciones, que ninguna entrada de la tabla
 > anterior queda sin citar en el cuerpo del capítulo y ninguna cita del cuerpo queda sin entrada.
