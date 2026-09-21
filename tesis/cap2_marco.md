@@ -1,10 +1,8 @@
 # 2. Marco teórico y estado del arte
 
-> **Estado:** borrador 1, escrito el 2026-09-21.
-> ⚠️ **Las citas de este capítulo deben verificarse contra la lista de 36 referencias ya recopilada
-> (cuaderno 1, Parte 200) antes de la versión final.** Se escribieron desde el conocimiento del área
-> y no se contrastaron con la bibliografía; autor, año y publicación exacta están sin comprobar.
-> Ver la nota al final del capítulo.
+> **Estado:** borrador 2, 2026-09-21. **Las diecisiete citas están verificadas contra la fuente** y
+> cotejadas con las 36 ya recopiladas; el resultado son las 45 entradas de `bibliografia.md`. Ver la
+> nota al final del capítulo para las tres precisiones que la verificación produjo.
 
 Este capítulo establece el andamiaje conceptual del trabajo. Su estructura obedece a una afirmación
 que conviene enunciar de entrada, porque de ella depende que los capítulos siguientes se lean como

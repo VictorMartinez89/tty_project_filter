@@ -1,8 +1,7 @@
 # 7. Conclusiones y trabajo futuro
 
-> **Estado:** borrador 1, escrito el 2026-09-21.
-> ⚠️ La §7.1 debe cerrarse contra la redacción definitiva de los objetivos específicos de la §1.4,
-> que a su vez depende de la decisión de título aún pendiente.
+> **Estado:** borrador 2, 2026-09-21. La §7.1 se leyó objetivo por objetivo contra la §1.4 y
+> responde a los cinco; el título está decidido.
 
 ## 7.1 Conclusiones por objetivo
 
