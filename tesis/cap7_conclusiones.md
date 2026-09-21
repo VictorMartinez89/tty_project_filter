@@ -12,26 +12,53 @@ escribirlo *antes* que el RTL permitió que la verificación fuera una comparaci
 inspección visual, lo que a su vez hizo detectables errores —un desplazamiento de fila, una
 saturación, un signo invertido— que producen salidas de aspecto correcto.
 
-**Sobre la verificación.** Los tres núcleos resultaron **idénticos bit a bit** al modelo: cero
-píxeles de diferencia sobre 4 800, en las cinco imágenes de prueba. Esa exactitud no es fortuita sino
-consecuencia de haber elegido una aritmética que la admite —enteros, pesos que son potencias de dos,
-norma L1, umbral por comparación—, y constituye por tanto una conclusión de diseño y no sólo de
+**Sobre la verificación.** Los tres núcleos de filtrado resultaron **idénticos bit a bit** al modelo:
+cero píxeles de diferencia sobre 4 800, en las cinco imágenes de prueba. El clasificador se sometió a
+una prueba más exigente —las **diez mil** imágenes del conjunto de evaluación de MNIST, comparadas una
+por una— y el resultado fue el mismo: **diez mil predicciones y diez mil veredictos de rechazo
+idénticos**, con la matriz de confusión coincidiendo casilla por casilla. Esa exactitud no es fortuita
+sino consecuencia de haber elegido una aritmética que la admite —enteros, pesos que son potencias de
+dos, norma L1, umbral por comparación—, y constituye por tanto una conclusión de diseño y no sólo de
 verificación.
 
-**Sobre la integración en FPGA.** El sistema completo —cámara, tres filtros seleccionables,
-procesador RISC-V y pantalla— funciona **físicamente** sobre una iCE40UP5K. El clasificador de
-dígitos, ejecutándose sobre ese mismo sistema, reproduce sobre la placa el comportamiento que el
-modelo predice, con los mismos aciertos y los mismos errores.
+**Sobre la integración en FPGA.** El sistema completo —cámara, tres filtros seleccionables, procesador
+RISC-V y pantalla— funciona **físicamente** sobre una iCE40UP5K. Enfrentado a dígitos manuscritos
+sostenidos ante la cámara, el sistema con front-end Canny **reconoció nueve de diez**, coincidiendo
+con lo que la simulación predecía. Y en un segundo ensayo con diez dígitos grabados en el propio
+*bitstream*, el circuito reprodujo la simulación **incluidos sus dos errores**: los mismos dos
+dígitos, con las mismas respuestas equivocadas. Reproducir un acierto puede ser casualidad;
+reproducir un error específico y repetido, no.
 
 **Sobre el paso a silicio.** Se llevaron a GDSII **dieciséis circuitos** en dos procesos —sky130A con
-OpenLane e IHP SG13G2 con LibreLane—, todos ellos con **DRC, LVS y XOR en cero**. Ninguno ha sido
-fabricado, y esa distinción se mantiene en todo el documento: silicio firmado no es silicio.
+OpenLane e IHP SG13G2 con LibreLane—, todos ellos con **DRC, LVS y XOR en cero**. La verificación
+eléctrica se cerró por dos vías independientes: los circuitos **cierran el temporizado con los
+parásitos del interconexionado extraídos** —holgura de 0,00 ns sobre el peor camino—, y el camino
+crítico de uno de ellos se simuló además en SPICE hasta explicar su retardo componente a componente.
+Ninguno ha sido fabricado, y esa distinción se mantiene en todo el documento: **silicio firmado no es
+silicio**.
 
 **Sobre la medición de compromisos.** El objetivo que dio origen al trabajo era medir qué cambia al
-cruzar de un sustrato al otro. La respuesta es la que articula el Capítulo 6: **cambia el precio de
-la memoria, y ese precio decide qué algoritmo cabe.** Un procesador RISC-V completo cuesta alrededor
-de nueve mil celdas; ampliar el alcance del patrón de una ventana de 3×3 al cuadro completo cuesta
-noventa y cuatro mil quinientas.
+cruzar de un sustrato al otro, en cuatro dimensiones:
+
+- **Área.** Es la dimensión que articula el Capítulo 6: **cambia el precio de la memoria, y ese
+  precio decide qué algoritmo cabe.** Un procesador RISC-V completo cuesta alrededor de nueve mil
+  celdas; ampliar el alcance del patrón de una ventana de 3×3 al cuadro completo cuesta noventa y
+  cuatro mil quinientas.
+- **Frecuencia.** En la FPGA el límite no lo pone la ocupación sino el procesador: las tres variantes
+  que lo incorporan se agrupan en torno a los 9 MHz, con independencia de que ocupen el 91 % o el
+  99 % del dispositivo, mientras que la que prescinde de él alcanza 28,7 MHz. La causa está medida —un
+  camino de medio período que nace en el registro de instrucción— y no se corrige emplazando mejor.
+- **Latencia.** Separa a las dos arquitecturas por un factor cercano a **trescientos** —microsegundos
+  el flujo, centenas de microsegundos por cuadro el transitivo—, y no por eficiencia de
+  implementación sino porque una decide con información local y la otra necesita el cuadro entero. El
+  procesador no la altera: contada en ciclos es la misma con él y sin él, porque escribe un registro
+  de configuración y no participa del camino de datos de imagen.
+- **Manufacturabilidad.** Los diseños con memoria de cuadro grande acumulan violaciones de antena muy
+  por encima del resto, porque sus redes de direccionamiento son largas y ramificadas.
+
+> Las tres primeras no son independientes: **área, frecuencia y manufacturabilidad son tres
+> manifestaciones del mismo hecho.** Quien optimice sólo el área concluirá que la memoria de cuadro
+> es aceptable, porque habrá visto un tercio del problema.
 
 ## 7.2 Contribuciones
 

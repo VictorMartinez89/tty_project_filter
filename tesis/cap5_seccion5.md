@@ -81,6 +81,17 @@ Reuniendo las dos medidas anteriores:
 | Transitivo | 81 MHz | ≈ 16 Mpx/s | **≈ 306 µs/cuadro** |
 | SoC + transitivo | 106 MHz | ≈ 20 Mpx/s | ≈ 235 µs/cuadro |
 
+> ⚠️ **Discrepancia interna pendiente de resolver.** La columna «Latencia» de esta tabla y la de la
+> §5.5.2 **no miden lo mismo, y el documento aún no lo dice**. Para el Sobel, la §5.5.2 informa cuatro
+> ciclos —unos 31 ns— mientras que aquí figuran ≈ 0,9 µs, treinta veces más. La primera cuenta el
+> cauce aritmético una vez formada la ventana; la segunda parece incluir el llenado de las líneas de
+> retardo, que a 60 píxeles de ancho domina el total. La reconstrucción aproximada encaja para el
+> Sobel —dos etapas de `W+1` a 130 MHz dan 0,94 µs— **pero no para el Canny**, cuyos ≈ 3,2 µs
+> equivalen a unos 374 ciclos y no a los 183 que tres etapas predecirían. **No se fuerza aquí una
+> conciliación**: hasta volver a instrumentar el banco y separar explícitamente las dos magnitudes,
+> ambas columnas deben leerse como medidas de cosas distintas, y sólo las comparaciones **dentro** de
+> cada tabla son legítimas.
+
 **La latencia separa a las dos familias por un factor de alrededor de trescientos**, y el caudal por
 un factor de seis a ocho. No es una diferencia de eficiencia de implementación: es la consecuencia
 directa de que una arquitectura decide con información local y la otra necesita el cuadro entero.

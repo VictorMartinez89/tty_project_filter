@@ -120,7 +120,34 @@ adyacente a uno fuerte. **La histéresis es un mecanismo de recuperación**, y d
 > comparaciones— buena parte de la robustez que el Sobel obtiene mediante **un procesador** capaz de
 > reescribir el umbral. No son decisiones que se sumen: son, en buena medida, **alternativas**.
 
-## 5.6.5 Validación física
+## 5.6.5 El RTL contra el modelo, sobre el conjunto completo
+
+Las cifras anteriores son del modelo en Python. La pregunta que decide si sirven de algo es si el
+circuito las reproduce, y se respondió por el camino más exigente disponible: **ejecutar el RTL sobre
+las diez mil imágenes de prueba** en el simulador y comparar, no los porcentajes agregados, sino cada
+predicción con la del modelo.
+
+| Comparación | Resultado |
+|---|---|
+| Predicciones idénticas | **10 000 / 10 000** |
+| Exactitud del RTL / del modelo | **91.04 % / 91.04 %** |
+| Matriz de confusión | idéntica elemento por elemento |
+| Veredictos de la clase de rechazo | **10 000 / 10 000** idénticos |
+| Cuadros aceptados · precisión al responder | 8 838 (88.38 %) · 95.44 %, en ambos |
+
+No son cifras «parecidas» ni «dentro del margen de error»: **las diez mil predicciones y los diez mil
+veredictos coinciden uno por uno**, y la matriz de confusión es la misma casilla por casilla. La
+verificación de los filtros de la §5.1 se hizo sobre cinco imágenes; ésta se hizo sobre diez mil, e
+incluye la decisión de rechazo, que es lógica de comparación y no de aritmética.
+
+> Conviene precisar el alcance, porque más adelante aparece una cifra distinta. Lo que aquí es
+> exacto es el **clasificador completo** —descriptor, pesos y decisión— evaluado imagen por imagen.
+> El 99.91 % que informa la §5.6.6 se refiere a otra comparación: la del **extractor de bordes**
+> píxel a píxel dentro de la cadena, cuyas discrepancias se concentran en la última fila del cuadro
+> y no alteran ninguna de las diez mil clasificaciones. Son dos medidas de objetos distintos y no se
+> contradicen.
+
+## 5.6.6 Validación física
 
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
@@ -163,7 +190,7 @@ La verificación del extractor contra su modelo de referencia arrojó **99.91 %*
 exacta píxel a píxel para el Sobel y **99.93 %** para el Canny, concentrándose las diferencias en la
 última fila del cuadro.
 
-## 5.6.6 Implementación en silicio
+## 5.6.7 Implementación en silicio
 
 El reconocedor se llevó a tecnología `sky130_fd_sc_hd` en dos variantes, ejecutando el flujo completo
 de OpenLane hasta la firma del GDS:
@@ -186,7 +213,7 @@ camino crítico de aquéllos.
 **Son los primeros circuitos de este trabajo cuya salida no es una imagen.** Los diez presentados en
 las secciones §5.3 y §5.4 procesan; éstos reconocen.
 
-## 5.6.7 El costo relativo del front-end depende del sistema
+## 5.6.8 El costo relativo del front-end depende del sistema
 
 La comparación de área entre ambos front-ends admite cuatro niveles de integración, tres de ellos
 medidos con anterioridad y el cuarto aportado por esta sección:
