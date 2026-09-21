@@ -194,18 +194,113 @@ Constituye una referencia inicial, no una base que este trabajo extienda.
 El segundo implementa un SoC basado en FemtoRV32 con memorias externas, también sobre Tiny Tapeout, y
 sirve de punto de comparación para el subsistema de procesamiento.
 
-Frente a la literatura más amplia de aceleradores de visión embebida, la posición de este trabajo es
-específica: **la mayoría de los resultados publicados se detienen en FPGA o en simulación**, mientras
-que aquí la misma cadena se lleva hasta GDSII verificado en dos procesos distintos, y las
-comparaciones entre front-ends se realizan a igualdad de todo lo demás. Esa condición de igualdad
-—mismo sistema, misma resolución, mismo flujo, mismo corner— es lo que permite atribuir cada
-diferencia medida a una causa concreta.
+### El reconocimiento de dígitos en FPGA, y el presupuesto en que se hace
+
+Existe una literatura abundante —académica y de la comunidad de código abierto— sobre implementación
+de clasificadores de MNIST en FPGA. Revisarla sitúa este trabajo con precisión, porque **la diferencia
+no está en la tarea sino en el presupuesto**.
+
+Los trabajos comparables emplean de forma característica plataformas de gama media o alta:
+
+| Plataforma | Dispositivo | Precio aproximado |
+|---|---|---:|
+| Terasic DE2-115 | Cyclone IV E EP4CE115 | 779 USD (423 académico) |
+| Digilent ZedBoard | Zynq-7000, ARM + FPGA | 475 USD |
+| **iCESugar v1.5** *(este trabajo)* | **iCE40UP5K** | **≈ 48 USD** |
+
+La diferencia de precio —un factor de diez respecto de la ZedBoard y de dieciséis respecto de la
+DE2-115— refleja una diferencia mucho mayor de recursos. Una implementación representativa sobre la
+DE2-115 emplea una red convolucional de siete capas con **144 multiplicadores dedicados y 128
+sumadores** en aritmética de punto fijo de dieciséis bits, ocupando menos de la mitad del
+dispositivo. Otra, sobre ZedBoard, dispone además de un procesador ARM de aplicación junto a la
+lógica programable.
+
+El sistema de este trabajo opera sobre un dispositivo de 5 280 celdas lógicas y **no emplea ningún
+multiplicador en el camino de datos de imagen**. La comparación no pretende mostrar superioridad: las
+tareas resueltas no son equivalentes, y una red convolucional de siete capas reconoce mejor que un
+clasificador lineal sobre descriptores de orientación. Lo que muestra es **dónde se sitúa el punto de
+operación elegido**: en el extremo del rango donde la restricción de recursos es la variable
+dominante, que es precisamente el régimen que este trabajo estudia.
+
+> Y hay una consecuencia que conviene enunciar: **una implementación que dispone de 144
+> multiplicadores no encuentra el problema que este trabajo investiga**. Con esa cantidad de
+> aritmética disponible, la pregunta de qué cabe no se plantea, y la memoria deja de ser el recurso
+> escaso. Las conclusiones de los capítulos 5 y 6 sólo son visibles desde el presupuesto pequeño.
+
+### Una confirmación independiente, desde diez veces más presupuesto
+
+El proyecto de la Universidad Técnica de Viena [Baischer *et al.*] es el más documentado de los
+revisados, y merece atención porque **llega a la misma conclusión que este trabajo desde el otro
+extremo del rango de recursos**.
+
+Sus autores implementan una red convolucional sobre una ZedBoard —diez veces el precio del
+dispositivo empleado aquí, y con un procesador ARM de aplicación incorporado— y, sin embargo,
+escriben:
+
+> *«Portar directamente todos los pesos y sesgos a la FPGA **no es viable debido a la limitada
+> cantidad de recursos disponibles**.»*
+
+y más adelante, al justificar la ausencia de interfaz gráfica:
+
+> *«los **escasos recursos** de la ZedBoard se conservan tanto como es posible.»*
+
+La solución que adoptan es exactamente la misma estrategia que el Capítulo 5 documenta:
+**cuantizar**. Reducen los pesos de treinta y dos bits en coma flotante a ocho bits con una
+configuración única para toda la red, y hasta **cuatro bits** eligiendo la configuración por capa,
+con una caída de exactitud de **98,35 % a 97,37 %** —algo más de un punto porcentual a cambio de un
+factor de ocho en memoria.
+
+> Que un grupo con diez veces más presupuesto de hardware describa sus recursos como escasos y
+> acabe recurriendo a pesos de cuatro bits **no debilita la premisa de este trabajo: la confirma**.
+> La restricción de memoria no es un artefacto de haber elegido un dispositivo pequeño; es la
+> variable dominante en todo el rango, y elegir un dispositivo pequeño sólo la hace visible antes.
+>
+> Conviene señalar además la coincidencia en la solución. Aquel trabajo llega a cuatro bits por capa
+> partiendo de una red entrenada; éste llega a **cuatrocientos pesos de cuatro bits** partiendo de un
+> descriptor diseñado. Dos caminos distintos, el mismo destino — y la misma razón de fondo, que es
+> dónde está el recurso escaso.
+
+> **Sobre la naturaleza de estas fuentes.** Los proyectos consultados son repositorios públicos de
+> código, no publicaciones revisadas por pares, y varios de ellos no reportan exactitud ni consumo de
+> recursos. Se citan como **evidencia del punto de operación habitual en la comunidad**, no como
+> resultados con los que comparar cifras. Las plataformas y sus precios sí están verificados.
+
+### Por qué el silicio verificado es reciente en este contexto
+
+La posición de este trabajo frente a la literatura más amplia de implementación de detectores de
+bordes en hardware conviene enunciarla con cuidado, porque la afirmación fácil —«casi todo se queda
+en FPGA»— es difícil de sostener con rigor y fácil de atacar.
+
+Lo que sí puede afirmarse, y explica el resto, es una cuestión de **acceso**. Hasta 2020, todo kit de
+diseño de un proceso comercial estaba sujeto a un acuerdo de confidencialidad, de modo que la
+reproducibilidad académica, las herramientas abiertas de diseño físico y las fabricaciones de bajo
+costo eran inviables por construcción [SkyWater 2020]. La apertura del kit sky130 cambió esa
+situación, y el flujo OpenLane construido sobre él [Shalan y Edwards 2020] puso al alcance de un
+grupo de investigación un camino completo de RTL a GDSII. Más de cincuenta universidades lo emplean
+actualmente en docencia y en investigación.
+
+De ahí se sigue la posición de este trabajo, enunciada sin cuantificadores que no puedan defenderse:
+**la implementación en FPGA de estos algoritmos tiene una literatura extensa y consolidada, mientras
+que llevarlos hasta silicio verificado es una posibilidad abierta hace pocos años**, y los trabajos
+que la ejercen son en consecuencia recientes. Lo que este trabajo aporta en ese contexto no es haber
+llegado a GDSII —cada vez más grupos lo hacen— sino **haber llevado la misma cadena por ese camino
+seis veces, variando una sola cosa cada vez**.
+
+Esa condición de igualdad —mismo sistema, misma resolución, mismo flujo, misma esquina de proceso—
+es lo que permite atribuir cada diferencia medida a una causa concreta, y es lo que distingue una
+comparación de una colección de implementaciones.
+
+> **Sobre el alcance de esta afirmación.** Lo anterior se apoya en una revisión no sistemática: la
+> literatura consultada sobre implementación en hardware de los operadores de Sobel y Canny es
+> predominantemente de FPGA, y las fuentes citadas documentan la apertura del kit y su adopción. **No
+> se ha realizado un recuento de publicaciones**, y por eso el texto evita la palabra «mayoría» y se
+> limita a lo que las fuentes sostienen.
 
 ---
 
 ## Referencias citadas en este capítulo
 
-**Las catorce se verificaron contra la fuente el 21 de septiembre de 2026.** Volumen, número y
+**Las diecisiete se verificaron contra la fuente el 21 de septiembre de 2026.** Volumen, número y
 páginas están comprobados salvo donde se indica.
 
 | Cita | Referencia |
@@ -224,6 +319,9 @@ páginas están comprobados salvo donde se indica.
 | Chen *et al.* 2016 | Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *ISCA*, 2016. |
 | Sze *et al.* 2017 | V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017. |
 | Waterman *et al.* | A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: Unprivileged ISA*, RISC-V International. **Indicar la versión y el año de la edición efectivamente consultada.** |
+| SkyWater 2020 | SkyWater Technology y Google, *SKY130 Open Source PDK*, 2020. Primer kit de diseño de un proceso comercial publicado sin acuerdo de confidencialidad. |
+| Shalan y Edwards 2020 | M. Shalan y T. Edwards, «Building OpenLANE: A 130nm OpenROAD-based Tapeout-Proven Flow», *ICCAD*, 2020. |
+| Baischer *et al.* | L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. Documentación y código en `github.com/kayaleitner/FPGA_MNIST`. **No es una publicación revisada por pares**, y así debe citarse. |
 
 ### Tres precisiones que la verificación produjo
 
@@ -244,10 +342,9 @@ remiten al mismo artículo; se adopta la segunda por ser la que figura en el ín
 ---
 
 > ⚠️ **Lo que sigue pendiente en este capítulo.** La afirmación de la §2.8 sobre el estado de la
-> literatura —que la mayoría de los trabajos publicados se detienen en FPGA o en simulación—
-> **requiere una búsqueda bibliográfica que no se ha realizado**. Verificar una cita y sostener una
-> afirmación sobre un campo entero son cosas distintas: lo primero está hecho, lo segundo no. Debe
-> atenuarse la frase o sostenerse con citas antes de publicarse.
+> literatura **se reformuló** tras la búsqueda: donde antes decía que «la mayoría de los trabajos se
+> detienen en FPGA» —un cuantificador que no podía defenderse— ahora describe una cuestión de acceso
+> que las fuentes sí sostienen. La revisión realizada **no es sistemática**, y el texto lo declara.
 >
-> Queda además por contrastar qué referencias de las 36 ya recopiladas en formato IEEE cubren estas
-> catorce casillas, para no duplicar entradas en la bibliografía final.
+> Queda por contrastar qué referencias de las 36 ya recopiladas en formato IEEE cubren estas dieciséis
+> casillas, para no duplicar entradas en la bibliografía final.
