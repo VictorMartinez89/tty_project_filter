@@ -120,7 +120,7 @@ la mayor parte del efecto porque en una imagen real los débiles forman un halo 
 fuertes —afirmación que la §5.5.3 confirma midiendo que el proceso completo converge en dos pasadas.
 
 El precio arquitectónico es que esta cadena encadena **tres** etapas de ventana 3×3 en lugar de una,
-y por eso necesita tres `linebuf3x3` y presenta ocho ciclos de latencia frente a los cuatro del
+y por eso necesita tres `linebuf3x3` y presenta ocho ciclos de latencia de cauce frente a los cuatro del
 Sobel. El esquemático generado de la §35 muestra las tres cajas.
 
 ### Canny transitivo: la histéresis como punto fijo

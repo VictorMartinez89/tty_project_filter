@@ -1,0 +1,11 @@
+
+   Imagen 60x80.  Referencia: 2*(W+2) = 124,  6*(W+2) = 372
+   ==============================================================
+                        A · cauce    B · primer pixel utilizable
+   Sobel  (1 etapa)        4 ciclos             125 ciclos
+   Canny  (3 etapas)       8 ciclos             313 ciclos
+   ==============================================================
+   El Sobel coincide con 2*(W+2)=124. El Canny NO llega a 6*(W+2)=372,
+   porque las tres etapas se llenan SOLAPADAS, no una tras otra.
+
+tb_latencia_final.v:51: $finish called at 48445000 (1ps)

@@ -47,8 +47,8 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
   que lo incorporan se agrupan en torno a los 9 MHz, con independencia de que ocupen el 91 % o el
   99 % del dispositivo, mientras que la que prescinde de él alcanza 28,7 MHz. La causa está medida —un
   camino de medio período que nace en el registro de instrucción— y no se corrige emplazando mejor.
-- **Latencia.** Separa a las dos arquitecturas por un factor cercano a **trescientos** —microsegundos
-  el flujo, centenas de microsegundos por cuadro el transitivo—, y no por eficiencia de
+- **Latencia.** Separa a las dos arquitecturas por **dos órdenes de magnitud** —entre ochenta y
+  trescientas veces: microsegundos el flujo, centenas de microsegundos por cuadro el transitivo—, y no por eficiencia de
   implementación sino porque una decide con información local y la otra necesita el cuadro entero. El
   procesador no la altera: contada en ciclos es la misma con él y sin él, porque escribe un registro
   de configuración y no participa del camino de datos de imagen.
