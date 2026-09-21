@@ -144,6 +144,30 @@ El procesador es un **FemtoRV32 Quark**, una implementación mínima de RV32I. S
 de programa y un **periférico mapeado en memoria en la base `0x0045_0000`** a través del cual escribe
 el umbral del filtro y lee el estado.
 
+Esa dirección no es arbitraria, y conviene explicarla porque sitúa el trabajo. La arquitectura de
+bus, el decodificador que compara `mem_addr[31:16]` contra una lista de bases y el conjunto de
+periféricos —comunicación serie en `0x0040`, puertos de propósito general en `0x0041`, multiplicador
+en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`— proceden del **SoC de
+referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
+digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
+
+![**Figura 4.1.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
+aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
+píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
+que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
+
+La figura muestra por qué este periférico no se parece a los demás. Un multiplicador o un divisor
+reciben sus operandos por el bus y devuelven el resultado por el bus: el procesador los usa. El
+filtro, en cambio, **tiene su propio camino de datos** —de la cámara a la pantalla, a un píxel por
+ciclo— y del bus recibe únicamente un parámetro de configuración. El procesador no lo usa: lo
+**ajusta**.
+
+> Esa distinción es la que el Capítulo 6 convierte en argumento. Un periférico que procesa a través
+> del bus está limitado por el ancho de banda del bus; uno que procesa al margen de él, no. Es la
+> razón de que un sistema de visión en tiempo real pueda construirse sobre un procesador de siete
+> instrucciones.
+
 El firmware ocupa **siete instrucciones**: inicializa, escribe el umbral y queda en un lazo. No es un
 programa modesto por limitación sino por diseño — el procesador existe para poder cambiar un
 parámetro en tiempo de ejecución, no para procesar.

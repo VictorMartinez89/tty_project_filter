@@ -1,7 +1,7 @@
 # 2. Marco teórico y estado del arte
 
 > **Estado:** borrador 2, 2026-09-21. **Las diecisiete citas están verificadas contra la fuente** y
-> cotejadas con las 36 ya recopiladas; el resultado son las 45 entradas de `bibliografia.md`. Ver la
+> cotejadas con las 36 ya recopiladas; el resultado son las 46 entradas de `bibliografia.md`. Ver la
 > nota al final del capítulo para las tres precisiones que la verificación produjo.
 
 Este capítulo establece el andamiaje conceptual del trabajo. Su estructura obedece a una afirmación
@@ -356,6 +356,6 @@ remiten al mismo artículo; se adopta la segunda por ser la que figura en el ín
 >
 > **Las diecisiete citas del capítulo están verificadas contra la fuente** y cotejadas con las 36 ya
 > recopiladas: ocho obras coincidían y se fundieron conservando los datos verificados, nueve son
-> aportación de esta verificación, y el resultado son las **45 entradas sin duplicados** de
+> aportación de esta verificación, y el resultado son las **46 entradas sin duplicados** de
 > `bibliografia.md`. Se comprobó además, en las dos direcciones, que ninguna entrada de la tabla
 > anterior queda sin citar en el cuerpo del capítulo y ninguna cita del cuerpo queda sin entrada.

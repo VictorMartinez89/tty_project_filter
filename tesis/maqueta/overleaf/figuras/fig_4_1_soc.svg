@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1075 616" role="img"
+     aria-label="Diagrama de bloques del SoC: un RV32I con decodificador de direcciones y siete periféricos mapeados en memoria; el de la base 0x0045 es el filtro de imagen de este trabajo, con la cámara a la entrada y la pantalla a la salida.">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+    </marker>
+    <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="#1B5F74"/>
+    </marker>
+  </defs>
+  <style>
+    .b{fill:none;stroke:currentColor;stroke-width:1.6}
+    .n{font:600 13px system-ui,sans-serif;fill:currentColor}
+    .a{font:11px ui-monospace,monospace;fill:currentColor;opacity:.72}
+    .l{font:10.5px system-ui,sans-serif;fill:currentColor;opacity:.62}
+    .w{stroke:currentColor;stroke-width:1.3;fill:none;opacity:.55}
+    .cs{stroke:currentColor;stroke-width:1;fill:none;opacity:.32;stroke-dasharray:3 3}
+    .mine{fill:none;stroke:#1B5F74;stroke-width:2.4}
+    .mn{font:700 13px system-ui,sans-serif;fill:#1B5F74}
+    .ma{font:11px ui-monospace,monospace;fill:#1B5F74}
+    .mw{stroke:#1B5F74;stroke-width:2;fill:none}
+    .ml{font:600 10.5px system-ui,sans-serif;fill:#1B5F74}
+  </style>
+
+  <!-- CPU -->
+  <rect class="b" x="34" y="232" width="152" height="118" rx="3"/>
+  <text class="n" x="110" y="278" text-anchor="middle">RV32I</text>
+  <text class="a" x="110" y="298" text-anchor="middle">FemtoRV32 Quark</text>
+  <text class="l" x="110" y="318" text-anchor="middle">ROM de 7 instrucciones</text>
+
+  <!-- decodificador -->
+  <rect class="b" x="252" y="60" width="150" height="62" rx="3"/>
+  <text class="n" x="327" y="86" text-anchor="middle">decodificador</text>
+  <text class="a" x="327" y="105" text-anchor="middle">mem_addr[31:16]</text>
+
+  <!-- buses: tronco vertical -->
+  <line class="w" x1="470" y1="52" x2="470" y2="486"/>
+  <text class="l" x="478" y="46">bus de direcciones · datos · control</text>
+
+  <!-- del CPU al tronco -->
+  <path class="w" d="M186 262 H470" marker-end="url(#f)"/>
+  <text class="l" x="196" y="256">mem_addr · mem_wdata · rd/wr</text>
+  <path class="w" d="M470 320 H186" marker-end="url(#f)"/>
+  <text class="l" x="196" y="338">mem_rdata</text>
+
+  <!-- del CPU al decodificador y de este a los cs -->
+  <path class="w" d="M110 232 V91 H252" marker-end="url(#f)"/>
+  <path class="cs" d="M402 91 H846 V540"/>
+  <text class="l" x="600" y="84">cs0 … cs7 (chip-select)</text>
+
+  <!-- perifericos heredados -->
+  <g>
+    <rect class="b" x="606" y="130" width="196" height="40" rx="3"/>
+    <text class="n" x="622" y="155">RAM</text><text class="a" x="792" y="155" text-anchor="end">0x0000</text>
+    <path class="w" d="M470 150 H606" marker-end="url(#f)"/>
+
+    <rect class="b" x="606" y="182" width="196" height="40" rx="3"/>
+    <text class="n" x="622" y="207">dpRAM</text><text class="a" x="792" y="207" text-anchor="end">0x0001</text>
+    <path class="w" d="M470 202 H606" marker-end="url(#f)"/>
+
+    <rect class="b" x="606" y="234" width="196" height="40" rx="3"/>
+    <text class="n" x="622" y="259">UART</text><text class="a" x="792" y="259" text-anchor="end">0x0040</text>
+    <path class="w" d="M470 254 H606" marker-end="url(#f)"/>
+
+    <rect class="b" x="606" y="286" width="196" height="40" rx="3"/>
+    <text class="n" x="622" y="311">GPIO</text><text class="a" x="792" y="311" text-anchor="end">0x0041</text>
+    <path class="w" d="M470 306 H606" marker-end="url(#f)"/>
+
+    <rect class="b" x="606" y="338" width="196" height="40" rx="3"/>
+    <text class="n" x="622" y="363">MULT</text><text class="a" x="792" y="363" text-anchor="end">0x0042</text>
+    <path class="w" d="M470 358 H606" marker-end="url(#f)"/>
+
+    <rect class="b" x="606" y="390" width="196" height="40" rx="3"/>
+    <text class="n" x="622" y="415">DIV</text><text class="a" x="792" y="415" text-anchor="end">0x0043</text>
+    <path class="w" d="M470 410 H606" marker-end="url(#f)"/>
+
+    <rect class="b" x="606" y="442" width="196" height="40" rx="3"/>
+    <text class="n" x="622" y="467">BIN2BCD</text><text class="a" x="792" y="467" text-anchor="end">0x0044</text>
+    <path class="w" d="M470 462 H606" marker-end="url(#f)"/>
+  </g>
+
+  <path class="cs" d="M846 150 H802"/><path class="cs" d="M846 202 H802"/><path class="cs" d="M846 254 H802"/><path class="cs" d="M846 306 H802"/><path class="cs" d="M846 358 H802"/><path class="cs" d="M846 410 H802"/><path class="cs" d="M846 462 H802"/>
+
+  <!-- llave: lo heredado -->
+  <path class="w" d="M872 130 h14 v352 h-14"/>
+  <text class="l" x="894" y="300">heredado del SoC</text>
+  <text class="l" x="894" y="316">de referencia</text>
+  <text class="l" x="894" y="332">(Camargo 2025, §1.2.1)</text>
+
+  <!-- EL PERIFERICO DE ESTE TRABAJO -->
+  <rect class="mine" x="606" y="512" width="196" height="56" rx="3"/>
+  <text class="mn" x="622" y="536">FILTRO de imagen</text>
+  <text class="ma" x="792" y="536" text-anchor="end">0x0045</text>
+  <text class="ml" x="622" y="556">Sobel · Canny · transitivo</text>
+  <path class="mw" d="M470 470 V496 H704 V512" marker-end="url(#fa)"/>
+  <path class="cs" d="M846 540 H802" stroke="#1B5F74" opacity=".6"/>
+  <text class="ml" x="478" y="492">el CPU escribe el umbral</text>
+
+  <!-- camara y pantalla: el camino de datos que NO pasa por el CPU -->
+  <rect class="mine" x="34" y="512" width="150" height="56" rx="3"/>
+  <text class="mn" x="109" y="536" text-anchor="middle">cámara OV7670</text>
+  <text class="ml" x="109" y="555" text-anchor="middle">8 bits · pclk · href</text>
+  <path class="mw" d="M184 540 H606" marker-end="url(#fa)"/>
+  <text class="ml" x="196" y="530">un píxel por ciclo — no pasa por el bus</text>
+
+  <rect class="mine" x="872" y="512" width="112" height="56" rx="3"/>
+  <text class="mn" x="928" y="536" text-anchor="middle">TFT ILI9341</text>
+  <text class="ml" x="928" y="555" text-anchor="middle">SPI</text>
+  <path class="mw" d="M802 540 H872" marker-end="url(#fa)"/>
+</svg>
