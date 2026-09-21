@@ -122,10 +122,42 @@ adyacente a uno fuerte. **La histéresis es un mecanismo de recuperación**, y d
 
 ## 5.6.5 Validación física
 
-El sistema completo —procesador RISC-V, periférico de umbrales, front-end Canny y clasificador— se
-implementó sobre una FPGA iCE40UP5K y se enfrentó a dígitos manuscritos captados por una cámara
-OV7670. **El circuito reconoció nueve de diez dígitos**, coincidiendo exactamente con lo que la
-simulación había predicho para esa configuración.
+La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
+resultados no deben confundirse.
+
+**Primer ensayo: diez dígitos grabados en el propio bitstream.** Se embebieron diez imágenes de MNIST
+en la memoria de configuración y se hizo que el circuito informara sus veredictos por el puerto
+serie, sin cámara. La placa acertó **ocho de los diez**, y lo relevante no son los ocho aciertos sino
+los dos fallos: el circuito confunde el **2** con un 0 y el **3** con un 8, **exactamente los mismos
+dos dígitos y exactamente las mismas respuestas equivocadas** que había dado la simulación del diseño
+completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta repeticiones.
+
+> Reproducir un acierto puede ser casualidad; reproducir un error específico y repetido, no. Este
+> ensayo no mide la exactitud del sistema —diez imágenes no son una medida estadística— sino que
+> **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
+> en silicio se comporta como el RTL verificado, errores incluidos.
+
+**Segundo ensayo: dígitos manuscritos ante la cámara.** El sistema completo —procesador RISC-V,
+periférico de umbrales, front-end Canny y clasificador— se enfrentó a dígitos escritos a mano y
+captados por una cámara OV7670. **El circuito reconoció nueve de diez dígitos**, coincidiendo
+exactamente con lo que la simulación había predicho para esa configuración.
+
+Ese acuerdo, sin embargo, no se obtuvo al primer intento, y la causa merece registrarse porque es la
+única discrepancia entre simulación y silicio de todo el trabajo. En la primera versión la placa
+respondía **ocho de diez** mientras la simulación sostenía nueve. El umbral inferior del front-end
+se leía desde el módulo de control mediante una **referencia jerárquica** —`SOC.flt_tlo`— en lugar de
+un puerto declarado. Ambas herramientas aceptaron el archivo sin una sola advertencia y construyeron
+circuitos distintos: `iverilog` resuelve la referencia y simula con el umbral escrito por el
+procesador, mientras que el sintetizador crea un cable implícito de un bit que nadie gobierna y fija
+el umbral inferior en cero. Sustituida la referencia por un **puerto real**, la placa pasó a nueve de
+diez: el valor que la simulación predecía.
+
+> **La lección no es que hubiera un error, sino dónde estaba.** El RTL era legal, la simulación era
+> correcta y la síntesis también lo era; lo que falló fue suponer que ambas leían la misma
+> descripción. Una construcción que el lenguaje admite y que las dos herramientas interpretan de
+> forma distinta es indetectable por inspección y silenciosa en los registros de ambas. Se deja
+> escrita la regla de trabajo que se adoptó a partir de aquí: **toda señal que cruce una frontera de
+> módulo se declara como puerto**, aunque el simulador acepte el atajo.
 
 La verificación del extractor contra su modelo de referencia arrojó **99.91 %** de coincidencia
 exacta píxel a píxel para el Sobel y **99.93 %** para el Canny, concentrándose las diferencias en la
