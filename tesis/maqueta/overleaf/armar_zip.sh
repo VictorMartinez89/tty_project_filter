@@ -5,7 +5,9 @@ AQUI="$(cd "$(dirname "$0")" && pwd)"
 export PATH=/opt/anaconda3/bin:/opt/homebrew/bin:$PATH
 UNIDO="$AQUI/../salida/tesis.md"
 [ -f "$UNIDO" ] || { echo "!! falta $UNIDO — corre antes tesis/maqueta/armar.sh"; exit 1; }
-pandoc "$UNIDO" -o "$AQUI/tesis.tex" --standalone --top-level-division=chapter
+rm -rf "$AQUI/figuras"; cp -R "$AQUI/../../figuras" "$AQUI/figuras"
+pandoc "$UNIDO" -o "$AQUI/tesis.tex" --standalone --top-level-division=chapter \
+       --resource-path="$AQUI/.."
 cd "$AQUI"
 rm -f tesis_overleaf.zip
 zip -qr tesis_overleaf.zip tesis.tex figuras LEEME_OVERLEAF.md

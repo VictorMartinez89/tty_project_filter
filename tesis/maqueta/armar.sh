@@ -46,9 +46,10 @@ agregar bibliografia.md
 
 echo "  unido:  $UNIDO  ($(wc -w < "$UNIDO" | tr -d ' ') palabras)"
 
-pandoc "$UNIDO" -o "$OUT/tesis.docx" --toc --toc-depth=3 --standalone 2>&1 | head -5
+pandoc "$UNIDO" -o "$OUT/tesis.docx" --toc --toc-depth=3 --standalone \
+       --resource-path="$T" 2>&1 | head -5
 pandoc "$UNIDO" -o "$OUT/tesis.html" --toc --toc-depth=3 --standalone --embed-resources \
-       --metadata title="Tesis" 2>&1 | head -5
+       --resource-path="$T" --metadata title="Tesis" 2>&1 | head -5
 
 echo "  docx:   $OUT/tesis.docx"
 echo "  html:   $OUT/tesis.html"

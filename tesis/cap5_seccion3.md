@@ -42,6 +42,11 @@ menos de dieciocho milésimas de milímetro cuadrado cada uno, alrededor de 560 
 medido porque desmonta una intuición común: el costo de un sistema de visión embebido no está en
 hablar con los periféricos, está en lo que se hace con los datos entre medias.
 
+![**Figura 5.2.** Acercamiento al GDSII del `canny1` en KLayout. Lo que se ve no es un esquema sino
+el plano que iría a fábrica: filas de celdas estándar y, sobre ellas, las capas de metal que las
+conectan. La mancha más clara del centro es una región de menor densidad de ruteo. Las 12 993 celdas
+de la tabla anterior son, literalmente, estas.](figuras/fig_5_2_malla_canny1.jpg)
+
 **Y el Sobel en silicio es mucho más rápido de lo que la FPGA permitía.** Su camino crítico quedó en
 **7,69 ns** frente a un objetivo de 20 ns, es decir que soportaría unos 130 MHz, mientras que en la
 iCE40 cerraba entre 9 y 28 MHz. En silicio la lógica es rápida; **lo caro es el área**, y ése es el

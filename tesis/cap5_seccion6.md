@@ -73,6 +73,13 @@ demostrables**: el margen entre el mejor y el Sobel es de 1.42 pp, inferior a la
 el Canny transitivo se separa del conjunto, con 2.70 pp (2.05 σ), resultado que una prueba de
 Mann-Whitney sobre los pliegues confirma.
 
+![**Figura 5.4.** El espacio de diseño del clasificador, con el eje horizontal en escala
+logarítmica. Cada curva es un nivel de la pirámide espacial y cada punto una precisión de peso
+distinta. El hallazgo está en el cruce: **400 pesos de 4 bits —1 600 biestables— superan a los 784
+píxeles crudos usando la vigésima parte de la memoria**, y caben bajo el presupuesto real de un chip
+de 8×2 mosaicos, marcado con la línea vertical. A igualdad de memoria, la precisión de los pesos vale
+más que el número de zonas.](figuras/fig_5_4_espacio_de_diseno.png)
+
 ## 5.6.3 Lo que la exactitud no muestra
 
 Las medidas basadas en el `argmax` descartan la información de los diez puntajes. Dos medidas que la
@@ -135,6 +142,12 @@ predicción con la del modelo.
 | Veredictos de la clase de rechazo | **10 000 / 10 000** idénticos |
 | Cuadros aceptados · precisión al responder | 8 838 (88.38 %) · 95.44 %, en ambos |
 
+![**Figura 5.5.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
+`w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
+ventana pasan uno a uno antes de que `done` presente un dígito. Es el nivel al que se hizo la
+comparación contra el modelo: no se compararon porcentajes, se compararon
+señales.](figuras/fig_5_5_ventana_al_extractor.png)
+
 No son cifras «parecidas» ni «dentro del margen de error»: **las diez mil predicciones y los diez mil
 veredictos coinciden uno por uno**, y la matriz de confusión es la misma casilla por casilla. La
 verificación de los filtros de la §5.1 se hizo sobre cinco imágenes; ésta se hizo sobre diez mil, e
@@ -152,6 +165,13 @@ incluye la decisión de rechazo, que es lógica de comparación y no de aritmét
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
 
+![**Figura 5.6.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
+la escena del dígito 3. El panel A muestra los 19 ms de dos cuadros: el veredicto sale en el primero
+y no cambia en el segundo. El panel B captura el instante en que **el procesador sustituye el umbral
+por omisión del RTL, 110, por el 90 que escribe el firmware**, con el camino de datos todavía en
+reinicio. El panel C mide los 639,5 µs que tardan las 400 multiplicaciones-acumulaciones y el
+`argmax`.](figuras/fig_5_6_cadena_en_senales.png)
+
 **Primer ensayo: diez dígitos grabados en el propio bitstream.** Se embebieron diez imágenes de MNIST
 en la memoria de configuración y se hizo que el circuito informara sus veredictos por el puerto
 serie, sin cámara. La placa acertó **ocho de los diez**, y lo relevante no son los ocho aciertos sino
@@ -163,6 +183,12 @@ completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta re
 > ensayo no mide la exactitud del sistema —diez imágenes no son una medida estadística— sino que
 > **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
 > en silicio se comporta como el RTL verificado, errores incluidos.
+
+![**Figura 5.7.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
+está cableado a la señal de configuración terminada; el azul parpadea con el latido del sistema. Los
+diez veredictos salen por el puerto serie del mismo conector que alimenta la tarjeta. A la derecha,
+el mismo montaje con el cableado del módulo de pantalla ya
+conectado.](figuras/fig_5_7_la_placa_uart.png)
 
 **Segundo ensayo: dígitos manuscritos ante la cámara.** El sistema completo —procesador RISC-V,
 periférico de umbrales, front-end Canny y clasificador— se enfrentó a dígitos escritos a mano y

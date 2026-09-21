@@ -33,6 +33,12 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
+![**Figura 5.1.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
+cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
+montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
+encuadre.](figuras/fig_5_1_sobel_en_vivo.jpg)
+
 ## 5.2.3 Utilización del dispositivo
 
 La tabla recoge el **Device utilisation** que informa `nextpnr-ice40` tras el emplazamiento y ruteado

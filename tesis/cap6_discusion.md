@@ -146,6 +146,13 @@ Poniendo precio a las dos soluciones sobre el mismo silicio:
 | robustez al umbral **en el front-end** | el Canny, en el reconocedor | **972 celdas** |
 | robustez al umbral **por software** | el procesador y su periferia | **6 220 celdas** |
 
+![**Figura 6.1.** El balance completo entre los dos filtros, sobre seis parejas de circuitos con
+plano firmado. El panel A los compara en celdas; el B muestra el sobrecoste del Canny cayendo del
+123 % al 3 % conforme crece el sistema; el C corrige la lectura fácil —el sobrecoste **no** es una
+cantidad fija, y lo que lo separa no es el tamaño del chip sino el de la imagen que el filtro
+recorre—; el D reúne las otras tres balanzas; y el E pone lado a lado las dos formas de comprar
+robustez al umbral.](figuras/fig_6_1_sobel_contra_canny.png)
+
 **Comprar robustez en el front-end resulta unas seis veces más barato que comprarla con un
 procesador.** Los dos caminos resuelven el mismo problema —que el punto de operación correcto depende
 de la escena— y la elección entre ellos es de arquitectura, no de algoritmo.

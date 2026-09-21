@@ -43,6 +43,11 @@ pediría 39,4 ns —25,4 MHz— y el #6, 54,2 ns, es decir 18,4 MHz en lugar de 
 > convirtió la tabla entera: se prefirió una tabla homogénea en su propia escala antes que una tabla
 > mixta con dos filas estimadas.
 
+![**Figura 5.3.** El mismo tipo de acercamiento, ahora sobre el sistema de visión completo. La
+diferencia con la figura anterior no está en la textura sino en la escala: aquí caben cámara, filtro,
+memoria de cuadro y controlador de pantalla en el mismo dado. Es la forma que toma en silicio la
+frase «el filtro es una pieza y no el circuito».](figuras/fig_5_3_mar_de_celdas_vision.jpg)
+
 ## 5.4.2 El procesador cuesta lo mismo, sea cual sea el filtro
 
 Restando cada chip de su gemelo con procesador se obtiene el costo del FemtoRV32, su memoria de
