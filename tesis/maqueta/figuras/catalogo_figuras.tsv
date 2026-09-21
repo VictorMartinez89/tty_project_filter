@@ -1,0 +1,264 @@
+cuaderno	celda	idx	seccion	tipo	ancho	alto	KB
+C1	38	0	② Mostrar una muestra del dataset (`plt`)	png	827	648	15
+C1	40	0	③ Pre-proceso / limpieza de la imagen	png	1727	670	29
+C1	42	0	④ Sobel clásico: `Gx`, `Gy` y la magnitud `|Gx|+|Gy|` — *antes → despu	jpeg	1600	1709	345
+C1	43	0	④ Sobel clásico: `Gx`, `Gy` y la magnitud `|Gx|+|Gy|` — *antes → despu	jpeg	1600	684	65
+C1	46	0	Ejercicio — las 8 máscaras compass aplicadas a las 4 imágenes = **32 i	jpeg	1600	815	183
+C1	48	0	Ejercicio 2 (DIRECCIONAL) — `Gx`, `Gy` y `√(Gx²+Gy²)` sobre 4 imágenes	jpeg	1479	753	132
+C1	50	0	Parte 8 (transpuesta, widescreen) — 4 filas `[Compass, Gx, Gy, √(Gx²+G	jpeg	1500	733	84
+C1	50	1	Parte 8 (transpuesta, widescreen) — 4 filas `[Compass, Gx, Gy, √(Gx²+G	jpeg	1600	782	291
+C1	50	2	Parte 8 (transpuesta, widescreen) — 4 filas `[Compass, Gx, Gy, √(Gx²+G	jpeg	1500	722	101
+C1	50	3	Parte 8 (transpuesta, widescreen) — 4 filas `[Compass, Gx, Gy, √(Gx²+G	jpeg	1500	800	90
+C1	50	4	Parte 8 (transpuesta, widescreen) — 4 filas `[Compass, Gx, Gy, √(Gx²+G	jpeg	1600	755	145
+C1	52	0	Parte 9 — El filtro **Canny** (con kernel **3×3**, para el chip)	png	1500	763	60
+C1	54	0	Review — ¿por qué Canny "fallaba" en butterfly y no en monarch?	png	1500	1308	201
+C1	56	0	¿95%? — densidad ≠ exactitud, y la receta que **CONECTA** bordes	png	1500	405	22
+C1	56	1	¿95%? — densidad ≠ exactitud, y la receta que **CONECTA** bordes	png	1500	405	22
+C1	58	0	Parte 10 — Automatización de umbrales (Otsu) + función de transferenci	png	1352	588	20
+C1	58	1	Parte 10 — Automatización de umbrales (Otsu) + función de transferenci	jpeg	1600	1220	291
+C1	60	0	6) ¿Y el operador `%`? ¿y el 95%?	jpeg	1600	484	37
+C1	62	0	Parte 12 — Sobel **8 compass + dirección** y Canny **3×3 / 5×5 / 7×7**	jpeg	1600	456	133
+C1	62	1	Parte 12 — Sobel **8 compass + dirección** y Canny **3×3 / 5×5 / 7×7**	png	1500	149	7
+C1	63	0	Parte 12 — Sobel **8 compass + dirección** y Canny **3×3 / 5×5 / 7×7**	png	1500	1361	122
+C1	65	0	Parte 12.B — Sobel compass+direccional `[Compass, Gx, Gy, √(Gx²+Gy²)]`	jpeg	1056	1536	118
+C1	65	1	Parte 12.B — Sobel compass+direccional `[Compass, Gx, Gy, √(Gx²+Gy²)]`	jpeg	1056	1536	408
+C1	65	2	Parte 12.B — Sobel compass+direccional `[Compass, Gx, Gy, √(Gx²+Gy²)]`	jpeg	1078	1530	183
+C1	65	3	Parte 12.B — Sobel compass+direccional `[Compass, Gx, Gy, √(Gx²+Gy²)]`	png	907	1536	309
+C1	65	4	Parte 12.B — Sobel compass+direccional `[Compass, Gx, Gy, √(Gx²+Gy²)]`	jpeg	1078	1508	233
+C1	67	0	Parte 13 — Canny en streaming (Verilog `canny_control.sv`): histéresis	png	1500	359	24
+C1	77	0	Parte 15 — **Framebuffer** y **DMA desde RAM** (`peripheral_sobel_fb.v	png	1308	538	13
+C1	81	0	16.B — Verilog: **framebuffer** (`tb_cmp_fb.sv`)	png	1308	538	15
+C1	84	0	Lo único que falta para 160×120 real	jpeg	1266	1068	285
+C1	90	0	4. Lo que enseña este camino (para la defensa)	png	979	363	14
+C1	96	0	La **mano** entra al notebook — de la FPGA al modelo golden	jpeg	1267	1068	281
+C1	99	0	23.A — El pipeline `ra → a1 → a2`, ciclo por ciclo	png	1638	780	63
+C1	101	0	⏱ 23.B — El cruce de dominios de reloj (CDC)	png	1528	649	62
+C1	104	0	4. El experimento — filtro **Sobel en vivo** sobre 6 objetos (capturas	jpeg	1009	837	192
+C1	106	0	3. El experimento — Canny 1-salto sobre 6 objetos (capturas reales en 	jpeg	968	837	148
+C1	108	0	2. La prueba de la conectividad — un contorno **cerrado	jpeg	369	501	18
+C1	110	0	4. La trilogía completa (los mismos objetos, en tu FPGA)	jpeg	1011	837	117
+C1	112	0	Lo que esta figura demuestra (para la defensa)	jpeg	855	1439	244
+C1	115	0	Dos ventanas del mismo VCD: el pipeline llenándose y luego computando	jpeg	1492	872	236
+C1	116	0	Dos ventanas del mismo VCD: el pipeline llenándose y luego computando	jpeg	1402	869	212
+C1	118	0	Parte 30 — Verificación por **simulación** (iverilog): el RTL == el mo	png	916	1131	75
+C1	120	0	Las señales, agrupadas (bajo `tb_canny_wave → dut`)	png	1458	869	44
+C1	122	0	Capturas reales de GTKWave (3 vistas del mismo `out/canny_wave.vcd`)	jpeg	1361	828	150
+C1	123	0	Capturas reales de GTKWave (3 vistas del mismo `out/canny_wave.vcd`)	jpeg	1361	828	154
+C1	124	0	Capturas reales de GTKWave (3 vistas del mismo `out/canny_wave.vcd`)	jpeg	1361	828	149
+C1	126	0	Parte 32 — Verificación por simulación de Canny 1-salto (iverilog): el	png	916	1131	49
+C1	128	0	Señales del motor (`hysteresis_frame_bram_sync`)	png	1389	646	24
+C1	130	0	Capturas reales de GTKWave — el motor transitivo (de `out/trans_wave.v	jpeg	1361	828	103
+C1	131	0	Capturas reales de GTKWave — el motor transitivo (de `out/trans_wave.v	jpeg	1361	828	109
+C1	133	0	Parte 34 — Verificación por simulación de Canny transitivo (iverilog):	png	965	1190	77
+C1	135	0	Canny transitivo direccional (+DIR=0..7) — usa el MOTOR real por direc	png	977	1690	145
+C1	136	0	Canny transitivo direccional (+DIR=0..7) — usa el MOTOR real por direc	png	977	1690	128
+C1	137	0	Canny transitivo direccional (+DIR=0..7) — usa el MOTOR real por direc	png	977	1690	124
+C1	141	0	Verificación — IDÉNTICO bit-a-bit al golden, en los 3 modos × 5 imágen	png	1078	740	48
+C1	150	0	Cómo se reparte en tu tesis	jpeg	1183	724	74
+C1	155	0	El top del SoC — `cam_filter_soc.v`	png	1078	740	50
+C1	157	0	4⃣ Resultado — ¡CABE!	png	1056	449	28
+C1	166	0	El módulo — `sobel160_spram.v`	png	1042	989	100
+C1	168	0	El módulo transitivo — `canny_trans_160_spram.v`	png	1042	989	99
+C1	174	0	El top — `femto_filter_soc.v`	png	790	419	17
+C1	176	0	El experimento del SoC — 5 imágenes × 3 filtros @160×120	png	1042	989	100
+C1	178	0	El experimento (5 imágenes × 3 filtros, salida del SoC)	png	1042	989	99
+C1	182	0	2) De la foto al borde — Sobel del SoC en las 5 imágenes	png	1289	541	20
+C1	183	0	2) De la foto al borde — Sobel del SoC en las 5 imágenes	png	1256	440	55
+C1	185	0	Constancia de la corrida en la **VM Ubuntu** (Icarus 14.0, aarch64)	png	1229	889	87
+C1	187	0	La lección (un bug real y cómo se cazó)	png	787	490	14
+C1	190	0	Y sigue correcto	png	989	396	13
+C1	193	0	Resultado	jpeg	1339	409	95
+C1	196	0	Verificado en Icarus (cadena completa, antes de grabar)	png	590	430	5
+C1	198	0	Resultado	jpeg	1389	425	112
+C1	203	0	El SoC `cam_trans_soc.v` (194 líneas): cámara + FemtoRV32 + buffers + 	png	584	449	9
+C1	210	0	El resultado físico	jpeg	969	449	62
+C1	213	0	Los TRES filtros, en la iCE40UP5K	png	610	470	8
+C1	215	0	Lo que lo hizo verse bien en la placa	jpeg	1389	402	110
+C1	217	0	¿Qué es `wdat[7:0]` (el dato que se escribe al framebuffer)?	jpeg	1316	541	121
+C1	218	0	¿Qué es `wdat[7:0]` (el dato que se escribe al framebuffer)?	jpeg	1316	541	130
+C1	220	0	La cadena completa del Canny1 (lo que cuentan las 4 ondas)	jpeg	1286	530	115
+C1	221	0	La cadena completa del Canny1 (lo que cuentan las 4 ondas)	jpeg	1286	530	116
+C1	222	0	La cadena completa del Canny1 (lo que cuentan las 4 ondas)	jpeg	1286	530	124
+C1	223	0	La cadena completa del Canny1 (lo que cuentan las 4 ondas)	jpeg	1286	530	125
+C1	225	0	La máquina de estados por-cuadro (la figura de abajo)	png	1089	790	19
+C1	227	0	Las ondas reales del GTKWAVE — la FSM ejecutándose (`soc_trans_wave.vc	jpeg	1203	650	83
+C1	228	0	Las ondas reales del GTKWAVE — la FSM ejecutándose (`soc_trans_wave.vc	jpeg	1203	650	80
+C1	229	0	Las ondas reales del GTKWAVE — la FSM ejecutándose (`soc_trans_wave.vc	jpeg	1203	650	82
+C1	230	0	Las ondas reales del GTKWAVE — la FSM ejecutándose (`soc_trans_wave.vc	jpeg	1203	650	100
+C1	232	0	6. Conclusión general del trabajo	png	1289	409	19
+C1	234	0	Por qué las dos tesis se necesitan	png	1239	449	21
+C1	236	0	5. La opinión de "20 científicos" (panel imaginario, consenso)	png	1090	470	16
+C1	238	0	6. Conclusión general	png	1339	380	23
+C1	239	0	6. Conclusión general	png	940	449	12
+C1	241	0	El plan concreto (por fases)	png	1139	490	15
+C1	243	0	el resultado: designs/sobel/runs/run1/results/final/gds/sobel_top.gds	png	1189	330	13
+C1	245	0	Moraleja de la bitácora	png	1189	449	18
+C1	247	0	"Misma RTL, dos destinos" — cumplido	png	1239	450	23
+C1	249	0	Foto 1 — el die completo (392.84 × 391.68 µm)	jpeg	1367	891	334
+C1	251	0	Foto 2 — zoom: las celdas y el ruteo, de cerca	jpeg	1363	891	360
+C1	254	0	Inventario de **planos** exportados (archivos, NO en el notebook)	png	1239	430	16
+C1	256	0	Timing: sigue holgado	png	1129	449	14
+C1	258	0	Foto 1 — el die completo (583.28 × 582.08 µm)	jpeg	1363	891	325
+C1	260	0	Fotos 2 y 3 — zoom: la malla de celdas y el ruteo de cerca	jpeg	1363	891	517
+C1	261	0	Fotos 2 y 3 — zoom: la malla de celdas y el ruteo de cerca	jpeg	1363	891	356
+C1	264	0	Dos caminos para "el chip que ve"	png	1261	530	23
+C1	266	0	El punto de la tesis, ahora **extremo**: el framebuffer es FLIP-FLOPS	png	1239	429	18
+C1	269	0	La lección: en el ASIC, la memoria cuesta **área Y ruteo	png	1148	490	15
+C1	271	0	Lo que enseña este chip	png	1250	440	19
+C1	273	0	Foto 1 — el die completo (1753 × 1752 µm ≈ 3.13 mm²)	jpeg	1311	869	328
+C1	275	0	Fotos 2 y 3 — zoom: un mar uniforme de celdas y ruteo	jpeg	1311	869	503
+C1	276	0	Fotos 2 y 3 — zoom: un mar uniforme de celdas y ruteo	jpeg	1311	869	513
+C1	278	0	Verificación previa (yosys, en el Mac)	png	1270	509	20
+C1	280	0	Signoff — **todo en verde	png	1250	440	19
+C1	282	0	Foto 1 — el die completo (594.78 × 592.96 µm ≈ 0.37 mm²)	jpeg	1326	871	309
+C1	284	0	Foto 2 — zoom: el mar de celdas del SoC	jpeg	1326	871	530
+C1	286	0	El diagrama del bloque	png	1230	549	24
+C1	288	0	Signoff — **todo en verde	png	1250	449	20
+C1	290	0	Foto 1 — el die completo (801.78 × 799.68 µm ≈ 0.67 mm²)	jpeg	1352	875	311
+C1	292	0	Foto 2 — zoom: el mar de celdas del SoC Canny1	jpeg	1352	875	517
+C1	294	0	Foto 3 — zoom fino: las capas de metal (met1–met5)	jpeg	1323	870	402
+C1	297	0	El diagrama del bloque	png	1250	570	28
+C1	299	0	Los 6 chips a escala	png	1269	470	23
+C1	302	0	Foto 1 — el die completo (1832 × 1831 µm ≈ 3.42 mm²)	jpeg	1323	870	262
+C1	304	0	Foto 2 — zoom: el mar de celdas del jefe final	jpeg	1323	870	396
+C1	306	0	Foto 3 — zoom fino: el ruteo multicapa	jpeg	1323	870	424
+C1	309	0	Parte 110 — Los **6 chips a escala** (µm): el mapa completo del silici	png	1230	610	25
+C1	311	0	El costo, en una gráfica	png	1290	470	28
+C1	313	0	El power de los 6, medido	png	1285	449	20
+C1	316	0	El diagrama del sistema completo	png	1310	629	85
+C1	319	0	El mapa de diseño (dónde vive cada chip)	png	1230	610	21
+C1	322	0	El chip más pequeño, al lado de los otros	png	1289	489	21
+C1	325	0	Foto 1 — el die completo con sus pines (116.4 × 114.2 µm ≈ 0.0177 mm²)	jpeg	1323	870	355
+C1	327	0	Foto 2 — zoom: el mar de celdas del front-end	jpeg	1323	870	533
+C1	330	0	La cadena completa, ahora en piezas de silicio	png	1310	430	18
+C1	332	0	Signoff y comparación	png	1270	437	19
+C1	335	0	Foto 1 — el die completo con sus pines (0.0174 mm²)	jpeg	1323	870	357
+C1	337	0	Foto 2 — zoom: el mar de celdas del driver	jpeg	1323	870	528
+C1	340	0	El diagrama del chip integrado	png	1310	570	22
+C1	350	0	Signoff — el más limpio de los grandes	png	1270	449	21
+C1	353	0	Foto 1 — el die completo (1307 × 1306 µm ≈ 1.75 mm²)	jpeg	1323	870	200
+C1	355	0	Foto 2 — zoom: el mar de celdas del sistema completo	jpeg	1323	870	543
+C1	362	0	Los 9 chips a escala (área + power)	png	1326	549	36
+C1	365	0	El datapath: Sobel (fase 9) vs Canny (fase 10)	png	1303	509	18
+C1	368	0	La matriz 3×2 — las 6, todas en silicio	png	1410	610	25
+C1	371	0	Área: los dos sistemas que ven	png	1150	429	15
+C1	374	0	Foto 1 — el die completo (1412 × 1412 µm, die 2.04 mm²)	jpeg	1323	870	262
+C1	376	0	Foto 2 — zoom: el mar de celdas del sistema Canny	jpeg	1323	870	426
+C1	379	0	5 · La interfaz y el código (con iverilog)	png	1270	549	15
+C1	384	0	Celdas vs. presupuesto de Tiny Tapeout	png	1150	490	13
+C1	387	0	Qué cabe y qué no	png	1130	449	13
+C1	390	0	El puente y la jerarquía, en un dibujo	png	1310	470	16
+C1	393	0	El dibujo del salón	png	1230	610	16
+C1	397	0	El salón, con las tres piezas	png	1310	420	14
+C1	400	0	Foto 1 — el boot completo (el firmware saliendo de la flash)	jpeg	1433	932	171
+C1	402	0	Foto 2 — zoom: `mem_addr` bit a bit + la secuencia de instrucciones	jpeg	1433	932	226
+C1	405	0	El salón: polling vs interrupción	png	1289	449	14
+C1	408	0	Los dos, dibujados	png	1287	470	17
+C1	411	0	Los tres buses, dibujados	png	1310	409	13
+C1	414	0	El mini-salón del CPU	png	1250	530	17
+C1	417	0	Los dos, dibujados	png	1289	470	25
+C1	421	0	Las dos reglas, dibujadas	png	1230	509	13
+C1	424	0	Los dos, dibujados	png	1289	470	17
+C1	427	0	Las dos, dibujadas (salida vs entrada)	png	1290	449	20
+C1	430	0	Los tres chequeos, dibujados	png	1310	430	15
+C1	433	0	El triángulo y tus chips, dibujados	png	1289	489	24
+C1	436	0	El sincronizador, dibujado	png	1270	490	14
+C1	439	0	Las dos bandejas, dibujadas	png	1042	490	13
+C1	442	0	Los dos, con datos reales	png	1290	459	14
+C1	445	0	Los hallazgos	png	1189	420	12
+C1	448	0	La comparación de latencias	png	1150	470	11
+C1	451	0	El diagrama	png	1310	409	14
+C1	454	0	La batalla vencida, en una figura	png	1249	459	14
+C1	458	0	El pipeline del Canny1, dibujado	png	1310	449	16
+C1	463	0	La cadena despertándose, barrido a barrido	png	1165	490	32
+C1	466	0	La arquitectura, dibujada	png	1310	509	19
+C1	471	0	`config.json` — la receta ganadora (la misma que domó los chips 1-3)	jpeg	1500	700	71
+C1	478	0	Del método	png	1500	548	39
+C1	483	0	Bitácora del run (mientras corre)	jpeg	1500	560	94
+C1	485	0	Y otra vez el mismo culpable	png	1495	625	19
+C1	491	0	El transitivo sí entra… si se encoge	png	1500	638	47
+C1	497	0	Los seis medidos **a la misma resolución**: la comparación justa	jpeg	1500	558	113
+C1	505	0	El experimento 5 × 6 a 16×12 — **30 simulaciones RTL	png	1663	1338	32
+C1	510	0	Los siete layouts, uno debajo del otro	jpeg	1500	1347	427
+C1	514	0	El mismo experimento **a 24×18** — las 30 corridas en el cuadro que sí	png	1663	1338	35
+C1	517	0	Y el mismo experimento **a 36×26** — la serie completa de resoluciones	png	1656	1338	40
+C1	523	0	El segundo error: las columnas de la grilla estaban **corridas entre s	png	1663	1338	35
+C1	531	0	D. El clasificador lineal, y qué cuesta en flip-flops	png	1344	840	40
+C1	534	0	Parte 171 — El diagrama del sistema embebido, en sus **dos versiones	png	2065	1090	54
+C1	534	1	Parte 171 — El diagrama del sistema embebido, en sus **dos versiones	png	2065	1090	51
+C1	537	0	Primero, ¿qué es MNIST y cómo se hizo?	png	2201	1070	37
+C1	558	0	Lo que ocupa en la iCE40UP5K	png	1413	776	15
+C1	576	0	Lo que esta parte deja escrito	png	1658	887	41
+C1	581	0	Qué prueba y qué no prueba esta medición	png	1350	390	35
+C1	583	0	La placa que produjo esa captura	png	714	629	490
+C1	585	0	Y la cadena completa, fotografiada	png	560	994	443
+C1	587	0	Qué reportar, y por qué nunca alcanza con un solo número	png	1800	690	129
+C1	589	0	Y cómo se sabe que funciona: la escalera de verificación	png	1564	1033	198
+C1	592	0	Lo que esta parte enseña, más allá del Canny	png	1890	720	157
+C1	594	0	6. Trabajo futuro	png	1089	790	20
+C2	2	0	1 · El filtro: qué es exactamente el «Canny 1-salto en streaming»	png	1922	500	52
+C2	5	0	Y σ, que es lo que decide	png	1890	720	157
+C2	7	0	Lo que sí se lee de la matriz	png	1950	780	116
+C2	10	0	6.6 · El experimento en la placa, ahora sí	png	2153	614	135
+C2	12	0	7.5 · Lo que las cinco fallas tienen en común	png	1480	875	106
+C2	14	0	8.4 · Qué haría falta para cerrar esto bien	png	1330	1288	63
+C2	16	0	9.4 · El veredicto, tercera versión	png	1531	668	96
+C2	18	0	Qué se puede afirmar	png	1619	701	118
+C2	20	0	11.4 · Lo que esto cierra	png	1904	644	106
+C2	22	0	12.4 · El lazo que falta es firmware, no silicio	png	1889	632	102
+C2	24	0	13.3 · Y una comparación que ordena las tres cadenas del cuaderno	png	1764	644	115
+C2	26	0	14.7 · Qué queda dicho	png	1656	648	94
+C2	28	0	15.3 · El resumen de los cuatro	png	1618	679	77
+C2	30	0	16.4 · Y deja abierto algo mejor	png	1876	630	114
+C2	32	0	17.5 · Lo que esta sección deja	png	1876	616	120
+C2	34	0	18.2 · Qué dicen las cinco columnas juntas	png	1554	699	93
+C2	36	0	19.5 · Lo que queda dicho	png	1587	1043	226
+C2	38	0	20.8 · Lo que la tabla dice y el pseudocódigo explica	png	1612	1041	222
+C2	40	0	21.1 · Las cuatro capas, con un dígito de verdad	png	1575	622	89
+C2	42	0	21.3 · Capa 3 — de 32 contadores a 40 rasgos: la **pirámide espacial	png	958	1012	139
+C2	44	0	21.5 · Resumen: qué se diseñó y qué se aprendió	png	1535	829	468
+C2	47	0	22.4 · La pirámide espacial (Lazebnik, Schmid & Ponce, 2006) — cómo fu	png	1801	1209	213
+C2	50	0	23 · Las once clases, de punta a punta	png	2075	2242	283
+C2	53	0	24.3 · La tabla que más importa: qué está demostrado y qué no	png	2221	1140	246
+C2	56	0	25.2 · El resultado: un pico y una meseta	png	1677	931	175
+C2	59	0	26.3 · Se barrieron los dos filtros sobre el mismo rango	png	1764	985	260
+C2	62	0	27.1 · Qué se corrió	png	2205	993	150
+C2	65	0	27.6 · La cadena en señales, y una latencia que no estaba medida	png	1894	1160	175
+C2	68	0	27.7 · Las cuatro cadenas en el tiempo, y el primer cuadro que miente	png	2052	1017	107
+C2	71	0	27.9 · Las mismas señales, en GTKWave	png	1494	893	212
+C2	71	1	27.9 · Las mismas señales, en GTKWave	png	1491	892	212
+C2	71	2	27.9 · Las mismas señales, en GTKWave	png	1494	893	205
+C2	73	0	27.10 · El mismo clasificador en el Mac: las 11 escenas contra el gold	png	1746	1076	123
+C2	76	0	27.12 · La cadena del Canny 1-salto en señales	png	1875	1209	177
+C2	79	0	27.14 · Las capturas de GTKWave del Canny, y el histograma leído de la	png	1239	738	176
+C2	79	1	27.14 · Las capturas de GTKWave del Canny, y el histograma leído de la	png	1242	738	154
+C2	79	2	27.14 · Las capturas de GTKWave del Canny, y el histograma leído de la	png	1241	738	153
+C2	79	3	27.14 · Las capturas de GTKWave del Canny, y el histograma leído de la	png	1239	738	152
+C2	79	4	27.14 · Las capturas de GTKWave del Canny, y el histograma leído de la	png	1237	737	167
+C2	79	5	27.14 · Las capturas de GTKWave del Canny, y el histograma leído de la	png	1237	737	170
+C2	79	6	27.14 · Las capturas de GTKWave del Canny, y el histograma leído de la	png	1241	738	192
+C2	79	7	27.14 · Las capturas de GTKWave del Canny, y el histograma leído de la	png	1241	738	187
+C2	81	0	27.15 · La cadena cámara → SoC + Sobel → clasificador, en señales	png	1859	1184	181
+C2	84	0	27.17 · Las capturas del SoC + Sobel, y la corrección vista en la onda	png	1241	738	212
+C2	84	1	27.17 · Las capturas del SoC + Sobel, y la corrección vista en la onda	png	1238	738	192
+C2	84	2	27.17 · Las capturas del SoC + Sobel, y la corrección vista en la onda	png	1239	738	197
+C2	84	3	27.17 · Las capturas del SoC + Sobel, y la corrección vista en la onda	png	1239	738	184
+C2	86	0	28.3 · Resultados	png	2413	923	172
+C2	89	0	28.8 · El mismo reconocedor en FPGA y en ASIC	png	1712	899	148
+C2	92	0	29.1 · Los datos	png	1795	940	142
+C2	96	0	30.1 · Resultados de la implementación	png	1737	880	125
+C2	97	0	30.1 · Resultados de la implementación	png	1213	460	1108
+C2	101	0	30.5 · El segundo circuito, y una predicción puesta a prueba	png	1683	916	160
+C2	102	0	30.5 · El segundo circuito, y una predicción puesta a prueba	png	1212	460	1096
+C2	106	0	31.2 · Resultados	png	1893	908	132
+C2	109	0	31.6 · Inventario de celdas, y las dos cuentas por tercera vez	png	1872	1103	264
+C2	111	0	31.7 · Los planos	png	2093	1254	754
+C2	114	0	32.3 · Los planos	png	1855	1126	342
+C2	118	0	33.2 · Procedimiento	png	1522	1174	349
+C2	121	0	33.10 · Las señales, dibujadas por el simulador	png	942	1521	255
+C2	124	0	34.5 · Quién ganó	png	1765	1003	233
+C2	127	0	35.3 Lo que el esquemático del motor transitivo enseña sin querer	png	729	670	38
+C2	127	1	35.3 Lo que el esquemático del motor transitivo enseña sin querer	png	837	318	38
+C2	127	2	35.3 Lo que el esquemático del motor transitivo enseña sin querer	png	1451	586	59
+C2	127	3	35.3 Lo que el esquemático del motor transitivo enseña sin querer	png	1451	586	74
+C2	127	4	35.3 Lo que el esquemático del motor transitivo enseña sin querer	png	1451	586	73

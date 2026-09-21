@@ -46,3 +46,24 @@ Para incrustarlas hace falta convertir los SVG a PNG, que **sí se puede en este
 - abrir el `.docx` en Word o LibreOffice y aplicar la plantilla de la Facultad — **es el camino
   recomendado**, porque la plantilla oficial no está en esta máquina y hay que conseguirla;
 - o instalar BasicTeX y añadir `-o tesis.pdf --pdf-engine=xelatex` al guion.
+
+## Figuras: el catálogo y la selección
+
+`figuras/catalogar.py` recorre los dos cuadernos y lista **las 263 imágenes** que contienen —197 en
+el primero, 66 en el segundo, 35,5 MB— con su sección, tipo, dimensiones y peso, en
+`figuras/catalogo_figuras.tsv`.
+
+`figuras/seleccion.tsv` elige dieciséis, repartidas por capítulo, y `figuras/extraer.py` las saca a
+fichero. Pesan 4,6 MB en total.
+
+### Dos advertencias que salieron al examinarlas
+
+**La figura del balance Sobel/Canny contradice el texto.** `asic/balance/fig_sobel_vs_canny.py`
+—y su PNG— traen las cifras anteriores al 21 de septiembre: «+121 % a +3 %», «655 contra 5 255
+celdas» y «ocho veces más barato». El capítulo 6 dice ahora 123 % a 5 %, 972 contra 6 220 y «unas
+seis veces», porque el recuento se homogeneizó a celdas emplazadas. **Hay que regenerar el `.py`
+antes de incrustar esa figura**, o quedará desmintiendo al texto que acompaña.
+
+**Y una etiqueta que engañaba.** La figura de los siete *layouts* no muestra siete de los dieciséis
+circuitos de la tesis: son **los siete proyectos de Tiny Tapeout**, que es otro conjunto. Renombrada
+a `fig_5_6_siete_chips_tinytapeout` para que no se use en el sitio equivocado.

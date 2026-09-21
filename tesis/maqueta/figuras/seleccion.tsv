@@ -1,0 +1,37 @@
+# seleccion.tsv — las figuras elegidas para la tesis.
+# Formato:  cuaderno <TAB> celda:idx <TAB> nombre (sin extension)
+# El catalogo completo de las 263 esta en catalogo_figuras.tsv.
+# Extraer con:  python3 tesis/maqueta/figuras/extraer.py
+#
+# ---- Capitulo 4 · Diseno -------------------------------------------------
+C1	42:0	fig_4_1_sobel_gx_gy
+C1	96:0	fig_4_2_mano_al_modelo
+#
+# ---- Capitulo 5.1 · Verificacion ----------------------------------------
+C1	65:1	fig_5_1_compass_direccional
+C2	71:0	fig_5_2_ondas_gtkwave
+#
+# ---- Capitulo 5.2 · FPGA -------------------------------------------------
+C1	104:0	fig_5_3_sobel_en_vivo_6_objetos
+C1	583:0	fig_5_4_la_placa
+C2	10:0	fig_5_5_experimento_en_placa
+#
+# ---- Capitulo 5.3 y 5.4 · ASIC -------------------------------------------
+C1	510:0	fig_5_6_siete_chips_tinytapeout
+C1	260:0	fig_5_7_malla_de_celdas_y_ruteo
+C1	355:0	fig_5_8_mar_de_celdas_sistema_completo
+#
+# ---- Capitulo 5.5 · Verificacion electrica -------------------------------
+C2	118:0	fig_5_9_spice_procedimiento
+C2	121:0	fig_5_10_spice_ondas
+#
+# ---- Capitulo 5.6 · Reconocedor ------------------------------------------
+C1	537:0	fig_5_11_que_es_mnist
+C1	531:0	fig_5_12_clasificador_lineal
+C2	81:0	fig_5_13_cadena_camara_soc_clasificador
+#
+# ---- Capitulo 6 · Discusion ----------------------------------------------
+# OJO: esta figura trae las cifras VIEJAS (+121 %/+3 %, 655 vs 5255, "ocho veces").
+# El texto se corrigio el 21-sep a 123 %/5 %, 972 vs 6 220 y "unas seis veces".
+# NO incrustarla hasta regenerar asic/balance/fig_sobel_vs_canny.py.
+C2	124:0	fig_6_1_sobel_contra_canny
