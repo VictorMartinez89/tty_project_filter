@@ -106,7 +106,7 @@ que la suma.
 
 ## 6.5 La restricción mueve la frontera entre software y hardware
 
-El episodio de la §5.2.3 es el ejemplo más claro de co-diseño de este trabajo, y conviene leerlo con
+El episodio de la §5.2.4 es el ejemplo más claro de co-diseño de este trabajo, y conviene leerlo con
 cuidado porque su lección no es la evidente.
 
 La histéresis transitiva calculada por software funcionaba correctamente en simulación. Al intentar
