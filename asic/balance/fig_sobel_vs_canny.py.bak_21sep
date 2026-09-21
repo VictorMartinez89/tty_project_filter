@@ -1,8 +1,6 @@
 # fig_sobel_vs_canny.py — el balance entre los dos filtros, medido sobre silicio firmado.
-#   Seis parejas Sobel/Canny con GDS limpio (DRC/LVS/XOR = 0).
-#   Datos: recuento HOMOGENEO post-emplazamiento, contado sobre los netlists .nl.v
-#   archivados (asic/recuento/contar_celdas.py, 21-sep-2026). NO mezclar con celdas
-#   de sintesis: el emplazamiento agrega entre 16 % y 26 %, factor medio x1,21.
+#   Cinco parejas Sobel/Canny con GDS limpio (DRC/LVS/XOR = 0) mas una de sintesis.
+#   Datos: ASIC_planos/README.txt (post-layout) y la sintesis de asic/vision_mnist/ (yosys).
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -11,12 +9,12 @@ SOBEL, CANNY = "#4c72b0", "#c44e52"     # paleta validada: CVD dE 14.5, contrast
 FONDO = "white"
 
 #            etiqueta                        celdas S  celdas C  mm2 S  mm2 C  post-layout
-P = [("el filtro, solo",                       5823,   12993,  .167,  .360, True),
-     ("+ CPU FemtoRV32 (SoC)",                12043,   22054,  .370,  .670, True),
+P = [("el filtro, solo",                       4651,   10284,  .167,  .360, True),
+     ("+ CPU FemtoRV32 (SoC)",                 9906,   22054,  .370,  .670, True),
      ("cámara + framebuffer + display",       35653,   41925, 1.750, 2.040, True),
      ("MNIST en IHP · Tiny Tapeout",          13319,   14970,  .541,  .541, True),
-     ("cámara + CPU + clasificador",          19949,   20921,  .845,  .890, True),
-     ("cámara + clasificador + LCD",          38643,   39794, 2.032, 2.092, True)]
+     ("cámara + CPU + clasificador",          16718,   17373,  .845,  .890, True),
+     ("cámara + clasificador + LCD",          30745,   31620, 2.032, 2.092, True)]
 
 fig = plt.figure(figsize=(15.5, 8.6))
 gs = fig.add_gridspec(2, 3, hspace=.52, wspace=.34)
@@ -63,7 +61,7 @@ ax.set_yticks(yy)
 ax.set_yticklabels([CORTO[i] for i in o], fontsize=8.6)
 ax.set_ylim(len(P) - .5, -.7)
 ax.set_xlim(0, 150); ax.set_xlabel("sobrecoste del Canny, en %")
-ax.set_title("B · De +123 % a +3 %\n"
+ax.set_title("B · De +121 % a +3 %\n"
              "cuanto más hace el chip, menos pesa el filtro",
              fontsize=11.5, loc="left")
 for s in ("top", "right"): ax.spines[s].set_visible(False)
@@ -115,13 +113,13 @@ ax.text(0, .98,
 
 # --- E · la razon 8:1 ----------------------------------------------------
 ax = fig.add_subplot(gs[1, 2])
-ax.bar(["el Canny\nen el\nreconocedor", "el CPU que el\nSobel necesita\npara el umbral"],
-       [972, 6220], .5, color=[CANNY, SOBEL], edgecolor=FONDO, linewidth=1.2)
-for i, v in enumerate([972, 6220]):
+ax.bar(["el Canny\nen el chip\ncompleto", "el CPU que el\nSobel necesita\npara el umbral"],
+       [655, 5255], .5, color=[CANNY, SOBEL], edgecolor=FONDO, linewidth=1.2)
+for i, v in enumerate([655, 5255]):
     ax.text(i, v + 150, "%d celdas" % v, ha="center", fontsize=10, weight="bold",
             color=[CANNY, SOBEL][i])
-ax.set_ylim(0, 7600); ax.set_ylabel("celdas estándar")
-ax.set_title("E · Seis veces más barato\n"
+ax.set_ylim(0, 6400); ax.set_ylabel("celdas estándar")
+ax.set_title("E · Ocho veces más barato\n"
              "comprar la robustez en el front-end", fontsize=11.5, loc="left")
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 ax.grid(axis="y", alpha=.25); ax.set_axisbelow(True)

@@ -32,7 +32,7 @@ sola discrepancia, y el sistema completo —procesador, front-end Canny y clasif
 de cada diez dígitos manuscritos captados por la cámara sobre la FPGA física, coincidiendo con lo que
 la simulación predecía.
 
-Las mediciones muestran que el sobrecoste en área del Canny frente al Sobel cae del 123 % al 5 %
+Las mediciones muestran que el sobrecoste en área del Canny frente al Sobel cae del 123 % al 3 %
 según cuánto más haga el circuito, y que comprar robustez al umbral en el front-end cuesta unas seis
 veces menos que comprarla con un procesador. Una verificación eléctrica del camino crítico en SPICE
 atribuye la discrepancia con el analizador estático a los parásitos internos de la celda y no a la
@@ -62,7 +62,7 @@ discrepancy, and the complete system —processor, Canny front-end and classifie
 of ten handwritten digits captured by the camera on the physical FPGA, matching what simulation had
 predicted.
 
-Measurements show that the Canny's area overhead against the Sobel falls from 123 % to 5 % depending
+Measurements show that the Canny's area overhead against the Sobel falls from 123 % to 3 % depending
 on how much more the circuit does, and that buying threshold robustness in the front-end costs about
 six times less than buying it with a processor. An electrical verification of the critical path in
 SPICE attributes the discrepancy with the static timing analyser to the cell's internal parasitics

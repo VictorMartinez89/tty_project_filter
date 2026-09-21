@@ -20,7 +20,10 @@ la imagen aplicando una ventana de 3×3 y comparando contra un umbral. Si el cos
 a la complejidad aritmética, los tres deberían costar aproximadamente lo mismo. La §5.4.3 midió lo
 contrario:
 
-$$\text{Sobel} \xrightarrow{\;+5\,851\;} \text{Canny de un salto} \xrightarrow{\;+94\,511\;} \text{Canny transitivo}$$
+| desde | hasta | cuesta |
+|---|---|---:|
+| Sobel | Canny de un salto | **+5 851 celdas** |
+| Canny de un salto | Canny transitivo | **+94 511 celdas** |
 
 Ampliar el alcance de la ventana en un salto cuesta menos de seis mil celdas. Ampliarlo al cuadro
 completo cuesta **noventa y cuatro mil quinientas once**. Y la causa no está en las operaciones sino
@@ -138,7 +141,10 @@ para eso está el procesador con su periférico. Un Canny insensible no lo neces
 
 Poniendo precio a las dos soluciones sobre el mismo silicio:
 
-$$\underbrace{972 \text{ celdas}}_{\text{el Canny, en el reconocedor}} \qquad\text{frente a}\qquad \underbrace{6\,220 \text{ celdas}}_{\text{el procesador y su periferia}}$$
+| lo que se compra | dónde | cuesta |
+|---|---|---:|
+| robustez al umbral **en el front-end** | el Canny, en el reconocedor | **972 celdas** |
+| robustez al umbral **por software** | el procesador y su periferia | **6 220 celdas** |
 
 **Comprar robustez en el front-end resulta unas seis veces más barato que comprarla con un
 procesador.** Los dos caminos resuelven el mismo problema —que el punto de operación correcto depende

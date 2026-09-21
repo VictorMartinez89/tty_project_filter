@@ -17,7 +17,10 @@ C1	583:0	fig_5_4_la_placa
 C2	10:0	fig_5_5_experimento_en_placa
 #
 # ---- Capitulo 5.3 y 5.4 · ASIC -------------------------------------------
-C1	510:0	fig_5_6_siete_chips_tinytapeout
+# OJO: esta figura dice "los 7 chips en Tiny Tapeout" y son NUEVE:
+# los siete de sky130 mas tt_mnist_sobel_vic y tt_mnist_canny_vic (IHP).
+# Un repositorio publico por proyecto en github.com/VictorMartinez89
+C1	510:0	fig_5_6_nueve_chips_tinytapeout
 C1	260:0	fig_5_7_malla_de_celdas_y_ruteo
 C1	355:0	fig_5_8_mar_de_celdas_sistema_completo
 #
@@ -31,7 +34,7 @@ C1	531:0	fig_5_12_clasificador_lineal
 C2	81:0	fig_5_13_cadena_camara_soc_clasificador
 #
 # ---- Capitulo 6 · Discusion ----------------------------------------------
-# OJO: esta figura trae las cifras VIEJAS (+121 %/+3 %, 655 vs 5255, "ocho veces").
-# El texto se corrigio el 21-sep a 123 %/5 %, 972 vs 6 220 y "unas seis veces".
-# NO incrustarla hasta regenerar asic/balance/fig_sobel_vs_canny.py.
-C2	124:0	fig_6_1_sobel_contra_canny
+# NO sale del cuaderno: se regenera con las cifras homogeneas (21-sep) desde
+#   asic/balance/fig_sobel_vs_canny.py   ->  copiar el .png a esta carpeta.
+# La version que hay EN EL CUADERNO (C2 124:0) es la vieja y contradice al texto.
+#C2	124:0	fig_6_1_sobel_contra_canny
