@@ -113,7 +113,7 @@ ax.text(0, .98,
         "   el Canny, en una meseta.",
         va="top", family="monospace", fontsize=8.7, linespacing=1.45)
 
-# --- E · la razon 8:1 ----------------------------------------------------
+# --- E · la razon 6:1 ----------------------------------------------------
 ax = fig.add_subplot(gs[1, 2])
 ax.bar(["el Canny\nen el\nreconocedor", "el CPU que el\nSobel necesita\npara el umbral"],
        [972, 6220], .5, color=[CANNY, SOBEL], edgecolor=FONDO, linewidth=1.2)
