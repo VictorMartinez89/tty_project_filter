@@ -36,24 +36,26 @@ otros dos, que es precisamente lo que su punto fijo debe conseguir.
 ## 5.2.3 Utilización del dispositivo
 
 La tabla recoge el **Device utilisation** que informa `nextpnr-ice40` tras el emplazamiento y ruteado
-—`--up5k --package sg48`, reloj objetivo 12 MHz—, que es la medida autoritativa: la que dice si el
-diseño entra en el dispositivo. Se acompaña de la frecuencia máxima de los dos dominios de reloj, el
-del sistema y el que impone el sensor.
+—`--up5k --package sg48`—, que es la medida autoritativa: la que dice si el diseño entra en el
+dispositivo. Las cinco filas de una misma columna proceden de **una sola corrida con una sola versión
+de las herramientas**, para que sean comparables entre sí.
 
 | Diseño | LC / 5 280 | BRAM / 30 | SPRAM / 4 | E/S / 39 | *f*máx sistema | *f*máx cámara |
 |---|---:|---:|---:|---:|---:|---:|
-| Transitivo, motor dedicado **sin procesador** | 2 426 (45 %) | 17 (56 %) | **2 (50 %)** | 18 (46 %) | **28,9 MHz** ✓ | 19,3 MHz ✓ |
-| SoC + Sobel | 4 878 (92 %) | 20 (67 %) | 0 | — | — | — |
-| SoC + Canny de un salto | 5 234 (**99 %**) | 24 (80 %) | 0 | 18 (46 %) | 9,0 MHz ✗ | 18,1 MHz ✓ |
-| SoC + transitivo **por software** | 5 251 (**99 %**) | 28 (93 %) | 0 | 18 (46 %) | 9,1 MHz ✗ | 21,3 MHz ✓ |
+| Transitivo, motor dedicado **sin procesador** | 2 426 (45 %) | 17 (56 %) | **2 (50 %)** | 18 (46 %) | **28,7 MHz** ✓ | 20,6 MHz ✓ |
+| SoC + Sobel | 4 848 (91 %) | 20 (66 %) | 0 | 18 (46 %) | 9,5 MHz ✗ | 20,7 MHz ✓ |
+| SoC + Canny de un salto | 5 234 (**99 %**) | 24 (80 %) | 0 | 18 (46 %) | 9,5 MHz ✗ | 17,7 MHz ✓ |
+| SoC + transitivo **por software** | 5 251 (**99 %**) | 28 (93 %) | 0 | 18 (46 %) | 8,7 MHz ✗ | 20,5 MHz ✓ |
 | SoC + transitivo **como periférico** | no emplaza (≈ 127 %) | — | — | — | — | — |
 
-> **Procedencia.** Las filas primera, tercera y cuarta proceden de informes de `nextpnr` conservados
-> y verificables. La segunda procede del informe capturado en la Parte 61 del cuaderno; su diseño se
-> volvió a sintetizar para este documento y reprodujo exactamente los 1 722 biestables y los 20
-> bloques de memoria allí registrados, pero **el informe de emplazamiento no se conservó** y la cifra
-> de celdas no pudo recomprobarse. La quinta no dispone de informe: el emplazamiento no llegó a
-> completarse, y el ≈ 127 % es el valor documentado en su momento.
+> **Procedencia.** Las cuatro primeras filas se midieron de nuevo para este documento. Tres de ellas
+> —las filas primera, tercera y cuarta— reprodujeron **exactamente**, celda por celda y bloque por
+> bloque, los informes conservados de las corridas originales de julio y agosto de 2026. La del
+> SoC + Sobel, cuyo informe de emplazamiento no se había conservado, arrojó 4 848 celdas frente a las
+> 4 878 anotadas entonces en el cuaderno; la diferencia, de treinta celdas sobre cinco mil, proviene
+> de una versión distinta del sintetizador, que produce doce tablas de consulta menos. La quinta fila
+> no dispone de informe: el emplazamiento no llegó a completarse, y el ≈ 127 % es el valor
+> documentado en su momento.
 
 De la tabla se desprenden tres lecturas.
 
@@ -62,15 +64,27 @@ tocar en todas las variantes de flujo, y sólo el transitivo consume dos. Es coh
 arquitectura: es el único que necesita el cuadro entero a la vez. Los filtros de flujo se las arreglan
 con dos filas de retardo, que caben en los bloques de memoria pequeños.
 
-**La ocupación y el temporizado no son independientes.** Los dos diseños que no cierran a 12 MHz son
-exactamente los dos que están al 99 %, y el que cierra a 28,9 MHz —tres veces más rápido— es el que
-ocupa el 45 %. No es casualidad: con el dispositivo casi lleno el emplazador pierde libertad para
-acercar las celdas de un mismo camino, y el retardo de ruteado domina. **El espacio libre no sólo
-permite crecer: permite ir rápido.**
+**El límite de frecuencia lo pone el procesador, y no la ocupación.** Los tres diseños que llevan el
+FemtoRV32 se agrupan entre 8,7 y 9,5 MHz mientras que el que no lo lleva alcanza 28,7 MHz: **tres
+veces más rápido**. La tentación es atribuirlo a la congestión —los dos más lentos están al 99 %—,
+pero la tabla lo desmiente: el SoC del Sobel, **ocho puntos más vacío** que el del Canny, cierra a la
+misma frecuencia, y de hecho una centésima por debajo. La causa está en el informe de caminos
+críticos, que en los tres SoC señala el mismo origen: **el registro de instrucción del procesador**.
+El camino va de un flanco de subida a uno de bajada, de modo que dispone de **medio período** en lugar
+de uno entero, y eso divide por dos la frecuencia alcanzable. La síntesis lo confirma por otra vía:
+los tres SoC contienen **2 048 biestables sensibles al flanco de bajada** y el diseño sin procesador
+no contiene **ninguno**. No es un problema de emplazamiento sino una propiedad del procesador
+elegido, y es la razón de fondo de que las tres variantes con CPU necesiten dividir el reloj.
 
-**El sensor nunca fue el límite.** En las tres filas donde se midió, el dominio de la cámara cierra
-con holgura —entre 18 y 21 MHz frente a los 12 necesarios— mientras que el del sistema es el que
-falla. El cuello de botella lo introduce el procesador, no la adquisición.
+**El sensor nunca fue el límite.** El dominio de la cámara cierra con holgura en las cuatro filas
+medidas —entre 17,7 y 20,7 MHz frente a los 12 necesarios—, y es el del sistema el que falla. El
+cuello de botella está del lado del procesamiento, no de la adquisición.
+
+> **Y una observación sobre el sustrato.** En los cuatro diseños el retardo del camino crítico está
+> dominado por el **ruteado**, que aporta entre el 62 % y el 72 % del total; la lógica aporta el
+> resto. En una malla de interconexión fija como la de una FPGA esto es lo esperable, y conviene
+> tenerlo presente al leer la §5.4: en el ASIC, donde el trazado se genera para el diseño concreto,
+> ese reparto es otro.
 
 ## 5.2.4 El hallazgo de co-diseño
 
@@ -85,7 +99,7 @@ motor— la ocupación de celdas lógicas alcanzó el **127 %**: no cabía.
 La respuesta fue mover el motor de histéresis de software a hardware, como camino de datos en Verilog
 sin intervención del procesador. Así implementado, la síntesis reporta **1 728 tablas de consulta** y
 el emplazamiento **2 426 celdas lógicas, el 45 % del dispositivo**, cerrando el temporizado a
-**28,9 MHz** con holgura.
+**28,7 MHz** con holgura.
 
 > Las dos cifras anteriores no son la misma medida, y conviene no confundirlas: la celda lógica de la
 > iCE40 empaqueta una tabla de consulta **y** un biestable, de modo que un diseño con muchos
@@ -116,8 +130,11 @@ dentro de un filtro cambia el resultado de clasificación más que cambiar de fi
 
 ---
 
-> **Lo que queda por medir.** De las cinco filas, la del **SoC + Sobel** es la única cuya ocupación de
-> celdas no pudo reconfirmarse contra un informe conservado. Reproducirla exige una corrida de
-> `nextpnr` sobre fuentes que sí están íntegras; el guion `medir_utilizacion_vm.sh` la deja lista.
-> Hasta entonces la cifra se presenta como lo que es: un valor capturado y documentado en su momento,
-> con la síntesis recomprobada y el emplazamiento no.
+> **Sobre la reproducibilidad de estas cifras.** Las cuatro filas medidas se rehicieron el 21 de
+> septiembre de 2026 con el guion `medir_utilizacion_vm.sh`, que aplica a cada diseño las mismas
+> órdenes de lectura de fuentes que su guion de construcción original. Tres de las cuatro
+> reprodujeron el informe conservado sin desviarse en una sola celda ni en un solo bloque de memoria,
+> pese a mediar casi dos meses entre una corrida y otra. La cuarta se desvió en treinta celdas sobre
+> cinco mil, y la causa está identificada: una versión distinta del sintetizador. **El flujo es
+> determinista a herramientas iguales**, que es lo que permite presentar estas cifras como medidas y
+> no como estimaciones.

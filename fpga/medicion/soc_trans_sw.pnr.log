@@ -1,0 +1,921 @@
+Warning: No PCF file specified; IO pins will be placed automatically
+
+Info: Packing constants..
+Info: Packing IOs..
+Info: led_r use by SB_RGBA_DRV/SB_RGB_DRV rgba, not creating SB_IO
+Info: led_g use by SB_RGBA_DRV/SB_RGB_DRV rgba, not creating SB_IO
+Info: led_b use by SB_RGBA_DRV/SB_RGB_DRV rgba, not creating SB_IO
+Info: Packing LUT-FFs..
+Info:     3320 LCs used as LUT4 only
+Info:      472 LCs used as LUT4 and DFF
+Info: Packing non-LUT FFs..
+Info:     1395 LCs used as DFF only
+Info: Packing carries..
+Info:       37 LCs used as CARRY only
+Info: Packing indirect carry+LUT pairs...
+Info:       10 LUTs merged into carry LCs
+Info: Packing RAMs..
+Info: Placing PLLs..
+Info: Packing special functions..
+Info:   constrained SB_RGBA_DRV 'rgba' to X0/Y30/rgba_drv_0
+Info: Packing PLLs..
+Info: Promoting globals..
+Info: promoting clk$SB_IO_IN (fanout 1547)
+Info: promoting cam_pclk$SB_IO_IN (fanout 376)
+Info: promoting cpu_rstn_SB_LUT4_I3_O [reset] (fanout 92)
+Info: promoting $PACKER_VCC_NET [reset] (fanout 32)
+Info: promoting showing_SB_LUT4_I3_O [reset] (fanout 26)
+Info: promoting dmode_SB_DFFESR_Q_E_SB_LUT4_O_I3_SB_LUT4_O_1_I2[0] [reset] (fanout 21)
+Info: promoting LBG.v1 [cen] (fanout 72)
+Info: promoting LBS.v1 [cen] (fanout 72)
+Info: Constraining chains...
+Info:       35 LCs used to legalise carry chains.
+Info: Checksum: 0xfd7f110b
+
+Info: Device utilisation:
+Info: 	         ICESTORM_LC:    5251/   5280    99%
+Info: 	        ICESTORM_RAM:      28/     30    93%
+Info: 	               SB_IO:      18/     39    46%
+Info: 	               SB_GB:       8/      8   100%
+Info: 	        ICESTORM_PLL:       0/      1     0%
+Info: 	         SB_WARMBOOT:       0/      1     0%
+Info: 	        ICESTORM_DSP:       0/      8     0%
+Info: 	      ICESTORM_HFOSC:       0/      1     0%
+Info: 	      ICESTORM_LFOSC:       0/      1     0%
+Info: 	              SB_I2C:       0/      2     0%
+Info: 	              SB_SPI:       0/      2     0%
+Info: 	              IO_I3C:       0/      2     0%
+Info: 	         SB_LEDDA_IP:       0/      1     0%
+Info: 	         SB_RGBA_DRV:       1/      1   100%
+Info: 	      ICESTORM_SPRAM:       0/      4     0%
+
+Info: Placed 1 cells based on constraints.
+Info: Creating initial analytic placement for 4798 cells, random placement wirelen = 123411.
+Info:     at initial placer iter 0, wirelen = 1206
+Info:     at initial placer iter 1, wirelen = 1038
+Info:     at initial placer iter 2, wirelen = 932
+Info:     at initial placer iter 3, wirelen = 1031
+Info: Running main analytical placer, max placement attempts per cell = 3519204.
+Info:     at iteration #1, type ALL: wirelen solved = 974, spread = 32293, legal = 46960; time = 0.46s
+Info:     at iteration #2, type ALL: wirelen solved = 1419, spread = 24735, legal = 42965; time = 0.46s
+Info:     at iteration #3, type ALL: wirelen solved = 2291, spread = 21899, legal = 44823; time = 1.01s
+Info:     at iteration #4, type ALL: wirelen solved = 3273, spread = 20545, legal = 41490; time = 0.97s
+Info:     at iteration #5, type ALL: wirelen solved = 4197, spread = 20795, legal = 40036; time = 0.42s
+Info:     at iteration #6, type ALL: wirelen solved = 4848, spread = 20629, legal = 39016; time = 0.40s
+Info:     at iteration #7, type ALL: wirelen solved = 5373, spread = 19801, legal = 38633; time = 0.42s
+Info:     at iteration #8, type ALL: wirelen solved = 5929, spread = 19218, legal = 36013; time = 0.36s
+Info:     at iteration #9, type ALL: wirelen solved = 6236, spread = 19088, legal = 37177; time = 0.38s
+Info:     at iteration #10, type ALL: wirelen solved = 6393, spread = 18963, legal = 36355; time = 0.38s
+Info:     at iteration #11, type ALL: wirelen solved = 6840, spread = 18965, legal = 36513; time = 0.39s
+Info:     at iteration #12, type ALL: wirelen solved = 7047, spread = 18765, legal = 37482; time = 0.39s
+Info:     at iteration #13, type ALL: wirelen solved = 7376, spread = 18986, legal = 36379; time = 0.38s
+Info: HeAP Placer Time: 7.06s
+Info:   of which solving equations: 1.16s
+Info:   of which spreading cells: 0.13s
+Info:   of which strict legalisation: 5.45s
+
+Info: Running simulated annealing placer for refinement.
+Info:   at iteration #1: temp = 0.000000, timing cost = 11668, wirelen = 36013
+Info:   at iteration #5: temp = 0.000000, timing cost = 11973, wirelen = 29824
+Info:   at iteration #10: temp = 0.000000, timing cost = 11976, wirelen = 28117
+Info:   at iteration #15: temp = 0.000000, timing cost = 12091, wirelen = 27354
+Info:   at iteration #20: temp = 0.000000, timing cost = 11844, wirelen = 26787
+Info:   at iteration #25: temp = 0.000000, timing cost = 11805, wirelen = 26617
+Info:   at iteration #30: temp = 0.000000, timing cost = 11703, wirelen = 26572
+Info:   at iteration #30: temp = 0.000000, timing cost = 11700, wirelen = 26574 
+Info: SA placement time 4.49s
+
+Info: Max frequency for clock 'cam_pclk$SB_IO_IN_$glb_clk': 21.72 MHz (PASS at 12.00 MHz)
+Info: Max frequency for clock      'clk$SB_IO_IN_$glb_clk': 9.26 MHz (FAIL at 12.00 MHz)
+
+Info: Max delay <async>                            -> <async>                           : 6.70 ns
+Info: Max delay <async>                            -> posedge cam_pclk$SB_IO_IN_$glb_clk: 11.04 ns
+Info: Max delay posedge cam_pclk$SB_IO_IN_$glb_clk -> posedge clk$SB_IO_IN_$glb_clk     : 5.66 ns
+Info: Max delay posedge clk$SB_IO_IN_$glb_clk      -> <async>                           : 9.41 ns
+Info: Max delay posedge clk$SB_IO_IN_$glb_clk      -> posedge cam_pclk$SB_IO_IN_$glb_clk: 5.66 ns
+
+Info: Slack histogram:
+Info:  legend: * represents 19 endpoint(s)
+Info:          + represents [1,19) endpoint(s)
+Info: [-15214, -10449) |**************+
+Info: [-10449,  -5684) |******************************+
+Info: [ -5684,   -919) |******+
+Info: [  -919,   3846) | 
+Info: [  3846,   8611) | 
+Info: [  8611,  13376) |**********+
+Info: [ 13376,  18141) |****************************************+
+Info: [ 18141,  22906) |**+
+Info: [ 22906,  27671) |**********+
+Info: [ 27671,  32436) |+
+Info: [ 32436,  37201) |*********+
+Info: [ 37201,  41966) |******+
+Info: [ 41966,  46731) |**+
+Info: [ 46731,  51496) |****+
+Info: [ 51496,  56261) |**+
+Info: [ 56261,  61026) |***+
+Info: [ 61026,  65791) |******************+
+Info: [ 65791,  70556) |*************************+
+Info: [ 70556,  75321) |*************************+
+Info: [ 75321,  80086) |************************************************************ 
+Info: Checksum: 0xba45e0d3
+
+Info: Routing..
+Info: Setting up routing queue.
+Info: Routing 16591 arcs.
+Info:            |   (re-)routed arcs  |   delta    | remaining|       time spent     |
+Info:    IterCnt |  w/ripup   wo/ripup |  w/r  wo/r |      arcs| batch(sec) total(sec)|
+Info:       1000 |       40        959 |   40   959 |     15673|       0.86       0.86|
+Info:       2000 |      126       1873 |   86   914 |     14957|       0.55       1.42|
+Info:       3000 |      205       2794 |   79   921 |     14245|       0.37       1.78|
+Info:       4000 |      354       3645 |  149   851 |     13703|       0.40       2.18|
+Info:       5000 |      518       4481 |  164   836 |     13316|       0.47       2.65|
+Info:       6000 |      714       5285 |  196   804 |     12953|       0.47       3.12|
+Info:       7000 |      901       6098 |  187   813 |     12727|       0.55       3.67|
+Info:       8000 |     1071       6928 |  170   830 |     12567|       0.38       4.05|
+Info:       9000 |     1370       7629 |  299   701 |     12354|       0.49       4.54|
+Info:      10000 |     1609       8390 |  239   761 |     12062|       0.55       5.08|
+Info:      11000 |     1869       9130 |  260   740 |     11820|       0.50       5.59|
+Info:      12000 |     2249       9750 |  380   620 |     11638|       0.52       6.11|
+Info:      13000 |     2518      10481 |  269   731 |     11523|       0.37       6.48|
+Info:      14000 |     2868      11131 |  350   650 |     11265|       0.53       7.01|
+Info:      15000 |     3214      11785 |  346   654 |     11117|       0.50       7.51|
+Info:      16000 |     3555      12444 |  341   659 |     11065|       0.45       7.95|
+Info:      17000 |     3942      13057 |  387   613 |     11019|       0.51       8.46|
+Info:      18000 |     4323      13676 |  381   619 |     10921|       0.58       9.04|
+Info:      19000 |     4677      14322 |  354   646 |     10841|       0.51       9.55|
+Info:      20000 |     4942      15057 |  265   735 |     10799|       0.58      10.13|
+Info:      21000 |     5231      15768 |  289   711 |     10754|       0.78      10.91|
+Info:      22000 |     5704      16295 |  473   527 |     10742|       0.71      11.62|
+Info:      23000 |     6063      16936 |  359   641 |     10640|       0.48      12.10|
+Info:      24000 |     6516      17483 |  453   547 |     10606|       0.65      12.75|
+Info:      25000 |     6954      18045 |  438   562 |     10495|       0.53      13.28|
+Info:      26000 |     7402      18597 |  448   552 |     10422|       0.52      13.80|
+Info:      27000 |     7886      19113 |  484   516 |     10321|       0.51      14.31|
+Info:      28000 |     8376      19623 |  490   510 |     10282|       0.63      14.94|
+Info:      29000 |     8841      20158 |  465   535 |     10220|       0.63      15.57|
+Info:      30000 |     9308      20691 |  467   533 |     10208|       0.57      16.14|
+Info:      31000 |     9778      21221 |  470   530 |     10214|       0.53      16.67|
+Info:      32000 |    10201      21798 |  423   577 |     10140|       0.53      17.20|
+Info:      33000 |    10621      22378 |  420   580 |     10104|       0.63      17.83|
+Info:      34000 |    11021      22978 |  400   600 |     10025|       0.49      18.32|
+Info:      35000 |    11486      23513 |  465   535 |      9961|       0.53      18.85|
+Info:      36000 |    11995      24004 |  509   491 |      9984|       0.56      19.41|
+Info:      37000 |    12358      24641 |  363   637 |      9988|       0.67      20.08|
+Info:      38000 |    12642      25357 |  284   716 |      9956|       0.45      20.52|
+Info:      39000 |    13156      25843 |  514   486 |      9953|       0.72      21.24|
+Info:      40000 |    13605      26394 |  449   551 |      9922|       0.69      21.92|
+Info:      41000 |    14165      26834 |  560   440 |      9877|       0.48      22.41|
+Info:      42000 |    14602      27397 |  437   563 |      9835|       0.47      22.88|
+Info:      43000 |    15032      27967 |  430   570 |      9826|       0.53      23.41|
+Info:      44000 |    15540      28459 |  508   492 |      9745|       0.65      24.06|
+Info:      45000 |    16014      28985 |  474   526 |      9722|       0.86      24.91|
+Info:      46000 |    16607      29392 |  593   407 |      9695|       0.62      25.53|
+Info:      47000 |    17177      29822 |  570   430 |      9662|       0.62      26.15|
+Info:      48000 |    17691      30308 |  514   486 |      9621|       0.83      26.99|
+Info:      49000 |    18198      30801 |  507   493 |      9554|       0.52      27.50|
+Info:      50000 |    18740      31259 |  542   458 |      9574|       0.64      28.14|
+Info:      51000 |    19231      31768 |  491   509 |      9537|       0.57      28.71|
+Info:      52000 |    19752      32247 |  521   479 |      9526|       0.65      29.36|
+Info:      53000 |    20259      32740 |  507   493 |      9427|       0.55      29.91|
+Info:      54000 |    20737      33262 |  478   522 |      9431|       0.85      30.75|
+Info:      55000 |    21156      33843 |  419   581 |      9385|       0.76      31.51|
+Info:      56000 |    21638      34361 |  482   518 |      9352|       0.72      32.23|
+Info:      57000 |    22200      34799 |  562   438 |      9270|       0.98      33.21|
+Info:      58000 |    22711      35288 |  511   489 |      9226|       0.62      33.83|
+Info:      59000 |    23179      35820 |  468   532 |      9223|       0.54      34.37|
+Info:      60000 |    23707      36292 |  528   472 |      9168|       0.74      35.11|
+Info:      61000 |    24220      36779 |  513   487 |      9129|       0.72      35.82|
+Info:      62000 |    24740      37259 |  520   480 |      9107|       0.60      36.43|
+Info:      63000 |    25251      37748 |  511   489 |      9118|       0.60      37.03|
+Info:      64000 |    25773      38226 |  522   478 |      9099|       0.77      37.80|
+Info:      65000 |    26151      38848 |  378   622 |      9056|       0.48      38.28|
+Info:      66000 |    26616      39330 |  465   482 |      8889|       0.55      38.83|
+Info:      67000 |    27106      39840 |  490   510 |      8872|       0.54      39.36|
+Info:      68000 |    27638      40307 |  532   467 |      8802|       0.70      40.06|
+Info:      69000 |    28154      40785 |  516   478 |      8677|       0.45      40.51|
+Info:      70000 |    28658      41280 |  504   495 |      8598|       0.70      41.21|
+Info:      71000 |    29080      41858 |  422   578 |      8567|       0.52      41.73|
+Info:      72000 |    29610      42328 |  530   470 |      8559|       0.60      42.33|
+Info:      73000 |    30187      42750 |  577   422 |      8530|       0.74      43.08|
+Info:      74000 |    30588      43349 |  401   599 |      8510|       0.61      43.69|
+Info:      75000 |    31091      43843 |  503   494 |      8366|       0.45      44.13|
+Info:      76000 |    31613      44317 |  522   474 |      8224|       0.59      44.72|
+Info:      77000 |    32103      44827 |  490   510 |      8029|       0.56      45.28|
+Info:      78000 |    32650      45280 |  547   453 |      7971|       0.50      45.78|
+Info:      79000 |    33222      45708 |  572   428 |      7916|       0.35      46.13|
+Info:      80000 |    33725      46205 |  503   497 |      7839|       0.47      46.60|
+Info:      81000 |    34085      46844 |  360   639 |      7790|       0.33      46.93|
+Info:      82000 |    34631      47297 |  546   453 |      7652|       0.37      47.30|
+Info:      83000 |    35194      47722 |  563   425 |      7633|       0.69      47.99|
+Info:      84000 |    35742      48173 |  548   451 |      7547|       0.51      48.50|
+Info:      85000 |    36323      48584 |  581   411 |      7446|       0.48      48.98|
+Info:      86000 |    36843      49064 |  520   480 |      7491|       0.66      49.63|
+Info:      87000 |    37420      49487 |  577   423 |      7480|       0.66      50.29|
+Info:      88000 |    37962      49945 |  542   458 |      7443|       0.50      50.79|
+Info:      89000 |    38637      50262 |  675   317 |      7383|       0.46      51.25|
+Info:      90000 |    39214      50684 |  577   422 |      7246|       0.41      51.66|
+Info:      91000 |    39628      51270 |  414   586 |      7230|       0.46      52.12|
+Info:      92000 |    40184      51714 |  556   444 |      7209|       0.56      52.68|
+Info:      93000 |    40689      52202 |  505   488 |      7126|       0.50      53.18|
+Info:      94000 |    41288      52603 |  599   401 |      7098|       0.53      53.71|
+Info:      95000 |    41864      53027 |  576   424 |      7028|       0.43      54.13|
+Info:      96000 |    42500      53391 |  636   364 |      6939|       0.50      54.63|
+Info:      97000 |    43215      53676 |  715   285 |      6896|       0.44      55.07|
+Info:      98000 |    43800      54091 |  585   415 |      6828|       0.54      55.61|
+Info:      99000 |    44353      54538 |  553   447 |      6837|       0.60      56.21|
+Info:     100000 |    44935      54956 |  582   418 |      6751|       0.39      56.60|
+Info:     101000 |    45441      55450 |  506   494 |      6743|       0.61      57.21|
+Info:     102000 |    45990      55901 |  549   451 |      6727|       0.54      57.75|
+Info:     103000 |    46635      56256 |  645   355 |      6719|       0.56      58.31|
+Info:     104000 |    47180      56703 |  545   447 |      6623|       0.47      58.78|
+Info:     105000 |    47745      57138 |  565   435 |      6588|       0.78      59.55|
+Info:     106000 |    48352      57531 |  607   393 |      6546|       0.77      60.33|
+Info:     107000 |    48972      57906 |  620   375 |      6481|       0.57      60.90|
+Info:     108000 |    49476      58402 |  504   496 |      6433|       0.56      61.46|
+Info:     109000 |    50147      58730 |  671   328 |      6380|       0.62      62.08|
+Info:     110000 |    50757      59118 |  610   388 |      6255|       0.48      62.56|
+Info:     111000 |    51358      59517 |  601   399 |      6233|       0.53      63.08|
+Info:     112000 |    51947      59926 |  589   409 |      6135|       0.50      63.58|
+Info:     113000 |    52538      60335 |  591   409 |      6110|       0.65      64.23|
+Info:     114000 |    53029      60835 |  491   500 |      6060|       0.67      64.90|
+Info:     115000 |    53606      61246 |  577   411 |      5985|       0.41      65.31|
+Info:     116000 |    53953      61899 |  347   653 |      5989|       0.42      65.73|
+Info:     117000 |    54413      62439 |  460   540 |      5974|       0.54      66.27|
+Info:     118000 |    55025      62825 |  612   386 |      5903|       0.37      66.64|
+Info:     119000 |    55661      63189 |  636   364 |      5933|       0.71      67.35|
+Info:     120000 |    56132      63718 |  471   529 |      5945|       0.54      67.89|
+Info:     121000 |    56579      64271 |  447   553 |      5901|       0.59      68.48|
+Info:     122000 |    57143      64707 |  564   436 |      5887|       0.74      69.22|
+Info:     123000 |    57786      65064 |  643   357 |      5874|       0.59      69.82|
+Info:     124000 |    58245      65605 |  459   541 |      5872|       0.60      70.42|
+Info:     125000 |    58821      66028 |  576   423 |      5816|       0.64      71.06|
+Info:     126000 |    59460      66389 |  639   361 |      5809|       0.77      71.83|
+Info:     127000 |    60061      66788 |  601   399 |      5768|       0.54      72.37|
+Info:     128000 |    60692      67153 |  631   365 |      5689|       0.86      73.23|
+Info:     129000 |    61368      67477 |  676   324 |      5675|       0.52      73.75|
+Info:     130000 |    62033      67812 |  665   335 |      5677|       0.79      74.54|
+Info:     131000 |    62212      68633 |  179   821 |      5713|       0.66      75.20|
+Info:     132000 |    62669      69176 |  457   543 |      5676|       0.56      75.76|
+Info:     133000 |    63271      69574 |  602   398 |      5571|       1.34      77.10|
+Info:     134000 |    63827      70016 |  556   442 |      5491|       0.62      77.72|
+Info:     135000 |    64409      70434 |  582   418 |      5448|       0.64      78.36|
+Info:     136000 |    64953      70873 |  544   439 |      5387|       0.73      79.09|
+Info:     137000 |    65582      71242 |  629   369 |      5359|       0.99      80.08|
+Info:     138000 |    66214      71610 |  632   368 |      5343|       0.91      80.99|
+Info:     139000 |    66769      72055 |  555   445 |      5312|       0.58      81.57|
+Info:     140000 |    67378      72446 |  609   391 |      5298|       1.10      82.67|
+Info:     141000 |    68065      72759 |  687   313 |      5333|       0.64      83.31|
+Info:     142000 |    68691      73133 |  626   374 |      5279|       0.56      83.87|
+Info:     143000 |    69313      73511 |  622   378 |      5226|       0.57      84.44|
+Info:     144000 |    69906      73918 |  593   407 |      5152|       0.76      85.20|
+Info:     145000 |    70482      74342 |  576   424 |      5073|       0.68      85.88|
+Info:     146000 |    71141      74683 |  659   341 |      5034|       0.65      86.53|
+Info:     147000 |    71813      75010 |  672   327 |      4967|       0.53      87.06|
+Info:     148000 |    72408      75415 |  595   405 |      4939|       0.51      87.57|
+Info:     149000 |    73048      75775 |  640   360 |      4962|       0.71      88.27|
+Info:     150000 |    73680      76143 |  632   368 |      4984|       0.62      88.89|
+Info:     151000 |    74337      76486 |  657   343 |      4921|       0.62      89.52|
+Info:     152000 |    75010      76811 |  673   325 |      4888|       0.50      90.02|
+Info:     153000 |    75679      77142 |  669   331 |      4885|       0.66      90.68|
+Info:     154000 |    76266      77555 |  587   413 |      4865|       0.48      91.16|
+Info:     155000 |    76794      78026 |  528   471 |      4865|       0.73      91.88|
+Info:     156000 |    77410      78410 |  616   384 |      4778|       0.59      92.47|
+Info:     157000 |    78039      78781 |  629   371 |      4733|       0.82      93.29|
+Info:     158000 |    78609      79211 |  570   430 |      4689|       0.52      93.81|
+Info:     159000 |    79198      79622 |  589   411 |      4605|       0.71      94.52|
+Info:     160000 |    79853      79967 |  655   345 |      4555|       0.44      94.96|
+Info:     161000 |    80468      80352 |  615   385 |      4456|       0.51      95.47|
+Info:     162000 |    81080      80740 |  612   388 |      4413|       0.64      96.10|
+Info:     163000 |    81742      81078 |  662   338 |      4298|       1.05      97.16|
+Info:     164000 |    82312      81508 |  570   430 |      4307|       0.46      97.62|
+Info:     165000 |    82983      81837 |  671   329 |      4232|       0.92      98.54|
+Info:     166000 |    83710      82110 |  727   273 |      4223|       2.11     100.65|
+Info:     167000 |    84401      82419 |  691   309 |      4222|       0.49     101.13|
+Info:     168000 |    85054      82766 |  653   347 |      4157|       0.69     101.82|
+Info:     169000 |    85732      83088 |  678   322 |      4137|       0.76     102.58|
+Info:     170000 |    86380      83440 |  648   352 |      4202|       0.79     103.37|
+Info:     171000 |    86970      83850 |  590   410 |      4211|       0.71     104.08|
+Info:     172000 |    87635      84185 |  665   335 |      4157|       1.60     105.68|
+Info:     173000 |    88298      84522 |  663   337 |      4132|       0.64     106.31|
+Info:     174000 |    89007      84813 |  709   291 |      4140|       1.11     107.43|
+Info:     175000 |    89598      85222 |  591   409 |      4120|       0.85     108.28|
+Info:     176000 |    90232      85570 |  634   348 |      4016|       1.18     109.46|
+Info:     177000 |    90895      85907 |  663   337 |      3971|       0.86     110.32|
+Info:     178000 |    91535      86267 |  640   360 |      3965|       0.90     111.22|
+Info:     179000 |    92169      86633 |  634   366 |      3897|       0.74     111.96|
+Info:     180000 |    92886      86916 |  717   283 |      3927|       1.37     113.33|
+Info:     181000 |    93569      87233 |  683   317 |      3918|       1.31     114.65|
+Info:     182000 |    94202      87600 |  633   367 |      3935|       0.65     115.30|
+Info:     183000 |    94921      87881 |  719   281 |      3973|       1.43     116.74|
+Info:     184000 |    95414      88388 |  493   507 |      3960|       1.01     117.75|
+Info:     185000 |    95770      89032 |  356   644 |      4003|       0.53     118.28|
+Info:     186000 |    96274      89528 |  504   496 |      3974|       0.80     119.08|
+Info:     187000 |    96798      90004 |  524   476 |      3946|       1.05     120.13|
+Info:     188000 |    97496      90306 |  698   302 |      3926|       0.81     120.94|
+Info:     189000 |    98148      90654 |  652   348 |      3889|       0.85     121.79|
+Info:     190000 |    98768      91034 |  620   380 |      3870|       0.83     122.62|
+Info:     191000 |    99290      91506 |  522   472 |      3802|       0.65     123.26|
+Info:     192000 |    99775      92021 |  485   515 |      3731|       0.66     123.93|
+Info:     193000 |   100322      92473 |  547   452 |      3662|       0.79     124.71|
+Info:     194000 |   100856      92939 |  534   466 |      3611|       0.78     125.49|
+Info:     195000 |   101572      93223 |  716   284 |      3628|       0.76     126.25|
+Info:     196000 |   102283      93512 |  711   289 |      3633|       0.69     126.94|
+Info:     197000 |   102916      93879 |  633   367 |      3631|       1.21     128.16|
+Info:     198000 |   103482      94313 |  566   434 |      3644|       0.83     128.99|
+Info:     199000 |   103968      94827 |  486   514 |      3635|       0.73     129.73|
+Info:     200000 |   104488      95307 |  520   480 |      3538|       0.70     130.43|
+Info:     201000 |   105057      95738 |  569   431 |      3523|       0.89     131.32|
+Info:     202000 |   105622      96173 |  565   435 |      3499|       1.05     132.37|
+Info:     203000 |   106023      96772 |  401   599 |      3513|       1.16     133.53|
+Info:     204000 |   106545      97250 |  522   478 |      3454|       1.32     134.86|
+Info:     205000 |   107195      97600 |  650   350 |      3428|       0.89     135.74|
+Info:     206000 |   107824      97971 |  629   371 |      3299|       1.02     136.76|
+Info:     207000 |   108358      98437 |  534   466 |      3118|       1.41     138.18|
+Info:     208000 |   108975      98820 |  617   383 |      3103|       1.71     139.89|
+Info:     209000 |   109623      99172 |  648   352 |      3072|       1.72     141.60|
+Info:     210000 |   110295      99500 |  672   328 |      3006|       0.95     142.55|
+Info:     211000 |   111015      99780 |  720   280 |      3005|       1.04     143.59|
+Info:     212000 |   111672     100123 |  657   343 |      2984|       1.66     145.25|
+Info:     213000 |   112291     100504 |  619   381 |      2932|       1.87     147.11|
+Info:     214000 |   112874     100901 |  583   397 |      2880|       1.95     149.07|
+Info:     215000 |   113196     101579 |  322   678 |      2951|       1.66     150.72|
+Info:     216000 |   113853     101922 |  657   343 |      2990|       1.05     151.77|
+Info:     217000 |   114481     102294 |  628   372 |      2933|       1.53     153.30|
+Info:     218000 |   115077     102698 |  596   404 |      2898|       1.89     155.20|
+Info:     219000 |   115761     103014 |  684   316 |      2888|       2.75     157.95|
+Info:     220000 |   116312     103463 |  551   449 |      2944|       0.85     158.80|
+Info:     221000 |   116943     103832 |  631   369 |      2884|       3.27     162.07|
+Info:     222000 |   117611     104164 |  668   332 |      2885|       1.47     163.54|
+Info:     223000 |   118282     104493 |  671   329 |      2869|       1.56     165.10|
+Info:     224000 |   118940     104835 |  658   342 |      2770|       1.58     166.68|
+Info:     225000 |   119661     105114 |  721   279 |      2744|       1.76     168.45|
+Info:     226000 |   120309     105466 |  648   352 |      2714|       1.19     169.64|
+Info:     227000 |   120997     105778 |  688   312 |      2652|       2.39     172.03|
+Info:     228000 |   121603     106141 |  606   363 |      2580|       1.93     173.96|
+Info:     229000 |   122246     106498 |  643   357 |      2575|       1.54     175.50|
+Info:     230000 |   122910     106813 |  664   315 |      2506|       3.01     178.51|
+Info:     231000 |   123585     107138 |  675   325 |      2448|       2.60     181.11|
+Info:     232000 |   124220     107503 |  635   365 |      2429|       1.24     182.35|
+Info:     233000 |   124909     107814 |  689   311 |      2418|       2.31     184.66|
+Info:     234000 |   125604     108119 |  695   305 |      2401|       2.10     186.76|
+Info:     235000 |   126236     108487 |  632   368 |      2323|       0.57     187.33|
+Info:     236000 |   126886     108837 |  650   350 |      2295|       1.72     189.06|
+Info:     237000 |   127620     109103 |  734   266 |      2322|       0.72     189.78|
+Info:     238000 |   128245     109478 |  625   375 |      2329|       1.72     191.49|
+Info:     239000 |   128887     109836 |  642   358 |      2341|       2.68     194.18|
+Info:     240000 |   129533     110190 |  646   354 |      2308|       1.20     195.37|
+Info:     241000 |   130088     110635 |  555   445 |      2243|       1.62     196.99|
+Info:     242000 |   130727     110996 |  639   361 |      2193|       1.87     198.86|
+Info:     243000 |   131335     111370 |  608   374 |      2128|       2.09     200.95|
+Info:     244000 |   131987     111702 |  652   332 |      2110|       1.26     202.21|
+Info:     245000 |   132646     112022 |  659   320 |      2019|       1.20     203.40|
+Info:     246000 |   133288     112365 |  642   343 |      1953|       0.64     204.04|
+Info:     247000 |   133893     112760 |  605   395 |      1896|       0.78     204.82|
+Info:     248000 |   134482     113171 |  589   411 |      1800|       1.31     206.14|
+Info:     249000 |   135104     113547 |  622   376 |      1695|       1.71     207.84|
+Info:     250000 |   135719     113932 |  615   385 |      1665|       1.01     208.85|
+Info:     251000 |   136380     114271 |  661   339 |      1672|       1.25     210.09|
+Info:     252000 |   136995     114656 |  615   385 |      1650|       1.15     211.24|
+Info:     253000 |   137685     114966 |  690   310 |      1634|       1.16     212.40|
+Info:     254000 |   138236     115415 |  551   449 |      1645|       1.08     213.48|
+Info:     255000 |   138936     115715 |  700   300 |      1627|       1.07     214.55|
+Info:     256000 |   139551     116090 |  615   375 |      1564|       1.02     215.57|
+Info:     257000 |   140123     116518 |  572   428 |      1532|       0.63     216.19|
+Info:     258000 |   140791     116850 |  668   332 |      1522|       1.18     217.37|
+Info:     259000 |   141466     117175 |  675   325 |      1517|       1.08     218.45|
+Info:     260000 |   142225     117416 |  759   241 |      1535|       1.14     219.59|
+Info:     261000 |   142956     117685 |  731   269 |      1512|       2.81     222.41|
+Info:     262000 |   143620     118021 |  664   336 |      1509|       2.16     224.56|
+Info:     263000 |   144320     118321 |  700   300 |      1527|       1.36     225.92|
+Info:     264000 |   144999     118623 |  679   302 |      1421|       1.17     227.09|
+Info:     265000 |   145546     119049 |  547   426 |      1210|       1.66     228.75|
+Info:     266000 |   146249     119346 |  703   297 |      1228|       1.47     230.22|
+Info:     267000 |   146681     119906 |  432   560 |       818|       0.79     231.02|
+Info:     268000 |   147212     120375 |  531   469 |       651|       1.98     233.00|
+Info:     269000 |   147785     120802 |  573   427 |       613|       2.56     235.55|
+Info:     270000 |   148445     121142 |  660   340 |       620|       0.87     236.42|
+Info:     271000 |   149063     121524 |  618   382 |       509|       2.41     238.84|
+Info:     272000 |   149542     122044 |  479   520 |       243|       1.96     240.80|
+Info:     273000 |   150058     122528 |  516   484 |       174|       1.92     242.72|
+Info:     274000 |   150715     122871 |  657   343 |       168|       2.13     244.85|
+Info:     275000 |   151368     123218 |  653   347 |        79|       4.46     249.31|
+Info:     276000 |   151975     123611 |  607   393 |        33|       4.56     253.87|
+Info:     276454 |   152224     123817 |  249   206 |         0|       1.20     255.06|
+Info: Routing complete.
+Info: Router1 time 255.06s
+Info: Checksum: 0x23f7abce
+
+Info: Critical path report for clock 'cam_pclk$SB_IO_IN_$glb_clk' (posedge -> posedge):
+Info:       type curr  total name
+Info:   clk-to-q  1.39  1.39 Source LBS.w02_SB_DFFE_Q_6_D_SB_LUT4_O_LC.O
+Info:    routing  5.54  6.93 Net sw02[1] (18,29) -> (22,11)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_I3_SB_CARRY_CO_I1_SB_LUT4_O_LC.I1
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:117.35-117.39
+Info:      logic  1.23  8.16 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_I3_SB_CARRY_CO_I1_SB_LUT4_O_LC.O
+Info:    routing  1.76  9.93 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_I3_SB_CARRY_CO_I1[1] (22,11) -> (22,12)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_LC.I1
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.68  10.60 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  10.60 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_I3 (22,12) -> (22,12)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_LC.CIN
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  10.88 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  10.88 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_I0_SB_LUT4_O_I3 (22,12) -> (22,12)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_I0_SB_LUT4_O_LC.CIN
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  11.16 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_I0_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  11.16 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_I2[3] (22,12) -> (22,12)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_LC.CIN
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  11.44 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_I1_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  11.44 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_I2[3] (22,12) -> (22,12)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_LC.CIN
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  11.71 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2_SB_LUT4_O_1_I2_SB_LUT4_O_I3_SB_CARRY_CO_I0_SB_LUT4_O_LC.COUT
+Info:    routing  0.66  12.38 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I3_SB_LUT4_O_I1_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (22,12) -> (22,12)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I3_SB_LUT4_O_I1_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.I3
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.87  13.25 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I3_SB_LUT4_O_I1_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.O
+Info:    routing  2.95  16.20 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2_SB_LUT4_O_1_I2_SB_LUT4_O_I1 (22,12) -> (18,10)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2_SB_LUT4_O_1_I2_SB_LUT4_O_1_I2_SB_LUT4_O_LC.I3
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.87  17.08 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2_SB_LUT4_O_1_I2_SB_LUT4_O_1_I2_SB_LUT4_O_LC.O
+Info:    routing  2.95  20.03 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2_SB_LUT4_O_1_I2_SB_LUT4_O_1_I2[2] (18,10) -> (20,9)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2_SB_LUT4_O_1_I2_SB_LUT4_O_1_LC.I2
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:122.69-122.76
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.61  20.64 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2_SB_LUT4_O_1_I2_SB_LUT4_O_1_LC.COUT
+Info:    routing  0.00  20.64 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I2_SB_LUT4_O_1_I2[3] (20,9) -> (20,9)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I2_SB_LUT4_O_1_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:122.69-122.76
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  20.91 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I2_SB_LUT4_O_1_LC.COUT
+Info:    routing  0.56  21.47 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I3_SB_LUT4_O_1_I2[3] (20,9) -> (20,10)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I3_SB_LUT4_O_1_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:122.69-122.76
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  21.75 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I3_SB_LUT4_O_1_LC.COUT
+Info:    routing  0.00  21.75 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I3_SB_LUT4_O_1_I2[3] (20,10) -> (20,10)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I3_SB_LUT4_O_1_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:122.69-122.76
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  22.03 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_I2_SB_LUT4_O_1_I3_SB_LUT4_O_1_LC.COUT
+Info:    routing  0.66  22.69 Net $nextpnr_ICESTORM_LC_29$I3 (20,10) -> (20,10)
+Info:                          Sink $nextpnr_ICESTORM_LC_29.I3
+Info:      logic  0.87  23.56 Source $nextpnr_ICESTORM_LC_29.O
+Info:    routing  1.76  25.32 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2_SB_LUT4_O_1_I2[2] (20,10) -> (20,11)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_O_1_LC.I3
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.87  26.20 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_O_1_LC.O
+Info:    routing  1.76  27.96 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1[2] (20,11) -> (21,11)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_O_I2_SB_LUT4_O_LC.I2
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.61  28.57 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_O_I2_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  28.57 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (21,11) -> (21,11)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I0_SB_LUT4_O_I2_SB_LUT4_O_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  28.84 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I0_SB_LUT4_O_I2_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  28.84 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (21,11) -> (21,11)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  29.12 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  29.12 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI (21,11) -> (21,11)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  29.40 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  29.40 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CO_CI (21,11) -> (21,11)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I0_SB_LUT4_O_I2_SB_LUT4_O_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  29.68 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I0_SB_LUT4_O_I2_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  29.68 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I2[3] (21,11) -> (21,11)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  29.96 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  29.96 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO (21,11) -> (21,11)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  30.24 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:    routing  0.56  30.79 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO (21,11) -> (21,12)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  31.07 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  31.07 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO (21,12) -> (21,12)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  31.35 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  31.35 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO (21,12) -> (21,12)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  31.62 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:    routing  0.66  32.29 Net $nextpnr_ICESTORM_LC_32$I3 (21,12) -> (21,12)
+Info:                          Sink $nextpnr_ICESTORM_LC_32.I3
+Info:      logic  0.87  33.16 Source $nextpnr_ICESTORM_LC_32.O
+Info:    routing  2.41  35.57 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO (21,12) -> (21,14)
+Info:                          Sink cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_CARRY_I0_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI$CARRY.I1
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:123.20-123.27
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.68  36.24 Source cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0_SB_CARRY_I0_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI$CARRY.COUT
+Info:    routing  0.66  36.91 Net $nextpnr_ICESTORM_LC_12$I3 (21,14) -> (21,14)
+Info:                          Sink $nextpnr_ICESTORM_LC_12.I3
+Info:      logic  0.87  37.78 Source $nextpnr_ICESTORM_LC_12.O
+Info:    routing  1.76  39.54 Net cam_cls_wd_SB_DFFESR_Q_D_SB_LUT4_O_I0[1] (21,14) -> (21,15)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.I3
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.87  40.42 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.O
+Info:    routing  1.76  42.18 Net cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I0 (21,15) -> (21,15)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.I1
+Info:      logic  0.68  42.85 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.COUT
+Info:    routing  0.00  42.85 Net cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (21,15) -> (21,15)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:124.24-124.34
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  43.13 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.COUT
+Info:    routing  0.00  43.13 Net cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (21,15) -> (21,15)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:124.24-124.34
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  43.41 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.COUT
+Info:    routing  0.00  43.41 Net cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (21,15) -> (21,15)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:124.24-124.34
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  43.69 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.COUT
+Info:    routing  0.00  43.69 Net cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI (21,15) -> (21,15)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:124.24-124.34
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  43.96 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.COUT
+Info:    routing  0.00  43.96 Net cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO_CI (21,15) -> (21,15)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO$CARRY.CIN
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:124.24-124.34
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  44.24 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3_SB_CARRY_CO$CARRY.COUT
+Info:    routing  0.66  44.90 Net cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_I3 (21,15) -> (21,15)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_LC.I3
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:124.24-124.34
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.87  45.78 Source cam_cls_wd_SB_DFFESS_Q_S_SB_LUT4_O_LC.O
+Info:    routing  2.92  48.70 Net cam_cls_wd_SB_DFFESS_Q_S (21,15) -> (21,18)
+Info:                          Sink cam_cls_wd_SB_DFFESS_Q_DFFLC.SR
+Info:      setup  0.10  48.80 Source cam_cls_wd_SB_DFFESS_Q_DFFLC.SR
+Info: 18.79 ns logic, 30.01 ns routing
+
+Info: Critical path report for clock 'clk$SB_IO_IN_$glb_clk' (posedge -> negedge):
+Info:       type curr  total name
+Info:   clk-to-q  1.39  1.39 Source CPU.instr_SB_DFFE_Q_10_DFFLC.O
+Info:    routing  4.79  6.18 Net CPU.Iimm[1] (4,22) -> (10,12)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I0_SB_LUT4_O_LC.I2
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:64.14-64.19
+Info:      logic  1.21  7.39 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I0_SB_LUT4_O_LC.O
+Info:    routing  1.76  9.15 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I0[1] (10,12) -> (9,11)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.I1
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.68  9.82 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  9.82 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (9,11) -> (9,11)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  10.10 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  10.10 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (9,11) -> (9,11)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  10.38 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  10.38 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (9,11) -> (9,11)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_O_I3_SB_LUT4_O_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.28  10.66 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_O_I3_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  10.66 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (9,11) -> (9,11)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  10.93 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  10.93 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (9,11) -> (9,11)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  11.21 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  11.21 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (9,11) -> (9,11)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  11.49 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.56  12.05 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (9,11) -> (9,12)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  12.32 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  12.32 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI (9,12) -> (9,12)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  12.60 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  12.60 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI (9,12) -> (9,12)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  12.88 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  12.88 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CO_CI (9,12) -> (9,12)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_D_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  13.16 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_D_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  13.16 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3 (9,12) -> (9,12)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  13.44 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_LC.COUT
+Info:    routing  0.00  13.44 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO (9,12) -> (9,12)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI$CARRY.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  13.71 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI$CARRY.COUT
+Info:    routing  0.00  13.71 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO (9,12) -> (9,12)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI$CARRY.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  13.99 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI$CARRY.COUT
+Info:    routing  0.00  13.99 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO (9,12) -> (9,12)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI$CARRY.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  14.27 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI$CARRY.COUT
+Info:    routing  0.56  14.83 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO (9,12) -> (9,13)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  15.10 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  15.10 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO (9,13) -> (9,13)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  15.38 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  15.38 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO (9,13) -> (9,13)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  15.66 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  15.66 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO (9,13) -> (9,13)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  15.94 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:    routing  0.00  15.94 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO (9,13) -> (9,13)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.28  16.22 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:    routing  0.66  16.88 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO (9,13) -> (9,13)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_O_LC.I3
+Info:                          Defined in:
+Info:                               femtorv32_quark.v:225.43-226.62
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/arith_map.v:62.5-70.4
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/abc9_model.v:4.9-4.11
+Info:      logic  0.87  17.75 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_O_LC.O
+Info:    routing  1.76  19.51 Net edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O[2] (9,13) -> (8,13)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_O_LC.I2
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  1.21  20.72 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_O_LC.O
+Info:    routing  3.06  23.77 Net ctrl_q_SB_LUT4_I1_O_SB_LUT4_O_I3[2] (8,13) -> (8,8)
+Info:                          Sink edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_O_1_LC.I1
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  1.23  25.01 Source edgbuf.0.0_RDATA_3_SB_DFF_Q_1_D_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_O_I3_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_O_1_LC.O
+Info:    routing  1.76  26.77 Net CPU.mem_wmask_SB_DFFSR_Q_D_SB_LUT4_O_I3_SB_LUT4_I3_O_SB_LUT4_O_1_I1_SB_LUT4_O_I0[3] (8,8) -> (8,9)
+Info:                          Sink r2.0.0_RDATA_SB_LUT4_I3_O_SB_LUT4_I0_LC.I3
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.87  27.64 Source r2.0.0_RDATA_SB_LUT4_I3_O_SB_LUT4_I0_LC.O
+Info:    routing  4.14  31.78 Net r2.0.0_RDATA_SB_LUT4_I3_O_SB_LUT4_I0_O[1] (8,9) -> (14,14)
+Info:                          Sink r0.0.0_RDATA_SB_LUT4_I3_O_SB_LUT4_I0_O_SB_LUT4_I1_O_SB_LUT4_O_LC.I1
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  1.23  33.01 Source r0.0.0_RDATA_SB_LUT4_I3_O_SB_LUT4_I0_O_SB_LUT4_I1_O_SB_LUT4_O_LC.O
+Info:    routing  2.95  35.97 Net CPU.rs2_SB_DFFESR_Q_10_D_SB_LUT4_O_I3_SB_LUT4_O_1_I3[0] (14,14) -> (11,10)
+Info:                          Sink CPU.mem_wmask_SB_DFFSR_Q_D_SB_LUT4_O_I3_SB_LUT4_I1_LC.I3
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.87  36.84 Source CPU.mem_wmask_SB_DFFSR_Q_D_SB_LUT4_O_I3_SB_LUT4_I1_LC.O
+Info:    routing  4.35  41.19 Net CPU.mem_wmask_SB_DFFSR_Q_D_SB_LUT4_O_I3_SB_LUT4_I1_O[2] (11,10) -> (12,23)
+Info:                          Sink CPU.instr_SB_DFFE_Q_D_SB_LUT4_I3_O_SB_LUT4_O_1_LC.I2
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  1.21  42.40 Source CPU.instr_SB_DFFE_Q_D_SB_LUT4_I3_O_SB_LUT4_O_1_LC.O
+Info:    routing  3.49  45.89 Net CPU.PC_SB_DFFESR_Q_9_D_SB_LUT4_O_I1_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_O_I1[3] (12,23) -> (7,26)
+Info:                          Sink CPU.PC_SB_DFFESR_Q_9_D_SB_LUT4_O_I1_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_O_LC.I3
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.87  46.77 Source CPU.PC_SB_DFFESR_Q_9_D_SB_LUT4_O_I1_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_O_LC.O
+Info:    routing  1.76  48.53 Net CPU.PC_SB_DFFESR_Q_9_D_SB_LUT4_O_I1_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O[2] (7,26) -> (8,27)
+Info:                          Sink CPU.PC_SB_DFFESR_Q_9_D_SB_LUT4_O_I1_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_LC.I3
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.87  49.40 Source CPU.PC_SB_DFFESR_Q_9_D_SB_LUT4_O_I1_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_LC.O
+Info:    routing  6.74  56.14 Net CPU.PC_SB_DFFESR_Q_9_D_SB_LUT4_O_I1_SB_LUT4_O_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O_SB_LUT4_I3_O (8,27) -> (14,5)
+Info:                          Sink CPU.registerFile[23]_SB_DFFNE_Q_1_DFFLC.I0
+Info:      setup  1.23  57.37 Source CPU.registerFile[23]_SB_DFFNE_Q_1_DFFLC.I0
+Info: 19.03 ns logic, 38.34 ns routing
+
+Info: Critical path report for cross-domain path '<async>' -> '<async>':
+Info:       type curr  total name
+Info:     source  0.00  0.00 Source clk$sb_io.D_IN_0
+Info:    routing  8.92  8.92 Net clk$SB_IO_IN (15,0) -> (13,31)
+Info:                          Sink cam_xclk$sb_io.D_OUT_0
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:8.17-8.20
+Info: 0.00 ns logic, 8.92 ns routing
+
+Info: Critical path report for cross-domain path '<async>' -> 'posedge cam_pclk$SB_IO_IN_$glb_clk':
+Info:       type curr  total name
+Info:     source  0.00  0.00 Source cam_href$sb_io.D_IN_0
+Info:    routing  3.15  3.15 Net cam_href$SB_IO_IN (18,31) -> (22,30)
+Info:                          Sink parity_SB_LUT4_I3_LC.I2
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  1.21  4.36 Source parity_SB_LUT4_I3_LC.O
+Info:    routing  7.53  11.89 Net parity_SB_LUT4_I3_O (22,30) -> (18,1)
+Info:                          Sink curY_SB_DFFE_Q_7_DFFLC.CEN
+Info:      setup  0.10  11.99 Source curY_SB_DFFE_Q_7_DFFLC.CEN
+Info: 1.30 ns logic, 10.68 ns routing
+
+Info: Critical path report for cross-domain path 'posedge cam_pclk$SB_IO_IN_$glb_clk' -> 'posedge clk$SB_IO_IN_$glb_clk':
+Info:       type curr  total name
+Info:   clk-to-q  1.39  1.39 Source frame_ready_p_SB_DFFE_Q_D_SB_LUT4_O_LC.O
+Info:    routing  2.85  4.24 Net frame_ready_p (15,10) -> (10,10)
+Info:                          Sink fr_m_SB_DFF_Q_DFFLC.I0
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:83.9-83.22
+Info:      setup  1.23  5.47 Source fr_m_SB_DFF_Q_DFFLC.I0
+Info: 2.62 ns logic, 2.85 ns routing
+
+Info: Critical path report for cross-domain path 'posedge clk$SB_IO_IN_$glb_clk' -> '<async>':
+Info:       type curr  total name
+Info:   clk-to-q  1.39  1.39 Source tft_cs_SB_LUT4_O_I3_SB_DFFE_Q_DFFLC.O
+Info:    routing  8.03  9.43 Net tft_cs_SB_LUT4_O_I3 (8,7) -> (8,30)
+Info:                          Sink tft_cs_SB_LUT4_O_LC.I3
+Info:                          Defined in:
+Info:                               /home/vic/Documents/UN/oss-cad-suite/lib/../share/yosys/ice40/cells_map.v:6.21-6.22
+Info:      logic  0.87  10.30 Source tft_cs_SB_LUT4_O_LC.O
+Info:    routing  1.76  12.06 Net tft_cs$SB_IO_OUT (8,30) -> (8,31)
+Info:                          Sink tft_cs$sb_io.D_OUT_0
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:10.60-10.66
+Info: 2.26 ns logic, 9.80 ns routing
+
+Info: Critical path report for cross-domain path 'posedge clk$SB_IO_IN_$glb_clk' -> 'posedge cam_pclk$SB_IO_IN_$glb_clk':
+Info:       type curr  total name
+Info:   clk-to-q  1.39  1.39 Source done_tog_SB_LUT4_I3_LC.O
+Info:    routing  2.95  4.34 Net done_tog (10,4) -> (12,7)
+Info:                          Sink dt_m_SB_DFF_Q_DFFLC.I0
+Info:                          Defined in:
+Info:                               cam_trans_soc.v:85.9-85.17
+Info:      setup  1.23  5.58 Source dt_m_SB_DFF_Q_DFFLC.I0
+Info: 2.62 ns logic, 2.95 ns routing
+
+Info: Max frequency for clock 'cam_pclk$SB_IO_IN_$glb_clk': 20.49 MHz (PASS at 12.00 MHz)
+ERROR: Max frequency for clock      'clk$SB_IO_IN_$glb_clk': 8.72 MHz (FAIL at 12.00 MHz)
+
+Info: Max delay <async>                            -> <async>                           : 8.92 ns
+Info: Max delay <async>                            -> posedge cam_pclk$SB_IO_IN_$glb_clk: 11.99 ns
+Info: Max delay posedge cam_pclk$SB_IO_IN_$glb_clk -> posedge clk$SB_IO_IN_$glb_clk     : 5.47 ns
+Info: Max delay posedge clk$SB_IO_IN_$glb_clk      -> <async>                           : 12.06 ns
+Info: Max delay posedge clk$SB_IO_IN_$glb_clk      -> posedge cam_pclk$SB_IO_IN_$glb_clk: 5.58 ns
+
+Info: Slack histogram:
+Info:  legend: * represents 19 endpoint(s)
+Info:          + represents [1,19) endpoint(s)
+Info: [-15705, -10915) |***************************+
+Info: [-10915,  -6125) |***********************+
+Info: [ -6125,  -1335) |** 
+Info: [ -1335,   3455) | 
+Info: [  3455,   8245) | 
+Info: [  8245,  13035) |**************+
+Info: [ 13035,  17825) |***********************************+
+Info: [ 17825,  22615) |*+
+Info: [ 22615,  27405) |***********+
+Info: [ 27405,  32195) |*+
+Info: [ 32195,  36985) |************+
+Info: [ 36985,  41775) |**+
+Info: [ 41775,  46565) |*****+
+Info: [ 46565,  51355) |*+
+Info: [ 51355,  56145) |*+
+Info: [ 56145,  60935) |****+
+Info: [ 60935,  65725) |***************+
+Info: [ 65725,  70515) |******************+
+Info: [ 70515,  75305) |************************************+
+Info: [ 75305,  80095) |************************************************************ 
+1 warning, 1 error
+
+Info: Program finished normally.
