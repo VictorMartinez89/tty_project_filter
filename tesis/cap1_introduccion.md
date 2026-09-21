@@ -106,8 +106,8 @@ su periférico, la gestión de la memoria, y las dos traducciones que el mismo R
 existir en FPGA y en ASIC.
 
 El **Capítulo 5** presenta los resultados —verificación funcional, implementación en FPGA, los
-circuitos en silicio, el rendimiento medido y el reconocimiento de dígitos— y distingue con cuidado
-qué acredita cada cifra.
+circuitos en silicio, el rendimiento medido, el reconocimiento de dígitos y la verificación eléctrica
+del camino crítico— y distingue con cuidado qué acredita cada cifra.
 
 El **Capítulo 6** discute lo anterior como tesis defendibles, y es donde reside el aporte: que la
 memoria decide qué cabe, y que el front-end y el procesador son alternativas para comprar robustez y

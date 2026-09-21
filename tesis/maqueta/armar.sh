@@ -34,7 +34,7 @@ agregar cap4_diseno.md
 # El capitulo 5 vive en seis ficheros que usan '#' para lo que son SECCIONES y no
 # tienen encabezado de capitulo. Se le pone uno y se degradan los seis.
 printf '\n# 5. Resultados\n' >> "$UNIDO"
-for n in 1 2 3 4 5 6; do agregar "cap5_seccion$n.md" bajar; done
+for n in 1 2 3 4 5 6 7; do agregar "cap5_seccion$n.md" bajar; done
 
 agregar cap6_discusion.md
 agregar cap7_conclusiones.md

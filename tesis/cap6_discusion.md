@@ -266,6 +266,6 @@ creciente**. Esa condición de igualdad es lo que permite atribuir cada diferenc
 - **Los recuentos de celdas no son homogéneos** entre todas las tablas del Capítulo 5, por las tres
   definiciones documentadas en la §5.3.3. Los cocientes dentro de cada pareja son válidos; las
   comparaciones absolutas entre tablas distintas, no.
-- **La verificación eléctrica de la §5.6 deja un residuo declarado**: la extracción del layout de las
+- **La verificación eléctrica de la §5.7 deja un residuo declarado**: la extracción del layout de las
   celdas recupera la mayor parte de la discrepancia entre SPICE y el analizador estático, pero no
   toda, y la parte restante se atribuye a la resistencia interna de la celda sin haberlo comprobado.

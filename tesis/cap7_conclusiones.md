@@ -32,7 +32,8 @@ reproducir un error específico y repetido, no.
 OpenLane e IHP SG13G2 con LibreLane—, todos ellos con **DRC, LVS y XOR en cero**. La verificación
 eléctrica se cerró por dos vías independientes: los circuitos **cierran el temporizado con los
 parásitos del interconexionado extraídos** —holgura de 0,00 ns sobre el peor camino—, y el camino
-crítico de uno de ellos se simuló además en SPICE hasta explicar su retardo componente a componente.
+crítico de **dos** de ellos se simuló además en SPICE hasta repartir su retardo en sumandos sin
+residuo (§5.7).
 Ninguno ha sido fabricado, y esa distinción se mantiene en todo el documento: **silicio firmado no es
 silicio**.
 
@@ -95,7 +96,7 @@ por su cuenta es mucho peor que uno que lo ve ya corregido.
 | 3 | Una exactitud del **97,3 %** | Provenía de un defecto del banco de medida |
 | 4 | Una dispersión estimada con cinco semillas | **Subestimada en un factor de 1,8** por solapamiento de las submuestras |
 | 5 | El Canny supera al Sobel bajo condiciones degradadas | Comparaba **dos puntos de operación**, no dos filtros; con el umbral implementado el resultado se invierte |
-| 6 | La discrepancia entre SPICE y el analizador estático es la **resistencia** de la interconexión | La resistencia aporta **0,017 ns**, el 0,1 %. La causa son los parásitos internos de la celda |
+| 6 | La discrepancia entre SPICE y el analizador estático es la **resistencia** de la interconexión | La resistencia aporta **0,017 ns**, el 0,1 %. La causa son los parásitos internos de la celda (§5.7.3) |
 
 Las seis comparten una forma, y conviene enunciarla porque es la lección metodológica del trabajo:
 **ninguna procedía de una medición equivocada.** Las mediciones eran correctas en todos los casos. Lo
