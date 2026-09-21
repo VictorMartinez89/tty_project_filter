@@ -215,18 +215,20 @@ las secciones §5.3 y §5.4 procesan; éstos reconocen.
 
 ## 5.6.8 El costo relativo del front-end depende del sistema
 
-La comparación de área entre ambos front-ends admite cuatro niveles de integración, tres de ellos
-medidos con anterioridad y el cuarto aportado por esta sección:
+La comparación de área entre ambos front-ends admite cuatro niveles de integración. Las cuatro filas
+están en **celdas emplazadas**, la misma escala de la §5.3, de modo que los cocientes son
+directamente comparables entre sí:
 
 | nivel | Sobel | Canny | factor |
 |---|---:|---:|---:|
-| filtro aislado | 4 651 | 10 284 | **2.21×** |
-| con procesador | 9 906 | 22 054 | 2.23× |
+| filtro aislado | 5 823 | 12 993 | **2.23×** |
+| con procesador | 12 043 | 22 054 | 1.83× |
 | sistema de visión completo | 35 653 | 41 925 | 1.18× |
 | **reconocedor** | **19 949** | **20 921** | **1.05×** |
 
 **El sobrecosto del Canny se diluye conforme crece el sistema que lo rodea.** Considerado de forma
-aislada cuesta un 121 % más; integrado en un reconocedor, un 5 %. El motivo es que el clasificador
+aislada cuesta un **123 %** más; con un procesador al lado, un 83 %; dentro de un sistema de visión,
+un 18 %; e integrado en un reconocedor, un **5 %**. El motivo es que el clasificador
 —histograma, pirámide y 400 multiplicaciones— es idéntico en ambas variantes y domina el área,
 mientras que la diferencia se reduce al tercer *line-buffer*.
 

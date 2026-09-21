@@ -33,10 +33,15 @@ para afirmar lo contrario; los dos transitivos no cierran, y conviene decirlo co
 pediría 39,4 ns —25,4 MHz— y el #6, 54,2 ns, es decir 18,4 MHz en lugar de los 27,8 solicitados.
 
 > **Sobre el recuento de celdas, y es importante al leer junto a la §5.3.** Las cifras de esta tabla
-> son **celdas de síntesis**; las de la §5.3 son **celdas colocadas**. El emplazamiento agrega entre un
-> 19 % y un 23 % —medido sobre tres diseños: ×1,23, ×1,19 y ×1,23— porque inserta amortiguadores de
-> reloj y de reparación de tiempos. **Cruzar una cifra de una tabla con otra produce una diferencia
-> fantasma de alrededor del 20 %** que no corresponde a ninguna decisión de diseño.
+> son **celdas de síntesis**; las de la §5.3 y la §5.6 son **celdas emplazadas**. Cada tabla es
+> internamente homogénea, y el paso de una escala a otra **está medido sobre nueve circuitos que
+> conservan las dos cifras**: el emplazamiento agrega entre un 16 % y un 26 %, con un factor medio de
+> **×1,21** y una desviación típica de 0,04. Para comparar una cifra de aquí con una de allá,
+> multiplíquese por 1,21; el detalle del procedimiento está en la §5.3.3.
+>
+> Dos de los seis circuitos de esta tabla se archivaron sin *netlist*, razón por la cual no se
+> convirtió la tabla entera: se prefirió una tabla homogénea en su propia escala antes que una tabla
+> mixta con dos filas estimadas.
 
 ## 5.4.2 El procesador cuesta lo mismo, sea cual sea el filtro
 

@@ -74,7 +74,7 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
 3. **Una comparación sistemática de dos front-ends sobre silicio firmado**, a igualdad de todo lo
    demás, a lo largo de seis sistemas de complejidad creciente. De ella se desprende el resultado de
    ingeniería que el trabajo propone: **el front-end y el procesador son alternativas para comprar
-   robustez, no complementos**, y comprarla en el front-end resulta unas ocho veces más barato.
+   robustez, no complementos**, y comprarla en el front-end resulta unas seis veces más barato.
 
 4. **Un clasificador de patrones que cabe donde no cabe una red**: 400 pesos de cuatro bits
    —doscientos bytes— alcanzan sobre MNIST la misma exactitud que los 784 píxeles crudos con la

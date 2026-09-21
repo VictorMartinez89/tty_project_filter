@@ -2,8 +2,9 @@
 
 > **Estado:** borrador 1, escrito el 2026-09-16. Fuente: cuaderno 1, Partes 86-131, y el archivo de
 > planos `ASIC_planos/`.
-> ⚠️ Léase la advertencia sobre el recuento de celdas al final: **las cifras de esta tabla no son
-> comparables una a una con las de la §5.4.**
+> **Recuento homogeneizado el 21 de septiembre de 2026.** Toda la columna «celdas» de esta tabla son
+> **celdas lógicas tras emplazamiento y ruteado**, recontadas con un mismo criterio desde los
+> netlists archivados. Véase la §5.3.3 para cruzarlas con las de la §5.4.
 
 Esta sección presenta los circuitos que implementan **una función cada uno**: los tres filtros por
 separado, los mismos con procesador, dos bloques de interfaz y dos sistemas de visión. Son el
@@ -17,10 +18,10 @@ Todos se llevaron a GDSII con **OpenLane** sobre el PDK abierto **sky130A**, bib
 
 | Circuito | Función | Área del die | Celdas | Signoff |
 |---|---|---:|---:|:-:|
-| `sobel` | filtro Sobel 3×3 | 0,167 mm² | 4 651 | DRC/LVS/XOR = 0 |
-| `canny1` | Canny de un salto, en flujo | 0,360 mm² | 10 284 | DRC/LVS/XOR = 0 |
-| `transitivo` | Canny con histéresis transitiva | 3,13 mm² | 52 954 | DRC/LVS/XOR = 0 |
-| `soc_sobel` | FemtoRV32 + Sobel | 0,37 mm² | 9 906 | DRC/LVS/XOR = 0 |
+| `sobel` | filtro Sobel 3×3 | 0,167 mm² | 5 823 | DRC/LVS/XOR = 0 |
+| `canny1` | Canny de un salto, en flujo | 0,360 mm² | 12 993 | DRC/LVS/XOR = 0 |
+| `transitivo` | Canny con histéresis transitiva | 3,13 mm² | 65 659 | DRC/LVS/XOR = 0 |
+| `soc_sobel` | FemtoRV32 + Sobel | 0,37 mm² | 12 043 | DRC/LVS/XOR = 0 |
 | `soc_canny1` | FemtoRV32 + Canny de un salto | 0,67 mm² | 22 054 | DRC/LVS/XOR = 0 |
 | `soc_trans` | FemtoRV32 + transitivo | 3,42 mm² | 72 337 | DRC/LVS/XOR = 0 |
 | `cam_frontend` | front-end de cámara OV7670 | 0,0177 mm² | 562 | DRC/LVS/XOR = 0 |
@@ -32,8 +33,8 @@ Todos se llevaron a GDSII con **OpenLane** sobre el PDK abierto **sky130A**, bib
 
 ## 5.3.2 Lo que la tabla muestra de un vistazo
 
-**El filtro transitivo cuesta casi veinte veces más que el Sobel** —3,13 mm² contra 0,167— pese a
-ejecutar aritmética comparable. La razón, ya anticipada, es el cuadro completo residente: en la FPGA
+**El filtro transitivo cuesta casi veinte veces más área que el Sobel** —3,13 mm² contra 0,167, y
+once veces más celdas— pese a ejecutar aritmética comparable. La razón, ya anticipada, es el cuadro completo residente: en la FPGA
 ese cuadro vivía en SPRAM y no consumía lógica; aquí es un banco de biestables.
 
 **Los dos bloques de interfaz son casi gratis.** El front-end de cámara y el driver de pantalla ocupan
@@ -46,32 +47,49 @@ hablar con los periféricos, está en lo que se hace con los datos entre medias.
 iCE40 cerraba entre 9 y 28 MHz. En silicio la lógica es rápida; **lo caro es el área**, y ése es el
 eje sobre el que gira todo este capítulo.
 
-## 5.3.3 Advertencia sobre el recuento de celdas
+## 5.3.3 El recuento de celdas, y cómo cruzar las dos tablas
 
 Esta advertencia no es un tecnicismo: afecta a cualquier comparación que un lector intente hacer entre
 esta tabla y la de la §5.4.
 
-Las cifras de la columna «celdas» de este capítulo **no proceden todas del mismo campo de medida**. Al
-contrastarlas contra los ficheros `metrics.csv` de cada *run* se comprobó que conviven tres
-definiciones distintas:
+Un circuito se puede contar en dos momentos del flujo, y las dos cifras son legítimas:
 
-| Definición | Qué cuenta | Circuitos que la usan |
+| Definición | Qué cuenta | Dónde se usa |
 |---|---|---|
-| `synth_cell_count` | celdas tras síntesis, antes de emplazar | `sobel`, y los reconocedores de la §5.6 |
-| `NonPhysCells` | celdas lógicas tras emplazamiento y ruteo | `soc_canny1`, `soc_trans` |
-| conteo del flujo de LibreLane | celdas estándar tras emplazamiento | los circuitos en IHP SG13G2 |
+| celdas de **síntesis** | el resultado de traducir el RTL a compuertas | la tabla de la §5.4 |
+| celdas **emplazadas** | lo que queda tras emplazar y rutear, con los amortiguadores que el flujo inserta para el árbol de reloj y la reparación de tiempos | **esta** tabla y la §5.6 |
 
-La diferencia entre la primera y la segunda es de **entre el 19 % y el 23 %**, medida sobre tres
-diseños, y corresponde a los amortiguadores que el emplazamiento inserta para el árbol de reloj y la
-reparación de tiempos. En `soc_canny1`, por ejemplo, son 17 916 celdas de síntesis frente a 22 054
-tras emplazar.
+Durante la redacción, la columna «celdas» de este capítulo **mezclaba las dos**, porque las fichas del
+cuaderno habían registrado en cada momento el campo que la herramienta ofrecía. **Se rehízo el
+recuento**: se contaron las instancias de celda estándar directamente sobre el **netlist posterior al
+ruteado** de cada circuito archivado, descartando las celdas sin función lógica —relleno, contactos de
+pozo, desacoplo y diodos de antena—, con un único criterio para los dieciséis.
 
-**En consecuencia: los cocientes dentro de una misma fila son válidos, y las diferencias absolutas
-entre filas de tablas distintas no lo son.** Una comparación que cruce las dos tablas produce una
-discrepancia cercana al 20 % que no corresponde a ninguna decisión de diseño.
+El procedimiento se validó antes de aplicarlo: de los dieciséis circuitos, **ocho reprodujeron
+exactamente la cifra que ya constaba**, hasta la unidad —los dos bloques de interfaz, los dos SoC, los
+dos sistemas de visión y los dos circuitos en IHP—, que son precisamente aquellos cuya ficha ya
+provenía del emplazamiento. Los ocho restantes cambiaron, y ése era el objetivo.
 
-> La causa de la heterogeneidad es documental y no experimental: de los dieciséis directorios de
-> resultados, sólo una parte conservó su `metrics.csv`, y las fichas del cuaderno registraron en cada
-> momento el campo que la herramienta ofrecía. **Homogeneizar la tabla exige regenerar los `metrics.csv`
-> ausentes** —`sobel`, `canny1`, `soc_sobel`, `transitivo`, `vision_top` y `vision_canny`— y se deja
-> anotado como trabajo pendiente antes de la versión final del documento.
+### El factor de conversión, medido
+
+Como en nueve circuitos se conservan las dos cifras, el paso de una a otra no hay que estimarlo:
+
+| | |
+|---|---|
+| Casos medidos | 9 |
+| Factor medio | **×1,21** |
+| Mediana | ×1,20 |
+| Rango | ×1,16 a ×1,26 |
+| Desviación típica | 0,04 |
+
+**El emplazamiento agrega entre un 16 % y un 26 % de celdas**, con una dispersión estrecha. De modo
+que una cifra de la §5.4 se lleva a la escala de ésta multiplicándola por 1,21, y el error de esa
+conversión es de unos pocos puntos porcentuales — no del 20 % que separaba las tablas antes de
+homogeneizarlas.
+
+> **Por qué no se convirtió también la §5.4.** Dos de sus seis circuitos se archivaron sin netlist, de
+> modo que convertir la tabla habría exigido estimar dos de las seis filas. Se prefirió dejar cada
+> tabla **internamente homogénea** —la §5.4 entera en celdas de síntesis, ésta entera en celdas
+> emplazadas— y publicar el factor que las relaciona, antes que producir una tabla mixta con dos
+> filas estimadas. Las comparaciones dentro de cada tabla son exactas; las que cruzan de una a otra
+> pasan por el factor.

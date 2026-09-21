@@ -138,17 +138,33 @@ para eso está el procesador con su periférico. Un Canny insensible no lo neces
 
 Poniendo precio a las dos soluciones sobre el mismo silicio:
 
-$$\underbrace{655 \text{ celdas}}_{\text{el Canny, en el chip completo}} \qquad\text{frente a}\qquad \underbrace{5\,255 \text{ celdas}}_{\text{el procesador y su periferia}}$$
+$$\underbrace{972 \text{ celdas}}_{\text{el Canny, en el reconocedor}} \qquad\text{frente a}\qquad \underbrace{6\,220 \text{ celdas}}_{\text{el procesador y su periferia}}$$
 
-**Comprar robustez en el front-end resulta unas ocho veces más barato que comprarla con un
+**Comprar robustez en el front-end resulta unas seis veces más barato que comprarla con un
 procesador.** Los dos caminos resuelven el mismo problema —que el punto de operación correcto depende
 de la escena— y la elección entre ellos es de arquitectura, no de algoritmo.
 
-> **Dos precisiones, porque la cifra se presta a mal uso.** La resta de la derecha incluye el
-> FemtoRV32, su controlador y su periférico, no sólo el núcleo: es lo que cuesta *poder escribir el
-> umbral*, que es lo que se compara. Y la de la izquierda es el sobrecoste del Canny **en ese sistema
-> concreto**; la §5.4 muestra que en un circuito que procese la escena completa sería mucho mayor. La
-> afirmación vale para sistemas de reconocimiento sobre ventana pequeña, no universalmente.
+> **Tres precisiones, porque la cifra se presta a mal uso.**
+>
+> *Primera: el factor depende de la escala de recuento, y por eso se da redondeado.* Sobre celdas
+> emplazadas la razón es **6,4**; sobre celdas de síntesis, **8,0**. La diferencia no es un error de
+> medida sino un hecho: al emplazar, el sobrecoste del Canny crece un 48 % y el del procesador sólo
+> un 18 %, porque el primero es lógica en serie que exige amortiguadores y el segundo es en buena
+> parte memoria ya compacta. **La conclusión cualitativa es robusta a la escala; el número exacto no
+> lo es**, y se enuncia como «unas seis veces» y no como «6,40».
+>
+> *Segunda: el numerador y el denominador no proceden del mismo circuito.* El sobrecoste del Canny
+> se mide sobre el par de reconocedores, que recorren una ventana de 28×28; el del procesador, sobre
+> el par de filtros, que recorren la escena a 60×80. No existe un reconocedor sin procesador en la
+> misma tecnología con el que hacer la resta directa, de modo que **la comparación es entre dos
+> sistemas emparentados y no entre dos versiones del mismo**. Se deja dicho porque un lector podría
+> suponer lo segundo.
+>
+> *Tercera: la resta de la derecha incluye* el FemtoRV32, su controlador y su periférico, no sólo el
+> núcleo: es lo que cuesta *poder escribir el umbral*, que es lo que se compara. Y la de la izquierda
+> es el sobrecoste del Canny **en ese sistema concreto**; la §5.4 muestra que en un circuito que
+> procese la escena completa sería mucho mayor. La afirmación vale para sistemas de reconocimiento
+> sobre ventana pequeña, no universalmente.
 
 ### Sobre la trayectoria de este argumento
 
