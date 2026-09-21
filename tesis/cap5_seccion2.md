@@ -68,9 +68,9 @@ ocupa el 45 %. No es casualidad: con el dispositivo casi lleno el emplazador pie
 acercar las celdas de un mismo camino, y el retardo de ruteado domina. **El espacio libre no sólo
 permite crecer: permite ir rápido.**
 
-**El sensor nunca fue el límite.** El dominio de la cámara cierra con holgura en las cuatro filas
-—entre 18 y 21 MHz frente a los 12 necesarios— en las tres filas donde se midió, mientras que el del sistema es el que falla. El cuello
-de botella lo introduce el procesador, no la adquisición.
+**El sensor nunca fue el límite.** En las tres filas donde se midió, el dominio de la cámara cierra
+con holgura —entre 18 y 21 MHz frente a los 12 necesarios— mientras que el del sistema es el que
+falla. El cuello de botella lo introduce el procesador, no la adquisición.
 
 ## 5.2.4 El hallazgo de co-diseño
 
