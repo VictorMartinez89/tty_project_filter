@@ -1,7 +1,7 @@
 ---
 title: "De FPGA a silicio: reconocimiento de patrones bajo restricciones duras"
 subtitle: "Un SoC RISC-V con tres detectores de bordes y un clasificador de dígitos, del modelo de referencia al GDSII firmado"
-author: "Victor Alfonso Martínez Sánchez"
+author: "Victor Alfonso Martinez Solarte"
 date: "Septiembre de 2026"
 lang: es-CO
 documentclass: report
