@@ -154,6 +154,27 @@ eficiente de redes neuronales [Sze *et al.* 2017] establecen que el acceso a mem
 de magnitud más energía que una multiplicación, y que en consecuencia la arquitectura debe
 organizarse alrededor del flujo de datos y no alrededor de las unidades aritméticas.
 
+### Y por qué esto puede hacerse hoy en un trabajo de maestría
+
+Conviene precisar qué es lo reciente, porque el arreglo que permite llevar estos diseños a silicio no
+es nuevo: lo nuevo es que sea abierto. **Mead y Conway** establecieron en 1980 los tres elementos que
+lo sostienen [Mead y Conway 1980]. El primero es un conjunto de **reglas de diseño escalables**,
+expresadas en una unidad normalizada, que permite razonar sobre el circuito sin conocer la física del
+proceso. El segundo es su consecuencia: la **separación entre diseñar y fabricar**, que convierte el
+plano en un objeto intercambiable entre dos organizaciones distintas. Y el tercero es la **oblea
+compartida**, que reparte el costo de una máscara entre muchos diseños pequeños y fue lo que puso el
+silicio al alcance de un curso universitario.
+
+Los tres reaparecen, cuatro décadas después, en la forma que este trabajo utiliza: el kit de diseño
+cumple el papel de las reglas, el fichero de plano el del objeto intercambiable, y las lanzas
+educativas el de la oblea compartida. **La novedad no es la posibilidad sino el precio de entrada**,
+y es sobre esa distinción que se apoya la §2.8.
+
+> Merece señalarse que la §5.7 de este trabajo mide un **límite** de la primera de esas tres ideas.
+> La abstracción que permite diseñar sin conocer el proceso funciona porque alguien caracterizó cada
+> celda sobre su dibujo; cuando el modelo que se entrega a una herramienta es el esquema y no el
+> dibujo, **la abstracción se rompe en silencio, y en un 22 % del retardo**.
+
 > La contribución de este trabajo a esa línea no es teórica sino de escala y de método: mide el mismo
 > fenómeno **en el extremo opuesto del rango** —sistemas completos de uno a diez milímetros
 > cuadrados, no aceleradores de decenas— **sobre silicio firmado y con el circuito gemelo como
@@ -173,25 +194,6 @@ con LibreLane sobre IHP SG13G2 para la segunda tecnología. La disponibilidad de
 reciente y es lo que hace posible que un trabajo de maestría produzca GDSII verificado sin licencias
 comerciales.
 
-Conviene precisar qué es lo reciente, porque el arreglo que este trabajo emplea no es nuevo: lo nuevo
-es que sea abierto. **Mead y Conway** establecieron en 1980 los tres elementos que lo sostienen
-[Mead y Conway 1980]. El primero es un conjunto de **reglas de diseño escalables**, expresadas en una
-unidad normalizada, que permite razonar sobre el circuito sin conocer la física del proceso. El
-segundo es la consecuencia de lo anterior: la **separación entre diseñar y fabricar**, que convierte
-el plano en un objeto intercambiable entre dos organizaciones distintas. Y el tercero es la **oblea
-compartida**, que reparte el costo de una máscara entre muchos diseños pequeños y fue lo que puso el
-silicio al alcance de un curso universitario.
-
-Los tres reaparecen, cuatro décadas después, en la forma que este trabajo utiliza: el kit de diseño
-cumple el papel de las reglas, el fichero de plano el del objeto intercambiable, y las lanzas
-educativas el de la oblea compartida. **La novedad no es la posibilidad sino el precio de entrada**,
-y es sobre esa distinción que se apoya la §2.8.
-
-> Merece señalarse, además, que la §5.7 de este trabajo mide un **límite** de la primera de esas tres
-> ideas. La abstracción que permite diseñar sin conocer el proceso funciona porque alguien
-> caracterizó cada celda sobre su dibujo; cuando el modelo que se entrega a una herramienta es el
-> esquema y no el dibujo, la abstracción se rompe, y lo hace **en silencio y en un 22 % del
-> retardo**.
 
 Entre una FPGA y un ASIC cambian cosas que el RTL no expresa: la inicialización de los registros, la
 existencia de memoria en el sustrato, la disponibilidad de tri-estado interno y las primitivas
