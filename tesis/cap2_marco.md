@@ -346,5 +346,8 @@ remiten al mismo artículo; se adopta la segunda por ser la que figura en el ín
 > detienen en FPGA» —un cuantificador que no podía defenderse— ahora describe una cuestión de acceso
 > que las fuentes sí sostienen. La revisión realizada **no es sistemática**, y el texto lo declara.
 >
-> Queda por contrastar qué referencias de las 36 ya recopiladas en formato IEEE cubren estas dieciséis
-> casillas, para no duplicar entradas en la bibliografía final.
+> El contraste con las 36 referencias ya recopiladas **está hecho** (21 de septiembre): ocho obras
+> estaban en ambas listas y se fundieron conservando los datos verificados, nueve son aportación de
+> esta verificación, y el resultado son **45 entradas sin duplicados** en `bibliografia.md`. Se
+> comprobó además que ninguna entrada de la tabla anterior queda sin citar en el cuerpo del capítulo,
+> y ninguna cita del cuerpo queda sin entrada.

@@ -1,6 +1,6 @@
 # Anexo D. Recetas del flujo a silicio
 
-> Fuente: los ficheros `config.json` de los dieciocho directorios de diseño.
+> Fuente: los ficheros `config.json` de los veinte directorios de diseño en sky130A.
 > Esta tabla se generó leyéndolos, no transcribiéndolos.
 
 ## D.1 Qué se configura, y qué no
@@ -33,12 +33,29 @@ modificado es una variable más que explicar si un resultado sale distinto del e
 | `vision_canny_top` | 20 ns | 18 % | 0,25 | sí |
 | `vision_sobel_mnist` | 20 ns | 18 % | 0,25 | sí |
 | `vision_canny_mnist` | 20 ns | 18 % | 0,25 | sí |
+| `pan_sobel` | **30 ns** | 22 % | 0,32 | sí |
+| `pan_canny` | **30 ns** | 22 % | 0,32 | sí |
 | `sobel_completo` | 20 ns | 15 % | 0,30 | sí |
 | `canny1_completo` | 20 ns | 15 % | 0,20 | sí |
 | `trans_completo` | 20 ns | 15 % | 0,20 | sí |
 | `soc_sobel_completo` | **32 ns** | 15 % | 0,20 | sí |
 | `soc_canny1_completo` | **36 ns** | 15 % | 0,20 | sí |
 | `soc_trans_completo` | **36 ns** | 15 % | 0,20 | sí |
+
+> **Veinte recetas, dieciséis circuitos.** La tabla tiene más filas que circuitos declara el
+> Capítulo 7, y la diferencia merece explicarse. Los seis diseños terminados en `_completo` son una
+> **segunda vía** hacia el mismo sistema: mientras los `vision_*` se obtuvieron **portando el diseño
+> físicamente verificado en la FPGA**, los `_completo` se **ensamblaron a partir de los bloques
+> reutilizables ya comprobados por separado** —front-end de cámara, filtro, controlador de pantalla—
+> con un solo dominio de reloj en lugar de dos. Ambas vías se ejecutaron; sólo la primera se archivó
+> con el expediente completo.
+>
+> De los seis, tres —`trans_completo`, `soc_canny1_completo` y `soc_trans_completo`— superaron las
+> tres verificaciones de firma con cero observaciones, y otros dos conservan el GDSII, pero **ninguno
+> reúne a la vez el GDSII y los tres informes** en el archivo curado. Por eso no se cuentan entre los
+> dieciséis: el criterio para contar un circuito en este trabajo no es haberlo ejecutado, sino
+> **poder mostrar el plano y las tres firmas juntos**. Se dejan en esta tabla porque sus recetas son
+> parte de la evidencia del patrón que sigue, y porque omitirlos falsearía el recuento de intentos.
 
 ## D.3 El patrón que la tabla revela
 
