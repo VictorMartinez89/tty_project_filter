@@ -9,6 +9,11 @@
 > Las marcadas con **✓** tienen volumen, número, páginas y año comprobados contra la fuente. Las
 > demás son programas, kits de diseño, hojas de datos o repositorios, que se citan por su
 > identificador público y no admiten esa comprobación.
+>
+> Las notas introducidas por **▸** no señalan trabajo pendiente: son **advertencias sobre la fuente
+> misma** —una obra que nunca se publicó formalmente, otra que circula con dos numeraciones de
+> volumen, un título que cambió entre ediciones— que un lector necesita para no tomar por descuido lo
+> que es una decisión. Deben permanecer en la versión final.
 
 ## Núcleo RISC-V y arquitectura
 
@@ -17,7 +22,7 @@
 3. B. Levy, *From Blinker to RISC-V* (tutoriales). https://github.com/BrunoLevy/learn-fpga/tree/master/FemtoRV/TUTORIALS
 4. C. Wolf (YosysHQ), *PicoRV32 — a size-optimized RISC-V CPU*. https://github.com/YosysHQ/picorv32
 5. S. Lefebvre, *ice-v — a tiny RISC-V in Silice*. https://github.com/sylefeb/Silice/tree/master/projects/ice-v
-6. A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: Unprivileged ISA*, RISC-V International. ⚠️ **Falta indicar la versión y el año de la edición consultada.**
+6. **✓** A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: User-Level ISA, Document Version 2.2*, mayo de 2017. — Es la edición contra la que está escrito el decodificador del FemtoRV32 empleado, que la cita explícitamente en su propio código («Table page 104 of `riscv-spec-v2.2.pdf`»). Se cita ésa y no una posterior porque es la que describe la instrucción que el circuito implementa. ▸ Nótese que las ediciones desde 2019 retitulan este volumen como *Unprivileged ISA*; la versión 2.2 conserva el nombre *User-Level ISA*.
 
 ## FPGA, kit de diseño y cadena de herramientas
 
@@ -40,10 +45,10 @@
 
 ## Detección de bordes y procesamiento de imagen
 
-20. **✓** I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», charla en el Stanford Artificial Intelligence Laboratory, 1968. ⚠️ **No es una publicación formal**; se describe después en Pingle (1969) y en Duda y Hart (1973), razón por la cual buena parte de la literatura la cita de forma indirecta.
+20. **✓** I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», charla en el Stanford Artificial Intelligence Laboratory, 1968. ▸ **No es una publicación formal**; se describe después en Pingle (1969) y en Duda y Hart (1973), razón por la cual buena parte de la literatura la cita de forma indirecta.
 21. **✓** J. M. S. Prewitt, «Object Enhancement and Extraction», en B. Lipkin y A. Rosenfeld (eds.), *Picture Processing and Psychopictorics*, Academic Press, pp. 75–149, 1970.
 22. **✓** R. A. Kirsch, «Computer determination of the constituent structure of biological images», *Computers and Biomedical Research*, vol. 4, n.º 3, pp. 315–328, 1971.
-23. **✓** N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Transactions on Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. ⚠️ Aparece también como «vol. 9»; se adopta «SMC-9», que es la numeración del índice de la revista.
+23. **✓** N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Transactions on Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. ▸ Aparece también como «vol. 9»; se adopta «SMC-9», que es la numeración del índice de la revista.
 24. **✓** J. Canny, «A Computational Approach to Edge Detection», *IEEE Transactions on Pattern Analysis and Machine Intelligence*, vol. PAMI-8, n.º 6, pp. 679–698, nov. 1986.
 25. **✓** L. Vincent, «Morphological Grayscale Reconstruction in Image Analysis: Applications and Efficient Algorithms», *IEEE Transactions on Image Processing*, vol. 2, n.º 2, pp. 176–201, abr. 1993.
 26. R. C. Gonzalez y R. E. Woods, *Digital Image Processing*, Pearson — histéresis, umbral doble, reconstrucción morfológica y componentes conexas.
@@ -60,7 +65,7 @@
 
 ## Aceleradores de redes neuronales
 
-34. **✓** Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *International Symposium on Computer Architecture (ISCA)*, 2016. ⚠️ Existe un artículo homónimo en ISSCC 2016 sobre el mismo sistema; el que desarrolla el argumento sobre el flujo de datos es el de ISCA.
+34. **✓** Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *International Symposium on Computer Architecture (ISCA)*, 2016. ▸ Existe un artículo homónimo en ISSCC 2016 sobre el mismo sistema; el que desarrolla el argumento sobre el flujo de datos es el de ISCA.
 35. **✓** V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017.
 
 ## Periféricos
@@ -80,7 +85,7 @@
 ## Trabajos de comparación
 
 44. D. N. Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130. https://github.com/DianaNatali/tt06_grayscale_sobel
-45. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. https://github.com/kayaleitner/FPGA_MNIST ⚠️ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
+45. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. https://github.com/kayaleitner/FPGA_MNIST ▸ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
 
 ---
 

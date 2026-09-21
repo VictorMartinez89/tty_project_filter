@@ -164,7 +164,7 @@ organizarse alrededor del flujo de datos y no alrededor de las unidades aritmét
 ## 2.7 El sustrato: RISC-V y el flujo abierto a silicio
 
 El procesador empleado implementa el conjunto de instrucciones **RV32I**, el subconjunto entero de 32
-bits de la especificación abierta RISC-V [Waterman *et al.*]. La elección responde a que un conjunto
+bits de la especificación abierta RISC-V [Waterman y Asanović 2017]. La elección responde a que un conjunto
 abierto permite implementaciones mínimas sin restricciones de licencia, y a que existen núcleos de
 tamaño compatible con el presupuesto de este trabajo.
 
@@ -316,7 +316,7 @@ páginas están comprobados salvo donde se indica.
 | Lazebnik *et al.* 2006 | S. Lazebnik, C. Schmid y J. Ponce, «Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories», *IEEE CVPR*, vol. 2, pp. 2169–2178, 2006. |
 | Chen *et al.* 2016 | Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *ISCA*, 2016. |
 | Sze *et al.* 2017 | V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017. |
-| Waterman *et al.* | A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: Unprivileged ISA*, RISC-V International. **Indicar la versión y el año de la edición efectivamente consultada.** |
+| Waterman y Asanović 2017 | A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: User-Level ISA, Document Version 2.2*, may. 2017. Es la edición contra la que está escrito el decodificador del núcleo empleado, que la cita en su propio código. |
 | SkyWater 2020 | SkyWater Technology y Google, *SKY130 Open Source PDK*, 2020. Primer kit de diseño de un proceso comercial publicado sin acuerdo de confidencialidad. |
 | Shalan y Edwards 2020 | M. Shalan y T. Edwards, «Building OpenLANE: A 130nm OpenROAD-based Tapeout-Proven Flow», *ICCAD*, 2020. |
 | Baischer *et al.* | L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. Documentación y código en `github.com/kayaleitner/FPGA_MNIST`. **No es una publicación revisada por pares**, y así debe citarse. |
@@ -339,13 +339,23 @@ remiten al mismo artículo; se adopta la segunda por ser la que figura en el ín
 
 ---
 
-> ⚠️ **Lo que sigue pendiente en este capítulo.** La afirmación de la §2.8 sobre el estado de la
-> literatura **se reformuló** tras la búsqueda: donde antes decía que «la mayoría de los trabajos se
-> detienen en FPGA» —un cuantificador que no podía defenderse— ahora describe una cuestión de acceso
-> que las fuentes sí sostienen. La revisión realizada **no es sistemática**, y el texto lo declara.
+> **El alcance de esta revisión, declarado.** La revisión bibliográfica de este capítulo **no es
+> sistemática**: no se siguió un protocolo de búsqueda reproducible, ni se acotó un conjunto de bases
+> de datos, ni se aplicaron criterios de inclusión y exclusión documentados. Es una revisión
+> **orientada al argumento**: se buscó aquello que sostiene o refuta las afirmaciones que el capítulo
+> necesita hacer. Decirlo importa porque delimita qué puede concluirse de él —sitúa el trabajo en su
+> tradición— y qué no: **no autoriza ninguna afirmación sobre la frecuencia relativa de unas prácticas
+> frente a otras en la literatura.**
 >
-> El contraste con las 36 referencias ya recopiladas **está hecho** (21 de septiembre): ocho obras
-> estaban en ambas listas y se fundieron conservando los datos verificados, nueve son aportación de
-> esta verificación, y el resultado son **45 entradas sin duplicados** en `bibliografia.md`. Se
-> comprobó además que ninguna entrada de la tabla anterior queda sin citar en el cuerpo del capítulo,
-> y ninguna cita del cuerpo queda sin entrada.
+> Esa distinción tuvo una consecuencia concreta. La §2.8 afirmaba en su primera redacción que «la
+> mayoría de los trabajos se detienen en FPGA», un cuantificador que **exigiría precisamente el
+> recuento que esta revisión no hizo**. Se reformuló: donde había una afirmación sobre proporciones
+> hay ahora una sobre condiciones de acceso, que las fuentes sí sostienen. Se deja constancia del
+> cambio porque la afirmación retirada era cómoda para el argumento, y conviene que se vea que se
+> retiró por no poder sostenerla y no por haber dejado de ser útil.
+>
+> **Las diecisiete citas del capítulo están verificadas contra la fuente** y cotejadas con las 36 ya
+> recopiladas: ocho obras coincidían y se fundieron conservando los datos verificados, nueve son
+> aportación de esta verificación, y el resultado son las **45 entradas sin duplicados** de
+> `bibliografia.md`. Se comprobó además, en las dos direcciones, que ninguna entrada de la tabla
+> anterior queda sin citar en el cuerpo del capítulo y ninguna cita del cuerpo queda sin entrada.
