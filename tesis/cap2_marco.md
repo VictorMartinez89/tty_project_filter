@@ -175,7 +175,7 @@ comerciales.
 
 Entre una FPGA y un ASIC cambian cosas que el RTL no expresa: la inicialización de los registros, la
 existencia de memoria en el sustrato, la disponibilidad de tri-estado interno y las primitivas
-específicas del fabricante. La §4.7 las enumera; aquí basta señalar que **ninguna de ellas produce un
+específicas del fabricante. La §4.8 las enumera; aquí basta señalar que **ninguna de ellas produce un
 error de simulación**, lo que las convierte en una clase de problema particularmente incómoda.
 
 ## 2.8 Trabajos relacionados

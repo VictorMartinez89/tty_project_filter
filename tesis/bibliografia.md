@@ -4,7 +4,7 @@
 > de laboratorio y las **17 verificadas contra la fuente** el 21 de septiembre de 2026 al redactar el
 > Capítulo 2. Ocho obras aparecían en ambas listas y se han fundido en una sola entrada, conservando
 > siempre los datos verificados; nueve son aportación de la verificación, y una —el libro de texto del que procede la arquitectura
-> de bus— se añadió al documentar el linaje del SoC en la §4.4. El total son **46 entradas sin
+> de bus— se añadió al documentar el linaje del SoC en la §4.5. El total son **46 entradas sin
 > duplicados**.
 >
 > Las marcadas con **✓** tienen volumen, número, páginas y año comprobados contra la fuente. Las

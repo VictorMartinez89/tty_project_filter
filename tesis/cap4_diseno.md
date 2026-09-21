@@ -138,7 +138,117 @@ uno en el peor caso construido.
 Esta es la única de las tres arquitecturas que **exige el cuadro completo residente**, y de esa
 exigencia se derivan casi todos los resultados del Capítulo 6.
 
-## 4.4 El SoC: procesador, periférico y firmware
+## 4.4 Los tres filtros, enunciados como algoritmos
+
+Las descripciones anteriores son narrativas. Esta sección las enuncia de forma que puedan compararse
+sin ambigüedad, porque la afirmación central del trabajo —que dos de los filtros son objetos
+computacionales de una clase y el tercero de otra— **no se sostiene sobre lo que los filtros hacen
+sino sobre su estructura**, y la estructura hay que escribirla.
+
+Se emplea una notación mínima que distingue lo que en hardware son dos cosas distintas:
+
+| símbolo | significa | en Verilog |
+|:--:|---|---|
+| `x ← e` | **registro**: se actualiza al final del ciclo, y el bloque lee el valor anterior | `x <= e` |
+| `x ≔ e` | **cable**: vale de inmediato y de forma continua | `wire` / `assign` |
+| `▷` | comentario | `//` |
+
+**Los tres comparten el esqueleto y se diferencian en una sola caja.** Ésa es la razón de que puedan
+intercambiarse sin tocar nada aguas abajo, y de que la comparación del Capítulo 5 sea limpia: se
+cambia una pieza y nada más.
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 1   Front-end Sobel
+──────────────────────────────────────────────────────────────────────
+ FRONTEND_SOBEL(in_pix, thr)                     ▷ parámetros: H, W
+ ▷ etapa 1 — suavizado
+ 1.  (g₀₀…g₂₂, v_g) ≔ LINEBUF3X3⟨W,8⟩(in_valid, in_pix)
+ 2.  gsum ≔ g₀₀+2g₀₁+g₀₂ + 2g₁₀+4g₁₁+2g₁₂ + g₂₀+2g₂₁+g₂₂
+ 3.  gout ≔ gsum ≫ 4                             ▷ dividir entre 16 es desplazar
+ ▷ etapa 2 — gradiente
+ 4.  (s₀₀…s₂₂, v_s) ≔ LINEBUF3X3⟨W,8⟩(v_g, gout)
+ 5.  Gx⁺ ≔ s₀₂+2s₁₂+s₂₂ ;   Gx⁻ ≔ s₀₀+2s₁₀+s₂₀
+ 6.  Gy⁺ ≔ s₂₀+2s₂₁+s₂₂ ;   Gy⁻ ≔ s₀₀+2s₀₁+s₀₂
+ 7.  σx ≔ (Gx⁺ ≥ Gx⁻) ;     σy ≔ (Gy⁺ ≥ Gy⁻)     ▷ los signos, que dan la orientación
+ 8.  |Gx| ≔ |Gx⁺−Gx⁻| ;     |Gy| ≔ |Gy⁺−Gy⁻|
+ 9.  mag ≔ mín(|Gx|+|Gy|, 255)                   ▷ norma L1: sin raíz y sin multiplicar
+10.  borde ≔ (mag > thr)                         ▷ UN umbral
+11.  LAT  ≔ 2·(W+2)                              ▷ dos etapas de ventana
+──────────────────────────────────────────────────────────────────────
+```
+
+El Canny de un salto es el anterior **con una etapa más**, y con una dificultad que no se ve a simple
+vista:
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 2   Front-end Canny de un salto
+──────────────────────────────────────────────────────────────────────
+ FRONTEND_CANNY1(in_pix, thr_hi, thr_lo)
+ 1–9.  idéntico al Algoritmo 1                   ▷ mismo suavizado, mismo gradiente
+10.  cls ≔ (mag > thr_hi) ? 2 : (mag > thr_lo) ? 1 : 0        ▷ DOBLE umbral
+11.  bin_raw ≔ ⟨σy, σx, |Gy|>|Gx|⟩               ▷ el octante
+ ▷ etapa 3 — histéresis de un salto
+12.  (c₀₀…c₂₂, v_c) ≔ LINEBUF3X3⟨W,5⟩(v_s, ⟨bin_raw, cls⟩)    ▷ 5 bits: 3 + 2
+13.  fuerte_cerca ≔ ⋁_{(i,j)≠(1,1)} (c_ij[1:0] = 2)
+14.  cen ≔ c₁₁[1:0]
+15.  borde ≔ (cen = 2) ? verdadero : (cen = 1) ? fuerte_cerca : falso
+16.  LAT  ≔ 3·(W+2)                              ▷ TRES etapas, no dos
+──────────────────────────────────────────────────────────────────────
+```
+
+> **El paso 12 merece explicación.** La histéresis necesita la *clase* del vecindario y la etapa
+> siguiente necesita la *orientación* del píxel central. Si ambas viajan por memorias de línea
+> separadas **llegan desfasadas**, y se acaba contando la orientación de un píxel con la decisión de
+> otro.
+>
+> La solución es **empaquetarlas en la misma memoria**, cinco bits que viajan juntos. El punto
+> central de la ventana devuelve entonces las dos cosas del mismo píxel **por construcción**, y no
+> por cuidado de quien escribe. El desfase no se corrige: se vuelve imposible.
+>
+> Y el paso 16 no es un detalle: con la latencia mal puesta el histograma queda corrido dos columnas
+> y las zonas se mezclan. Está anotado como advertencia en el propio archivo, porque costó
+> encontrarlo.
+
+El transitivo, en cambio, **no es un filtro más caro: es otra clase de objeto**, y el enunciado lo
+muestra en un solo paso:
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 3   Front-end transitivo
+──────────────────────────────────────────────────────────────────────
+ FRONTEND_TRANS(in_pix, thr_hi, thr_lo)
+ 1–10. idéntico al Algoritmo 2 hasta `cls`       ▷ mismo doble umbral
+ ▷ etapa 3 — reconstrucción morfológica
+11.  M ← matriz (H+2)×(W+2) en memoria           ▷ EL CUADRO ENTERO
+12.  CARGA:   M[y][x] ← cls  ∀ píxel             ▷ hay que esperar el cuadro completo
+13.  repetir
+14.     cambió ← falso
+15.     BARRIDO: para cada (y,x) en orden de barrido
+16.        si M[y][x] = 1 ∧ (∃ vecino 8-conexo con M = 2) entonces
+17.           M[y][x] ← 2 ;  cambió ← verdadero  ▷ el débil asciende a fuerte
+18.  hasta ¬cambió                               ▷ PUNTO FIJO: nº de barridos desconocido
+19.  LECTURA: borde ≔ (M[y][x] = 2)  ∀ píxel
+──────────────────────────────────────────────────────────────────────
+```
+
+> **El paso 18 lo saca de la familia.** Los Algoritmos 1 y 2 **deciden en el píxel**: cuando éste
+> abandona la última memoria de línea su destino está sellado y el dato puede descartarse. Son
+> transmisores: memoria `2·W` o `3·W` bytes, latencia fija y conocida, y funcionan con una cámara que
+> entrega píxeles y no espera a nadie.
+>
+> El Algoritmo 3 **no puede decidir en el píxel**, porque un débil de la tercera fila puede ascender
+> por una cadena que atraviesa la fila veinticinco. Necesita el cuadro completo en memoria —`H·W` y
+> no `3·W`— y un número de barridos **que depende de la imagen**.
+>
+> De ahí salen, como consecuencias de una sola causa, las tres cosas que el Capítulo 5 mide por
+> separado: que ocupe 65 659 celdas frente a 5 823, que no quepa en un proyecto de mosaicos, y que su
+> latencia no esté acotada. Y en el propio código se reduce a una línea: una transición de vuelta al
+> estado de barrido. **Un lazo cuyo número de vueltas no se conoce al sintetizar es, en hardware, lo
+> más caro que puede escribirse.**
+
+## 4.5 El SoC: procesador, periférico y firmware
 
 El procesador es un **FemtoRV32 Quark**, una implementación mínima de RV32I. Se le añaden una memoria
 de programa y un **periférico mapeado en memoria en la base `0x0045_0000`** a través del cual escribe
@@ -179,10 +289,10 @@ nada que lo cargue**: los biestables arrancan en un estado indefinido. La memori
 por tanto sintetizarse como lógica combinacional —una tabla de constantes— y no como un arreglo
 inicializado.
 
-Es el primero de los cuatro cambios obligatorios de la §4.7, y el que más sorprende a quien llega
+Es el primero de los cuatro cambios obligatorios de la §4.8, y el que más sorprende a quien llega
 desde FPGA, porque el código funciona idénticamente en simulación en ambos casos.
 
-## 4.5 Memoria: la batalla de los recursos
+## 4.6 Memoria: la batalla de los recursos
 
 La iCE40UP5K ofrece tres clases de almacenamiento, y el diseño usa las tres con criterios distintos:
 
@@ -206,7 +316,7 @@ a la inspección visual.
 > gratuitos porque ya están en el sustrato; en el ASIC ninguno lo es, y el mismo RTL que allí cabía
 > holgadamente aquí define el tamaño del dado.
 
-## 4.6 Del RTL a la FPGA
+## 4.7 Del RTL a la FPGA
 
 El camino a la FPGA impuso sus propias decisiones.
 
@@ -226,12 +336,12 @@ procesador. La razón es que **cada etapa es el banco de pruebas de la siguiente
 produjo imagen, disponer de la etapa anterior funcionando permitió decidir en un solo intento si el
 problema estaba en el filtro o en la captura.
 
-## 4.7 Del RTL al ASIC: los cuatro cambios obligatorios
+## 4.8 Del RTL al ASIC: los cuatro cambios obligatorios
 
 El mismo Verilog no sirve para los dos destinos. Cuatro cosas hay que cambiar, y ninguna de ellas
 produce un error de simulación —por eso son peligrosas.
 
-**1. La memoria de programa debe sintetizarse.** Ya explicado en la §4.4: en silicio no existe el
+**1. La memoria de programa debe sintetizarse.** Ya explicado en la §4.5: en silicio no existe el
 *bitstream* que la inicializa.
 
 **2. Reset explícito en todos los registros de control.** En una FPGA los biestables arrancan en el

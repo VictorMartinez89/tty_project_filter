@@ -57,7 +57,7 @@ que realiza.
 ## B.3 La ROM en dos sustratos
 
 El mismo programa se almacena de forma distinta según el destino, y ésta es una de las cuatro
-diferencias obligatorias de la §4.7:
+diferencias obligatorias de la §4.8:
 
 | Destino | Implementación |
 |---|---|

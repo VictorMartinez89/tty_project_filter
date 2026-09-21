@@ -91,7 +91,7 @@ local a global.** Nueve mil celdas contra noventa y cuatro mil quinientas.
 Y la razón no está en la aritmética. Los tres filtros ejecutan esencialmente las mismas operaciones
 sobre cada píxel; lo que cambia es **cuánto estado hay que sostener simultáneamente**. El Sobel y el
 Canny de un salto procesan en flujo y necesitan unas pocas líneas de la imagen —los *line-buffers* de
-la §4.5—, mientras que la histéresis transitiva necesita el cuadro completo residente y accesible en
+la §4.6—, mientras que la histéresis transitiva necesita el cuadro completo residente y accesible en
 cualquier orden, porque su punto fijo puede propagar una decisión desde cualquier píxel hacia
 cualquier otro. En una FPGA ese cuadro es un bloque de memoria que ya está en el sustrato; en un ASIC
 sin macro de memoria es un banco de biestables, y se paga en área, en potencia y en frecuencia.

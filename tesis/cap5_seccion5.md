@@ -22,7 +22,7 @@ milisegundos en hacerlo.
 | Latencia | baja — llenar el cauce | alta — todo el cuadro por K barridos |
 | Caudal | alto | bajo |
 
-La razón de la asimetría está en la §4.3: la histéresis transitiva resuelve un **punto fijo** sobre el
+La razón de la asimetría está en la §4.4: la histéresis transitiva resuelve un **punto fijo** sobre el
 cuadro completo, y no puede emitir su primer píxel definitivo hasta haber comprobado que ningún píxel
 del cuadro cambia de estado.
 
