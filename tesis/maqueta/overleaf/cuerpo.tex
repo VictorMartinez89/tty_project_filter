@@ -4639,6 +4639,21 @@ el mensaje de error hasta que la compilación llega al punto en que lo
 necesita}. Antes de compilar hay que seleccionar además la variante del
 compilador que se va a usar.
 
+\textbf{Instalación:}
+
+\begin{verbatim}
+git clone https://github.com/YosysHQ/yosys.git
+cd yosys
+sudo apt install make
+sudo apt-get install build-essential clang bison flex \
+    libreadline-dev gawk tcl-dev libffi-dev git \
+    graphviz xdot pkg-config python3 libboost-system-dev \
+    libboost-python-dev libboost-filesystem-dev zlib1g-dev
+make config-gcc
+make
+sudo make install
+\end{verbatim}
+
 \subsection{E.2 Icarus Verilog}\label{e.2-icarus-verilog}
 
 Icarus Verilog es el compilador y simulador de Verilog con el que se
@@ -4653,6 +4668,12 @@ distinto del pretendido, en silencio. Compilar con Icarus aunque el
 destino sea la síntesis funciona, por tanto, como un verificador
 gratuito de erratas.
 
+\textbf{Instalación:}
+
+\begin{verbatim}
+sudo apt-get install iverilog
+\end{verbatim}
+
 \subsection{E.3 GTKWave}\label{e.3-gtkwave}
 
 GTKWave es el visor de formas de onda: lee los ficheros de volcado que
@@ -4665,6 +4686,12 @@ discrepancias contra el modelo de referencia, y conviene subrayar por
 qué: un banco de pruebas dice \emph{si} el resultado difiere; el visor
 de ondas dice \emph{cuándo} empezó a diferir, que es la pregunta que
 lleva a la causa.
+
+\textbf{Instalación:}
+
+\begin{verbatim}
+sudo apt install gtkwave
+\end{verbatim}
 
 \subsection{E.4 ngspice}\label{e.4-ngspice}
 
@@ -4681,6 +4708,23 @@ generados no se mezclen con los originales. Sus dependencias son pocas:
 las herramientas básicas de compilación y la biblioteca de artefactos de
 X11.
 
+\textbf{Instalación:}
+
+\begin{verbatim}
+## dependencias
+sudo apt-get install build-essential
+sudo apt-get install libxaw7-dev
+
+## compilacion, en un subdirectorio aparte
+tar -zxvf ngspice-40.tar.gz
+cd ngspice-40
+mkdir release
+cd release
+../configure --with-x --with-readline=yes --disable-debug
+make
+sudo make install
+\end{verbatim}
+
 \subsection{E.5 OpenSTA}\label{e.5-opensta}
 
 OpenSTA es el analizador de tiempos estático: dado un circuito ya
@@ -4694,6 +4738,20 @@ clásico, y necesita, además del compilador y del intérprete de Tcl, el
 generador de interfaces entre lenguajes con el que expone sus funciones
 a Tcl. Como en el caso de Yosys, la práctica sensata es instalar la
 lista completa de dependencias antes de empezar.
+
+\textbf{Instalación:}
+
+\begin{verbatim}
+sudo apt-get install cmake clang gcc tcl swig bison flex
+
+git clone https://github.com/The-OpenROAD-Project/OpenSTA.git
+cd OpenSTA
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+\end{verbatim}
 
 \subsection{E.6 Magic}\label{e.6-magic}
 
@@ -4711,6 +4769,19 @@ terminal. Sólo después de eso se clona y se compila. \textbf{Es el punto
 del montaje donde más tiempo se pierde}, y la razón es siempre la misma:
 el mensaje de error nombra un fichero de cabecera que falta, no el
 paquete que lo contiene, de modo que hay que traducir de uno a otro.
+
+\textbf{Instalación:}
+
+\begin{verbatim}
+sudo apt-get install m4 tcsh csh libx11-dev tcl-dev tk-dev \
+    libcairo2-dev mesa-common-dev libglu1-mesa-dev libncurses-dev
+
+git clone https://github.com/RTimothyEdwards/magic
+cd magic
+./configure
+make
+sudo make install
+\end{verbatim}
 
 \subsection{E.7 OpenLane y Docker}\label{e.7-openlane-y-docker}
 
@@ -4744,6 +4815,66 @@ la arquitectura x86-64}, y la imagen del flujo hay que tomarla en su
 variante para ARM de 64 bits. Es el punto exacto en que una guía escrita
 para otra máquina deja de poder seguirse al pie de la letra.
 
+\textbf{Instalación, en tres tiempos.} Primero las dependencias del
+flujo:
+
+\begin{verbatim}
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt install -y build-essential python3 python3-venv python3-pip make git
+\end{verbatim}
+
+Después Docker, desde el repositorio del propio proyecto:
+
+\begin{verbatim}
+sudo apt install apt-transport-https ca-certificates curl \
+    software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+    | sudo gpg --dearmor \
+      -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+REPO="deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]"
+REPO="$REPO https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+echo "$REPO" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io
+
+sudo docker run hello-world
+sudo groupadd docker
+sudo usermod -aG docker $USER
+sudo reboot
+## tras el reinicio, ya sin sudo:
+docker run hello-world
+\end{verbatim}
+
+\begin{quote}
+\textbf{En ARM, esa línea hay que cambiarla.} El campo
+\texttt{arch=amd64} declara la arquitectura de los paquetes que se van a
+descargar; en una máquina ARM de 64 bits debe decir \texttt{arch=arm64},
+o el gestor de paquetes no encontrará nada que instalar. Es el primer
+punto en que las guías de partida dejan de poder seguirse al pie de la
+letra.
+\end{quote}
+
+Y por último OpenLane, cuya compilación en realidad descarga la imagen y
+ejecuta un diseño de prueba:
+
+\begin{verbatim}
+cd $HOME
+git clone https://github.com/The-OpenROAD-Project/OpenLane
+cd OpenLane
+make
+make test
+\end{verbatim}
+
+\begin{quote}
+La imagen que \texttt{make} descarga debe ser la de la arquitectura
+correcta. En este trabajo es la variante para ARM de 64 bits, y es la
+que aparece en la orden que levanta el contenedor.
+\end{quote}
+
 \subsection{E.8 El kit de diseño: open\_pdks y
 sky130}\label{e.8-el-kit-de-diseuxf1o-open_pdks-y-sky130}
 
@@ -4766,6 +4897,16 @@ circuito. Esa trazabilidad no es un lujo: \textbf{un cambio de versión
 del kit cambia las cifras de área y de tiempos}, y sin poder nombrar la
 versión, las tablas del capítulo 5 no serían reproducibles.
 
+\textbf{Instalación:}
+
+\begin{verbatim}
+git clone git://opencircuitdesign.com/open_pdks
+cd open_pdks
+./configure --enable-sky130-pdk
+make
+sudo make install
+\end{verbatim}
+
 \subsection{E.9 Xyce}\label{e.9-xyce}
 
 Xyce es un simulador de circuitos analógicos de alto rendimiento, y es
@@ -4782,6 +4923,15 @@ La solución práctica es renombrar esa carpeta ---convirtiéndola de paso
 en oculta--- de modo que los procesos que la necesitan apunten al sitio
 correcto. El error que se ve, si no se hace, habla de ficheros de modelo
 ausentes y no de un nombre de carpeta.
+
+\textbf{Instalación:}
+
+\begin{verbatim}
+git clone https://github.com/ChipFlow/Xyce-build.git
+cd Xyce-build/
+./build.sh
+sudo make install prefix=/usr/local
+\end{verbatim}
 
 \subsection{E.10 El entorno de Tiny
 Tapeout}\label{e.10-el-entorno-de-tiny-tapeout}
@@ -4807,6 +4957,43 @@ sistema por su cuenta.
 
 Este guion está preparado para x86-64, lo que lo sitúa en el mismo caso
 descrito en E.7.
+
+\textbf{Uso del guion.} Admite dos modos ---dentro de contenedor o de
+forma nativa--- y cuatro acciones. Lo primero que conviene ejecutar es
+\texttt{info}, que no modifica nada:
+
+\begin{verbatim}
+./Docs/create_SDK_TinyTapeOut.sh docker info
+./Docs/create_SDK_TinyTapeOut.sh native info
+\end{verbatim}
+
+Preparar el entorno y ejecutar el endurecimiento completo:
+
+\begin{verbatim}
+./Docs/create_SDK_TinyTapeOut.sh docker all
+./Docs/create_SDK_TinyTapeOut.sh native all
+\end{verbatim}
+
+O separando la preparación de la ejecución, que es lo aconsejable la
+primera vez:
+
+\begin{verbatim}
+./Docs/create_SDK_TinyTapeOut.sh docker setup
+./Docs/create_SDK_TinyTapeOut.sh docker run
+\end{verbatim}
+
+Tres variables de entorno permiten cambiar dónde se instala, sobre qué
+copia del proyecto se trabaja, y si el guion puede instalar dependencias
+del sistema por su cuenta:
+
+\begin{verbatim}
+TT_SDK_ROOT=/ruta/al/sdk ./Docs/create_SDK_TinyTapeOut.sh docker all
+TT_PROJECT_DIR=/ruta/al/proyecto ./Docs/create_SDK_TinyTapeOut.sh docker run
+TT_INSTALL_DEPS=0 ./Docs/create_SDK_TinyTapeOut.sh docker setup
+\end{verbatim}
+
+Los resultados quedan bajo \texttt{\textasciitilde{}/ttsky25b-sdk/}, en
+un subdirectorio por modo.
 
 \subsection{E.11 Simulación del netlist
 fabricado}\label{e.11-simulaciuxf3n-del-netlist-fabricado}
@@ -4835,6 +5022,13 @@ simular contra los modelos de las memorias, y sólo aparecieron al
 comparar esa simulación con el comportamiento del dispositivo físico.
 \textbf{Es un ejemplo del mismo principio que atraviesa el capítulo 3:
 un modelo que no puede fallar no está verificando nada.}
+
+\textbf{Instalación:}
+
+\begin{verbatim}
+cd tinytapeout
+make tt_um_femto
+\end{verbatim}
 
 \chapter{Bibliografía}\label{bibliografuxeda}
 
