@@ -4,8 +4,8 @@
 > de laboratorio y las **17 verificadas contra la fuente** el 21 de septiembre de 2026 al redactar el
 > Capítulo 2. Ocho obras aparecían en ambas listas y se han fundido en una sola entrada, conservando
 > siempre los datos verificados; nueve son aportación de la verificación, y dos —el libro de texto del que procede la arquitectura
-> de bus y el que fundó el diseño estructurado— se añadieron al documentar el linaje del SoC en la §4.5. El total son **49 entradas sin
-> duplicados**, contando las dos guías de instalación del entorno que documenta la §3.7.
+> de bus y el que fundó el diseño estructurado— se añadieron al documentar el linaje del SoC en la §4.5. El total son **47 entradas sin
+> duplicados**.
 >
 > Las marcadas con **✓** tienen volumen, número, páginas y año comprobados contra la fuente. Las
 > demás son programas, kits de diseño, hojas de datos o repositorios, que se citan por su
@@ -94,11 +94,6 @@
 47. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. https://github.com/kayaleitner/FPGA_MNIST ▸ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
 
 ---
-
-## Documentación de instalación del entorno
-
-48. J. Ruiz, *RepoFinal* — manual de instalación del flujo ASIC y material del trabajo de grado. https://github.com/JohanRuiz05/RepoFinal
-49. C. I. Camargo Bareño, *VLSI* — notas y guía de instalación de la asignatura, Universidad Nacional de Colombia. https://github.com/cicamargoba/VLSI
 
 ## Nota sobre el cotejo
 

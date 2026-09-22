@@ -279,7 +279,7 @@ arte}\label{marco-teuxf3rico-y-estado-del-arte}
 \begin{quote}
 \textbf{Estado:} borrador 2, 2026-09-21. \textbf{Las diecisiete citas
 están verificadas contra la fuente} y cotejadas con las 36 ya
-recopiladas; el resultado son las 46 entradas de
+recopiladas; el resultado son las 47 entradas de
 \texttt{bibliografia.md}. Ver la nota al final del capítulo para las
 tres precisiones que la verificación produjo.
 \end{quote}
@@ -508,6 +508,37 @@ panorama posterior sobre procesamiento eficiente de redes neuronales
 consecuencia la arquitectura debe organizarse alrededor del flujo de
 datos y no alrededor de las unidades aritméticas.
 
+\subsection{Y por qué esto puede hacerse hoy en un trabajo de
+maestría}\label{y-por-quuxe9-esto-puede-hacerse-hoy-en-un-trabajo-de-maestruxeda}
+
+Conviene precisar qué es lo reciente, porque el arreglo que permite
+llevar estos diseños a silicio no es nuevo: lo nuevo es que sea abierto.
+\textbf{Mead y Conway} establecieron en 1980 los tres elementos que lo
+sostienen {[}Mead y Conway 1980{]}. El primero es un conjunto de
+\textbf{reglas de diseño escalables}, expresadas en una unidad
+normalizada, que permite razonar sobre el circuito sin conocer la física
+del proceso. El segundo es su consecuencia: la \textbf{separación entre
+diseñar y fabricar}, que convierte el plano en un objeto intercambiable
+entre dos organizaciones distintas. Y el tercero es la \textbf{oblea
+compartida}, que reparte el costo de una máscara entre muchos diseños
+pequeños y fue lo que puso el silicio al alcance de un curso
+universitario.
+
+Los tres reaparecen, cuatro décadas después, en la forma que este
+trabajo utiliza: el kit de diseño cumple el papel de las reglas, el
+fichero de plano el del objeto intercambiable, y las lanzas educativas
+el de la oblea compartida. \textbf{La novedad no es la posibilidad sino
+el precio de entrada}, y es sobre esa distinción que se apoya la §2.8.
+
+\begin{quote}
+Merece señalarse que la §5.7 de este trabajo mide un \textbf{límite} de
+la primera de esas tres ideas. La abstracción que permite diseñar sin
+conocer el proceso funciona porque alguien caracterizó cada celda sobre
+su dibujo; cuando el modelo que se entrega a una herramienta es el
+esquema y no el dibujo, \textbf{la abstracción se rompe en silencio, y
+en un 22 \% del retardo}.
+\end{quote}
+
 \begin{quote}
 La contribución de este trabajo a esa línea no es teórica sino de escala
 y de método: mide el mismo fenómeno \textbf{en el extremo opuesto del
@@ -719,7 +750,7 @@ limita a lo que las fuentes sostienen.
 \section{Referencias citadas en este
 capítulo}\label{referencias-citadas-en-este-capuxedtulo}
 
-\textbf{Las diecisiete se verificaron contra la fuente el 21 de
+\textbf{Las dieciocho se verificaron contra la fuente el 21 de
 septiembre de 2026.} Volumen, número y páginas están comprobados salvo
 donde se indica.
 
@@ -752,6 +783,8 @@ Research}, vol.~4, n.º 3, pp.~315--328, 1971. \\
 Otsu 1979 & N. Otsu, «A Threshold Selection Method from Gray-Level
 Histograms», \emph{IEEE Trans. Systems, Man, and Cybernetics},
 vol.~SMC-9, n.º 1, pp.~62--66, ene. 1979. \\
+Mead y Conway 1980 & C. Mead y L. Conway, \emph{Introduction to VLSI
+Systems}, Addison-Wesley, 1980. \\
 Canny 1986 & J. Canny, «A Computational Approach to Edge Detection»,
 \emph{IEEE Trans. Pattern Analysis and Machine Intelligence},
 vol.~PAMI-8, n.º 6, pp.~679--698, nov. 1986. \\
@@ -842,7 +875,7 @@ retiró por no poder sostenerla y no por haber dejado de ser útil.
 \textbf{Las diecisiete citas del capítulo están verificadas contra la
 fuente} y cotejadas con las 36 ya recopiladas: ocho obras coincidían y
 se fundieron conservando los datos verificados, nueve son aportación de
-esta verificación, y el resultado son las \textbf{46 entradas sin
+esta verificación, y el resultado son las \textbf{47 entradas sin
 duplicados} de \texttt{bibliografia.md}. Se comprobó además, en las dos
 direcciones, que ninguna entrada de la tabla anterior queda sin citar en
 el cuerpo del capítulo y ninguna cita del cuerpo queda sin entrada.
@@ -1074,6 +1107,166 @@ anterior--- y la práctica que lo resuelve merece anotarse:
 \textbf{verificar el fichero donde la herramienta va a leerlo, no donde
 uno lo escribió.}
 \end{quote}
+
+\subsection{Cómo se instaló cada
+herramienta}\label{cuxf3mo-se-instaluxf3-cada-herramienta}
+
+El flujo completo son doce piezas de software, y la parte laboriosa no
+es usarlas sino ponerlas de acuerdo. La documentación de partida fueron
+dos repositorios del propio grupo: el manual de instalación del flujo
+ASIC mantenido por J. Ruiz (ref. 48) y las notas de la asignatura de
+VLSI del director de este trabajo (ref. 49). Lo que sigue describe el
+procedimiento y, sobre todo, las decisiones que hubo que tomar cuando
+esa documentación no encajaba con la máquina disponible.
+
+Conviene ver las doce piezas no como una lista sino como \textbf{cuatro
+maneras distintas de conseguir una herramienta}, porque cada una falla
+de forma distinta y cuesta un tiempo distinto.
+
+\textbf{Primera vía: pedírsela al gestor de paquetes.} Es el caso de
+\textbf{Icarus Verilog}, el compilador de Verilog con el que se simula
+todo el RTL de este trabajo, y de \textbf{GTKWave}, el visor de formas
+de onda que lee los \texttt{.vcd} que Icarus produce. Ambos se instalan
+con una sola orden del gestor de paquetes de la distribución y no dan
+problemas. \textbf{KLayout}, el visor de planos con el que se tomaron
+las capturas de los capítulos de resultados, entra por la misma vía. Son
+las tres únicas piezas del flujo que se resuelven en un minuto, y no es
+casualidad: son también las tres que no tienen que entenderse con el
+PDK.
+
+\textbf{Segunda vía: compilarla desde el código fuente.} Aquí están las
+cuatro herramientas que forman el núcleo del trabajo. \textbf{Yosys} es
+el sintetizador, el programa que convierte el Verilog en una red de
+puertas lógicas; se clona su repositorio, se instalan una docena larga
+de dependencias de desarrollo ---el compilador, el analizador
+sintáctico, las bibliotecas de Tcl, de Boost y de lectura de línea--- y
+se compila. \textbf{ngspice} es el simulador SPICE, y su compilación
+pide explícitamente el soporte gráfico de X y la biblioteca de línea de
+órdenes; se descarga como archivo comprimido en lugar de clonarse, se
+configura en un directorio aparte y se compila allí. \textbf{OpenSTA} es
+el analizador de tiempos estático, el que dice si un circuito cierra a
+la frecuencia pedida; se construye con CMake y necesita además el
+generador de interfaces SWIG. \textbf{Magic} es la herramienta de diseño
+físico con la que se inspeccionan y extraen los planos, y es la más
+exigente de las cuatro: antes de compilarla hay que instalar por
+separado el preprocesador de macros, un intérprete de órdenes
+alternativo, las cabeceras de X11, las de Tcl y Tk, la biblioteca de
+dibujo vectorial, la de OpenGL y la de manejo de terminal.
+
+\begin{quote}
+El patrón es constante: \textbf{en estas cuatro herramientas el tiempo
+no se va en compilar, se va en descubrir qué dependencia falta.} El
+mensaje de error de una dependencia ausente aparece a mitad de la
+compilación y nombra un fichero de cabecera, no un paquete, de modo que
+hay que traducir del nombre del fichero al nombre del paquete. Instalar
+la lista completa de dependencias antes de empezar, aunque parezca
+excesivo, sale más barato que descubrirlas de una en una.
+\end{quote}
+
+\textbf{Tercera vía: traerla dentro de un contenedor.} \textbf{OpenLane}
+es el flujo automatizado que lleva el RTL hasta el GDSII, y no es un
+programa sino una orquestación: por dentro invoca a OpenROAD para el
+emplazamiento y el ruteo, a Yosys para la síntesis, a Magic y
+\textbf{Netgen} para la verificación física y a KLayout para las
+comprobaciones geométricas. Instalar esas piezas a mano y en versiones
+compatibles entre sí es precisamente el problema que el contenedor
+resuelve, y por eso OpenLane se distribuye como imagen de
+\textbf{Docker}. Docker, a su vez, no se instala desde el repositorio de
+la distribución sino desde el del propio proyecto, lo que obliga a
+registrar su clave de firma y su fuente de paquetes antes de poder
+pedirlo. Hecho eso, la instalación de OpenLane se reduce a clonar el
+repositorio y lanzar su compilación, que en realidad descarga la imagen
+y comprueba que el contenedor arranca. \textbf{Netgen y OpenROAD no se
+instalan nunca por separado en este trabajo: viven dentro de esa
+imagen}, y de hecho no aparecen como órdenes disponibles en la máquina
+anfitriona.
+
+\textbf{Cuarta vía: la que no es una herramienta sino una biblioteca.}
+El \textbf{PDK} ---el conjunto de reglas, modelos y celdas que describe
+el proceso de fabricación--- es lo que convierte a todas las anteriores
+en algo capaz de producir un circuito real. Se obtiene con
+\textbf{open\_pdks}, que se clona, se configura pidiéndole
+explícitamente el proceso \textbf{sky130} y se compila; el resultado es
+el árbol \texttt{sky130A} que todas las demás herramientas consultan.
+Es, con diferencia, la instalación más voluminosa de todo el entorno:
+ocupa alrededor de veintiséis gigabytes de disco, más de lo que ocupan
+juntas todas las herramientas del flujo. En la práctica se acabó usando
+además un gestor de versiones de PDK, que descarga una compilación ya
+hecha de unos dos gigabytes y permite fijar exactamente qué versión del
+proceso se usó en cada circuito; esa trazabilidad importa, porque un
+cambio de versión del PDK cambia las cifras de área y de tiempos.
+
+Quedan dos piezas fuera de esas cuatro vías. \textbf{Xyce}, el simulador
+de circuitos analógicos de alto rendimiento con el que se hizo la
+verificación eléctrica del camino crítico del capítulo 5, se compila
+mediante un guion de construcción publicado por terceros que resuelve
+por dentro sus dependencias. Y el \textbf{entorno de Tiny Tapeout},
+necesario para reproducir exactamente el circuito enviado a fabricación,
+no se instala: se reconstruye con un guion que fija las versiones
+históricas del proyecto ---una versión concreta del flujo, una del PDK y
+una de las herramientas de soporte--- porque el objetivo allí no es
+tener lo más nuevo sino tener lo mismo que había el día del envío.
+
+\subsection{El punto en que la documentación heredada deja de
+servir}\label{el-punto-en-que-la-documentaciuxf3n-heredada-deja-de-servir}
+
+Los dos manuales de partida suponen una máquina con procesador x86-64.
+Este trabajo se hizo sobre \textbf{ARM de 64 bits}, y ahí la instalación
+deja de ser una transcripción.
+
+La diferencia aparece literalmente escrita en la orden que registra el
+repositorio de Docker, que declara la arquitectura \texttt{amd64}, y
+vuelve a aparecer en la imagen de OpenLane, que hubo que tomar en su
+variante \texttt{arm64v8}. Las herramientas que se compilan desde el
+código fuente cruzan sin problema ---se compilan para la máquina en la
+que están---, pero \textbf{todo lo que se distribuye ya compilado hay
+que buscarlo en la arquitectura correcta, y no siempre existe}. Ésa es
+la razón de fondo por la que este trabajo se reparte entre dos máquinas
+y no una: no es una preferencia, es que ciertas piezas del flujo sólo
+funcionan donde funcionan.
+
+\begin{quote}
+La lección, que vale más allá de este proyecto: \textbf{un manual de
+instalación no es un procedimiento, es el registro de un procedimiento
+que funcionó en una máquina concreta.} Reproducirlo exige identificar
+antes qué de lo que dice depende de esa máquina.
+\end{quote}
+
+Una segunda asimetría, menor pero constante, es que una parte del flujo
+se resolvió con una \textbf{distribución empaquetada} que trae ya
+compilados el sintetizador, el emplazador para FPGA, el compilador de
+Verilog, el visor de ondas y las utilidades de programación de la
+tarjeta. Conviene decirlo con claridad porque afecta a la
+reproducibilidad: \textbf{algunas herramientas de este trabajo están
+instaladas dos veces, en dos versiones distintas, en dos máquinas
+distintas}, y los resultados de FPGA salen de una de ellas y los de ASIC
+de la otra.
+
+\subsection{Las versiones con las que se obtuvieron los
+resultados}\label{las-versiones-con-las-que-se-obtuvieron-los-resultados}
+
+Una instalación no queda descrita hasta que se dice qué versión quedó
+instalada. Las cifras de este documento se obtuvieron con estas:
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Herramienta & Versión & Dónde \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Yosys & 0.64+351 & Ambas máquinas \\
+nextpnr-ice40 & 0.10-77 & Máquina virtual \\
+Icarus Verilog, GTKWave & Distribución empaquetada & Ambas \\
+Magic & 8.3.656 & Máquina virtual \\
+OpenLane & v1.0.2 & Contenedor, variante ARM \\
+Docker & 29.5.3 & Máquina virtual \\
+PDK & sky130A & Gestor de versiones de PDK \\
+Sistema operativo & Ubuntu sobre ARM de 64 bits & Máquina virtual \\
+\end{longtable}
+
+El anexo A recoge el reparto de trabajo entre las dos máquinas y los
+errores que esa frontera introduce.
 
 \chapter{4. Diseño e
 implementación}\label{diseuxf1o-e-implementaciuxf3n}
@@ -4532,9 +4725,11 @@ recopiladas a lo largo del cuaderno de laboratorio y las \textbf{17
 verificadas contra la fuente} el 21 de septiembre de 2026 al redactar el
 Capítulo 2. Ocho obras aparecían en ambas listas y se han fundido en una
 sola entrada, conservando siempre los datos verificados; nueve son
-aportación de la verificación, y una ---el libro de texto del que
-procede la arquitectura de bus--- se añadió al documentar el linaje del
-SoC en la §4.5. El total son \textbf{46 entradas sin duplicados}.
+aportación de la verificación, y dos ---el libro de texto del que
+procede la arquitectura de bus y el que fundó el diseño estructurado---
+se añadieron al documentar el linaje del SoC en la §4.5. El total son
+\textbf{49 entradas sin duplicados}, contando las dos guías de
+instalación del entorno que documenta la §3.7.
 
 Las marcadas con \textbf{✓} tienen volumen, número, páginas y año
 comprobados contra la fuente. Las demás son programas, kits de diseño,
@@ -4620,6 +4815,11 @@ silicio}\label{diseuxf1o-digital-y-arquitectura-de-sistemas-en-silicio}
 \setcounter{enumi}{13}
 \tightlist
 \item
+  \textbf{✓} C. Mead y L. Conway, \emph{Introduction to VLSI Systems},
+  Addison-Wesley, 1980. --- El texto que estableció el diseño
+  estructurado: reglas escalables, separación entre diseño y
+  fabricación, y la oblea compartida.
+\item
   C. I. Camargo Bareño, \emph{Diseño de Sistemas Digitales}, Universidad
   Nacional de Colombia, 21 de enero de 2025. Licencia Creative Commons
   BY-SA. --- §1.2.1, «Sistemas sobre Silicio SoC», y la figura 1.3:
@@ -4632,7 +4832,7 @@ abiertos}\label{flujo-a-silicio-y-procesos-abiertos}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{14}
+\setcounter{enumi}{15}
 \tightlist
 \item
   SkyWater Technology y Google, \emph{SKY130 Open Source PDK}, 2020.
@@ -4661,7 +4861,7 @@ imagen}\label{detecciuxf3n-de-bordes-y-procesamiento-de-imagen}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{20}
+\setcounter{enumi}{21}
 \tightlist
 \item
   \textbf{✓} I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator
@@ -4703,7 +4903,7 @@ patrones}\label{reconocimiento-y-clasificaciuxf3n-de-patrones}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{27}
+\setcounter{enumi}{28}
 \tightlist
 \item
   \textbf{✓} M.-K. Hu, «Visual Pattern Recognition by Moment
@@ -4742,7 +4942,7 @@ neuronales}\label{aceleradores-de-redes-neuronales}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{34}
+\setcounter{enumi}{35}
 \tightlist
 \item
   \textbf{✓} Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial
@@ -4762,7 +4962,7 @@ neuronales}\label{aceleradores-de-redes-neuronales}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{36}
+\setcounter{enumi}{37}
 \tightlist
 \item
   OmniVision, \emph{OV7670 CMOS VGA Image Sensor --- Datasheet}
@@ -4777,7 +4977,7 @@ referencia}\label{verificaciuxf3n-y-modelo-de-referencia}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{38}
+\setcounter{enumi}{39}
 \tightlist
 \item
   S. Williams, \emph{Icarus Verilog} (\texttt{iverilog}, \texttt{vvp}).
@@ -4805,7 +5005,7 @@ referencia}\label{verificaciuxf3n-y-modelo-de-referencia}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{44}
+\setcounter{enumi}{45}
 \tightlist
 \item
   D. N. Maldonado Ramírez, \emph{tt06\_grayscale\_sobel --- Gray scale
@@ -4820,6 +5020,23 @@ referencia}\label{verificaciuxf3n-y-modelo-de-referencia}
 \end{enumerate}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Documentación de instalación del
+entorno}\label{documentaciuxf3n-de-instalaciuxf3n-del-entorno}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{47}
+\tightlist
+\item
+  J. Ruiz, \emph{RepoFinal} --- manual de instalación del flujo ASIC y
+  material del trabajo de grado.
+  https://github.com/JohanRuiz05/RepoFinal
+\item
+  C. I. Camargo Bareño, \emph{VLSI} --- notas y guía de instalación de
+  la asignatura, Universidad Nacional de Colombia.
+  https://github.com/cicamargoba/VLSI
+\end{enumerate}
 
 \section{Nota sobre el cotejo}\label{nota-sobre-el-cotejo}
 
