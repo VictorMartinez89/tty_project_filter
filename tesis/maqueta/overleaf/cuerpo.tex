@@ -1108,145 +1108,35 @@ anterior--- y la práctica que lo resuelve merece anotarse:
 uno lo escribió.}
 \end{quote}
 
-\subsection{Cómo se instaló cada
-herramienta}\label{cuxf3mo-se-instaluxf3-cada-herramienta}
+Ese entorno son once piezas de software que hay que poner de acuerdo
+entre sí, y montarlas no es trivial: unas se piden al gestor de paquetes
+en un minuto, otras se compilan desde el código fuente con una docena
+larga de dependencias, y las más complejas llegan dentro de un
+contenedor porque instalarlas a mano en versiones compatibles es
+precisamente el problema que el contenedor resuelve. \textbf{El Anexo E
+recorre la instalación de cada una}, tomando como punto de partida la
+documentación del propio grupo: el manual del flujo ASIC mantenido por
+J. Ruiz (ref. 48) y las notas de la asignatura de VLSI del director de
+este trabajo (ref. 49).
 
-El flujo completo son doce piezas de software, y la parte laboriosa no
-es usarlas sino ponerlas de acuerdo. La documentación de partida fueron
-dos repositorios del propio grupo: el manual de instalación del flujo
-ASIC mantenido por J. Ruiz (ref. 48) y las notas de la asignatura de
-VLSI del director de este trabajo (ref. 49). Lo que sigue describe el
-procedimiento y, sobre todo, las decisiones que hubo que tomar cuando
-esa documentación no encajaba con la máquina disponible.
-
-Conviene ver las doce piezas no como una lista sino como \textbf{cuatro
-maneras distintas de conseguir una herramienta}, porque cada una falla
-de forma distinta y cuesta un tiempo distinto.
-
-\textbf{Primera vía: pedírsela al gestor de paquetes.} Es el caso de
-\textbf{Icarus Verilog}, el compilador de Verilog con el que se simula
-todo el RTL de este trabajo, y de \textbf{GTKWave}, el visor de formas
-de onda que lee los \texttt{.vcd} que Icarus produce. Ambos se instalan
-con una sola orden del gestor de paquetes de la distribución y no dan
-problemas. \textbf{KLayout}, el visor de planos con el que se tomaron
-las capturas de los capítulos de resultados, entra por la misma vía. Son
-las tres únicas piezas del flujo que se resuelven en un minuto, y no es
-casualidad: son también las tres que no tienen que entenderse con el
-PDK.
-
-\textbf{Segunda vía: compilarla desde el código fuente.} Aquí están las
-cuatro herramientas que forman el núcleo del trabajo. \textbf{Yosys} es
-el sintetizador, el programa que convierte el Verilog en una red de
-puertas lógicas; se clona su repositorio, se instalan una docena larga
-de dependencias de desarrollo ---el compilador, el analizador
-sintáctico, las bibliotecas de Tcl, de Boost y de lectura de línea--- y
-se compila. \textbf{ngspice} es el simulador SPICE, y su compilación
-pide explícitamente el soporte gráfico de X y la biblioteca de línea de
-órdenes; se descarga como archivo comprimido en lugar de clonarse, se
-configura en un directorio aparte y se compila allí. \textbf{OpenSTA} es
-el analizador de tiempos estático, el que dice si un circuito cierra a
-la frecuencia pedida; se construye con CMake y necesita además el
-generador de interfaces SWIG. \textbf{Magic} es la herramienta de diseño
-físico con la que se inspeccionan y extraen los planos, y es la más
-exigente de las cuatro: antes de compilarla hay que instalar por
-separado el preprocesador de macros, un intérprete de órdenes
-alternativo, las cabeceras de X11, las de Tcl y Tk, la biblioteca de
-dibujo vectorial, la de OpenGL y la de manejo de terminal.
+Conviene adelantar aquí una diferencia que el anexo desarrolla, porque
+explica el reparto entre las dos máquinas. \textbf{Ambas guías suponen
+una máquina con procesador x86-64, y este trabajo se hizo sobre ARM de
+64 bits.} Lo que se compila desde el código fuente cruza sin dificultad,
+porque se compila para la máquina en la que está; pero todo lo que se
+distribuye ya compilado ---señaladamente la imagen del contenedor del
+flujo a silicio--- hay que buscarlo en la arquitectura correcta, y no
+siempre existe. La separación en dos máquinas no es una preferencia de
+trabajo: es la consecuencia de que ciertas piezas sólo funcionan donde
+funcionan.
 
 \begin{quote}
-El patrón es constante: \textbf{en estas cuatro herramientas el tiempo
-no se va en compilar, se va en descubrir qué dependencia falta.} El
-mensaje de error de una dependencia ausente aparece a mitad de la
-compilación y nombra un fichero de cabecera, no un paquete, de modo que
-hay que traducir del nombre del fichero al nombre del paquete. Instalar
-la lista completa de dependencias antes de empezar, aunque parezca
-excesivo, sale más barato que descubrirlas de una en una.
+\textbf{Un manual de instalación no es un procedimiento: es el registro
+de un procedimiento que funcionó en una máquina concreta.} Reproducirlo
+exige identificar antes qué de lo que dice depende de esa máquina.
 \end{quote}
 
-\textbf{Tercera vía: traerla dentro de un contenedor.} \textbf{OpenLane}
-es el flujo automatizado que lleva el RTL hasta el GDSII, y no es un
-programa sino una orquestación: por dentro invoca a OpenROAD para el
-emplazamiento y el ruteo, a Yosys para la síntesis, a Magic y
-\textbf{Netgen} para la verificación física y a KLayout para las
-comprobaciones geométricas. Instalar esas piezas a mano y en versiones
-compatibles entre sí es precisamente el problema que el contenedor
-resuelve, y por eso OpenLane se distribuye como imagen de
-\textbf{Docker}. Docker, a su vez, no se instala desde el repositorio de
-la distribución sino desde el del propio proyecto, lo que obliga a
-registrar su clave de firma y su fuente de paquetes antes de poder
-pedirlo. Hecho eso, la instalación de OpenLane se reduce a clonar el
-repositorio y lanzar su compilación, que en realidad descarga la imagen
-y comprueba que el contenedor arranca. \textbf{Netgen y OpenROAD no se
-instalan nunca por separado en este trabajo: viven dentro de esa
-imagen}, y de hecho no aparecen como órdenes disponibles en la máquina
-anfitriona.
-
-\textbf{Cuarta vía: la que no es una herramienta sino una biblioteca.}
-El \textbf{PDK} ---el conjunto de reglas, modelos y celdas que describe
-el proceso de fabricación--- es lo que convierte a todas las anteriores
-en algo capaz de producir un circuito real. Se obtiene con
-\textbf{open\_pdks}, que se clona, se configura pidiéndole
-explícitamente el proceso \textbf{sky130} y se compila; el resultado es
-el árbol \texttt{sky130A} que todas las demás herramientas consultan.
-Es, con diferencia, la instalación más voluminosa de todo el entorno:
-ocupa alrededor de veintiséis gigabytes de disco, más de lo que ocupan
-juntas todas las herramientas del flujo. En la práctica se acabó usando
-además un gestor de versiones de PDK, que descarga una compilación ya
-hecha de unos dos gigabytes y permite fijar exactamente qué versión del
-proceso se usó en cada circuito; esa trazabilidad importa, porque un
-cambio de versión del PDK cambia las cifras de área y de tiempos.
-
-Quedan dos piezas fuera de esas cuatro vías. \textbf{Xyce}, el simulador
-de circuitos analógicos de alto rendimiento con el que se hizo la
-verificación eléctrica del camino crítico del capítulo 5, se compila
-mediante un guion de construcción publicado por terceros que resuelve
-por dentro sus dependencias. Y el \textbf{entorno de Tiny Tapeout},
-necesario para reproducir exactamente el circuito enviado a fabricación,
-no se instala: se reconstruye con un guion que fija las versiones
-históricas del proyecto ---una versión concreta del flujo, una del PDK y
-una de las herramientas de soporte--- porque el objetivo allí no es
-tener lo más nuevo sino tener lo mismo que había el día del envío.
-
-\subsection{El punto en que la documentación heredada deja de
-servir}\label{el-punto-en-que-la-documentaciuxf3n-heredada-deja-de-servir}
-
-Los dos manuales de partida suponen una máquina con procesador x86-64.
-Este trabajo se hizo sobre \textbf{ARM de 64 bits}, y ahí la instalación
-deja de ser una transcripción.
-
-La diferencia aparece literalmente escrita en la orden que registra el
-repositorio de Docker, que declara la arquitectura \texttt{amd64}, y
-vuelve a aparecer en la imagen de OpenLane, que hubo que tomar en su
-variante \texttt{arm64v8}. Las herramientas que se compilan desde el
-código fuente cruzan sin problema ---se compilan para la máquina en la
-que están---, pero \textbf{todo lo que se distribuye ya compilado hay
-que buscarlo en la arquitectura correcta, y no siempre existe}. Ésa es
-la razón de fondo por la que este trabajo se reparte entre dos máquinas
-y no una: no es una preferencia, es que ciertas piezas del flujo sólo
-funcionan donde funcionan.
-
-\begin{quote}
-La lección, que vale más allá de este proyecto: \textbf{un manual de
-instalación no es un procedimiento, es el registro de un procedimiento
-que funcionó en una máquina concreta.} Reproducirlo exige identificar
-antes qué de lo que dice depende de esa máquina.
-\end{quote}
-
-Una segunda asimetría, menor pero constante, es que una parte del flujo
-se resolvió con una \textbf{distribución empaquetada} que trae ya
-compilados el sintetizador, el emplazador para FPGA, el compilador de
-Verilog, el visor de ondas y las utilidades de programación de la
-tarjeta. Conviene decirlo con claridad porque afecta a la
-reproducibilidad: \textbf{algunas herramientas de este trabajo están
-instaladas dos veces, en dos versiones distintas, en dos máquinas
-distintas}, y los resultados de FPGA salen de una de ellas y los de ASIC
-de la otra.
-
-\subsection{Las versiones con las que se obtuvieron los
-resultados}\label{las-versiones-con-las-que-se-obtuvieron-los-resultados}
-
-Una instalación no queda descrita hasta que se dice qué versión quedó
-instalada. Las cifras de este documento se obtuvieron con estas:
+Las cifras de este documento se obtuvieron con las versiones siguientes:
 
 \begin{longtable}[]{@{}lll@{}}
 \toprule\noalign{}
@@ -1257,16 +1147,12 @@ Herramienta & Versión & Dónde \\
 \endlastfoot
 Yosys & 0.64+351 & Ambas máquinas \\
 nextpnr-ice40 & 0.10-77 & Máquina virtual \\
-Icarus Verilog, GTKWave & Distribución empaquetada & Ambas \\
 Magic & 8.3.656 & Máquina virtual \\
 OpenLane & v1.0.2 & Contenedor, variante ARM \\
 Docker & 29.5.3 & Máquina virtual \\
-PDK & sky130A & Gestor de versiones de PDK \\
+Kit de diseño & sky130A & Gestor de versiones de PDK \\
 Sistema operativo & Ubuntu sobre ARM de 64 bits & Máquina virtual \\
 \end{longtable}
-
-El anexo A recoge el reparto de trabajo entre las dos máquinas y los
-errores que esa frontera introduce.
 
 \chapter{4. Diseño e
 implementación}\label{diseuxf1o-e-implementaciuxf3n}
@@ -4716,6 +4602,239 @@ siempre con una etiqueta nueva, de modo que si el diseño apretado no
 cierra, el firmado anterior permanece intacto. Un circuito que cierra
 vale más que uno pequeño que no.
 \end{quote}
+
+\section{Anexo E. Instalación del flujo
+ASIC}\label{anexo-e.-instalaciuxf3n-del-flujo-asic}
+
+\begin{quote}
+Este anexo describe cómo se montó el entorno con el que se obtuvieron
+todos los resultados de silicio de este trabajo. \textbf{No reproduce
+las órdenes}: para eso están las dos guías del grupo de las que parte
+---el manual del flujo ASIC de J. Ruiz (ref. 48) y las notas de la
+asignatura de VLSI del director (ref. 49)---. Lo que aquí se describe es
+qué hace cada paso, qué necesita y dónde falla, que es lo que esas guías
+no pueden decir porque suponen que todo saldrá bien.
+
+El orden es el de la documentación de partida. Se conserva a propósito:
+\textbf{las dependencias siguen ese orden}, y saltárselo obliga a volver
+atrás.
+\end{quote}
+
+\subsection{E.1 Yosys}\label{e.1-yosys}
+
+Yosys es el sintetizador: el programa que convierte la descripción en
+Verilog en una red de puertas lógicas. Es la primera pieza del flujo y
+la que determina qué se puede escribir en el RTL, porque soporta
+Verilog-2005 y no el subconjunto completo de SystemVerilog.
+
+Se obtiene clonando su repositorio y compilándolo. El paso laborioso no
+es la compilación sino lo que la precede: hace falta instalar antes el
+compilador de C++, el generador de analizadores sintácticos y el de
+analizadores léxicos, las bibliotecas de desarrollo de Tcl, de lectura
+de línea de órdenes, de interfaz con funciones externas y de compresión,
+tres bibliotecas de Boost ---sistema, Python y sistema de ficheros--- y
+las herramientas de dibujo de grafos con las que Yosys representa los
+circuitos. Son catorce paquetes, y \textbf{ninguno de ellos aparece en
+el mensaje de error hasta que la compilación llega al punto en que lo
+necesita}. Antes de compilar hay que seleccionar además la variante del
+compilador que se va a usar.
+
+\subsection{E.2 Icarus Verilog}\label{e.2-icarus-verilog}
+
+Icarus Verilog es el compilador y simulador de Verilog con el que se
+ejecuta todo el banco de pruebas de este trabajo. Se instala con una
+sola orden del gestor de paquetes de la distribución.
+
+Merece una nota que no está en las guías: \textbf{Icarus rechaza
+identificadores no declarados, y Yosys no}. Verilog-2005 permite crear
+implícitamente un cable de un bit ante un nombre desconocido, de modo
+que una errata en un identificador produce en síntesis un circuito
+distinto del pretendido, en silencio. Compilar con Icarus aunque el
+destino sea la síntesis funciona, por tanto, como un verificador
+gratuito de erratas.
+
+\subsection{E.3 GTKWave}\label{e.3-gtkwave}
+
+GTKWave es el visor de formas de onda: lee los ficheros de volcado que
+produce Icarus y permite inspeccionar señal por señal qué hizo el
+circuito en cada ciclo. Se instala igual que el anterior, con una orden
+del gestor de paquetes.
+
+Es la herramienta con la que se resolvieron la mayor parte de las
+discrepancias contra el modelo de referencia, y conviene subrayar por
+qué: un banco de pruebas dice \emph{si} el resultado difiere; el visor
+de ondas dice \emph{cuándo} empezó a diferir, que es la pregunta que
+lleva a la causa.
+
+\subsection{E.4 ngspice}\label{e.4-ngspice}
+
+ngspice es el simulador SPICE de código abierto, y se usa para la
+verificación eléctrica: comprobar, a nivel de transistor y no de puerta
+lógica, cómo se comporta realmente un camino crítico.
+
+A diferencia de las anteriores no se clona, sino que se descarga como
+archivo comprimido de una versión concreta y se compila desde ahí. Su
+configuración pide explícitamente el soporte gráfico de X y la
+biblioteca de lectura de línea de órdenes, y se acostumbra a construirlo
+en un subdirectorio aparte del código fuente, de modo que los ficheros
+generados no se mezclen con los originales. Sus dependencias son pocas:
+las herramientas básicas de compilación y la biblioteca de artefactos de
+X11.
+
+\subsection{E.5 OpenSTA}\label{e.5-opensta}
+
+OpenSTA es el analizador de tiempos estático: dado un circuito ya
+mapeado a puertas y una descripción de sus restricciones temporales,
+dice si cierra a la frecuencia pedida y cuál es el camino que menos
+margen tiene. Es la herramienta que produce las cifras de holgura que
+aparecen en el capítulo 5.
+
+Se construye con CMake en lugar de con el sistema de configuración
+clásico, y necesita, además del compilador y del intérprete de Tcl, el
+generador de interfaces entre lenguajes con el que expone sus funciones
+a Tcl. Como en el caso de Yosys, la práctica sensata es instalar la
+lista completa de dependencias antes de empezar.
+
+\subsection{E.6 Magic}\label{e.6-magic}
+
+Magic es la herramienta de diseño físico con la que se inspeccionan los
+planos, se generan las vistas abstractas de celda y se extraen los
+parásitos que alimentan la verificación eléctrica. Procede de la
+Universidad de California en Berkeley y es, con diferencia, la más
+exigente de instalar.
+
+Su lista de dependencias es larga y heterogénea porque Magic dibuja:
+necesita el preprocesador de macros, un intérprete de órdenes de la
+familia C, las cabeceras de desarrollo de X11, las de Tcl y las de Tk,
+la biblioteca de dibujo vectorial, las de OpenGL y la de manejo de
+terminal. Sólo después de eso se clona y se compila. \textbf{Es el punto
+del montaje donde más tiempo se pierde}, y la razón es siempre la misma:
+el mensaje de error nombra un fichero de cabecera que falta, no el
+paquete que lo contiene, de modo que hay que traducir de uno a otro.
+
+\subsection{E.7 OpenLane y Docker}\label{e.7-openlane-y-docker}
+
+OpenLane no es una herramienta sino una orquestación: recorre el camino
+completo desde el RTL hasta el GDSII invocando por dentro a OpenROAD
+para el emplazamiento y el ruteo, a Yosys para la síntesis, a Magic y a
+Netgen para la verificación física y a KLayout para las comprobaciones
+geométricas.
+
+Poner de acuerdo todas esas piezas en versiones compatibles entre sí es
+exactamente el problema que OpenLane resuelve distribuyéndose como
+imagen de contenedor. De ahí se sigue algo que conviene decir con
+claridad: \textbf{Netgen y OpenROAD no se instalan nunca en este
+trabajo. Viven dentro de esa imagen}, y de hecho no figuran entre las
+órdenes disponibles en la máquina anfitriona.
+
+Docker, que es lo que ejecuta esa imagen, no se toma del repositorio de
+la distribución sino del del propio proyecto, lo que obliga a registrar
+antes su clave de firma y su fuente de paquetes. Tras instalarlo se
+comprueba con una imagen de prueba, y se añade el usuario al grupo
+correspondiente para poder invocarlo sin privilegios de administrador;
+ese cambio \textbf{no surte efecto hasta reiniciar la sesión}, y es
+causa habitual de confusión. Hecho todo eso, instalar OpenLane se reduce
+a clonar su repositorio y lanzar su compilación, que en realidad
+descarga la imagen y ejecuta un diseño de prueba para comprobar que el
+flujo entero funciona.
+
+Aquí aparece la divergencia con las guías de partida. La orden que
+registra la fuente de paquetes de Docker \textbf{declara explícitamente
+la arquitectura x86-64}, y la imagen del flujo hay que tomarla en su
+variante para ARM de 64 bits. Es el punto exacto en que una guía escrita
+para otra máquina deja de poder seguirse al pie de la letra.
+
+\subsection{E.8 El kit de diseño: open\_pdks y
+sky130}\label{e.8-el-kit-de-diseuxf1o-open_pdks-y-sky130}
+
+El kit de diseño es lo que convierte a todas las herramientas anteriores
+en algo capaz de producir un circuito fabricable: contiene las reglas de
+diseño del proceso, los modelos eléctricos de los dispositivos y la
+biblioteca de celdas estándar. Sin él, el flujo no tiene contra qué
+comprobar nada.
+
+Se obtiene con open\_pdks, que se clona, se configura pidiéndole
+explícitamente el proceso sky130 y se compila. El resultado es el árbol
+de ficheros que todas las demás herramientas consultan, y es la
+instalación más voluminosa de todo el entorno: ocupa del orden de
+veintiséis gigabytes, más que todas las herramientas del flujo juntas.
+
+En la práctica se acabó usando además un gestor de versiones de kit de
+diseño, que descarga una compilación ya hecha ---unos dos gigabytes--- y
+permite fijar exactamente qué versión del proceso se usó en cada
+circuito. Esa trazabilidad no es un lujo: \textbf{un cambio de versión
+del kit cambia las cifras de área y de tiempos}, y sin poder nombrar la
+versión, las tablas del capítulo 5 no serían reproducibles.
+
+\subsection{E.9 Xyce}\label{e.9-xyce}
+
+Xyce es un simulador de circuitos analógicos de alto rendimiento, y es
+con él con quien se hizo la verificación eléctrica del camino crítico.
+Se construye mediante un guion de compilación publicado por terceros que
+resuelve por dentro sus dependencias, y se instala en la jerarquía local
+del sistema.
+
+Hay aquí una trampa documentada en las notas de la asignatura y que
+conviene repetir, porque cuesta tiempo y el síntoma no apunta a la
+causa: \textbf{Xyce puede no encontrar los ficheros del kit de diseño
+porque la carpeta que open\_pdks genera no se llama como Xyce espera}.
+La solución práctica es renombrar esa carpeta ---convirtiéndola de paso
+en oculta--- de modo que los procesos que la necesitan apunten al sitio
+correcto. El error que se ve, si no se hace, habla de ficheros de modelo
+ausentes y no de un nombre de carpeta.
+
+\subsection{E.10 El entorno de Tiny
+Tapeout}\label{e.10-el-entorno-de-tiny-tapeout}
+
+Reproducir exactamente el circuito que se envió a fabricación exige algo
+distinto de instalar herramientas: exige \textbf{reconstruir el entorno
+tal como estaba el día del envío}. Para eso hay un guion que fija las
+versiones históricas del proyecto ---una versión concreta del flujo, una
+del kit de diseño, una de open\_pdks y una de las herramientas de
+soporte--- en lugar de tomar las más recientes.
+
+El guion admite dos modos y cuatro acciones. Los modos deciden si el
+flujo se ejecuta dentro de un contenedor, reproduciendo el mismo
+procedimiento que la infraestructura de integración continua del
+proyecto, o de forma nativa sobre un entorno de paquetes reproducible.
+Las acciones permiten separar la preparación del entorno de la ejecución
+del endurecimiento del diseño, hacer ambas de una vez, o limitarse a
+informar de qué rutas y versiones se usarían sin modificar nada ---esto
+último es lo primero que conviene ejecutar---. Varias variables de
+entorno permiten cambiar dónde se instala, sobre qué copia del proyecto
+se trabaja, y si se permite o no que el guion instale dependencias del
+sistema por su cuenta.
+
+Este guion está preparado para x86-64, lo que lo sitúa en el mismo caso
+descrito en E.7.
+
+\subsection{E.11 Simulación del netlist
+fabricado}\label{e.11-simulaciuxf3n-del-netlist-fabricado}
+
+El último paso del entorno no sirve para construir un circuito sino para
+\textbf{comprobar el que ya está fabricado}. A partir del netlist
+posterior al emplazamiento y ruteo del circuito enviado, junto con su
+banco de pruebas y sus reglas de compilación, se simula el diseño tal
+como quedó en silicio y no tal como se describió en el RTL.
+
+La compilación se hace activando las opciones que incluyen los pines de
+alimentación, que seleccionan los modelos funcionales de las celdas y
+que fijan un retardo unitario por celda; el resultado se vuelca a un
+fichero de ondas y se abre en el visor. La diferencia con simular el RTL
+es la que justifica el paso: \textbf{aquí se simulan las celdas reales
+de la biblioteca, con su conectividad final}, de modo que un error
+introducido durante la implementación física ---y no presente en el
+código original--- tiene dónde aparecer.
+
+Este trabajo no llegó a explotar ese paso, porque ninguno de sus
+circuitos ha sido fabricado todavía. Se documenta aquí porque el entorno
+queda montado para hacerlo, y porque la documentación de partida (ref.
+48) recoge tres defectos en las interfaces serie del procesador que se
+localizaron exactamente por esta vía: dos de ellos quedaban ocultos al
+simular contra los modelos de las memorias, y sólo aparecieron al
+comparar esa simulación con el comportamiento del dispositivo físico.
+\textbf{Es un ejemplo del mismo principio que atraviesa el capítulo 3:
+un modelo que no puede fallar no está verificando nada.}
 
 \chapter{Bibliografía}\label{bibliografuxeda}
 

@@ -40,7 +40,7 @@ agregar cap6_discusion.md
 agregar cap7_conclusiones.md
 
 printf '\n\\newpage\n\n# Anexos\n' >> "$UNIDO"
-for a in anexo_entorno anexo_registros anexo_pinout anexo_openlane; do agregar "$a.md" bajar; done
+for a in anexo_entorno anexo_registros anexo_pinout anexo_openlane anexo_flujo_asic; do agregar "$a.md" bajar; done
 
 agregar bibliografia.md
 
