@@ -1218,7 +1218,8 @@ almacenamiento}: la cámara escribe en su reloj y la pantalla lee en el
 suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo
 lo demás vive enteramente a un lado o al otro, lo que reduce el problema
-de cruce de dominios a dos casos tratables por separado.
+de cruce de dominios a dos casos tratables por separado. La Figura 4.2
+dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 \section{4.2 Front-end de cámara}\label{front-end-de-cuxe1mara}
 
@@ -1532,6 +1533,20 @@ aportación de este trabajo. Obsérvese que \textbf{el camino de datos de
 imagen no pasa por el bus}: los píxeles entran de la cámara al filtro y
 salen de éste a la pantalla a un píxel por ciclo, y lo único que el
 procesador pone en el bus es el umbral.}
+\end{figure}
+
+\begin{figure}
+\centering
+\pandocbounded{\includegraphics[keepaspectratio,alt={Figura 4.2. El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La frontera que la §4.1 enuncia se ve aquí dibujada: el almacenamiento de 60x80 se escribe con el reloj de píxel de la cámara y se lee con el del sistema, y es el único punto por el que los dos dominios se tocan. Los números de pin son los del fichero de restricciones verificado en la tarjeta, no los de los comentarios del código.}]{figuras/fig_pines_a_cajas.png}}
+\caption{\textbf{Figura 4.2.} El mismo sistema, pero sin procesador, y
+bajado hasta los pines: los catorce puertos del módulo de más alto
+nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
+frontera que la §4.1 enuncia se ve aquí dibujada: \textbf{el
+almacenamiento de 60x80 se escribe con el reloj de píxel de la cámara y
+se lee con el del sistema}, y es el único punto por el que los dos
+dominios se tocan. Los números de pin son los del fichero de
+restricciones verificado en la tarjeta, no los de los comentarios del
+código.}
 \end{figure}
 
 La figura muestra por qué este periférico no se parece a los demás. Un
