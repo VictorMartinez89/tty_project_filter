@@ -38,7 +38,6 @@ module mnist_clf78_bram #(
 
     localparam [10:0] B_MIN = 11'd174, B_MAX = 11'd376;
     localparam signed [AW-1:0] MARGEN = 70;
-    localparam S_IDLE=3'd0, S_DERIV=3'd1, S_ESCR=3'd2, S_MAC=3'd3, S_ARGMAX=3'd4, S_DONE=3'd5;
 
     // ---- la memoria de caracteristicas: 168 de FW bits ----
     reg [FW-1:0] fmem [0:255];
@@ -53,18 +52,48 @@ module mnist_clf78_bram #(
         rd_d <= fmem[rd_a];                            // lectura SINCRONA -> BRAM
     end
 
+    // ---- control ----
+    // La derivacion se hace en pasos de CINCO ciclos por caracteristica: cuatro
+    // para pedir los cuatro sumandos y uno para escribir. La lectura es sincrona,
+    // asi que el dato que llega en el ciclo t corresponde a la direccion pedida
+    // en t-1: por eso se pide en 0..3 y se acumula en 1..4.
+    //
+    // Nivel 1 = suma de las 4 zonas del cuadrante.
+    // Nivel 0 = suma de los 4 CUADRANTES ya derivados, no de las 16 zonas:
+    //           los cuadrantes son una particion, asi que da lo mismo y son
+    //           cuatro lecturas en vez de dieciseis.
+    localparam S_IDLE=3'd0, S_DERIV=3'd1, S_MAC=3'd2, S_ARGMAX=3'd3, S_DONE=3'd4,
+               S_PRE=3'd5, S_PRE2=3'd6;
     reg [2:0] st;
     reg [3:0] c;
     reg [6:0] j;
-    reg [4:0] dz;                 // zona en curso al derivar (0..15) o cuadrante (0..3)
-    reg [2:0] db;                 // orientacion en curso (0..7)
-    reg       dnivel;             // 0 = derivando nivel 1, 1 = derivando nivel 0
-    reg [FW-1:0] dacc;
+    reg [6:0] ja;   // indice de DIRECCION: va dos por delante de j,
+                    // porque el dato tarda dos ciclos en llegar (registro + lectura sincrona)
+    reg       fase;          // 0 = derivando nivel 1 (32), 1 = derivando nivel 0 (8)
+    reg [4:0] fidx;          // que caracteristica derivada
+    reg [2:0] t;             // paso dentro de la derivacion (0..4)
+    reg [FW-1:0] acc_d;
     reg signed [AW-1:0] acc, mejor, segundo;
     reg [3:0] mejor_c;
 
+    // direccion de la caracteristica 0 y de la siguiente, para pedirlas con un ciclo
+    // de antelacion (la lectura es sincrona)
+    wire [7:0] k0 = k_rom(7'd0);
+    wire [7:0] dir_j_0 = (k0 < 8'd8) ? (8'd160+k0) : (k0 < 8'd40) ? (8'd128+(k0-8'd8)) : (k0-8'd40);
+    wire [7:0] ka = k_rom(ja);
+    wire [7:0] dir_ja = (ka < 8'd8) ? (8'd160+ka) : (ka < 8'd40) ? (8'd128+(ka-8'd8)) : (ka-8'd40);
+
+
+    wire [2:0] db = fase ? fidx[2:0] : fidx[2:0];      // orientacion
+    wire [1:0] dq = fidx[4:3];                          // cuadrante (solo nivel 1)
+    // nivel 1: zona = {qy, paso[1], qx, paso[0]}   ->   direccion = zona*8 + bin
+    wire [7:0] dir_z = {1'b0, dq[1], t[1], dq[0], t[0], db};
+    // nivel 0: los cuatro cuadrantes ya escritos en 128 + q*8 + bin
+    wire [7:0] dir_q = 8'd128 + {3'd0, t[1:0], db};
+    wire [7:0] dir_src = fase ? dir_q : dir_z;
+    wire [7:0] dir_dst = fase ? (8'd160 + {5'd0, fidx[2:0]}) : (8'd128 + {3'd0, fidx});
+
     wire [7:0] k = k_rom(j);
-    // direccion de la caracteristica j: nivel 2 directo, nivel 1 y 0 ya derivadas
     wire [7:0] dir_j = (k < 8'd8)  ? (8'd160 + k)
                      : (k < 8'd40) ? (8'd128 + (k - 8'd8))
                                    : (k - 8'd40);
@@ -73,50 +102,69 @@ module mnist_clf78_bram #(
 
     always @(posedge clk) begin
         if (reset) begin
-            st <= S_IDLE; done <= 1'b0; we_i <= 1'b0; digito <= 0; valido <= 0; score <= 0;
-            c <= 0; j <= 0; dz <= 0; db <= 0; dnivel <= 0; dacc <= 0;
+            st <= S_IDLE; done <= 1'b0; we_i <= 1'b0;
+            digito <= 0; valido <= 0; score <= 0;
+            c <= 0; j <= 0; fase <= 0; fidx <= 0; t <= 0; acc_d <= 0;
+            rd_a <= 8'd0; ja <= 0; acc <= 0; mejor <= 0; segundo <= 0; mejor_c <= 0;
+            // rd_a SIN inicializar dejaba la primera lectura en X, y una sola X
+            // envenena el acumulador para siempre: el maximo nunca se actualiza.
         end else begin
             done <= 1'b0; we_i <= 1'b0;
             case (st)
-                // --- derivar nivel 1 (4 zonas por cuadrante) y luego nivel 0 (16) ---
                 S_IDLE: if (start) begin
-                    dz <= 0; db <= 0; dnivel <= 1'b0; dacc <= 0;
-                    rd_a <= {4'd0, 1'b0, 3'd0};        // primera zona del cuadrante 0
+                    fase <= 1'b0; fidx <= 5'd0; t <= 3'd0; acc_d <= 0;
                     st <= S_DERIV;
                 end
+
+                // SEIS ciclos por caracteristica, no cinco. Se piden cuatro direcciones
+                // en t=0..3 y los datos llegan en t=1..4, porque la memoria es sincrona.
+                // Escribir en t=4 -que es lo que hacia antes- suma solo TRES de los
+                // cuatro: el ultimo dato todavia no ha llegado. El sintoma era que la
+                // suma TOTAL cuadraba pero el reparto entre zonas no, que es exactamente
+                // el aviso de verificar.py: un desalineamiento deja el total intacto.
                 S_DERIV: begin
-                    dacc <= dacc + rd_d;
-                    if (dz[1:0] == 2'd3) st <= S_ESCR;
-                    else begin
-                        dz <= dz + 1'b1;
-                        rd_a <= dnivel ? {1'b0, dz[3:0]+4'd1, db} : {3'd0, dz[1:0]+2'd1, db};
-                    end
+                    if (t <= 3'd3) rd_a <= dir_src;          // pedir
+                    // La direccion pedida cuando t valia k da su dato cuando t vale k+2:
+                    // uno por el registro de direccion y otro por la lectura sincrona.
+                    // Se piden en t=0..3 y llegan en t=2..5.
+                    if (t >= 3'd2 && t <= 3'd4) acc_d <= acc_d + rd_d;
+                    if (t == 3'd5) begin
+                        we_i <= 1'b1; wa_i <= dir_dst; wd_i <= acc_d + rd_d;
+                        acc_d <= 0; t <= 3'd0;
+                        if (!fase && fidx == 5'd31) begin fase <= 1'b1; fidx <= 5'd0; end
+                        else if (fase && fidx[2:0] == 3'd7) begin
+                            c <= 0; j <= 0; acc <= b_rom(4'd0);
+                            mejor <= {1'b1,{(AW-1){1'b0}}}; segundo <= {1'b1,{(AW-1){1'b0}}};
+                            mejor_c <= 0; ja <= 7'd0; st <= S_PRE;
+                        end else fidx <= fidx + 1'b1;
+                    end else t <= t + 1'b1;
                 end
-                S_ESCR: begin
-                    we_i <= 1'b1; wd_i <= dacc + rd_d;
-                    wa_i <= dnivel ? (8'd160 + {5'd0,db}) : (8'd128 + {dz[4:2],db});
-                    dacc <= 0;
-                    if (db == 3'd7) begin
-                        db <= 0;
-                        if (!dnivel && dz[4:2] == 3'd3) begin dnivel <= 1'b1; dz <= 0; end
-                        else if (dnivel) begin c <= 0; j <= 0; acc <= b_rom(4'd0); st <= S_MAC; end
-                        else dz <= dz + 4'd4;
-                    end else db <= db + 1'b1;
-                    rd_a <= dnivel ? {4'd0, db+3'd1} : {3'd0, dz[4:2], db+3'd1};
-                    if (st == S_ESCR) st <= S_DERIV;
-                end
-                // --- multiplicacion-acumulacion: SIEMPRE una lectura de memoria ---
+
+                // Un ciclo de espera. La memoria es SINCRONA: el dato de la caracteristica 0
+                // llega un ciclo despues de pedirla. Sin esto el primer producto multiplica
+                // lo que hubiera en el puerto y todo el acumulado queda corrido una posicion.
+                // dos ciclos de adelanto: se piden las direcciones 0 y 1 antes de
+                // empezar a multiplicar, porque el dato de la 0 no llega hasta el tercero.
+                S_PRE:  begin rd_a <= dir_ja; ja <= ja + 1'b1; st <= S_PRE2; end
+                S_PRE2: begin rd_a <= dir_ja; ja <= ja + 1'b1; st <= S_MAC;  end
+
+                // una lectura por ciclo; el dato de j llega mientras se pide el j+1
                 S_MAC: begin
                     acc <= acc + prod;
                     if (j == N_CARAC-1) st <= S_ARGMAX;
-                    else begin j <= j + 1'b1; rd_a <= dir_j; end
+                    else begin j <= j + 1'b1; rd_a <= dir_ja; ja <= ja + 1'b1; end
                 end
+
                 S_ARGMAX: begin
                     if (acc > mejor) begin mejor <= acc; segundo <= mejor; mejor_c <= c; end
                     else if (acc > segundo) segundo <= acc;
                     if (c == N_CLASE-1) st <= S_DONE;
-                    else begin acc <= b_rom(c+4'd1); c <= c+4'd1; j <= 0; st <= S_MAC; end
+                    else begin
+                        acc <= b_rom(c+4'd1); c <= c+4'd1; j <= 0;
+                        ja <= 7'd0; st <= S_PRE;
+                    end
                 end
+
                 S_DONE: begin
                     digito <= mejor_c; score <= mejor;
                     valido <= (n_bordes >= B_MIN) && (n_bordes <= B_MAX) && ((mejor-segundo) > MARGEN);
