@@ -111,12 +111,19 @@ module mnist_feat_canny #(
     //   W+1 porque la ventana centrada en (r,c) recien esta cuando entro (r+1,c+1) -eso es lo
     //   que midio la Parte 168- MAS 2 por el pipeline interno del propio linebuf (etapa de
     //   lectura + etapa de ventana)... y de esos 2 solo se ve 1 en el indice de muestra.
-    //   Con la tercera etapa del Canny son 3*(W+2) = 90 para W=28. Se verifica igual que antes:
-    //   contra el golden, contador por contador -no por la suma, que no cambia con un corrimiento-.
-    //   Con LAT=2*(W+1)=58 el histograma queda corrido DOS COLUMNAS y las zonas se mezclan,
-    //   aunque el total de bordes sea correcto. Es la misma trampa de la Parte 168: el total
-    //   no cambia con un corrimiento, asi que hay que mirar la distribucion, no la suma.
-    localparam integer LAT = (LATP != 0) ? LATP : 3*(W+2);   // TRES etapas, no dos
+    //   Son 3*(W+1) = 87 para W=28, y esto se MIDIO el 23-sep barriendo LATP y comparando el
+    //   histograma CONTADOR POR CONTADOR con el golden. NO es 3*(W+2)=90, que es lo que decia
+    //   antes: los dos ciclos del cauce interno de cada linebuf no los cuenta `lat_cnt`, porque
+    //   mientras el encadenado se llena `vc` esta baja y la guarda es `if (vc && ...)`. El +2 se
+    //   lo traga la propia ausencia de muestras validas; sumarlo lo cuenta dos veces.
+    //
+    //   La regla, comprobada en las dos profundidades: LAT = k*(W+1), con k el numero de
+    //   ventanas 3x3 encadenadas. Dos etapas -> 58 (y no 60). Tres -> 87 (y no 90).
+    //
+    //   Y LA TRAMPA que dejo el valor viejo en su sitio tanto tiempo: `n_bordes`, el TOTAL,
+    //   coincidia con el golden a 90, 91 y 92, justo donde la DISTRIBUCION estaba peor. Un
+    //   corrimiento no cambia la suma. La calibracion vieja se hizo contra el total.
+    localparam integer LAT = (LATP != 0) ? LATP : 3*(W+1);   // MEDIDO: 87 para W=28
     reg [$clog2(LAT+1)-1:0] lat_cnt;
     wire arrancado = (lat_cnt == LAT);
     reg [$clog2(W)-1:0] cx;

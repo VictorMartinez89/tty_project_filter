@@ -41,6 +41,12 @@ module mnist_clf78_x2 #(
     // 10, o sea 390 ciclos de multiplicacion en vez de 780.
 
     localparam [10:0] B_MIN = 11'd174, B_MAX = 11'd376;
+    // n_bordes SE ENCLAVA AL ARRANCAR. Se leia combinacionalmente en S_DONE, 647 ciclos
+    // despues, y a esa altura el extractor ya lo puso a cero y lleva medio cuadro nuevo
+    // contado: `valido` salia calculado con el recuento de OTRA imagen. El banco suelto no
+    // podia verlo porque mantenia `n_bordes` fijo para siempre; solo aparece en el flujo
+    // continuo. Es la trampa de siempre: un banco vale por lo que puede romper.
+    reg [10:0] nb_l;
     localparam signed [AW-1:0] MARGEN = 70;
 
     // ---- la memoria de caracteristicas: 168 de FW bits ----
@@ -117,7 +123,7 @@ module mnist_clf78_x2 #(
             digito <= 0; valido <= 0; score <= 0;
             j <= 0; fase <= 0; fidx <= 0; t <= 0; acc_d <= 0;
             rd_a <= 8'd0; ja <= 0; acc0 <= 0; acc1 <= 0;
-            mejor <= 0; segundo <= 0; mejor_c <= 0; cp <= 0;
+            mejor <= 0; segundo <= 0; mejor_c <= 0; cp <= 0; nb_l <= 11'd0;
             // rd_a SIN inicializar dejaba la primera lectura en X, y una sola X
             // envenena el acumulador para siempre: el maximo nunca se actualiza.
         end else begin
@@ -125,6 +131,7 @@ module mnist_clf78_x2 #(
             case (st)
                 S_IDLE: if (start) begin
                     fase <= 1'b0; fidx <= 5'd0; t <= 3'd0; acc_d <= 0;
+                    nb_l <= n_bordes;           // el recuento de ESTE cuadro, no del siguiente
                     st <= S_DERIV;
                 end
 
@@ -192,7 +199,7 @@ module mnist_clf78_x2 #(
 
                 S_DONE: begin
                     digito <= mejor_c; score <= mejor;
-                    valido <= (n_bordes >= B_MIN) && (n_bordes <= B_MAX) && ((mejor-segundo) > MARGEN);
+                    valido <= (nb_l >= B_MIN) && (nb_l <= B_MAX) && ((mejor-segundo) > MARGEN);
                     done <= 1'b1; st <= S_IDLE;
                 end
             endcase
