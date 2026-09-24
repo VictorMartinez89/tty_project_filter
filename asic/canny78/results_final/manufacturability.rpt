@@ -1,0 +1,19 @@
+Design Name: mnist_top78
+Run Directory: /openlane/designs/canny78/runs/c78
+----------------------------------------
+
+Magic DRC Summary:
+Source: /openlane/designs/canny78/runs/c78/reports/signoff/drc.rpt
+Total Magic DRC violations is 0
+----------------------------------------
+
+LVS Summary:
+Source: /openlane/designs/canny78/runs/c78/logs/signoff/39-mnist_top78.lef.lvs.log
+Number of nets: 36135                      |Number of nets: 36135                      
+Design is LVS clean.
+----------------------------------------
+
+Antenna Summary:
+Source: /openlane/designs/canny78/runs/c78/logs/signoff/41-arc.log
+Pin violations: 136
+Net violations: 115
