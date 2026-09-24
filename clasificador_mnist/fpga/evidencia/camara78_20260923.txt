@@ -1,0 +1,22 @@
+camara78 · 2026-09-23 ~22:00 · iCESugar v1.5 + OV7670 + TFT ILI9341
+bitstream: mnist_cam78.bin (md5 702b0cd1a7ebb95e1759354ea422e3df) = mnist_cam78.v + cam78_cadena (top78, 97,22 %)
+           4748 LC (89 %), 11 BRAM, cam_pclk 16,56 MHz, clk 24,05 MHz · sim con camara emulada 20/20
+video: ~/Downloads/mnist_prueba_31.mp4 (2:08) y mnist_prueba_32.mp4 (0:11). Anotado por Victor, tiempos mm:ss.
+
+mostrado  tramo          lo que dijo la pantalla ('-' = NADA)
+  5       00:00-00:19    - 5 5 8 6
+  2       00:21-00:26    5 2 2 - 9
+  4       00:27-00:52    6 7 2 4 6 2 3 5
+  1       00:54-01:20    3 4 3 4 2 3 2 3 5
+  0       01:21-01:39    5 5 5 2
+  6       01:40-01:44    6
+  9       01:45-01:55    3 7
+  3       01:57-02:08    2 2
+
+TOTAL: 6/36 = 16,7 %  ·  sin contar NADA 6/34 = 17,6 %  ·  p = 0,12 contra el azar (10 %): NO significativo
+Parte 181 (cadena vieja, 92 %): 7/72 = 9,7 %.
+Firma del sesgo: responde 2 (9 veces) y 5 (8) sin importar lo mostrado.
+
+Diagnostico por cuadros del video: la cadena NO es el problema (la misma dio 10000/10000 por UART).
+Lo es la escena: (1) fondo sucio -sombras, borde del papel, mano- que tras invertir se vuelve "tinta";
+(2) digito pequeno y descentrado en la ventana (§36.14: a 3 px, del 97 al 63 %); (3) desenfoque/saturacion.
