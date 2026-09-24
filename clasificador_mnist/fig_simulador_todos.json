@@ -1,0 +1,123 @@
+[
+ {
+  "clase": "0",
+  "test": 3,
+  "dice": "0",
+  "ok": true,
+  "margen": 265,
+  "bordes": 344,
+  "sat": 0.4444444444444444,
+  "mascara": 0.7107438016528925,
+  "por_que": ""
+ },
+ {
+  "clase": "1",
+  "test": 2,
+  "dice": "NADA",
+  "ok": false,
+  "margen": 222,
+  "bordes": 157,
+  "sat": 0.1892361111111111,
+  "mascara": 0.3243801652892562,
+  "por_que": "bordes 157 < 174"
+ },
+ {
+  "clase": "2",
+  "test": 1,
+  "dice": "2",
+  "ok": true,
+  "margen": 108,
+  "bordes": 302,
+  "sat": 0.4027777777777778,
+  "mascara": 0.6239669421487604,
+  "por_que": ""
+ },
+ {
+  "clase": "3",
+  "test": 18,
+  "dice": "3",
+  "ok": true,
+  "margen": 72,
+  "bordes": 363,
+  "sat": 0.5034722222222222,
+  "mascara": 0.75,
+  "por_que": ""
+ },
+ {
+  "clase": "4",
+  "test": 4,
+  "dice": "4",
+  "ok": true,
+  "margen": 409,
+  "bordes": 280,
+  "sat": 0.3402777777777778,
+  "mascara": 0.5785123966942148,
+  "por_que": ""
+ },
+ {
+  "clase": "5",
+  "test": 8,
+  "dice": "5",
+  "ok": true,
+  "margen": 190,
+  "bordes": 322,
+  "sat": 0.4045138888888889,
+  "mascara": 0.6652892561983471,
+  "por_que": ""
+ },
+ {
+  "clase": "6",
+  "test": 11,
+  "dice": "6",
+  "ok": true,
+  "margen": 312,
+  "bordes": 346,
+  "sat": 0.4479166666666667,
+  "mascara": 0.7148760330578512,
+  "por_que": ""
+ },
+ {
+  "clase": "7",
+  "test": 0,
+  "dice": "7",
+  "ok": true,
+  "margen": 518,
+  "bordes": 238,
+  "sat": 0.2951388888888889,
+  "mascara": 0.49173553719008267,
+  "por_que": ""
+ },
+ {
+  "clase": "8",
+  "test": 61,
+  "dice": "8",
+  "ok": true,
+  "margen": 288,
+  "bordes": 330,
+  "sat": 0.4149305555555556,
+  "mascara": 0.6818181818181818,
+  "por_que": ""
+ },
+ {
+  "clase": "9",
+  "test": 7,
+  "dice": "9",
+  "ok": true,
+  "margen": 231,
+  "bordes": 240,
+  "sat": 0.3072916666666667,
+  "mascara": 0.49586776859504134,
+  "por_que": ""
+ },
+ {
+  "clase": "NADA",
+  "test": null,
+  "dice": "NADA",
+  "ok": true,
+  "margen": 71,
+  "bordes": 0,
+  "sat": 0.0,
+  "mascara": 0.0,
+  "por_que": "bordes 0 < 174"
+ }
+]
