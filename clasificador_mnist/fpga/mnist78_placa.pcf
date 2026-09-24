@@ -1,0 +1,10 @@
+# mnist78_placa.pcf — iCESugar v1.5 (iCE40UP5K, sg48), el flujo serie del top78.
+#   clk 35, uart_tx 6 y los LEDs vienen de cam_uart_win.pcf, PROBADO en placa.
+#   uart_rx 4 es el pin RX del iCELink segun el pcf de ejemplo de la placa, y NO se ha probado
+#   en esta tesis: si la placa no contesta nada, es lo primero que hay que mirar.
+set_io clk          35
+set_io uart_tx_pin   6
+set_io uart_rx_pin   4
+set_io led_r        39
+set_io led_g        40
+set_io led_b        41

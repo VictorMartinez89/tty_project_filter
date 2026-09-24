@@ -1,0 +1,32 @@
+[dumpfile] "stream78.vcd"
+[timestart] 0
+[size] 1600 900
+@200
+-UART
+@28
+tb_stream78.dut.uart_rx_pin
+tb_stream78.dut.RX.valido
+@22
+tb_stream78.dut.RX.dato[7:0]
+@28
+tb_stream78.dut.uart_tx_pin
+@200
+-Cadena
+@28
+tb_stream78.dut.reset_cad
+tb_stream78.dut.CAD.in_valid
+tb_stream78.dut.CAD.frame_done
+tb_stream78.dut.CAD.done
+tb_stream78.dut.CAD.valido
+@24
+tb_stream78.dut.CAD.digito[3:0]
+tb_stream78.dut.CAD.n_bordes[10:0]
+@200
+-Realineo
+@24
+tb_stream78.dut.resto[9:0]
+tb_stream78.dut.quieto[23:0]
+@28
+tb_stream78.dut.perdido
+@22
+tb_stream78.dut.resp[7:0]
