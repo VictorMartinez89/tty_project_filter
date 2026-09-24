@@ -1,0 +1,21 @@
+camara78 · 2026-09-24 ~09:20 · iCESugar v1.5 + OV7670 + TFT · bitstream mnist_cam78.bin (md5 702b0cd1…), Canny-78
+video: ~/Downloads/mnist_prueba_33.mp4 (2:10). Anotado por Victor (mm:ss). Protocolo: hoja por digito, marcador grueso.
+
+mostrado  tramo          dijo ('-' = NADA)
+  7       00:00-00:19    - 4 4 8 4
+  1       00:21-00:31    2 7 2 4 2 4 2
+  0       00:32-00:46    2 6 4 4
+  6       00:47-00:56    5 5 2 3
+  9       01:00-01:08    4 8 4
+  4       01:10-01:18    4 4 4
+  8       01:19-01:32    5 5 5 2 4
+  5       01:39-01:51    2 5 2 2
+  2       01:52-01:56    2 6 2 2
+  3       01:57-02:08    5 6 4 8 5 2 4 2
+
+HOY 7/47 = 14,9 % (p=0,17) · 23-sep 6/36 = 16,7 % · JUNTOS 13/83 = 15,7 % (p=0,054 vs azar 10 %).
+Firma de sesgo: dice 4 (15) y 2 (15). Acierta el 4 (3/3) y el 2 (3/4).
+Cuadros: digitos CORTADOS verticalmente (el 0 solo la mitad de arriba, el 6 la de abajo) y una COSTURA
+horizontal en varios cuadros. HIPOTESIS (no probada): deriva de sincronia vertical — cam_win28 no usa VSYNC
+(«la OV7670 clon no da VSYNC usable») y cuenta 480 lineas. Prueba propuesta: papel y camara FIJOS con
+cinta, 10 s sin tocar: si la imagen se desplaza sola, es la sincronia.
