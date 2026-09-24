@@ -39,7 +39,13 @@ module mnist_feat_canny #(
 )(
     input  wire            clk,
     input  wire            reset,          // sincrono, activo-alto: limpia TODO
-    input  wire            clr,            // limpia solo histograma y posicion (deja los line-buffers)
+    // `clr` limpia el HISTOGRAMA y descongela, pero NO la posicion del raster. Antes la
+    // ponia a cero tambien, y eso era el problema: el chip pulsa `clr` cuando TERMINA de
+    // clasificar -no en el limite de cuadro-, asi que le ponia la posicion a cero en un punto
+    // arbitrario del cuadro siguiente y habia que tragarse la latencia otra vez, desde otro
+    // sitio. Una vez que el reset la alinea, la posicion se envuelve sola cada H*W muestras y
+    // se queda alineada para siempre. Solo `reset` la toca.
+    input  wire            clr,            // limpia histograma y descongela (deja posicion y line-buffers)
     input  wire            in_valid,
     input  wire [7:0]      in_pix,
     input  wire [7:0]      thr_hi,         // umbral ALTO: borde fuerte
@@ -143,23 +149,45 @@ module mnist_feat_canny #(
     wire [4:0] dir = {zona, bin};
     integer i;
     always @(posedge clk) begin
-        if (reset || clr) begin
+        if (reset) begin
             cx <= 0; cy <= 0; lat_cnt <= 0; frame_done <= 1'b0; listo <= 1'b0; n_bordes <= 11'd0;
             for (i = 0; i < 32; i = i + 1) cnt[i] <= {CW{1'b0}};
         end else begin
             frame_done <= 1'b0;
-            if (vc && !listo) begin
+            // `clr` NO es un `else`: limpia el histograma y descongela, y el raster sigue
+            // avanzando EN EL MISMO ciclo. Como rama exclusiva se comia la posicion de esa
+            // muestra -una por cuadro, acumulandose-. Con huecos grandes el pulso cae en un
+            // ciclo sin muestra valida y no se nota; con pixeles pegados el cuadro se corre
+            // uno cada vez. Medido el 23-sep: con `else if` fallaba hasta huecos de 64 ciclos;
+            // sin el, funciona con pixeles pegados.
+            if (clr) begin
+                listo <= 1'b0; n_bordes <= 11'd0;
+                for (i = 0; i < 32; i = i + 1) cnt[i] <= {CW{1'b0}};
+            end
+            if (vc) begin
                 if (!arrancado) lat_cnt <= lat_cnt + 1'b1;   // tragarse la latencia
                 else begin
-                    if (es_borde && interior && cnt[dir] != {CW{1'b1}}) begin
-                        cnt[dir] <= cnt[dir] + 1'b1;         // satura, no envuelve
-                        n_bordes <= n_bordes + 11'd1;
-                    end
+                    // LA POSICION AVANZA SIEMPRE, tambien mientras el clasificador trabaja.
+                    // Estaba dentro del `!listo`, o sea que los ciclos de clasificacion
+                    // paraban el raster y el cuadro siguiente entraba corrido. Con entrada
+                    // rala -la del reductor 448->28- el desfase era de una o dos muestras por
+                    // cuadro y el sistema aun acertaba nueve de cada diez; con entrada densa
+                    // se derrumbaba. Medido el 23-sep: con huecos de 512 ciclos el histograma
+                    // salia exacto 32/32, con huecos de 256 -los que da el reductor de verdad-
+                    // solo 2/32. El clasificador tarda unos 410 ciclos; el umbral estaba ahi.
                     if (cx == W-1) begin
                         cx <= 0;
                         cy <= (cy == H-1) ? 0 : cy + 1'b1;
                     end else cx <= cx + 1'b1;
                     if (ult_pix) begin frame_done <= 1'b1; listo <= 1'b1; end   // arranca el clasificador y congela
+                    // `!clr` para que el borrado gane si coinciden: si no, la puesta a cero
+                    // y el incremento se pelean y una casilla queda en 1 en vez de en 0.
+                    if (!listo && !clr) begin
+                        if (es_borde && interior && cnt[dir] != {CW{1'b1}}) begin
+                            cnt[dir] <= cnt[dir] + 1'b1;     // satura, no envuelve
+                            n_bordes <= n_bordes + 11'd1;
+                        end
+                    end
                 end
             end
         end
