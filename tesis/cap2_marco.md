@@ -433,6 +433,11 @@ alimentación, y comparó cada imagen devuelta con la calculada en software:
 | Potencia a 1,8 V, 100 MHz, SPI a 9 MHz | **2,87 mW** |
 | A 1,3 V, según su propia figura | sigue exacta a 346 514 píxeles/s, con ≈ 1,3 mW |
 
+![**Figura 2.2.** El chip de Maldonado, medido: potencia (rojo) y frecuencia de SPI más alta con la
+imagen todavía exacta (azul) frente a la tensión de alimentación, en modo gris y con el chip a 100 MHz.
+Sobre cada punto, el caudal alcanzado. Gráfica de la autora, tomada de su repositorio (licencia
+Apache 2.0).](figuras/fig_2_2_silicio_diana.png)
+
 El caudal lo fija el bus: una palabra de 24 bits por píxel, así que la frecuencia del SPI dividida entre 24
 predice las cifras medidas. En modo Sobel entran tres palabras por píxel de salida; por cuenta —no por
 medida— eso deja el caudal en un tercio.
@@ -471,7 +476,15 @@ trabajo extiende cada píxel con un cero antes de restar (`{1'b0, pix}`) y no ti
 El error no aparece en su modo gris —el que midió a fondo— y la imagen de diferencias que ella misma
 registró en modo Sobel sí muestra marcas que éste predice, pero también diferencias mayores que éste no
 explica. Esa comparación se hizo entre dos ficheros JPEG, y la compresión basta para que dos imágenes
-iguales no coincidan. **No es un reparo al chip, sino al instrumento**: una comparación que no puede dar
+iguales no coincidan. La Figura 2.3 pone las dos
+imágenes lado a lado.
+
+![**Figura 2.3.** El error de signo, hecho visible sobre `monarch`. (a) La diferencia entre el chip y el
+software que registró Maldonado. (b) La que predice el error de signo, simulada: el círculo de abajo a la
+derecha y las manchas de arriba aparecen también en (a). (c) El Sobel correcto, para comparar: casi todo
+lo que se ve en (a) son los bordes mismos, y eso ya no lo explica el signo.](figuras/fig_2_3_signo_diana.png)
+
+**No es un reparo al chip, sino al instrumento**: una comparación que no puede dar
 cero no puede distinguir un error de una pérdida de compresión. Es la razón por la que en este trabajo
 todo se juzga **bit a bit contra el modelo golden**, sin imágenes intermedias y sin mirar.
 
