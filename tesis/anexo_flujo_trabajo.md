@@ -2,7 +2,7 @@
 
 > Si el Anexo E describe **con qué** se trabaja, éste describe **en qué orden**. Recorre el camino
 > completo, desde el primer fichero Verilog hasta comprobar que el circuito enviado a fabricación se
-> comporta como el simulado. Sigue el procedimiento documentado por J. Ruiz (ref. 48), que es el que
+> comporta como el simulado. Sigue el procedimiento documentado por J. Ruiz (ref. 49), que es el que
 > se adoptó en este trabajo, y anota en cada paso lo que la experiencia posterior añadió.
 
 ## F.1 Compilación y simulación del RTL

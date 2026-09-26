@@ -7,7 +7,8 @@
 > de bus y el que fundó el diseño estructurado— se añadieron al documentar el linaje del SoC en la §4.5. El total son **49 entradas sin
 > duplicados**, contando las dos guías de instalación del entorno que documenta la §3.7.
 > Después se añadieron **siete** más, tomadas de la propuesta de este trabajo (la propuesta,
-> cinco antecedentes y la Estrategia Nacional Digital); con ellas son **56**.
+> cinco antecedentes y la Estrategia Nacional Digital), y la de Chow (1970), que citaba sólo la §5.6;
+> con ellas son **57**.
 >
 > Las marcadas con **✓** tienen volumen, número, páginas y año comprobados contra la fuente. Las
 > demás son programas, kits de diseño, hojas de datos o repositorios, que se citan por su
@@ -64,55 +65,56 @@
 ## Reconocimiento y clasificación de patrones
 
 29. **✓** M.-K. Hu, «Visual Pattern Recognition by Moment Invariants», *IRE Transactions on Information Theory*, vol. 8, n.º 2, pp. 179–187, 1962.
-30. **✓** Y. LeCun, L. Bottou, Y. Bengio y P. Haffner, «Gradient-Based Learning Applied to Document Recognition», *Proceedings of the IEEE*, vol. 86, n.º 11, pp. 2278–2324, 1998. — el conjunto MNIST.
-31. G. Csurka, C. Dance, L. Fan, J. Willamowski y C. Bray, «Visual Categorization with Bags of Keypoints», *ECCV Workshop on Statistical Learning in Computer Vision*, 2004. — el *bag of visual words* original.
-32. **✓** D. G. Lowe, «Distinctive Image Features from Scale-Invariant Keypoints», *International Journal of Computer Vision*, vol. 60, n.º 2, pp. 91–110, 2004.
-33. **✓** N. Dalal y B. Triggs, «Histograms of Oriented Gradients for Human Detection», *IEEE Conference on Computer Vision and Pattern Recognition (CVPR)*, vol. 1, pp. 886–893, 2005.
-34. **✓** S. Lazebnik, C. Schmid y J. Ponce, «Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories», *IEEE CVPR*, vol. 2, pp. 2169–2178, 2006.
-35. F. Pedregosa *et al.*, «Scikit-learn: Machine Learning in Python», *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011. https://scikit-learn.org
+30. C. K. Chow, «On Optimum Recognition Error and Reject Tradeoff», *IEEE Transactions on Information Theory*, vol. 16, n.º 1, pp. 41–46, ene. 1970. — El fundamento de la opción de rechazo del reconocedor (§5.6).
+31. **✓** Y. LeCun, L. Bottou, Y. Bengio y P. Haffner, «Gradient-Based Learning Applied to Document Recognition», *Proceedings of the IEEE*, vol. 86, n.º 11, pp. 2278–2324, 1998. — el conjunto MNIST.
+32. G. Csurka, C. Dance, L. Fan, J. Willamowski y C. Bray, «Visual Categorization with Bags of Keypoints», *ECCV Workshop on Statistical Learning in Computer Vision*, 2004. — el *bag of visual words* original.
+33. **✓** D. G. Lowe, «Distinctive Image Features from Scale-Invariant Keypoints», *International Journal of Computer Vision*, vol. 60, n.º 2, pp. 91–110, 2004.
+34. **✓** N. Dalal y B. Triggs, «Histograms of Oriented Gradients for Human Detection», *IEEE Conference on Computer Vision and Pattern Recognition (CVPR)*, vol. 1, pp. 886–893, 2005.
+35. **✓** S. Lazebnik, C. Schmid y J. Ponce, «Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories», *IEEE CVPR*, vol. 2, pp. 2169–2178, 2006.
+36. F. Pedregosa *et al.*, «Scikit-learn: Machine Learning in Python», *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011. https://scikit-learn.org
 
 ## Aceleradores de redes neuronales
 
-36. **✓** Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *International Symposium on Computer Architecture (ISCA)*, 2016. ▸ Existe un artículo homónimo en ISSCC 2016 sobre el mismo sistema; el que desarrolla el argumento sobre el flujo de datos es el de ISCA.
-37. **✓** V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017.
+37. **✓** Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *International Symposium on Computer Architecture (ISCA)*, 2016. ▸ Existe un artículo homónimo en ISSCC 2016 sobre el mismo sistema; el que desarrolla el argumento sobre el flujo de datos es el de ISCA.
+38. **✓** V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017.
 
 ## Periféricos
 
-38. OmniVision, *OV7670 CMOS VGA Image Sensor — Datasheet* (protocolo SCCB, salida YUV/RGB).
-39. ILITEK, *ILI9341 — a-Si TFT LCD Single Chip Driver, 240×320 — Datasheet* (interfaz SPI); módulo PMOD-TFTLCD v1.1.
+39. OmniVision, *OV7670 CMOS VGA Image Sensor — Datasheet* (protocolo SCCB, salida YUV/RGB).
+40. ILITEK, *ILI9341 — a-Si TFT LCD Single Chip Driver, 240×320 — Datasheet* (interfaz SPI); módulo PMOD-TFTLCD v1.1.
 
 ## Verificación y modelo de referencia
 
-40. S. Williams, *Icarus Verilog* (`iverilog`, `vvp`). https://github.com/steveicarus/iverilog
-41. T. Bybell, *GTKWave* — visor de formas de onda. https://gtkwave.sourceforge.net
-42. C. R. Harris *et al.*, «Array programming with NumPy», *Nature*, vol. 585, pp. 357–362, 2020. https://numpy.org
-43. P. Virtanen *et al.*, «SciPy 1.0: fundamental algorithms for scientific computing in Python», *Nature Methods*, vol. 17, pp. 261–272, 2020. https://scipy.org
-44. J. D. Hunter, «Matplotlib: A 2D Graphics Environment», *Computing in Science & Engineering*, vol. 9, n.º 3, pp. 90–95, 2007. https://matplotlib.org
-45. S. van der Walt *et al.*, «scikit-image: image processing in Python», *PeerJ*, vol. 2, e453, 2014. https://scikit-image.org
+41. S. Williams, *Icarus Verilog* (`iverilog`, `vvp`). https://github.com/steveicarus/iverilog
+42. T. Bybell, *GTKWave* — visor de formas de onda. https://gtkwave.sourceforge.net
+43. C. R. Harris *et al.*, «Array programming with NumPy», *Nature*, vol. 585, pp. 357–362, 2020. https://numpy.org
+44. P. Virtanen *et al.*, «SciPy 1.0: fundamental algorithms for scientific computing in Python», *Nature Methods*, vol. 17, pp. 261–272, 2020. https://scipy.org
+45. J. D. Hunter, «Matplotlib: A 2D Graphics Environment», *Computing in Science & Engineering*, vol. 9, n.º 3, pp. 90–95, 2007. https://matplotlib.org
+46. S. van der Walt *et al.*, «scikit-image: image processing in Python», *PeerJ*, vol. 2, e453, 2014. https://scikit-image.org
 
 ## Trabajos de comparación
 
-46. Diana Natali Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Chip fabricado y medido; es el antecedente directo de este trabajo (§2.9). https://github.com/DianaNatali/tt06_grayscale_sobel
-47. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. https://github.com/kayaleitner/FPGA_MNIST ▸ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
+47. Diana Natali Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Chip fabricado y medido; es el antecedente directo de este trabajo (§2.9). https://github.com/DianaNatali/tt06_grayscale_sobel
+48. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. https://github.com/kayaleitner/FPGA_MNIST ▸ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
 
 ---
 
 ## Documentación de instalación del entorno
 
-48. J. Ruiz, *RepoFinal* — manual de instalación del flujo ASIC y material del trabajo de grado. https://github.com/JohanRuiz05/RepoFinal
-49. C. I. Camargo Bareño, *VLSI* — notas y guía de instalación de la asignatura, Universidad Nacional de Colombia. https://github.com/cicamargoba/VLSI
+49. J. Ruiz, *RepoFinal* — manual de instalación del flujo ASIC y material del trabajo de grado. https://github.com/JohanRuiz05/RepoFinal
+50. C. I. Camargo Bareño, *VLSI* — notas y guía de instalación de la asignatura, Universidad Nacional de Colombia. https://github.com/cicamargoba/VLSI
 
 ## La propuesta y los antecedentes en Colombia
 
 Tomadas de la propuesta de este trabajo; **no cotejadas con la fuente**.
 
-50. V. A. Martínez Solarte, *Diseño de un microcontrolador con arquitectura RISC-V*, propuesta de trabajo final de Maestría en Ingeniería Electrónica (perfil profundización), director C. I. Camargo Bareño, Universidad Nacional de Colombia, 2025.
-51. G. Roque R., *Desarrollo de arquitectura tipo RISC para sistemas embebidos*, tesis de maestría, Pontificia Universidad Javeriana, 2010.
-52. J. A. Duque R., *Metodología integral para el emprendimiento basado en sistemas embebidos digitales en Colombia*, Universidad Nacional de Colombia, 2018.
-53. D. L. Ruiz P., *Desarrollo de una estrategia pedagógica para la enseñanza de arquitecturas microprocesadas con base al núcleo RISC-V Core101*, Universidad de los Andes, 2020.
-54. J. F. Camacho O., *Uso de herramientas libres para diseñar un sistema de monitoreo de variables físicas de bajo costo basado en sistemas embebidos*, Universidad Nacional de Colombia, 2020.
-55. J. A. Aponte M., *Design of Fault Tolerant Embedded Systems using Approximate Computing Techniques*, Universidad Nacional de Colombia, 2023.
-56. O. M. Lizcano *et al.*, *Estrategia Nacional Digital de Colombia 2023-2026*, cartel, Gobierno de Colombia, 2023. ▸ La propuesta la transcribe con los autores incompletos; se cita por su título.
+51. V. A. Martínez Solarte, *Diseño de un microcontrolador con arquitectura RISC-V*, propuesta de trabajo final de Maestría en Ingeniería Electrónica (perfil profundización), director C. I. Camargo Bareño, Universidad Nacional de Colombia, 2025.
+52. G. Roque R., *Desarrollo de arquitectura tipo RISC para sistemas embebidos*, tesis de maestría, Pontificia Universidad Javeriana, 2010.
+53. J. A. Duque R., *Metodología integral para el emprendimiento basado en sistemas embebidos digitales en Colombia*, Universidad Nacional de Colombia, 2018.
+54. D. L. Ruiz P., *Desarrollo de una estrategia pedagógica para la enseñanza de arquitecturas microprocesadas con base al núcleo RISC-V Core101*, Universidad de los Andes, 2020.
+55. J. F. Camacho O., *Uso de herramientas libres para diseñar un sistema de monitoreo de variables físicas de bajo costo basado en sistemas embebidos*, Universidad Nacional de Colombia, 2020.
+56. J. A. Aponte M., *Design of Fault Tolerant Embedded Systems using Approximate Computing Techniques*, Universidad Nacional de Colombia, 2023.
+57. O. M. Lizcano *et al.*, *Estrategia Nacional Digital de Colombia 2023-2026*, cartel, Gobierno de Colombia, 2023. ▸ La propuesta la transcribe con los autores incompletos; se cita por su título.
 
 ## Nota sobre el cotejo
 

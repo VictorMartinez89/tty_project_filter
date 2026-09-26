@@ -163,8 +163,8 @@ trivial: unas se piden al gestor de paquetes en un minuto, otras se compilan des
 con una docena larga de dependencias, y las más complejas llegan dentro de un contenedor porque
 instalarlas a mano en versiones compatibles es precisamente el problema que el contenedor resuelve.
 **El Anexo E recorre la instalación de cada una**, tomando como punto de partida la documentación del
-propio grupo: el manual del flujo ASIC mantenido por J. Ruiz (ref. 48) y las notas de la asignatura de
-VLSI del director de este trabajo (ref. 49).
+propio grupo: el manual del flujo ASIC mantenido por J. Ruiz (ref. 49) y las notas de la asignatura de
+VLSI del director de este trabajo (ref. 50).
 
 Conviene adelantar aquí una diferencia que el anexo desarrolla, porque explica el reparto entre las
 dos máquinas. **Ambas guías suponen una máquina con procesador x86-64, y este trabajo se hizo sobre

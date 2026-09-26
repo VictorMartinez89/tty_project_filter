@@ -404,12 +404,3 @@ pide un 110,7 % del área y la recortada, al 80,3 %, se queda sin sitio para los
 sky130 (SKY26d) ocupa el 42 % de 8×2 tiles, con DRC, LVS y antenas en cero y el temporizado limpio en
 las tres esquinas de proceso (repositorio `tt_mnist_canny_v2_vic`, ejecución 36048035078). No se ha
 enviado a fabricar.
-
----
-
-## Referencias de la sección
-
-- Chow, C. K. (1970). *On Optimum Recognition Error and Reject Tradeoff.* IEEE Trans. Inf. Theory, 16(1), 41-46.
-- Dalal, N. y Triggs, B. (2005). *Histograms of Oriented Gradients for Human Detection.* CVPR, 886-893.
-- Lazebnik, S., Schmid, C. y Ponce, J. (2006). *Beyond Bags of Features: Spatial Pyramid Matching.* CVPR, 2169-2178.
-- Lowe, D. G. (2004). *Distinctive Image Features from Scale-Invariant Keypoints.* IJCV, 60(2), 91-110.

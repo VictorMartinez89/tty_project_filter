@@ -2,8 +2,8 @@
 
 > Este anexo describe cómo se montó el entorno con el que se obtuvieron todos los resultados de
 > silicio de este trabajo. **No reproduce las órdenes**: para eso están las dos guías del grupo de las
-> que parte —el manual del flujo ASIC de J. Ruiz (ref. 48) y las notas de la asignatura de VLSI del
-> director (ref. 49)—. Lo que aquí se describe es qué hace cada paso, qué necesita y dónde falla,
+> que parte —el manual del flujo ASIC de J. Ruiz (ref. 49) y las notas de la asignatura de VLSI del
+> director (ref. 50)—. Lo que aquí se describe es qué hace cada paso, qué necesita y dónde falla,
 > que es lo que esas guías no pueden decir porque suponen que todo saldrá bien.
 >
 > El orden es el de la documentación de partida. Se conserva a propósito: **las dependencias siguen
@@ -345,7 +345,7 @@ original— tiene dónde aparecer.
 
 Este trabajo no llegó a explotar ese paso, porque ninguno de sus circuitos ha sido fabricado todavía.
 Se documenta aquí porque el entorno queda montado para hacerlo, y porque la documentación de partida
-(ref. 48) recoge tres defectos en las interfaces serie del procesador que se localizaron exactamente
+(ref. 49) recoge tres defectos en las interfaces serie del procesador que se localizaron exactamente
 por esta vía: dos de ellos quedaban ocultos al simular contra los modelos de las memorias, y sólo
 aparecieron al comparar esa simulación con el comportamiento del dispositivo físico. **Es un ejemplo
 del mismo principio que atraviesa el capítulo 3: un modelo que no puede fallar no está verificando
