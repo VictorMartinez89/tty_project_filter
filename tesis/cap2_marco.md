@@ -206,10 +206,11 @@ Dos trabajos del mismo grupo de investigación sirven de referencia directa.
 
 El primero implementa conversión a escala de grises y filtrado de Sobel sobre sky130, llevado a
 fabricación mediante Tiny Tapeout, con verificación en cocotb y una interfaz serie. Emplea la misma
-expresión del gradiente que este trabajo, `|Gx|+|Gy|`, de modo que **en Sobel puro ambas
-implementaciones son equivalentes**. La diferencia es de alcance —aquí hay procesador, tres filtros
+expresión del gradiente que este trabajo, `|Gx|+|Gy|`, aunque no la misma aritmética: la §2.9 lo
+detalla. La diferencia es de alcance —aquí hay procesador, tres filtros
 seleccionables, cadena completa con cámara y pantalla, y un clasificador— y **no de calidad**.
-Constituye una referencia inicial, no una base que este trabajo extienda.
+Constituye una referencia inicial, no una base que este trabajo extienda. Por ser el antecedente directo, se
+analiza aparte en la §2.9.
 
 El segundo implementa un SoC basado en FemtoRV32 con memorias externas, también sobre Tiny Tapeout, y
 sirve de punto de comparación para el subsistema de procesamiento.
@@ -318,9 +319,148 @@ comparación de una colección de implementaciones.
 
 ---
 
+## 2.9 El antecedente directo: el chip de escala de grises y Sobel de Diana Maldonado
+
+El punto de partida de este trabajo no es un artículo sino un chip. Diana Natali Maldonado Ramírez,
+del mismo grupo de investigación de la Universidad Nacional de Colombia, diseñó un conversor a escala de
+grises con filtro de Sobel, lo llevó a silicio en la lanzadera **Tiny Tapeout 06** (sky130) y **lo midió
+fabricado** [Maldonado Ramírez 2024]. Su repositorio, `tt06_grayscale_sobel`, contiene el RTL, el banco
+de pruebas, los registros del flujo físico y las mediciones de laboratorio. Esta sección lo resume a partir
+de esas fuentes, que se leyeron y se ejecutaron el 26 de septiembre de 2026, y lo compara con el trabajo
+presente.
+
+### Qué hace
+
+El chip recibe una imagen en color por **SPI**, un píxel RGB de 24 bits por palabra, y devuelve por el
+mismo bus el píxel procesado. Dos pines eligen uno de cuatro modos: **gris**, **Sobel**, **gris y luego
+Sobel**, o **paso directo**, lo que permite probar cada bloque por separado. Tiene además un **LFSR de
+autoprueba**, que genera píxeles pseudoaleatorios dentro del chip para medir la lógica sin el cuello de
+botella del bus, y **sincronizadores** para el reinicio y las señales que llegan de afuera sin relación con
+el reloj.
+
+```
+  host ──SPI──▷ gray_scale_core ──▷ sobel_control ──▷ sobel_core ──▷ SPI ──▷ host
+  (RGB 24 b)     (gris, 8 b)          (ventana 3×3)      (|Gx|+|Gy|)       (8 b)
+
+  el modo (2 pines) elige: gris · Sobel · gris y Sobel · paso directo
+  el LFSR de autoprueba puede reemplazar al host como fuente de píxeles
+```
+
+Ocupa **1×2 tiles**: 0,036 mm² de dado, **2 104 celdas** tras la síntesis y 2 183 tras el emplazamiento
+—310 de ellas biestables—, con DRC, LVS y antenas en cero.
+
+### El código
+
+El estilo es el mismo que adopta este trabajo: **nada de multiplicadores**. La luminancia
+`0,299 R + 0,587 G + 0,114 B` se aproxima con desplazamientos y sumas:
+
+```systemverilog
+// gray_scale_core.sv
+out_px_gray_o <= (red>>2)+(red>>5)+(green>>1)+(green>>4)+(blue>>4)+(blue>>5);
+//                0,28125·R         0,5625·G           0,09375·B
+```
+
+y el gradiente es la norma L1 con saturación, escrita con restas y un desplazamiento:
+
+```systemverilog
+// sobel_core.sv
+assign x_grad = (v0.pix2 - v0.pix0) + ((v1.pix2 - v1.pix0) << 1) + (v2.pix2 - v2.pix0);
+assign y_grad = (v2.pix0 - v0.pix0) + ((v2.pix1 - v0.pix1) << 1) + (v2.pix2 - v0.pix2);
+assign sum_xy_grad = |x_grad| + |y_grad|;                        // (se abrevia el valor absoluto)
+assign out_sobel_core_o = (sum_xy_grad > 255) ? 255 : sum_xy_grad;
+```
+
+### El algoritmo
+
+Con la notación de la §4.4:
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 0   Gris + Sobel de Maldonado (TT06)
+──────────────────────────────────────────────────────────────────────
+ GRAY_SOBEL(palabra SPI de 24 bits, modo)
+ ▷ etapa 1 — gris, un registro
+ 1.  y ← (R≫2)+(R≫5) + (G≫1)+(G≫4) + (B≫4)+(B≫5)    ▷ blanco puro da 234, no 255
+ ▷ etapa 2 — la ventana la arma el HOST, no el chip
+ 2.  si es la primera ventana:  w₀₀…w₂₂ ← 9 píxeles recibidos, uno por palabra
+ 3.  si no:                     w₀ ← w₁ ;  w₁ ← w₂ ;  w₂ ← 3 píxeles nuevos
+ ▷ etapa 3 — gradiente, combinacional
+ 4.  Gx ≔ (w₀₂−w₀₀) + 2(w₁₂−w₁₀) + (w₂₂−w₂₀)
+ 5.  Gy ≔ (w₂₀−w₀₀) + 2(w₂₁−w₀₁) + (w₂₂−w₀₂)
+ 6.  mag ← mín(|Gx|+|Gy|, 255)                       ▷ sale la magnitud: no hay umbral
+ 7.  por cada píxel de salida entran 3 palabras SPI (9 en la primera ventana)
+──────────────────────────────────────────────────────────────────────
+```
+
+La diferencia estructural con el Algoritmo 1 de este trabajo está en la línea 2: **no hay búfer de
+líneas**. El chip no guarda ninguna fila de la imagen; es el host el que la tiene entera en memoria y le
+reenvía, para cada píxel de salida, la columna nueva de la ventana. Esa decisión es la que le permite caber
+en dos tiles, y es también la que fija su caudal.
+
+### Lo que midió en silicio
+
+Con una Raspberry Pi como host, Maldonado barrió la frecuencia del chip, la del bus y la tensión de
+alimentación, y comparó cada imagen devuelta con la calculada en software:
+
+| Medición (modo gris, imagen de 320×240) | Resultado |
+|---|---|
+| Caudal más alto con la imagen **idéntica** a la de software | **371 662 píxeles/s** (reloj del chip 100 MHz, SPI 9,8 MHz, 1,8 V) |
+| Potencia a 1,8 V, 100 MHz, SPI a 9 MHz | **2,87 mW** |
+| A 1,3 V, según su propia figura | sigue exacta a 346 514 píxeles/s, con ≈ 1,3 mW |
+
+El caudal lo fija el bus: una palabra de 24 bits por píxel, así que la frecuencia del SPI dividida entre 24
+predice las cifras medidas. En modo Sobel entran tres palabras por píxel de salida; por cuenta —no por
+medida— eso deja el caudal en un tercio.
+
+### Ventajas y desventajas, frente a este trabajo
+
+| | Maldonado (TT06) | Este trabajo |
+|---|---|---|
+| **Silicio** | **fabricado y medido** | 17 chips con GDS firmado, **ninguno fabricado todavía** |
+| Área del chip Sobel | **2 183 celdas**, 0,036 mm² (con gris, SPI y LFSR) | 5 823 celdas, 0,167 mm² (con un búfer de líneas para 60 píxeles de ancho) |
+| Memoria de imagen | **ninguna en el chip**: la tiene el host | búferes de líneas: dominan el área |
+| Entrada | imagen previa por SPI, 3 palabras por píxel | **flujo de cámara**, 1 píxel por ciclo |
+| Salida | magnitud de 8 bits | borde (con umbral), y con Canny, octante y clase |
+| Filtros | Sobel | Sobel, Canny de un salto, Canny transitivo, y un clasificador |
+| Autoprueba | **LFSR en el chip** | no la hay |
+| Verificación | cocotb, **por inspección visual** de la imagen | comparación **bit a bit** contra un modelo golden |
+
+Las dos columnas no compiten: responden preguntas distintas. La de Maldonado es **cuánto cuesta el
+filtro solo, y si el silicio hace lo que dice**; su respuesta —dos tiles, milivatios, imagen exacta a
+cientos de miles de píxeles por segundo— es la única medición física de toda esta línea de trabajo. La de
+éste es **qué pasa cuando el filtro tiene que vivir en un sistema**: con cámara, con memoria y con una
+decisión aguas abajo. Y la respuesta que da el Capítulo 5 es que entonces **lo caro deja de ser el
+filtro y pasa a ser la memoria**, que es exactamente lo que el diseño de Maldonado había dejado fuera del
+chip.
+
+### Una observación de verificación
+
+Al simular `sobel_core` con Icarus Verilog aparece un detalle que conviene dejar escrito, porque ilustra
+la regla metodológica de la §3.3. La ventana declara los píxeles como `logic signed [7:0]`, de modo que un
+gris mayor que 127 se lee como negativo: 200 entra como −56. Mientras los nueve píxeles caen del mismo
+lado de 128, la resta da lo mismo; cuando una ventana **cruza** ese valor, el gradiente se deforma. Un
+escalón suave de 120 a 140, que debería dar 80, da 255, y uno de 0 a 200 da 224 en lugar de saturar. Sobre
+la mariposa de sus propias pruebas afecta al **8,8 %** de los píxeles de salida. El núcleo de este
+trabajo extiende cada píxel con un cero antes de restar (`{1'b0, pix}`) y no tiene el problema.
+
+El error no aparece en su modo gris —el que midió a fondo— y la imagen de diferencias que ella misma
+registró en modo Sobel sí muestra marcas que éste predice, pero también diferencias mayores que éste no
+explica. Esa comparación se hizo entre dos ficheros JPEG, y la compresión basta para que dos imágenes
+iguales no coincidan. **No es un reparo al chip, sino al instrumento**: una comparación que no puede dar
+cero no puede distinguir un error de una pérdida de compresión. Es la razón por la que en este trabajo
+todo se juzga **bit a bit contra el modelo golden**, sin imágenes intermedias y sin mirar.
+
+### Qué toma este trabajo de él
+
+El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
+(`flower`, `monarch`, `butterfly`), que atraviesan todo el Capítulo 5; la norma L1 con saturación como
+magnitud; y, para Tiny Tapeout, la lección de **serializar la entrada y la salida** para ahorrar pines y área. Lo
+que agrega es lo que Maldonado dejó conscientemente fuera: la cámara, la memoria de líneas, el procesador y
+el reconocimiento.
+
 ## Referencias citadas en este capítulo
 
-**Las dieciocho se verificaron contra la fuente el 21 de septiembre de 2026.** Volumen, número y
+**Las dieciocho primeras se verificaron contra la fuente el 21 de septiembre de 2026; la de Maldonado Ramírez, el 26.** Volumen, número y
 páginas están comprobados salvo donde se indica.
 
 | Cita | Referencia |
@@ -343,6 +483,7 @@ páginas están comprobados salvo donde se indica.
 | SkyWater 2020 | SkyWater Technology y Google, *SKY130 Open Source PDK*, 2020. Primer kit de diseño de un proceso comercial publicado sin acuerdo de confidencialidad. |
 | Shalan y Edwards 2020 | M. Shalan y T. Edwards, «Building OpenLANE: A 130nm OpenROAD-based Tapeout-Proven Flow», *ICCAD*, 2020. |
 | Baischer *et al.* | L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. Documentación y código en `github.com/kayaleitner/FPGA_MNIST`. **No es una publicación revisada por pares**, y así debe citarse. |
+| Maldonado Ramírez 2024 | D. N. Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Repositorio con RTL, banco de pruebas, registros del flujo y mediciones del chip fabricado: `github.com/DianaNatali/tt06_grayscale_sobel`. **No es una publicación revisada por pares.** |
 
 ### Tres precisiones que la verificación produjo
 
