@@ -215,6 +215,24 @@ analiza aparte en la §2.9.
 El segundo implementa un SoC basado en FemtoRV32 con memorias externas, también sobre Tiny Tapeout, y
 sirve de punto de comparación para el subsistema de procesamiento.
 
+### Antecedentes en Colombia
+
+La propuesta de este trabajo reunió los antecedentes nacionales, que se resumen aquí. Roque (2010)
+diseñó e implementó un núcleo procesador de arquitectura RISC orientado a sistemas embebidos de
+propósito específico, sobre una FPGA Stratix II con herramientas de Altera [Roque 2010]. Duque (2018)
+propuso una metodología integral para el emprendimiento de base tecnológica en sistemas embebidos
+digitales en el contexto colombiano [Duque 2018]. Ruiz (2020) diseñó una estrategia pedagógica para la
+enseñanza de arquitecturas microprocesadas sobre el conjunto de instrucciones RISC-V y el núcleo
+Core101 de la Universidad de los Andes [Ruiz 2020]. Camacho (2020) construyó un sistema de adquisición
+de datos de bajo costo con herramientas libres, que combina un microprocesador y una FPGA
+[Camacho 2020]. Aponte (2023) propuso FTxAC, una estrategia que combina computación aproximada con la
+mitigación de fallos por radiación en sistemas embebidos [Aponte 2023]. Y Camargo (2025) recoge en su
+libro el diseño de sistemas digitales desde la abstracción de alto nivel hasta la implementación
+física, con procesadores *soft-core* LM32 y RISC-V sobre plataformas abiertas [Camargo 2025].
+
+Ninguno de ellos lleva un reconocedor a silicio. Ése es el hueco que ocupa este trabajo, junto con el
+antecedente directo de la §2.9.
+
 ### El reconocimiento de dígitos en FPGA, y el presupuesto en que se hace
 
 Existe una literatura abundante —académica y de la comunidad de código abierto— sobre implementación
@@ -510,7 +528,7 @@ versión. El suyo es una referencia, no un componente.
 
 ## Referencias citadas en este capítulo
 
-**Las dieciocho primeras se verificaron contra la fuente el 21 de septiembre de 2026; la de Maldonado Ramírez, el 26.** Volumen, número y
+**Las dieciocho primeras se verificaron contra la fuente el 21 de septiembre de 2026; la de Maldonado Ramírez, el 26. Las cinco de los antecedentes en Colombia se transcriben de la propuesta de junio de 2025 y no se han cotejado con la fuente.** Volumen, número y
 páginas están comprobados salvo donde se indica.
 
 | Cita | Referencia |
@@ -534,6 +552,11 @@ páginas están comprobados salvo donde se indica.
 | Shalan y Edwards 2020 | M. Shalan y T. Edwards, «Building OpenLANE: A 130nm OpenROAD-based Tapeout-Proven Flow», *ICCAD*, 2020. |
 | Baischer *et al.* | L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. Documentación y código en `github.com/kayaleitner/FPGA_MNIST`. **No es una publicación revisada por pares**, y así debe citarse. |
 | Maldonado Ramírez 2024 | D. N. Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Repositorio con RTL, banco de pruebas, registros del flujo y mediciones del chip fabricado: `github.com/DianaNatali/tt06_grayscale_sobel`. **No es una publicación revisada por pares.** |
+| Roque 2010 | G. Roque R., *Desarrollo de arquitectura tipo RISC para sistemas embebidos*, tesis de maestría en Ingeniería Electrónica, Pontificia Universidad Javeriana, 2010. |
+| Duque 2018 | J. A. Duque R., *Metodología integral para el emprendimiento basado en sistemas embebidos digitales en Colombia*, Universidad Nacional de Colombia, Facultad de Ingeniería, 2018. |
+| Ruiz 2020 | D. L. Ruiz P., *Desarrollo de una estrategia pedagógica para la enseñanza de arquitecturas microprocesadas con base al núcleo RISC-V Core101*, Universidad de los Andes, 2020. |
+| Camacho 2020 | J. F. Camacho O., *Uso de herramientas libres para diseñar un sistema de monitoreo de variables físicas de bajo costo basado en sistemas embebidos*, Universidad Nacional de Colombia, 2020. |
+| Aponte 2023 | J. A. Aponte M., *Design of Fault Tolerant Embedded Systems using Approximate Computing Techniques*, Universidad Nacional de Colombia, 2023. |
 
 ### Tres precisiones que la verificación produjo
 
