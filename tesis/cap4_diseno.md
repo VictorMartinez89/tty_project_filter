@@ -134,17 +134,18 @@ pantalla.
 
 ![**Figura 4.2.** El Sobel a 16×12 en GTKWave. Arriba, el banco de pruebas inyecta la imagen píxel a
 píxel (`in_valid`, `in_pix`) y recoge la salida (`out_valid`, `out_pix`) mientras cuenta los bordes.
-Abajo, dentro de `linebuf3x3`, las dos memorias de línea (`q_a`, `q_b`) y la ventana `w00`…`w22`, que se
-llena antes de que `out_valid` suba.](figuras/fig_4_sobel_gtkwave.png)
+Abajo, dentro de `linebuf3x3`, las dos memorias de línea (`q_a`, `q_b`) y el primer registro de la
+ventana, `w00`, que se llena antes de que `out_valid` suba.](figuras/fig_4_sobel_gtkwave.jpg)
 
 #### Simulación en Verilog: la imagen
 
-Las señales dicen cómo funciona el circuito; la imagen dice qué produce. La simulación del RTL a
-160×120, con el resultado escrito en la memoria SPRAM como en la tarjeta, se comparó píxel a píxel
-contra el modelo de referencia (§5.1).
+Las señales dicen cómo funciona el circuito; la imagen dice qué produce. El RTL se simula sobre las
+mismas imágenes que el modelo y su salida se compara píxel a píxel con la de éste (§5.1): primero el
+núcleo solo, y después la cadena completa, con una cámara OV7670 emulada en el banco de pruebas.
 
-![**Figura 4.3.** Lo que produce el RTL del Sobel, simulado en Verilog a 160×120 y escrito en la SPRAM:
-a la izquierda la entrada, a la derecha los bordes que el circuito marca.](figuras/fig_4_sobel_rtl.png)
+![**Figura 4.3.** El Sobel simulado en Verilog sobre las cinco imágenes a 60×80: la entrada, el modelo de
+referencia, el núcleo RTL —idéntico al modelo píxel a píxel— y la cadena completa con la cámara OV7670
+emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§5.1).](figuras/fig_4_sobel_rtl.png)
 
 #### En la tarjeta
 
