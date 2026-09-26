@@ -360,6 +360,26 @@ out_px_gray_o <= (red>>2)+(red>>5)+(green>>1)+(green>>4)+(blue>>4)+(blue>>5);
 //                0,28125·R         0,5625·G           0,09375·B
 ```
 
+Los tres pesos suman 0,9375 y no 1, así que el gris sale un 6,25 % más oscuro que la luminancia exacta:
+el blanco puro da 234. Cuánto se nota depende de la imagen. Medido contra `0,299 R + 0,587 G + 0,114 B`
+sobre sus tres imágenes de prueba, a 320×240:
+
+| Imagen | Error medio (niveles de gris) | Píxeles con error de 5 o menos |
+|---|---:|---:|
+| `flower` | 0,85 | 93,6 % |
+| `monarch` | 8,33 | 21,5 % |
+| `butterfly` | 9,82 | 14,0 % |
+
+La primera cifra es la que se había anotado en el cuaderno de trabajo, y es engañosa si se lee sola:
+`flower` es casi toda negra, y en el negro la ganancia no pesa. Pero el error es **de ganancia y no de
+forma**: escala todos los gradientes por el mismo factor, de modo que para detectar bordes basta con
+ajustar el umbral en esa proporción.
+
+![**Figura 2.1.** La conversión a gris de Maldonado sobre `flower`: la imagen original, el gris con
+desplazamientos y sumas, y la luminancia exacta con multiplicaciones. A simple vista son iguales, pero es
+el caso más favorable de los tres: sobre las mariposas, que son claras, el error medio es diez veces
+mayor.](figuras/fig_2_1_gris_diana.jpg)
+
 y el gradiente es la norma L1 con saturación, escrita con restas y un desplazamiento:
 
 ```systemverilog
@@ -455,8 +475,20 @@ todo se juzga **bit a bit contra el modelo golden**, sin imágenes intermedias y
 El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
 (`flower`, `monarch`, `butterfly`), que atraviesan todo el Capítulo 5; la norma L1 con saturación como
 magnitud; y, para Tiny Tapeout, la lección de **serializar la entrada y la salida** para ahorrar pines y área. Lo
-que agrega es lo que Maldonado dejó conscientemente fuera: la cámara, la memoria de líneas, el procesador y
-el reconocimiento.
+que agrega es lo que Maldonado dejó conscientemente fuera:
+
+- **el control programable**: el FemtoRV32 escribe el modo y los umbrales en vivo, a través del
+  periférico `0x0045` (§4.5);
+- **el motor de histéresis transitiva**, la reconstrucción morfológica de punto fijo, que es el filtro
+  que de verdad cuesta;
+- **la cadena cámara → filtro → memoria → pantalla**, funcionando y fotografiada en una iCE40UP5K;
+- **el co-diseño medido**: el Canny transitivo no cabía junto al procesador —127 % de ocupación— y por
+  eso su motor pasó a hardware (§5.2);
+- y **el reconocimiento de dígitos**, del borde al número (§5.6).
+
+Conviene decirlo con la misma precisión en la otra dirección: el bloque de Maldonado no se reutiliza
+dentro de ningún diseño de este trabajo. El periférico del SoC envuelve núcleos propios desde su primera
+versión. El suyo es una referencia, no un componente.
 
 ## Referencias citadas en este capítulo
 
