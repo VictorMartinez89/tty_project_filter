@@ -8,16 +8,20 @@ sola causa.
 
 ## 5.4.1 La tabla maestra
 
-| # | Chip | Filtro | CPU | Área (mm²) | Celdas | Reloj de firma | Setup c/parásitos | DRC | LVS | XOR |
-|---|---|---|:-:|---:|---:|---:|---:|:-:|:-:|:-:|
-| #1 | `sobel_completo` ᵃ | Sobel | — | 2,45 | 36 730 | 20 ns (50,0 MHz) | sin dato ᵇ | 0 | 0 | 0 |
-| #2 | `canny1_completo` ᵃ | Canny1 | — | 2,90 | 42 581 | 20 ns (50,0 MHz) | sin dato ᵇ | 0 | 0 | 0 |
-| #3 | `trans_completo` | Transitivo | — | 9,61 | 137 092 | 20 ns (50,0 MHz) | **−19,35 ns** | 0 | 0 | 0 |
-| #4 | `soc_sobel_completo` | Sobel | ✓ | 3,03 | 46 019 | 32 ns (31,2 MHz) | **+0,00 ns** | 0 | 0 | 0 |
-| #5 | `soc_canny1_completo` | Canny1 | ✓ | 3,44 | 51 037 | 36 ns (27,8 MHz) | **+0,00 ns** | 0 | 0 | 0 |
-| #6 | `soc_trans_completo` | Transitivo | ✓ | 10,19 | 146 216 | 36 ns (27,8 MHz) | **−18,23 ns** | 0 | 0 | 0 |
+| # | Diseño | Área (mm²) | Celdas | Reloj de firma | Setup con parásitos | DRC · LVS · XOR |
+|---|--------------------|--------:|--------:|------------------:|-------------:|:------------:|
+| #1 | Sobel ᵃ | 2,45 | 36 730 | 20 ns · 50,0 MHz | sin dato ᵇ | 0 · 0 · 0 |
+| #2 | Canny1 ᵃ | 2,90 | 42 581 | 20 ns · 50,0 MHz | sin dato ᵇ | 0 · 0 · 0 |
+| #3 | Transitivo | 9,61 | 137 092 | 20 ns · 50,0 MHz | **−19,35 ns** | 0 · 0 · 0 |
+| #4 | SoC + Sobel | 3,03 | 46 019 | 32 ns · 31,2 MHz | **+0,00 ns** | 0 · 0 · 0 |
+| #5 | SoC + Canny1 | 3,44 | 51 037 | 36 ns · 27,8 MHz | **+0,00 ns** | 0 · 0 · 0 |
+| #6 | SoC + Transitivo | 10,19 | 146 216 | 36 ns · 27,8 MHz | **−18,23 ns** | 0 · 0 · 0 |
 
 Table: Tabla maestra de la cadena de visión completa en silicio.
+
+Los seis son la cadena completa —cámara, filtro, memoria y pantalla—; los tres de abajo llevan además el
+procesador FemtoRV32. Sus directorios se llaman `sobel_completo`, `canny1_completo` y `trans_completo`,
+y `soc_sobel_completo`, `soc_canny1_completo` y `soc_trans_completo` los que llevan procesador.
 
 ᵃ Estos dos se archivaron sin el directorio de reportes; sus cifras provienen de la ficha del cuaderno
 y no de un `metrics.csv` del flujo. Se marcan porque en una tabla de resultados debe poder decirse de
