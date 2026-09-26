@@ -26,11 +26,16 @@ manuscritos, de modo que un solo camino de datos —ventana 3×3, acumulación y
 escrito a mano, uno buscado y uno aprendido.
 
 Cada núcleo se verificó bit a bit contra el modelo de referencia, se integró físicamente en una FPGA
-iCE40UP5K con cámara y pantalla, y se llevó a ASIC en sky130 mediante OpenLane. El clasificador
-alcanza 92,46 % sobre las diez mil imágenes de prueba de MNIST, cifra que el RTL reproduce sin una
-sola discrepancia, y el sistema completo —procesador, front-end Canny y clasificador— reconoce nueve
-de cada diez dígitos manuscritos captados por la cámara sobre la FPGA física, coincidiendo con lo que
-la simulación predecía.
+iCE40UP5K con cámara y pantalla, y se llevó a ASIC: diecisiete circuitos con GDSII firmado, quince en
+sky130 con OpenLane y dos en IHP SG13G2 con LibreLane. El sistema completo —procesador, front-end
+Canny y clasificador— reconoce nueve de cada diez dígitos manuscritos captados por la cámara sobre la
+FPGA física, coincidiendo con lo que la simulación predecía.
+
+Dos reconocedores llegan a silicio firmado. El de cuarenta rasgos alcanza **94,20 %** sobre las diez
+mil imágenes de prueba de MNIST y cabe en ocho por dos tiles de **Tiny Tapeout**, listo para la
+lanzadera abierta SKY26d. **Canny-78**, que elige 78 rasgos entre 128 contadores de orientación,
+alcanza **97,22 %**, reproduce el modelo en la tarjeta imagen por imagen —diez mil de diez mil— y firma
+en sky130 en 1,122 mm², o en 0,829 mm² con la memoria de rasgos recortada a lo que usa.
 
 Las mediciones muestran que el sobrecoste en área del Canny frente al Sobel cae del 123 % al 3 %
 según cuánto más haga el circuito, y que comprar robustez al umbral en el front-end cuesta unas seis
@@ -56,11 +61,16 @@ built, so that a single datapath —3×3 window, accumulation and threshold— s
 handwritten, one that is searched for, and one that is learned.
 
 Each core was verified bit-exact against the reference model, integrated physically on an iCE40UP5K
-FPGA with camera and display, and taken to ASIC in sky130 through OpenLane. The classifier reaches
-92.46 % over the full ten-thousand-image MNIST test set, a figure the RTL reproduces without a single
-discrepancy, and the complete system —processor, Canny front-end and classifier— recognises nine out
-of ten handwritten digits captured by the camera on the physical FPGA, matching what simulation had
-predicted.
+FPGA with camera and display, and taken to ASIC: seventeen signed-off GDSII layouts, fifteen in sky130
+with OpenLane and two in IHP SG13G2 with LibreLane. The complete system —processor, Canny front-end
+and classifier— recognises nine out of ten handwritten digits captured by the camera on the physical
+FPGA, matching what simulation had predicted.
+
+Two recognisers reach signed-off silicon. The forty-feature one reaches **94.20 %** over the full
+ten-thousand-image MNIST test set and fits in eight by two **Tiny Tapeout** tiles, ready for the
+SKY26d open shuttle. **Canny-78**, which selects 78 features out of 128 orientation counters, reaches
+**97.22 %**, reproduces the model on the board image by image —ten thousand out of ten thousand— and
+signs off in sky130 at 1.122 mm², or 0.829 mm² with its feature memory trimmed to what it uses.
 
 Measurements show that the Canny's area overhead against the Sobel falls from 123 % to 3 % depending
 on how much more the circuit does, and that buying threshold robustness in the front-end costs about
