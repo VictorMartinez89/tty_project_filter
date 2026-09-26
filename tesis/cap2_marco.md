@@ -329,14 +329,6 @@ Esa condición de igualdad —mismo sistema, misma resolución, mismo flujo, mis
 es lo que permite atribuir cada diferencia medida a una causa concreta, y es lo que distingue una
 comparación de una colección de implementaciones.
 
-> **Sobre el alcance de esta afirmación.** Lo anterior se apoya en una revisión no sistemática: la
-> literatura consultada sobre implementación en hardware de los operadores de Sobel y Canny es
-> predominantemente de FPGA, y las fuentes citadas documentan la apertura del kit y su adopción. **No
-> se ha realizado un recuento de publicaciones**, y por eso el texto evita la palabra «mayoría» y se
-> limita a lo que las fuentes sostienen.
-
----
-
 ### El alcance de esta revisión
 
 La revisión bibliográfica de este capítulo **no es
