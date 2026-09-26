@@ -337,6 +337,23 @@ comparación de una colección de implementaciones.
 
 ---
 
+### El alcance de esta revisión
+
+La revisión bibliográfica de este capítulo **no es
+sistemática**: no se siguió un protocolo de búsqueda reproducible, ni se acotó un conjunto de bases
+de datos, ni se aplicaron criterios de inclusión y exclusión documentados. Es una revisión
+**orientada al argumento**: se buscó aquello que sostiene o refuta las afirmaciones que el capítulo
+necesita hacer. Decirlo importa porque delimita qué puede concluirse de él —sitúa el trabajo en su
+tradición— y qué no: **no autoriza ninguna afirmación sobre la frecuencia relativa de unas prácticas
+frente a otras en la literatura.**
+
+Esa distinción tuvo una consecuencia concreta. La §2.8 afirmaba en su primera redacción que «la
+mayoría de los trabajos se detienen en FPGA», un cuantificador que **exigiría precisamente el
+recuento que esta revisión no hizo**. Se reformuló: donde había una afirmación sobre proporciones
+hay ahora una sobre condiciones de acceso, que las fuentes sí sostienen. Se deja constancia del
+cambio porque la afirmación retirada era cómoda para el argumento, y conviene que se vea que se
+retiró por no poder sostenerla y no por haber dejado de ser útil.
+
 ## 2.9 El antecedente directo: el chip de escala de grises y Sobel de Diana Maldonado
 
 El punto de partida de este trabajo no es un artículo sino un chip. Diana Natali Maldonado Ramírez,
@@ -527,73 +544,3 @@ que agrega es lo que Maldonado dejó conscientemente fuera:
 - **el co-diseño medido**: el Canny transitivo no cabía junto al procesador —127 % de ocupación— y por
   eso su motor pasó a hardware (§5.2);
 - y **el reconocimiento de dígitos**, del borde al número (§5.6).
-
-## Referencias citadas en este capítulo
-
-| Cita | Referencia |
-|---------|--------------------------------------------|
-| Hu 1962 | M.-K. Hu, «Visual Pattern Recognition by Moment Invariants», *IRE Trans. Information Theory*, vol. 8, n.º 2, pp. 179–187, 1962. |
-| Sobel y Feldman 1968 | I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», **charla en el Stanford Artificial Intelligence Laboratory**, 1968. *No es una publicación formal* (véase la nota). |
-| Prewitt 1970 | J. M. S. Prewitt, «Object Enhancement and Extraction», en B. Lipkin y A. Rosenfeld (eds.), *Picture Processing and Psychopictorics*, Academic Press, pp. 75–149, 1970. |
-| Kirsch 1971 | R. A. Kirsch, «Computer determination of the constituent structure of biological images», *Computers and Biomedical Research*, vol. 4, n.º 3, pp. 315–328, 1971. |
-| Otsu 1979 | N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Trans. Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. |
-| Mead y Conway 1980 | C. Mead y L. Conway, *Introduction to VLSI Systems*, Addison-Wesley, 1980. |
-| Canny 1986 | J. Canny, «A Computational Approach to Edge Detection», *IEEE Trans. Pattern Analysis and Machine Intelligence*, vol. PAMI-8, n.º 6, pp. 679–698, nov. 1986. |
-| Vincent 1993 | L. Vincent, «Morphological Grayscale Reconstruction in Image Analysis: Applications and Efficient Algorithms», *IEEE Trans. Image Processing*, vol. 2, n.º 2, pp. 176–201, abr. 1993. |
-| LeCun *et al.* 1998 | Y. LeCun, L. Bottou, Y. Bengio y P. Haffner, «Gradient-Based Learning Applied to Document Recognition», *Proceedings of the IEEE*, vol. 86, n.º 11, pp. 2278–2324, 1998. |
-| Lowe 2004 | D. G. Lowe, «Distinctive Image Features from Scale-Invariant Keypoints», *International Journal of Computer Vision*, vol. 60, n.º 2, pp. 91–110, 2004. |
-| Dalal y Triggs 2005 | N. Dalal y B. Triggs, «Histograms of Oriented Gradients for Human Detection», *IEEE CVPR*, vol. 1, pp. 886–893, 2005. |
-| Lazebnik *et al.* 2006 | S. Lazebnik, C. Schmid y J. Ponce, «Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories», *IEEE CVPR*, vol. 2, pp. 2169–2178, 2006. |
-| Roque 2010 | G. Roque R., *Desarrollo de arquitectura tipo RISC para sistemas embebidos*, tesis de maestría en Ingeniería Electrónica, Pontificia Universidad Javeriana, 2010. |
-| Chen *et al.* 2016 | Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *ISCA*, 2016. |
-| Sze *et al.* 2017 | V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017. |
-| Waterman y Asanović 2017 | A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: User-Level ISA, Document Version 2.2*, may. 2017. Es la edición contra la que está escrito el decodificador del núcleo empleado, que la cita en su propio código. |
-| Duque 2018 | J. A. Duque R., *Metodología integral para el emprendimiento basado en sistemas embebidos digitales en Colombia*, Universidad Nacional de Colombia, Facultad de Ingeniería, 2018. |
-| SkyWater 2020 | SkyWater Technology y Google, *SKY130 Open Source PDK*, 2020. Primer kit de diseño de un proceso comercial publicado sin acuerdo de confidencialidad. |
-| Shalan y Edwards 2020 | M. Shalan y T. Edwards, «Building OpenLANE: A 130nm OpenROAD-based Tapeout-Proven Flow», *ICCAD*, 2020. |
-| Ruiz 2020 | D. L. Ruiz P., *Desarrollo de una estrategia pedagógica para la enseñanza de arquitecturas microprocesadas con base al núcleo RISC-V Core101*, Universidad de los Andes, 2020. |
-| Camacho 2020 | J. F. Camacho O., *Uso de herramientas libres para diseñar un sistema de monitoreo de variables físicas de bajo costo basado en sistemas embebidos*, Universidad Nacional de Colombia, 2020. |
-| Aponte 2023 | J. A. Aponte M., *Design of Fault Tolerant Embedded Systems using Approximate Computing Techniques*, Universidad Nacional de Colombia, 2023. |
-| Maldonado Ramírez 2024 | Diana Natali Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Repositorio con RTL, banco de pruebas, registros del flujo y mediciones del chip fabricado: `github.com/DianaNatali/tt06_grayscale_sobel`. **No es una publicación revisada por pares.** |
-| Baischer *et al.* | L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. Documentación y código en `github.com/kayaleitner/FPGA_MNIST`. **No es una publicación revisada por pares**, y así debe citarse. |
-
-Table: Referencias citadas en el Capítulo 2.
-
-### Tres precisiones que la verificación produjo
-
-**Sobel y Feldman nunca publicaron su operador.** Fue una charla en el Stanford Artificial
-Intelligence Laboratory en 1968, descrita después por terceros —Pingle en 1969 y Duda y Hart en su
-libro de 1973—. Por eso buena parte de la literatura lo cita como «Duda y Hart 1973», o directamente
-como «el operador de Sobel» sin referencia. **Citar la charla de 1968 es correcto siempre que se
-indique que no es una publicación formal**, y conviene hacerlo explícito para que un revisor no lo
-tome por un descuido.
-
-**El artículo de Eyeriss que corresponde citar es el de ISCA 2016**, no el de ISSCC del mismo año.
-Los dos existen y describen el mismo sistema, pero el que desarrolla el argumento sobre el flujo de
-datos —que es el que la §2.6 invoca— es el de ISCA.
-
-**Otsu aparece con dos numeraciones de volumen en la literatura**, «vol. 9» y «vol. SMC-9». Ambas
-remiten al mismo artículo; se adopta la segunda por ser la que figura en el índice de la revista.
-
----
-
-> **El alcance de esta revisión, declarado.** La revisión bibliográfica de este capítulo **no es
-> sistemática**: no se siguió un protocolo de búsqueda reproducible, ni se acotó un conjunto de bases
-> de datos, ni se aplicaron criterios de inclusión y exclusión documentados. Es una revisión
-> **orientada al argumento**: se buscó aquello que sostiene o refuta las afirmaciones que el capítulo
-> necesita hacer. Decirlo importa porque delimita qué puede concluirse de él —sitúa el trabajo en su
-> tradición— y qué no: **no autoriza ninguna afirmación sobre la frecuencia relativa de unas prácticas
-> frente a otras en la literatura.**
->
-> Esa distinción tuvo una consecuencia concreta. La §2.8 afirmaba en su primera redacción que «la
-> mayoría de los trabajos se detienen en FPGA», un cuantificador que **exigiría precisamente el
-> recuento que esta revisión no hizo**. Se reformuló: donde había una afirmación sobre proporciones
-> hay ahora una sobre condiciones de acceso, que las fuentes sí sostienen. Se deja constancia del
-> cambio porque la afirmación retirada era cómoda para el argumento, y conviene que se vea que se
-> retiró por no poder sostenerla y no por haber dejado de ser útil.
->
-> **Las diecisiete citas del capítulo están verificadas contra la fuente** y cotejadas con las 36 ya
-> recopiladas: ocho obras coincidían y se fundieron conservando los datos verificados, nueve son
-> aportación de esta verificación, y el resultado son las **47 entradas sin duplicados** de
-> `bibliografia.md`. Se comprobó además, en las dos direcciones, que ninguna entrada de la tabla
-> anterior queda sin citar en el cuerpo del capítulo y ninguna cita del cuerpo queda sin entrada.

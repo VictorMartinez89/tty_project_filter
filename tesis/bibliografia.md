@@ -135,6 +135,5 @@ Otsu, Lowe, Dalal y Triggs, Chen *et al.*, Sze *et al.*, Shalan y Edwards, y Bai
 ellas sostienen afirmaciones del Capítulo 2 que antes se apoyaban únicamente en el texto.
 
 **Veintisiete de las treinta y seis no se citan en el Capítulo 2**, y eso no es un defecto: son
-programas, hojas de datos y kits de diseño que sustentan los Capítulos 3 a 5 y los anexos. Se
-verificó que **ninguna entrada de la tabla del Capítulo 2 queda sin citar en su cuerpo, y ninguna
-cita del cuerpo queda sin entrada** en la tabla.
+programas, hojas de datos y kits de diseño que sustentan los Capítulos 3 a 5 y los anexos. Todas las
+obras que el Capítulo 2 cita por autor y año figuran en esta lista.
