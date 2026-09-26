@@ -1,5 +1,5 @@
 ---
-title: "De FPGA a silicio: reconocimiento de patrones bajo restricciones duras"
+title: "Diseño de un MicroControlador con arquitectura RISC-V"
 subtitle: "Un SoC RISC-V con tres detectores de bordes y un clasificador de dígitos, del modelo de referencia al GDSII firmado"
 author: "Victor Alfonso Martinez Solarte"
 date: "Septiembre de 2026"

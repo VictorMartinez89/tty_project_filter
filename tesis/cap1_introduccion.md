@@ -1,10 +1,5 @@
 # 1. Introducción
 
-> **Estado:** borrador 1, escrito el 2026-09-21, con el título **C**:
-> *«De FPGA a silicio: reconocimiento de patrones bajo restricciones duras»*.
-> Los objetivos de la §1.4 están redactados para cerrar el círculo con las conclusiones de la §7.1;
-> si se modifican, deben modificarse ambos.
-
 ## 1.1 Contexto
 
 Un sistema que mira y decide —una cámara, un algoritmo, una respuesta— es hoy trivial de construir si
