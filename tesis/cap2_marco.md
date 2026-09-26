@@ -346,7 +346,7 @@ hay ahora una sobre condiciones de acceso, que las fuentes sí sostienen. Se dej
 cambio porque la afirmación retirada era cómoda para el argumento, y conviene que se vea que se
 retiró por no poder sostenerla y no por haber dejado de ser útil.
 
-## 2.9 El antecedente directo: el chip de escala de grises y Sobel de Diana Maldonado
+## 2.9 El antecedente directo: el filtro Sobel de Diana Natali Maldonado
 
 El punto de partida de este trabajo no es un artículo sino un chip. Diana Natali Maldonado Ramírez,
 del mismo grupo de investigación de la Universidad Nacional de Colombia, diseñó un conversor a escala de
@@ -356,7 +356,7 @@ de pruebas, los registros del flujo físico y las mediciones de laboratorio. Est
 de esas fuentes, que se leyeron y se ejecutaron para este trabajo, y lo compara con el trabajo
 presente.
 
-### Qué hace
+### Qué hace el filtro Sobel
 
 El chip recibe una imagen en color por **SPI**, un píxel RGB de 24 bits por palabra, y devuelve por el
 mismo bus el píxel procesado. Dos pines eligen uno de cuatro modos: **gris**, **Sobel**, **gris y luego
@@ -400,7 +400,7 @@ tarjeta «HOLA»—, que se usan a lo largo del Capítulo 5:
 | `hand`, la mano (este trabajo) | 137,4 | 10,97 | 0,1 % |
 | `hi`, la tarjeta «HOLA» (este trabajo) | 134,3 | 10,97 | 2,6 % |
 
-Table: Error de la conversión a gris de Maldonado frente a la luminancia exacta, sobre cinco imágenes ordenadas por brillo.
+Table: La conversión a gris de Maldonado frente a la luminancia exacta, sobre cinco imágenes ordenadas por brillo.
 
 La primera cifra es la que se había anotado en el cuaderno de trabajo, y es engañosa si se lee sola:
 `flower` es casi toda negra, y en el negro la ganancia no pesa. La tabla lo ordena por brillo, y el
@@ -446,7 +446,7 @@ Con la notación de la §4.4:
 ──────────────────────────────────────────────────────────────────────
 ```
 
-La diferencia estructural con el Algoritmo 1 de este trabajo está en la línea 2: **no hay búfer de
+La diferencia estructural con el Algoritmo 1 de este trabajo (§4.3.1) está en la línea 2: **no hay búfer de
 líneas**. El chip no guarda ninguna fila de la imagen; es el host el que la tiene entera en memoria y le
 reenvía, para cada píxel de salida, la columna nueva de la ventana. Esa decisión es la que le permite caber
 en dos tiles, y es también la que fija su caudal.
@@ -473,29 +473,6 @@ El caudal lo fija el bus: una palabra de 24 bits por píxel, así que la frecuen
 predice las cifras medidas. En modo Sobel entran tres palabras por píxel de salida; por cuenta —no por
 medida— eso deja el caudal en un tercio.
 
-### Ventajas y desventajas, frente a este trabajo
-
-| | Maldonado (TT06) | Este trabajo |
-|---|---|---|
-| **Silicio** | **fabricado y medido** | 17 chips con GDS firmado, **ninguno fabricado todavía** |
-| Área del chip Sobel | **2 183 celdas**, 0,036 mm² (con gris, SPI y LFSR) | 5 823 celdas, 0,167 mm² (con un búfer de líneas para 60 píxeles de ancho) |
-| Memoria de imagen | **ninguna en el chip**: la tiene el host | búferes de líneas: dominan el área |
-| Entrada | imagen previa por SPI, 3 palabras por píxel | **flujo de cámara**, 1 píxel por ciclo |
-| Salida | magnitud de 8 bits | borde (con umbral), y con Canny, octante y clase |
-| Filtros | Sobel | Sobel, Canny de un salto, Canny transitivo, y un clasificador |
-| Autoprueba | **LFSR en el chip** | no la hay |
-| Verificación | cocotb, **por inspección visual** de la imagen | comparación **bit a bit** contra un modelo golden |
-
-Table: Ventajas y desventajas del chip de Maldonado (TT06) frente a este trabajo.
-
-Las dos columnas no compiten: responden preguntas distintas. La de Maldonado es **cuánto cuesta el
-filtro solo, y si el silicio hace lo que dice**; su respuesta —dos tiles, milivatios, imagen exacta a
-cientos de miles de píxeles por segundo— es la única medición física de toda esta línea de trabajo. La de
-éste es **qué pasa cuando el filtro tiene que vivir en un sistema**: con cámara, con memoria y con una
-decisión aguas abajo. Y la respuesta que da el Capítulo 5 es que entonces **lo caro deja de ser el
-filtro y pasa a ser la memoria**, que es exactamente lo que el diseño de Maldonado había dejado fuera del
-chip.
-
 ### Una observación de verificación
 
 Al simular `sobel_core` con Icarus Verilog aparece un detalle que conviene dejar escrito, porque ilustra
@@ -521,18 +498,7 @@ lo que se ve en (a) son los bordes mismos, y eso ya no lo explica el signo.](fig
 cero no puede distinguir un error de una pérdida de compresión. Es la razón por la que en este trabajo
 todo se juzga **bit a bit contra el modelo golden**, sin imágenes intermedias y sin mirar.
 
-### Qué toma este trabajo de él
+### Lo que sigue
 
-El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
-(`flower`, `monarch`, `butterfly`), que atraviesan todo el Capítulo 5; la norma L1 con saturación como
-magnitud; y, para Tiny Tapeout, la lección de **serializar la entrada y la salida** para ahorrar pines y área. Lo
-que agrega es lo que Maldonado dejó conscientemente fuera:
-
-- **el control programable**: el FemtoRV32 escribe el modo y los umbrales en vivo, a través del
-  periférico `0x0045` (§4.5);
-- **el motor de histéresis transitiva**, la reconstrucción morfológica de punto fijo, que es el filtro
-  que de verdad cuesta;
-- **la cadena cámara → filtro → memoria → pantalla**, funcionando y fotografiada en una iCE40UP5K;
-- **el co-diseño medido**: el Canny transitivo no cabía junto al procesador —127 % de ocupación— y por
-  eso su motor pasó a hardware (§5.2);
-- y **el reconocimiento de dígitos**, del borde al número (§5.6).
+La comparación con el filtro Sobel de este trabajo —sus ventajas y desventajas, y lo que éste toma del
+de Maldonado— se presenta en la §4.3.1, una vez descrito ese filtro.

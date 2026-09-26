@@ -35,7 +35,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.2 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.7 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -83,7 +83,9 @@ decisión deliberada y conviene declararla como tal.
 
 ## 4.3 Los tres filtros
 
-### Sobel: aritmética sin multiplicadores
+### Filtro Sobel
+
+#### Resumen
 
 El operador de Sobel–Feldman aplica dos núcleos de 3×3 cuyos pesos son `1`, `2` y `4`. Siendo
 potencias de dos, **la multiplicación se implementa como desplazamiento**, y el cálculo entero del
@@ -103,12 +105,102 @@ resultado se compara contra un umbral, que es otra comparación.
 posible la igualdad bit a bit con el modelo de referencia que documenta la §5.1: no hay ninguna
 operación cuyo redondeo pueda diferir entre una biblioteca de punto flotante y un circuito.
 
-### La ventana deslizante
-
 Los tres filtros necesitan una ventana de 3×3, es decir tres filas simultáneas de la imagen. El
 módulo `linebuf3x3` las proporciona con **dos memorias de línea** —las filas *n−2* y *n−1*— mientras
 la fila *n* llega directamente del flujo. Almacenar dos filas y no tres es la diferencia entre un
 buffer y una copia de la imagen, y es el fundamento de toda la arquitectura de flujo.
+
+#### Pseudocódigo
+
+El Sobel es el más simple de los tres y fija el esqueleto que los otros dos extienden: suavizado,
+gradiente y un umbral. La notación es la de la §4.4.
+
+El Algoritmo 1, el del Sobel, se enuncia en la §4.3.1. Los otros dos parten de él.
+
+#### Simulación en Python
+
+El modelo de referencia calcula el gradiente de cada imagen de prueba y sirve de criterio para todo lo
+que sigue: el RTL se da por correcto sólo si lo reproduce bit a bit (§3.2).
+
+![**Figura 4.1.** El modelo de referencia en Python sobre las cinco imágenes de prueba —`flower`,
+`monarch`, `butterfly`, la mano y la tarjeta «HOLA»—: la imagen en gris, las componentes |Gx| y |Gy|,
+y la magnitud |Gx|+|Gy| saturada a 255, antes del umbral.](figuras/fig_4_sobel_python.jpg)
+
+#### Simulación en Verilog: las señales
+
+El mismo filtro, descrito en Verilog, se simula con Icarus Verilog y se inspecciona con GTKWave sobre
+una imagen de prueba de 16×12 píxeles, pequeña a propósito para que el cauce completo quepa en una
+pantalla.
+
+![**Figura 4.2.** El Sobel a 16×12 en GTKWave. Arriba, el banco de pruebas inyecta la imagen píxel a
+píxel (`in_valid`, `in_pix`) y recoge la salida (`out_valid`, `out_pix`) mientras cuenta los bordes.
+Abajo, dentro de `linebuf3x3`, las dos memorias de línea (`q_a`, `q_b`) y la ventana `w00`…`w22`, que se
+llena antes de que `out_valid` suba.](figuras/fig_4_sobel_gtkwave.png)
+
+#### Simulación en Verilog: la imagen
+
+Las señales dicen cómo funciona el circuito; la imagen dice qué produce. La simulación del RTL a
+160×120, con el resultado escrito en la memoria SPRAM como en la tarjeta, se comparó píxel a píxel
+contra el modelo de referencia (§5.1).
+
+![**Figura 4.3.** Lo que produce el RTL del Sobel, simulado en Verilog a 160×120 y escrito en la SPRAM:
+a la izquierda la entrada, a la derecha los bordes que el circuito marca.](figuras/fig_4_sobel_rtl.png)
+
+#### En la tarjeta
+
+Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
+pantalla TFT, sin intervención de ningún computador. La Figura 5.1 reúne las seis escenas.
+
+![**Figura 4.4.** El Sobel corriendo en la iCESugar: la mariposa `monarch`, la mano y la palabra «la»,
+fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
+
+#### En silicio
+
+El filtro solo, sin cámara ni pantalla, se llevó a sky130 con OpenLane: **0,167 mm²** y **5 823
+celdas** tras el emplazamiento, con DRC, LVS y XOR en cero (§5.3). Es el circuito más pequeño de la
+tabla, y el punto de partida de todos los demás.
+
+![**Figura 4.5.** El filtro Sobel en silicio: `sobel_top.gds` abierto en KLayout, con los pines del
+píxel de entrada y de salida en el perímetro.](figuras/fig_4_sobel_asic.png)
+
+#### Ventajas y desventajas frente al filtro de Maldonado
+
+| | Maldonado (TT06) | Este trabajo |
+|---|---|---|
+| **Silicio** | **fabricado y medido** | 17 chips con GDS firmado, **ninguno fabricado todavía** |
+| Área del chip Sobel | **2 183 celdas**, 0,036 mm² (con gris, SPI y LFSR) | 5 823 celdas, 0,167 mm² (con un búfer de líneas para 60 píxeles de ancho) |
+| Memoria de imagen | **ninguna en el chip**: la tiene el host | búferes de líneas: dominan el área |
+| Entrada | imagen previa por SPI, 3 palabras por píxel | **flujo de cámara**, 1 píxel por ciclo |
+| Salida | magnitud de 8 bits | borde (con umbral), y con Canny, octante y clase |
+| Filtros | Sobel | Sobel, Canny de un salto, Canny transitivo, y un clasificador |
+| Autoprueba | **LFSR en el chip** | no la hay |
+| Verificación | cocotb, **por inspección visual** de la imagen | comparación **bit a bit** contra un modelo golden |
+
+Table: Ventajas y desventajas del chip de Maldonado (TT06) frente a este trabajo.
+
+Las dos columnas no compiten: responden preguntas distintas. La de Maldonado es **cuánto cuesta el
+filtro solo, y si el silicio hace lo que dice**; su respuesta —dos tiles, milivatios, imagen exacta a
+cientos de miles de píxeles por segundo— es la única medición física de toda esta línea de trabajo. La de
+éste es **qué pasa cuando el filtro tiene que vivir en un sistema**: con cámara, con memoria y con una
+decisión aguas abajo. Y la respuesta que da el Capítulo 5 es que entonces **lo caro deja de ser el
+filtro y pasa a ser la memoria**, que es exactamente lo que el diseño de Maldonado había dejado fuera del
+chip.
+
+#### Qué toma este trabajo del filtro de Maldonado
+
+El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
+(`flower`, `monarch`, `butterfly`), que atraviesan todo el Capítulo 5; la norma L1 con saturación como
+magnitud; y, para Tiny Tapeout, la lección de **serializar la entrada y la salida** para ahorrar pines y área. Lo
+que agrega es lo que Maldonado dejó conscientemente fuera:
+
+- **el control programable**: el FemtoRV32 escribe el modo y los umbrales en vivo, a través del
+  periférico `0x0045` (§4.5);
+- **el motor de histéresis transitiva**, la reconstrucción morfológica de punto fijo, que es el filtro
+  que de verdad cuesta;
+- **la cadena cámara → filtro → memoria → pantalla**, funcionando y fotografiada en una iCE40UP5K;
+- **el co-diseño medido**: el Canny transitivo no cabía junto al procesador —127 % de ocupación— y por
+  eso su motor pasó a hardware (§5.2);
+- y **el reconocimiento de dígitos**, del borde al número (§5.6).
 
 ### Canny de un salto
 
@@ -265,13 +357,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.1.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.6.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.2.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.7.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
