@@ -344,7 +344,7 @@ del mismo grupo de investigación de la Universidad Nacional de Colombia, diseñ
 grises con filtro de Sobel, lo llevó a silicio en la lanzadera **Tiny Tapeout 06** (sky130) y **lo midió
 fabricado** [Maldonado Ramírez 2024]. Su repositorio, `tt06_grayscale_sobel`, contiene el RTL, el banco
 de pruebas, los registros del flujo físico y las mediciones de laboratorio. Esta sección lo resume a partir
-de esas fuentes, que se leyeron y se ejecutaron el 26 de septiembre de 2026, y lo compara con el trabajo
+de esas fuentes, que se leyeron y se ejecutaron para este trabajo, y lo compara con el trabajo
 presente.
 
 ### Qué hace
@@ -534,7 +534,7 @@ versión. El suyo es una referencia, no un componente.
 
 ## Referencias citadas en este capítulo
 
-**Las dieciocho primeras se verificaron contra la fuente el 21 de septiembre de 2026; la de Maldonado Ramírez, el 26. Las cinco de los antecedentes en Colombia se transcriben de la propuesta de junio de 2025 y no se han cotejado con la fuente.** Volumen, número y
+**Las dieciocho primeras se verificaron contra la fuente el 21 de septiembre de 2026; la de Maldonado Ramírez, contra su propio repositorio. Las cinco de los antecedentes en Colombia se transcriben de la propuesta y no se han cotejado con la fuente.** Volumen, número y
 páginas están comprobados salvo donde se indica.
 
 | Cita | Referencia |

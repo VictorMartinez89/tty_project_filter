@@ -6,7 +6,7 @@
 > siempre los datos verificados; nueve son aportación de la verificación, y dos —el libro de texto del que procede la arquitectura
 > de bus y el que fundó el diseño estructurado— se añadieron al documentar el linaje del SoC en la §4.5. El total son **49 entradas sin
 > duplicados**, contando las dos guías de instalación del entorno que documenta la §3.7.
-> El 26 de septiembre se añadieron **siete** más, tomadas de la propuesta de junio de 2025 (la propuesta,
+> Después se añadieron **siete** más, tomadas de la propuesta de este trabajo (la propuesta,
 > cinco antecedentes y la Estrategia Nacional Digital); con ellas son **56**.
 >
 > Las marcadas con **✓** tienen volumen, número, páginas y año comprobados contra la fuente. Las
@@ -104,9 +104,9 @@
 
 ## La propuesta y los antecedentes en Colombia
 
-Tomadas de la propuesta de junio de 2025; **no cotejadas con la fuente**.
+Tomadas de la propuesta de este trabajo; **no cotejadas con la fuente**.
 
-50. V. A. Martínez Solarte, *Diseño de un microcontrolador con arquitectura RISC-V*, propuesta de trabajo final de Maestría en Ingeniería Electrónica (perfil profundización), director C. I. Camargo Bareño, Universidad Nacional de Colombia, 16 de junio de 2025.
+50. V. A. Martínez Solarte, *Diseño de un microcontrolador con arquitectura RISC-V*, propuesta de trabajo final de Maestría en Ingeniería Electrónica (perfil profundización), director C. I. Camargo Bareño, Universidad Nacional de Colombia, 2025.
 51. G. Roque R., *Desarrollo de arquitectura tipo RISC para sistemas embebidos*, tesis de maestría, Pontificia Universidad Javeriana, 2010.
 52. J. A. Duque R., *Metodología integral para el emprendimiento basado en sistemas embebidos digitales en Colombia*, Universidad Nacional de Colombia, 2018.
 53. D. L. Ruiz P., *Desarrollo de una estrategia pedagógica para la enseñanza de arquitecturas microprocesadas con base al núcleo RISC-V Core101*, Universidad de los Andes, 2020.

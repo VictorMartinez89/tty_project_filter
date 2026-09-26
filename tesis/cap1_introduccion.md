@@ -34,7 +34,7 @@ para mejorar la silueta del objeto. **Esta tesis es ese trabajo futuro**, constr
 FPGA al silicio.
 
 La pregunta se retomó formalmente en la **propuesta de trabajo final**, *Diseño de un microcontrolador
-con arquitectura RISC-V*, presentada el 16 de junio de 2025 con el aval del director
+con arquitectura RISC-V*, presentada con el aval del director
 [Martínez Solarte 2025]. Ocho años después, la formulación había cambiado de signo: ya no se preguntaba
 si era posible prescindir de los procesadores, sino si era posible hacerlo **con** ellos —con
 procesadores pequeños, abiertos y propios—:
@@ -81,7 +81,7 @@ hecho es parte de lo que demuestra.
 
 ## 1.3 Objetivo general
 
-El objetivo general aprobado en la propuesta de junio de 2025 es:
+El objetivo general aprobado en la propuesta es:
 
 > *«Diseñar e implementar un microcontrolador SoC basado en el conjunto de instrucciones RISC-V, capaz
 > de ejecutar algoritmos de inteligencia artificial (IA), y validar su funcionamiento mediante
