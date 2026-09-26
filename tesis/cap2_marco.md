@@ -528,14 +528,7 @@ que agrega es lo que Maldonado dejó conscientemente fuera:
   eso su motor pasó a hardware (§5.2);
 - y **el reconocimiento de dígitos**, del borde al número (§5.6).
 
-Conviene decirlo con la misma precisión en la otra dirección: el bloque de Maldonado no se reutiliza
-dentro de ningún diseño de este trabajo. El periférico del SoC envuelve núcleos propios desde su primera
-versión. El suyo es una referencia, no un componente.
-
 ## Referencias citadas en este capítulo
-
-**Las dieciocho primeras se verificaron contra la fuente; la de Maldonado Ramírez, contra su propio repositorio. Las cinco de los antecedentes en Colombia se transcriben de la propuesta y no se han cotejado con la fuente.** Volumen, número y
-páginas están comprobados salvo donde se indica.
 
 | Cita | Referencia |
 |---------|--------------------------------------------|
