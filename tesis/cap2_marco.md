@@ -534,7 +534,7 @@ versión. El suyo es una referencia, no un componente.
 
 ## Referencias citadas en este capítulo
 
-**Las dieciocho primeras se verificaron contra la fuente el 21 de septiembre de 2026; la de Maldonado Ramírez, contra su propio repositorio. Las cinco de los antecedentes en Colombia se transcriben de la propuesta y no se han cotejado con la fuente.** Volumen, número y
+**Las dieciocho primeras se verificaron contra la fuente; la de Maldonado Ramírez, contra su propio repositorio. Las cinco de los antecedentes en Colombia se transcriben de la propuesta y no se han cotejado con la fuente.** Volumen, número y
 páginas están comprobados salvo donde se indica.
 
 | Cita | Referencia |

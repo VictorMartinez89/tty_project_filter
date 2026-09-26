@@ -1,7 +1,7 @@
 # Bibliografía
 
 > **Cómo se construyó esta lista.** Reúne las **36 referencias** recopiladas a lo largo del cuaderno
-> de laboratorio y las **17 verificadas contra la fuente** el 21 de septiembre de 2026 al redactar el
+> de laboratorio y las **17 verificadas contra la fuente** al redactar el
 > Capítulo 2. Ocho obras aparecían en ambas listas y se han fundido en una sola entrada, conservando
 > siempre los datos verificados; nueve son aportación de la verificación, y dos —el libro de texto del que procede la arquitectura
 > de bus y el que fundó el diseño estructurado— se añadieron al documentar el linaje del SoC en la §4.5. El total son **49 entradas sin

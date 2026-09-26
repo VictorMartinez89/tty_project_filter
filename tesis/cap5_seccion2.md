@@ -137,8 +137,7 @@ dentro de un filtro cambia el resultado de clasificación más que cambiar de fi
 
 ---
 
-> **Sobre la reproducibilidad de estas cifras.** Las cuatro filas medidas se rehicieron el 21 de
-> septiembre de 2026 con el guion `medir_utilizacion_vm.sh`, que aplica a cada diseño las mismas
+> **Sobre la reproducibilidad de estas cifras.** Las cuatro filas medidas se rehicieron con el guion `medir_utilizacion_vm.sh`, que aplica a cada diseño las mismas
 > órdenes de lectura de fuentes que su guion de construcción original. Tres de las cuatro
 > reprodujeron el informe conservado sin desviarse en una sola celda ni en un solo bloque de memoria,
 > pese a mediar casi dos meses entre una corrida y otra. La cuarta se desvió en treinta celdas sobre
