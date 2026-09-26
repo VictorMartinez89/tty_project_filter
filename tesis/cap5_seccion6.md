@@ -367,6 +367,32 @@ confusiones que quedan son las mismas familias de siempre: el trazo recto con di
 el 9, y las curvas cerradas del 8 y el 9. **Canny-78 reduce los errores, pero no los cambia de
 sitio**: lo que distingue a esos dígitos es la geometría del trazo, y ésa no depende del circuito.
 
+**En silicio.** El mismo RTL que dio diez mil de diez mil en la tarjeta se llevó a sky130 con OpenLane,
+con la receta de los demás circuitos: reloj de 30 ns, utilización del 30 % y densidad de 0,40. Es el
+**decimoséptimo circuito** de este trabajo, y firma limpio:
+
+| | Canny-78 | Canny-78 recortado |
+|---|---:|---:|
+| dado | 1,122 mm² (1 043 × 1 042 µm) | **0,829 mm²** (−26 %) |
+| celdas tras la síntesis | 29 449 | 21 409 |
+| potencia (interna y de conmutación) | 25,3 mW | 18,6 mW |
+| camino crítico, frente a un reloj de 30 ns | 12,66 ns | 11,86 ns |
+| DRC · LVS · XOR · temporizado con parásitos | 0 · 0 · 0 · holgura ≥ 0 | 0 · 0 · 0 · holgura ≥ 0 |
+| veredictos iguales al modelo | 10 000 / 10 000 | 10 000 / 10 000 |
+
+La variante recortada cambia una sola cosa: la memoria de rasgos del clasificador estaba declarada con
+256 posiciones de 13 bits y sólo se usaban 168 de 9. En la FPGA eso no costaba nada —un bloque de BRAM
+cuesta lo mismo lleno que vacío—; en silicio, **un cuarto del dado era memoria declarada y no usada**.
+Es la tesis del Capítulo 6 dicha con el número más limpio de todo el trabajo: la memoria se paga por
+los bits que se declaran, no por los que se usan.
+
+En Tiny Tapeout, en cambio, ninguna de las dos cabe: en el tamaño máximo de 8×2 tiles, la completa
+pide un 110,7 % del área y la recortada, al 80,3 %, se queda sin sitio para los búferes que cierran el
+*hold*. El reconocedor que sí cabe es el de cuarenta rasgos (94,20 %), que en la lanzadera abierta de
+sky130 (SKY26d) ocupa el 42 % de 8×2 tiles, con DRC, LVS y antenas en cero y el temporizado limpio en
+las tres esquinas de proceso (repositorio `tt_mnist_canny_v2_vic`, ejecución 36048035078). No se ha
+enviado a fabricar.
+
 ---
 
 ## Referencias de la sección

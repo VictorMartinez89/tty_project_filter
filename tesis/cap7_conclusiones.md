@@ -28,8 +28,10 @@ con lo que la simulación predecía. Y en un segundo ensayo con diez dígitos gr
 dígitos, con las mismas respuestas equivocadas. Reproducir un acierto puede ser casualidad;
 reproducir un error específico y repetido, no.
 
-**Sobre el paso a silicio.** Se llevaron a GDSII **dieciséis circuitos** en dos procesos —sky130A con
-OpenLane e IHP SG13G2 con LibreLane—, todos ellos con **DRC, LVS y XOR en cero**. La verificación
+**Sobre el paso a silicio.** Se llevaron a GDSII **diecisiete circuitos** en dos procesos —quince en sky130A
+con OpenLane y dos en IHP SG13G2 con LibreLane—, todos ellos con **DRC, LVS y XOR en cero**. El
+decimoséptimo es el reconocedor Canny-78 de la §5.6.9, firmado cuando el resto del capítulo ya
+estaba medido; por eso el procedimiento de recuento de la §5.3 y el Anexo D hablan de dieciséis. La verificación
 eléctrica se cerró por dos vías independientes: los circuitos **cierran el temporizado con los
 parásitos del interconexionado extraídos** —holgura de 0,00 ns sobre el peor camino—, y el camino
 crítico de **dos** de ellos se simuló además en SPICE hasta repartir su retardo en sumandos sin
