@@ -544,18 +544,18 @@ que agrega es lo que Maldonado dejó conscientemente fuera:
 | Lowe 2004 | D. G. Lowe, «Distinctive Image Features from Scale-Invariant Keypoints», *International Journal of Computer Vision*, vol. 60, n.º 2, pp. 91–110, 2004. |
 | Dalal y Triggs 2005 | N. Dalal y B. Triggs, «Histograms of Oriented Gradients for Human Detection», *IEEE CVPR*, vol. 1, pp. 886–893, 2005. |
 | Lazebnik *et al.* 2006 | S. Lazebnik, C. Schmid y J. Ponce, «Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories», *IEEE CVPR*, vol. 2, pp. 2169–2178, 2006. |
+| Roque 2010 | G. Roque R., *Desarrollo de arquitectura tipo RISC para sistemas embebidos*, tesis de maestría en Ingeniería Electrónica, Pontificia Universidad Javeriana, 2010. |
 | Chen *et al.* 2016 | Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *ISCA*, 2016. |
 | Sze *et al.* 2017 | V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017. |
 | Waterman y Asanović 2017 | A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: User-Level ISA, Document Version 2.2*, may. 2017. Es la edición contra la que está escrito el decodificador del núcleo empleado, que la cita en su propio código. |
+| Duque 2018 | J. A. Duque R., *Metodología integral para el emprendimiento basado en sistemas embebidos digitales en Colombia*, Universidad Nacional de Colombia, Facultad de Ingeniería, 2018. |
 | SkyWater 2020 | SkyWater Technology y Google, *SKY130 Open Source PDK*, 2020. Primer kit de diseño de un proceso comercial publicado sin acuerdo de confidencialidad. |
 | Shalan y Edwards 2020 | M. Shalan y T. Edwards, «Building OpenLANE: A 130nm OpenROAD-based Tapeout-Proven Flow», *ICCAD*, 2020. |
-| Baischer *et al.* | L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. Documentación y código en `github.com/kayaleitner/FPGA_MNIST`. **No es una publicación revisada por pares**, y así debe citarse. |
-| Maldonado Ramírez 2024 | D. N. Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Repositorio con RTL, banco de pruebas, registros del flujo y mediciones del chip fabricado: `github.com/DianaNatali/tt06_grayscale_sobel`. **No es una publicación revisada por pares.** |
-| Roque 2010 | G. Roque R., *Desarrollo de arquitectura tipo RISC para sistemas embebidos*, tesis de maestría en Ingeniería Electrónica, Pontificia Universidad Javeriana, 2010. |
-| Duque 2018 | J. A. Duque R., *Metodología integral para el emprendimiento basado en sistemas embebidos digitales en Colombia*, Universidad Nacional de Colombia, Facultad de Ingeniería, 2018. |
 | Ruiz 2020 | D. L. Ruiz P., *Desarrollo de una estrategia pedagógica para la enseñanza de arquitecturas microprocesadas con base al núcleo RISC-V Core101*, Universidad de los Andes, 2020. |
 | Camacho 2020 | J. F. Camacho O., *Uso de herramientas libres para diseñar un sistema de monitoreo de variables físicas de bajo costo basado en sistemas embebidos*, Universidad Nacional de Colombia, 2020. |
 | Aponte 2023 | J. A. Aponte M., *Design of Fault Tolerant Embedded Systems using Approximate Computing Techniques*, Universidad Nacional de Colombia, 2023. |
+| Maldonado Ramírez 2024 | Diana Natali Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Repositorio con RTL, banco de pruebas, registros del flujo y mediciones del chip fabricado: `github.com/DianaNatali/tt06_grayscale_sobel`. **No es una publicación revisada por pares.** |
+| Baischer *et al.* | L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. Documentación y código en `github.com/kayaleitner/FPGA_MNIST`. **No es una publicación revisada por pares**, y así debe citarse. |
 
 Table: Referencias citadas en el Capítulo 2.
 

@@ -92,7 +92,7 @@
 
 ## Trabajos de comparación
 
-46. D. N. Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130. https://github.com/DianaNatali/tt06_grayscale_sobel
+46. Diana Natali Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Chip fabricado y medido; es el antecedente directo de este trabajo (§2.9). https://github.com/DianaNatali/tt06_grayscale_sobel
 47. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. https://github.com/kayaleitner/FPGA_MNIST ▸ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
 
 ---
