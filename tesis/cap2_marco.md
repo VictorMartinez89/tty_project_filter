@@ -362,23 +362,28 @@ out_px_gray_o <= (red>>2)+(red>>5)+(green>>1)+(green>>4)+(blue>>4)+(blue>>5);
 
 Los tres pesos suman 0,9375 y no 1, así que el gris sale un 6,25 % más oscuro que la luminancia exacta:
 el blanco puro da 234. Cuánto se nota depende de la imagen. Medido contra `0,299 R + 0,587 G + 0,114 B`
-sobre sus tres imágenes de prueba, a 320×240:
+a 320×240, sobre sus tres imágenes de prueba y las dos fotografías propias de este trabajo —la mano y la
+tarjeta «HOLA»—, que se usan a lo largo del Capítulo 5:
 
-| Imagen | Error medio (niveles de gris) | Píxeles con error de 5 o menos |
-|---|---:|---:|
-| `flower` | 0,85 | 93,6 % |
-| `monarch` | 8,33 | 21,5 % |
-| `butterfly` | 9,82 | 14,0 % |
+| Imagen | Brillo medio | Error medio (niveles de gris) | Píxeles con error de 5 o menos |
+|---|---:|---:|---:|
+| `flower` (Maldonado) | 6,5 | 0,85 | 93,6 % |
+| `monarch` (Maldonado) | 93,4 | 8,33 | 21,5 % |
+| `butterfly` (Maldonado) | 125,7 | 9,82 | 14,0 % |
+| `hand`, la mano (este trabajo) | 137,4 | 10,97 | 0,1 % |
+| `hi`, la tarjeta «HOLA» (este trabajo) | 134,3 | 10,97 | 2,6 % |
 
 La primera cifra es la que se había anotado en el cuaderno de trabajo, y es engañosa si se lee sola:
-`flower` es casi toda negra, y en el negro la ganancia no pesa. Pero el error es **de ganancia y no de
+`flower` es casi toda negra, y en el negro la ganancia no pesa. La tabla lo ordena por brillo, y el
+error crece con él: es alrededor de un 8 % del brillo medio. Las dos fotografías tomadas con luz de
+habitación son las más claras y las que más se desvían. Pero el error es **de ganancia y no de
 forma**: escala todos los gradientes por el mismo factor, de modo que para detectar bordes basta con
 ajustar el umbral en esa proporción.
 
 ![**Figura 2.1.** La conversión a gris de Maldonado sobre `flower`: la imagen original, el gris con
 desplazamientos y sumas, y la luminancia exacta con multiplicaciones. A simple vista son iguales, pero es
-el caso más favorable de los tres: sobre las mariposas, que son claras, el error medio es diez veces
-mayor.](figuras/fig_2_1_gris_diana.jpg)
+el caso más favorable de los cinco: sobre las mariposas, la mano y la tarjeta «HOLA», que son claras,
+el error medio es diez veces mayor.](figuras/fig_2_1_gris_diana.jpg)
 
 y el gradiente es la norma L1 con saturación, escrita con restas y un desplazamiento:
 
