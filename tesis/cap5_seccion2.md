@@ -1,8 +1,5 @@
 # 5.2 Resultados en FPGA
 
-> **Estado:** borrador 2, 2026-09-21. Fuente: cuaderno 1, Partes 25-28 y 68-82, y los informes de
-> `nextpnr-ice40` conservados de las corridas del 30 de julio y del 3 de agosto de 2026.
-
 Los resultados de esta sección son de una clase distinta a los del resto del capítulo: no provienen
 de un informe de herramienta sino de **un circuito que funciona sobre una mesa**, con una cámara
 apuntando a un objeto y una pantalla mostrando el resultado. Es la única parte del trabajo donde el

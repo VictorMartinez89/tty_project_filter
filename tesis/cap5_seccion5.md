@@ -1,9 +1,7 @@
 # 5.5 Rendimiento: caudal y latencia
 
-> **Estado:** borrador 2, 2026-09-21. Fuente: cuaderno 1, Partes 154-156, y la corrida de
-> `tb_latencia_final.v` del 21 de septiembre.
-> Todas las latencias de esta sección están **medidas en simulación**, no estimadas — incluida la del
-> Canny, que hasta esta versión provenía de una fórmula y resultó estar sobrestimada en un 20 %.
+Todas las latencias de esta sección están **medidas en simulación**, no estimadas. La del Canny, que
+en una versión anterior de este análisis provenía de una fórmula, resultó estar sobrestimada en un 20 %.
 
 Las secciones anteriores midieron el costo de cada circuito. Ésta mide su velocidad, y lo hace
 separando dos magnitudes que la palabra «rápido» confunde: el **caudal**, o cuántos píxeles salen por

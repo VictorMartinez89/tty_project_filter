@@ -1,8 +1,5 @@
 # 5.4 Resultados en ASIC: la cadena de visión completa
 
-> **Estado:** borrador 1, escrito el 2026-09-16. Fuente: cuaderno 1, Partes 157-165, y la tabla
-> maestra `asic/tabla_maestra/tabla_6_chips.py`, que la genera desde los `metrics.csv` del flujo.
-
 La §5.3 presentó bloques: filtros solos, un front-end de cámara, un driver de pantalla. Ésta presenta
 **sistemas**: seis circuitos que llevan la cadena entera —captura, filtrado, almacenamiento y
 visualización— en un solo dado. Los seis están organizados como una matriz de dos variables, el

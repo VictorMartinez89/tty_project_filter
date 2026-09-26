@@ -1,9 +1,5 @@
 # 5.6 Reconocimiento de patrones: del borde al dígito
 
-> **Estado:** borrador 1, escrito el 2026-09-15. Fuente: cuaderno 2 §21-§30. Ampliado el 2026-09-23
-> con Canny-78 (§5.6.2 y §5.6.9; fuente: cuaderno 2 §36).
-> Formato Markdown para convertir con `pandoc` a Word o LaTeX según decida la guía de la Facultad.
-
 Las secciones anteriores de este capítulo presentaron los resultados de un sistema que **procesa**
 imágenes: detecta bordes, los almacena y los muestra. Ésta presenta los de un sistema que las
 **reconoce**. La diferencia no es de grado sino de naturaleza: la salida deja de ser una imagen y

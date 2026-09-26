@@ -1,9 +1,5 @@
 # 2. Marco teórico y estado del arte
 
-> **Estado:** borrador 2, 2026-09-21. **Las diecisiete citas están verificadas contra la fuente** y
-> cotejadas con las 36 ya recopiladas; el resultado son las 47 entradas de `bibliografia.md`. Ver la
-> nota al final del capítulo para las tres precisiones que la verificación produjo.
-
 Este capítulo establece el andamiaje conceptual del trabajo. Su estructura obedece a una afirmación
 que conviene enunciar de entrada, porque de ella depende que los capítulos siguientes se lean como
 un todo y no como una colección de implementaciones: **los tres detectores y el clasificador de este

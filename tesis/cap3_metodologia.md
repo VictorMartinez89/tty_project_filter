@@ -1,8 +1,5 @@
 # 3. Metodología
 
-> **Estado:** borrador 1, escrito el 2026-09-21. Fuente: cuaderno 1, Partes 1-34 y 59-76;
-> cuaderno 2, §3, §7, §17, §19, §24 y §25.
-
 Este capítulo describe cómo se produjo la evidencia de los capítulos siguientes. Incluye dos
 apartados —§3.5 y §3.6— que no son método estándar sino **método aprendido**: proceden de errores
 cometidos durante el desarrollo, y se documentan porque su valor está precisamente en que costaron

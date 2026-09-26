@@ -1,8 +1,5 @@
 # 7. Conclusiones y trabajo futuro
 
-> **Estado:** borrador 2, 2026-09-21. La §7.1 se leyó objetivo por objetivo contra la §1.4 y
-> responde a los cinco; el título está decidido.
-
 ## 7.1 Conclusiones por objetivo
 
 **Sobre el modelo de referencia.** Se construyó un modelo en Python de los tres filtros y del

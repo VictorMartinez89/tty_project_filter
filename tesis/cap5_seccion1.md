@@ -1,8 +1,5 @@
 # 5.1 Verificación funcional
 
-> **Estado:** borrador 1, escrito el 2026-09-16. Fuente: cuaderno 1, Partes 29-35.
-> Formato Markdown para convertir con `pandoc` a Word o LaTeX según decida la guía de la Facultad.
-
 Antes de presentar área, frecuencia o consumo conviene establecer que los circuitos **calculan lo que
 deben calcular**. Esta sección lo hace, y distingue con cuidado dos preguntas que la literatura de
 implementación mezcla con frecuencia: si el hardware coincide con su modelo de referencia, y si el

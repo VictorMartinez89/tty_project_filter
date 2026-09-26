@@ -1,9 +1,8 @@
 # Anexo A. El entorno de trabajo: dos máquinas y una frontera
 
-> **Estado:** borrador 1, escrito el 2026-09-21.
-> Este anexo documenta la infraestructura sobre la que se produjo todo el trabajo. Se incluye porque
-> es **ingeniería real que el cuerpo del documento no muestra**: la §3.7 la resume en un párrafo, y
-> ese párrafo esconde tanto el reparto de herramientas como una clase de error que costó horas.
+Este anexo documenta la infraestructura sobre la que se produjo todo el trabajo. Se incluye porque
+es **ingeniería real que el cuerpo del documento no muestra**: la §3.7 la resume en un párrafo, y
+ese párrafo esconde tanto el reparto de herramientas como una clase de error que costó horas.
 
 ## A.1 Por qué dos máquinas
 

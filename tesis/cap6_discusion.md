@@ -1,8 +1,5 @@
 # 6. Discusión
 
-> **Estado:** borrador 1, escrito el 2026-09-21. Fuente: cuadernos 1 y 2, y el Capítulo 5.
-> Formato Markdown para convertir con `pandoc`.
-
 El capítulo anterior presentó mediciones. Éste sostiene afirmaciones. La diferencia importa: una
 medición es un hecho que se comprueba repitiendo el experimento, mientras que una afirmación es una
 lectura de varios hechos y puede ser equivocada aunque todos ellos sean correctos. Este trabajo tuvo

@@ -1,12 +1,9 @@
 # 4. Diseño e implementación
 
-> **Estado:** borrador 1, escrito el 2026-09-21. Fuente: cuaderno 1, Partes 25-28, 45-76, 88-131,
-> 152, 157-165; y los fuentes en `asic/*/src/`.
-> Las cifras y las expresiones de este capítulo se leyeron del RTL, no de las notas.
-
 Este capítulo describe **cómo está construido** el sistema. Sigue el orden en que los datos lo
 atraviesan —de la cámara a la pantalla— y reserva para el final las dos traducciones que el mismo
-RTL tuvo que sufrir para existir en dos sustratos distintos.
+RTL tuvo que sufrir para existir en dos sustratos distintos. Las cifras
+y las expresiones que siguen se leyeron del RTL, no de las notas de trabajo.
 
 ## 4.1 Arquitectura
 

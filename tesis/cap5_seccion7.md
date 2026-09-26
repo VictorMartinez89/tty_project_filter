@@ -1,8 +1,7 @@
 # 5.7 Verificación eléctrica del camino crítico
 
-> **Estado:** borrador 1, 2026-09-21. Fuente: cuaderno 2, §33.
-> Todas las cifras de esta sección proceden de corridas de NGSpice sobre `sky130_fd_sc_hd` en la
-> esquina típica, 1,8 V y 25 °C, y de los ficheros de parásitos extraídos de los dos reconocedores.
+Todas las cifras de esta sección proceden de corridas de NGSpice sobre `sky130_fd_sc_hd` en la
+esquina típica, a 1,8 V y 25 °C, y de los ficheros de parásitos extraídos de los dos reconocedores.
 
 Las secciones anteriores aceptaron sin discusión lo que el analizador de tiempos informa. Ésta
 pregunta si ese número es correcto, y lo hace por el único camino que no depende de la misma

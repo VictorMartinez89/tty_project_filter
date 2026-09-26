@@ -1,10 +1,8 @@
 # 5.3 Resultados en ASIC: los bloques
 
-> **Estado:** borrador 1, escrito el 2026-09-16. Fuente: cuaderno 1, Partes 86-131, y el archivo de
-> planos `ASIC_planos/`.
-> **Recuento homogeneizado el 21 de septiembre de 2026.** Toda la columna «celdas» de esta tabla son
-> **celdas lógicas tras emplazamiento y ruteado**, recontadas con un mismo criterio desde los
-> netlists archivados. Véase la §5.3.3 para cruzarlas con las de la §5.4.
+> **Sobre el recuento.** Toda la columna «celdas» de la tabla de esta sección son **celdas lógicas
+> tras emplazamiento y ruteado**, recontadas con un mismo criterio desde los netlists archivados.
+> Véase la §5.3.3 para cruzarlas con las de la §5.4.
 
 Esta sección presenta los circuitos que implementan **una función cada uno**: los tres filtros por
 separado, los mismos con procesador, dos bloques de interfaz y dos sistemas de visión. Son el
