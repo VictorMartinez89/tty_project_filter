@@ -538,7 +538,7 @@ versión. El suyo es una referencia, no un componente.
 páginas están comprobados salvo donde se indica.
 
 | Cita | Referencia |
-|---|---|
+|---------|--------------------------------------------|
 | Hu 1962 | M.-K. Hu, «Visual Pattern Recognition by Moment Invariants», *IRE Trans. Information Theory*, vol. 8, n.º 2, pp. 179–187, 1962. |
 | Sobel y Feldman 1968 | I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», **charla en el Stanford Artificial Intelligence Laboratory**, 1968. *No es una publicación formal* (véase la nota). |
 | Prewitt 1970 | J. M. S. Prewitt, «Object Enhancement and Extraction», en B. Lipkin y A. Rosenfeld (eds.), *Picture Processing and Psychopictorics*, Academic Press, pp. 75–149, 1970. |
