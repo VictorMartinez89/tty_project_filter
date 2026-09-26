@@ -151,6 +151,8 @@ Todo el flujo es de código abierto:
 | Verificación física | Magic, KLayout, Netgen |
 | Verificación eléctrica | NGSpice |
 
+Table: Herramienta empleada en cada etapa del flujo.
+
 El trabajo se reparte entre **dos máquinas**: un equipo de escritorio donde se ejecutan el modelado,
 la simulación y la síntesis, y una máquina virtual Linux donde se ejecutan el emplazamiento para
 FPGA y los flujos completos a silicio, que dependen de herramientas no disponibles en la primera.
@@ -190,3 +192,5 @@ Las cifras de este documento se obtuvieron con las versiones siguientes:
 | Docker | 29.5.3 | Máquina virtual |
 | Kit de diseño | sky130A | Gestor de versiones de PDK |
 | Sistema operativo | Ubuntu sobre ARM de 64 bits | Máquina virtual |
+
+Table: Versiones de las herramientas y máquina en que corre cada una.

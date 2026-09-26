@@ -22,6 +22,8 @@ milisegundos en hacerlo.
 | Latencia | baja — llenar el cauce | alta — todo el cuadro por K barridos |
 | Caudal | alto | bajo |
 
+Table: Las dos arquitecturas de procesamiento: flujo y framebuffer.
+
 La razón de la asimetría está en la §4.4: la histéresis transitiva resuelve un **punto fijo** sobre el
 cuadro completo, y no puede emitir su primer píxel definitivo hasta haber comprobado que ningún píxel
 del cuadro cambia de estado.
@@ -49,6 +51,8 @@ ese contenido indefinido.
 | Canny de un salto | 3 | **8 ciclos** | **313 ciclos** | ≈ 2,7 µs |
 | SoC + Sobel | 1 | 4 ciclos | 125 ciclos | ≈ 1,05 µs |
 | SoC + Canny de un salto | 3 | 8 ciclos | 313 ciclos | ≈ 3,0 µs |
+
+Table: Latencias de cauce de los tres filtros.
 
 Las dos columnas tienen explicación estructural, y no es la misma.
 
@@ -81,6 +85,8 @@ hasta la señal de terminado:
 | **Bordes típicos** | **2** | **24 859** | **306 µs** | 235 µs |
 | Peor caso: cadena débil de 50 px | **51** | 274 122 | 3,37 ms | 2,59 ms |
 
+Table: Número de barridos del Canny transitivo, medido, y su tiempo.
+
 El hallazgo es que **una imagen de bordes real converge en dos barridos**, no en los ocho que una
 estimación conservadora sugeriría. La razón es propia del Canny: los píxeles débiles forman un halo
 fino alrededor de los fuertes, de modo que casi todos están a un solo salto de un borde fuerte. El
@@ -104,6 +110,8 @@ que es la que un sistema real debe esperar:
 | SoC + Canny de un salto | 106 MHz | ≈ 106 Mpx/s | ≈ 3,0 µs |
 | Transitivo | 81 MHz | ≈ 16 Mpx/s | **≈ 306 µs/cuadro** |
 | SoC + transitivo | 106 MHz | ≈ 20 Mpx/s | ≈ 235 µs/cuadro |
+
+Table: Reloj máximo, caudal y latencia de cada filtro.
 
 **La latencia separa a las dos familias por un factor de entre ochenta y trescientos** —dos órdenes de
 magnitud— y el caudal por un factor de seis a ocho. No es una diferencia de eficiencia de

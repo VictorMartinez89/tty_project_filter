@@ -17,6 +17,8 @@ modificado es una variable más que explicar si un resultado sale distinto del e
 | `GRT_ALLOW_CONGESTION` | si se tolera congestión en el ruteo global |
 | `FP_ASPECT_RATIO` | la proporción del dado |
 
+Table: Parámetros de OpenLane y qué controla cada uno.
+
 ## D.2 Las recetas empleadas
 
 | Diseño | Periodo | Utilización | Densidad | Congestión |
@@ -41,6 +43,8 @@ modificado es una variable más que explicar si un resultado sale distinto del e
 | `soc_sobel_completo` | **32 ns** | 15 % | 0,20 | sí |
 | `soc_canny1_completo` | **36 ns** | 15 % | 0,20 | sí |
 | `soc_trans_completo` | **36 ns** | 15 % | 0,20 | sí |
+
+Table: Recetas de OpenLane empleadas en cada diseño.
 
 > **Veinte recetas, dieciséis circuitos.** La tabla tiene más filas que circuitos declara el
 > Capítulo 7, y la diferencia merece explicarse. Los seis diseños terminados en `_completo` son una

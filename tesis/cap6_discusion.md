@@ -25,6 +25,8 @@ contrario:
 | Sobel | Canny de un salto | **+5 851 celdas** |
 | Canny de un salto | Canny transitivo | **+94 511 celdas** |
 
+Table: Lo que cuesta ampliar el alcance de la ventana.
+
 Ampliar el alcance de la ventana en un salto cuesta menos de seis mil celdas. Ampliarlo al cuadro
 completo cuesta **noventa y cuatro mil quinientas once**. Y la causa no está en las operaciones sino
 en **cuánto estado hay que sostener a la vez**: los dos primeros filtros procesan en flujo y retienen
@@ -86,6 +88,8 @@ y observar que **el responsable cambia tres veces**:
 | Con procesador | **el FemtoRV32** |
 | Con framebuffer grande | **el multiplexor de lectura del framebuffer** |
 
+Table: Quién fija la frecuencia de reloj en cada diseño.
+
 Es un resultado útil para quien planifique un sistema parecido, porque implica que **optimizar el
 bloque que fue crítico en el diseño anterior puede no mejorar nada**. La pregunta «¿qué limita mi
 frecuencia?» no tiene una respuesta estable: tiene una respuesta por configuración.
@@ -145,6 +149,8 @@ Poniendo precio a las dos soluciones sobre el mismo silicio:
 |---|---|---:|
 | robustez al umbral **en el front-end** | el Canny, en el reconocedor | **972 celdas** |
 | robustez al umbral **por software** | el procesador y su periferia | **6 220 celdas** |
+
+Table: Precio de la robustez al umbral en el front-end y por software.
 
 ![**Figura 6.1.** El balance completo entre los dos filtros, sobre seis parejas de circuitos con
 plano firmado. El panel A los compara en celdas; el B muestra el sobrecoste del Canny cayendo del

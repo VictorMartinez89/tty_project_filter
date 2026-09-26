@@ -41,6 +41,8 @@ que la diferencia entre dos renglones consecutivos aísla la contribución de es
 | E · más la **celda extraída del *layout*** | **9,694 ns** | **8,962 ns** |
 | *fracción del retardo que la simulación reproduce* | *79,3 %* | *90,6 %* |
 
+Table: Descomposición del retardo del camino crítico: cinco variantes del banco de simulación frente al analizador estático.
+
 La variante **D0 es un control**, idéntica a la D salvo en que sus resistencias valen cero. Sin ella,
 el efecto de la resistencia y el de *repartir* la capacitancia a lo largo del árbol en vez de
 agruparla en un nodo quedarían sumados en una sola cifra y no podrían separarse.
@@ -118,6 +120,8 @@ los dos experimentos sin cambiar nada más.
 | retardo de celda aislada · `pan_sobel` | 1,31 | **1,05** |
 | retardo de celda aislada · `pan_canny` | 1,30 | **1,06** |
 
+Table: Razón entre biblioteca y simulación, con la celda del esquemático y con la celda extraída del layout.
+
 **La discrepancia de capacitancia desaparece.** La hipótesis queda medida y no deducida, que era
 justamente lo que faltaba.
 
@@ -129,6 +133,8 @@ Repartidos los 12,230 ns sin residuo, el término que importa sale igual en los 
 |---|---:|---:|
 | **el modelo de celda, como fracción del camino** | **22,6 %** | **22,1 %** |
 | resistencia de la interconexión | 0,1 % | 0,2 % |
+
+Table: Contribución del modelo de celda y de la resistencia de la interconexión al camino crítico.
 
 Dos circuitos distintos, dos caminos críticos que no comparten una sola instancia, y la misma cifra a
 cuatro décimas de punto: **algo más de la quinta parte del retardo de un camino crítico la ponen los

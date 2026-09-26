@@ -56,6 +56,8 @@ criterio produce una agrupación en tres familias que organiza el resto del cap�
 | **buscada** | se obtiene optimizando un criterio, o la operación misma busca | Canny; histéresis transitiva |
 | **aprendida** | se ajusta a partir de datos | los pesos del clasificador |
 
+Table: Las tres familias de patrón y de dónde sale la plantilla de cada una.
+
 > **Sobre esta clasificación.** La agrupación en «escrita a mano / buscada / aprendida» **es propia de
 > este trabajo** y no corresponde a una taxonomía establecida en la literatura. Se propone como
 > dispositivo organizador —agrupa según cómo se obtiene la plantilla— y cada una de sus tres ramas se
@@ -247,6 +249,8 @@ Los trabajos comparables emplean de forma característica plataformas de gama me
 | Digilent ZedBoard | Zynq-7000, ARM + FPGA | 475 USD |
 | **iCESugar v1.5** *(este trabajo)* | **iCE40UP5K** | **≈ 48 USD** |
 
+Table: Plataformas empleadas en implementaciones comparables de reconocimiento de MNIST en FPGA, y su precio.
+
 La diferencia de precio —un factor de diez respecto de la ZedBoard y de dieciséis respecto de la
 DE2-115— refleja una diferencia mucho mayor de recursos. Una implementación representativa sobre la
 DE2-115 emplea una red convolucional de siete capas con **144 multiplicadores dedicados y 128
@@ -391,6 +395,8 @@ tarjeta «HOLA»—, que se usan a lo largo del Capítulo 5:
 | `hand`, la mano (este trabajo) | 137,4 | 10,97 | 0,1 % |
 | `hi`, la tarjeta «HOLA» (este trabajo) | 134,3 | 10,97 | 2,6 % |
 
+Table: Error de la conversión a gris de Maldonado frente a la luminancia exacta, sobre cinco imágenes ordenadas por brillo.
+
 La primera cifra es la que se había anotado en el cuaderno de trabajo, y es engañosa si se lee sola:
 `flower` es casi toda negra, y en el negro la ganancia no pesa. La tabla lo ordena por brillo, y el
 error crece con él: es alrededor de un 8 % del brillo medio. Las dos fotografías tomadas con luz de
@@ -451,6 +457,8 @@ alimentación, y comparó cada imagen devuelta con la calculada en software:
 | Potencia a 1,8 V, 100 MHz, SPI a 9 MHz | **2,87 mW** |
 | A 1,3 V, según su propia figura | sigue exacta a 346 514 píxeles/s, con ≈ 1,3 mW |
 
+Table: Lo que Maldonado midió sobre su chip fabricado, en modo gris.
+
 ![**Figura 2.2.** El chip de Maldonado, medido: potencia (rojo) y frecuencia de SPI más alta con la
 imagen todavía exacta (azul) frente a la tensión de alimentación, en modo gris y con el chip a 100 MHz.
 Sobre cada punto, el caudal alcanzado. Gráfica de la autora, tomada de su repositorio (licencia
@@ -472,6 +480,8 @@ medida— eso deja el caudal en un tercio.
 | Filtros | Sobel | Sobel, Canny de un salto, Canny transitivo, y un clasificador |
 | Autoprueba | **LFSR en el chip** | no la hay |
 | Verificación | cocotb, **por inspección visual** de la imagen | comparación **bit a bit** contra un modelo golden |
+
+Table: Ventajas y desventajas del chip de Maldonado (TT06) frente a este trabajo.
 
 Las dos columnas no compiten: responden preguntas distintas. La de Maldonado es **cuánto cuesta el
 filtro solo, y si el silicio hace lo que dice**; su respuesta —dos tiles, milivatios, imagen exacta a
@@ -557,6 +567,8 @@ páginas están comprobados salvo donde se indica.
 | Ruiz 2020 | D. L. Ruiz P., *Desarrollo de una estrategia pedagógica para la enseñanza de arquitecturas microprocesadas con base al núcleo RISC-V Core101*, Universidad de los Andes, 2020. |
 | Camacho 2020 | J. F. Camacho O., *Uso de herramientas libres para diseñar un sistema de monitoreo de variables físicas de bajo costo basado en sistemas embebidos*, Universidad Nacional de Colombia, 2020. |
 | Aponte 2023 | J. A. Aponte M., *Design of Fault Tolerant Embedded Systems using Approximate Computing Techniques*, Universidad Nacional de Colombia, 2023. |
+
+Table: Referencias citadas en el Capítulo 2.
 
 ### Tres precisiones que la verificación produjo
 

@@ -36,6 +36,8 @@ sostiene para los tres filtros sobre las cinco imágenes de prueba.
 | Canny de un salto | 5 / 5 | 4 800 por cuadro | **0** |
 | Canny transitivo | 5 / 5 | 4 800 por cuadro | **0** |
 
+Table: Verificación bit a bit de los núcleos aislados contra el modelo de referencia.
+
 Que la coincidencia sea exacta y no aproximada tiene una causa de diseño: los tres filtros operan
 **sobre enteros y sin división**. La magnitud del gradiente usa la norma L1, `|Gx|+|Gy|`, en lugar de
 la euclídea; los pesos del operador son potencias de dos, implementadas como desplazamientos; y el
@@ -55,6 +57,8 @@ sincronismo propio. Medida sobre ese flujo, la concordancia entre el hardware y 
 | Canny de un salto | 88 – 99 % |
 | Canny transitivo | 96 – 100 % |
 | Promedio a través del SoC | **97,8 %** |
+
+Table: Concordancia de la cadena completa con cámara frente al modelo.
 
 La degradación respecto del 100 % de la §5.1.2 no proviene del filtro sino del **acoplamiento con la
 cámara**: el muestreo del flujo, el recorte de la ventana y el instante exacto en que empieza un

@@ -130,6 +130,8 @@ La correspondencia entre unos y otros es la siguiente:
 | 2. El algoritmo de inteligencia artificial | 1, 2 | Caps. 2 y 3, §5.1 y §5.6: los detectores de bordes y el clasificador de dígitos, verificados contra el modelo |
 | 3. Flujo ASIC con herramientas EDA, para el procesador y el algoritmo | 4, 5 | §5.3, §5.4, §5.6.7 y §5.7: los circuitos con GDSII firmado, el procesador entre ellos, y la adaptación a Tiny Tapeout |
 
+Table: Correspondencia entre los objetivos aprobados en la propuesta y los objetivos operativos de este trabajo.
+
 Dos precisiones sobre la propuesta. Nombraba el LatticeMico32 (LM32) como referencia de procesador; el
 núcleo adoptado fue FemtoRV32, del conjunto RV32I, por las razones de la §4.5. Y admitía como
 herramienta Yosys **o** Synopsys; se usó sólo el flujo abierto —Yosys, OpenLane, Magic, KLayout—,

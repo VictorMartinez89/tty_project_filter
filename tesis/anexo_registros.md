@@ -14,6 +14,8 @@ píxeles no pasan por el bus**. El periférico expone tres registros y nada más
 | `0x04` | `THR` | escritura | `[7:0]` umbral bajo · `[15:8]` umbral alto |
 | `0x08` | `STAT` | lectura | `[0]` configuración terminada · `[1]` motor ocupado · `[2]` sincronismo vivo · `[23:8]` cuenta de cuadros |
 
+Table: Mapa de registros del periférico de control.
+
 El campo de modo selecciona cuál de los tres filtros procesa la imagen:
 
 | Valor | Filtro |
@@ -21,6 +23,8 @@ El campo de modo selecciona cuál de los tres filtros procesa la imagen:
 | `0` | Sobel |
 | `1` | Canny de un salto |
 | `2` | Canny transitivo |
+
+Table: Códigos de selección de filtro.
 
 ### Dos decisiones de diseño visibles en la tabla
 
@@ -63,6 +67,8 @@ diferencias obligatorias de la §4.8:
 |---|---|
 | FPGA | arreglo inicializado desde el *bitstream* |
 | ASIC | **tabla de constantes sintetizada como lógica combinacional** |
+
+Table: La ROM del procesador en cada sustrato.
 
 En silicio no existe nada que cargue el contenido inicial de una memoria. El código Verilog que
 funciona en ambos casos **simula idénticamente** y produce circuitos distintos, de los cuales uno no

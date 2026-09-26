@@ -29,6 +29,8 @@ origen del resultado de la §5.4.3.
 | Canny de un salto | flujo | hardware, con procesador FemtoRV32 | 50 / 20 |
 | Canny transitivo | **framebuffer** | hardware, motor en Verilog **sin procesador** | 60 / 30 |
 
+Table: Los tres filtros en la FPGA: arquitectura, implementación y umbrales.
+
 Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo produce contornos
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
@@ -53,6 +55,8 @@ de las herramientas**, para que sean comparables entre sí.
 | SoC + Canny de un salto | 5 234 (**99 %**) | 24 (80 %) | 0 | 18 (46 %) | 9,5 MHz ✗ | 17,7 MHz ✓ |
 | SoC + transitivo **por software** | 5 251 (**99 %**) | 28 (93 %) | 0 | 18 (46 %) | 8,7 MHz ✗ | 20,5 MHz ✓ |
 | SoC + transitivo **como periférico** | no emplaza (≈ 127 %) | — | — | — | — | — |
+
+Table: Utilización de la iCE40UP5K y frecuencias máximas de cada diseño.
 
 > **Procedencia.** Las cuatro primeras filas se midieron de nuevo para este documento. Tres de ellas
 > —las filas primera, tercera y cuarta— reprodujeron **exactamente**, celda por celda y bloque por

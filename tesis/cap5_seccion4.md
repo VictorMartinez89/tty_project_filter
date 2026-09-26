@@ -20,6 +20,8 @@ sola causa.
 | #5 | `soc_canny1_completo` | Canny1 | ✓ | 3,44 | 51 037 | 36 ns (27,8 MHz) | **+0,00 ns** | 0 | 0 | 0 |
 | #6 | `soc_trans_completo` | Transitivo | ✓ | 10,19 | 146 216 | 36 ns (27,8 MHz) | **−18,23 ns** | 0 | 0 | 0 |
 
+Table: Tabla maestra de la cadena de visión completa en silicio.
+
 ᵃ Estos dos se archivaron sin el directorio de reportes; sus cifras provienen de la ficha del cuaderno
 y no de un `metrics.csv` del flujo. Se marcan porque en una tabla de resultados debe poder decirse de
 dónde sale cada número.
@@ -59,6 +61,8 @@ programa y su periférico:
 | Canny de un salto | 42 581 | 51 037 | **+8 456** | +19,9 % |
 | Canny transitivo | 137 092 | 146 216 | **+9 124** | +6,7 % |
 
+Table: Costo del procesador según el filtro que acompaña.
+
 El incremento absoluto es **prácticamente constante**: alrededor de nueve mil celdas, con una
 dispersión inferior al 5 % entre el caso más barato y el más caro. Es un resultado esperable —el
 procesador no sabe qué filtro tiene al lado— pero conviene tenerlo medido, porque convierte al
@@ -80,6 +84,8 @@ central de este capítulo:
 | local, ventana 3×3 | Sobel | 36 730 | — |
 | local más un salto | Canny de un salto | 42 581 | +5 851 |
 | **global, cuadro completo** | Canny transitivo | **137 092** | **+94 511** |
+
+Table: Costo de ampliar el alcance del patrón, de un filtro al siguiente.
 
 Pasar de mirar una ventana de 3×3 a mirar un salto más cuesta menos de seis mil celdas. Pasar de ahí a
 **mirar el cuadro entero** cuesta noventa y cuatro mil quinientas once.

@@ -69,6 +69,8 @@ sexta, **Canny-78**, es la versión ampliada que presenta la §5.6.9:
 | Canny transitivo | 89.76 % | 0.897 | 97.80 % | 139 |
 | **Canny-78** *(§5.6.9)* | **97.22 %** | **0.972** | **99.92 %** | **5** |
 
+Table: Exactitud sobre MNIST según el front-end.
+
 El ruido experimental del procedimiento se estimó mediante **validación cruzada de diez pliegues
 disjuntos** sobre las 60 000 imágenes, obteniéndose **σ = 1.32 puntos porcentuales**. Bajo ese
 criterio, **las diferencias entre los cuatro primeros front-ends no son estadísticamente
@@ -102,6 +104,8 @@ conservan revelan una diferencia que la exactitud oculta:
 | Canny transitivo | 0.9942 | **0.1991** | 0.7787 |
 | SoC + Sobel | 0.9939 | 0.1749 | 0.8056 |
 
+Table: Calibración del clasificador según el front-end: AUC y puntaje de Brier.
+
 El resultado de interés corresponde al Canny transitivo. En AUC —que mide el **ordenamiento**— supera
 al SoC+Sobel; en Brier —que mide la **calibración**— queda último por amplio margen. **Ordena
 correctamente y decide mal.** Ello explica de forma mecánica sus 139 falsos positivos: la
@@ -120,6 +124,8 @@ sección:
 | el umbral, dentro del Sobel | **5.79 pp** | **4.4 σ** |
 | el umbral, dentro del Canny | 0.90 pp | 0.7 σ |
 | el filtro, cada uno en su óptimo | 0.38 pp | 0.3 σ |
+
+Table: Peso del punto de operación frente al del front-end en la exactitud.
 
 **Mover el umbral dentro del Sobel altera el resultado quince veces más que cambiar de filtro.** Y la
 asimetría entre ambos front-ends es el hallazgo: el Sobel presenta un óptimo estrecho —su exactitud
@@ -150,6 +156,8 @@ predicción con la del modelo.
 | Matriz de confusión | idéntica elemento por elemento |
 | Veredictos de la clase de rechazo | **10 000 / 10 000** idénticos |
 | Cuadros aceptados · precisión al responder | 8 838 (88.38 %) · 95.44 %, en ambos |
+
+Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
 ![**Figura 5.5.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
@@ -239,6 +247,8 @@ de OpenLane hasta la firma del GDS:
 | holgura con parásitos (`spef_wns`) | **0.00 ns** | **0.00 ns** |
 | DRC · LVS · XOR | 0 · 0 · 0 | 0 · 0 · 0 |
 
+Table: El reconocedor en silicio con front-end Sobel y con Canny de un salto.
+
 Ambos circuitos cierran el temporizado con los parásitos del interconexionado extraídos y superan las
 tres verificaciones de firma sin observaciones. Merece señalarse que **cierran más rápido que los
 circuitos de visión equivalentes** —que requirieron 32 y 36 ns—, lo que resulta coherente con la
@@ -261,6 +271,8 @@ directamente comparables entre sí:
 | sistema de visión completo | 35 653 | 41 925 | 1.18× |
 | reconocedor con procesador | 19 949 | 20 921 | 1.05× |
 | **reconocedor que además muestra** | **38 643** | **39 794** | **1.03×** |
+
+Table: Costo relativo del front-end según el nivel del sistema.
 
 **El sobrecosto del Canny se diluye conforme crece el sistema que lo rodea.** Considerado de forma
 aislada cuesta un **123 %** más; con un procesador al lado, un 83 %; dentro de un sistema de visión,
@@ -342,6 +354,8 @@ final, **2 937 celdas lógicas (55 %) a 17.55 MHz**.
 | precisión al responder | 99.15 % |
 | lotes repetidos por error de transmisión | 0 |
 
+Table: Canny-78 medido en la tarjeta sobre las diez mil imágenes de prueba.
+
 > **La iCE40UP5K reproduce el modelo sobre el conjunto de prueba completo de MNIST, imagen por
 > imagen, sin una sola discrepancia.** El «nueve de diez» de la §5.6.6 demostraba que el circuito
 > funcionaba; esto demuestra que funciona **exactamente** como se diseñó, sobre diez mil casos.
@@ -379,6 +393,8 @@ con la receta de los demás circuitos: reloj de 30 ns, utilización del 30 % y d
 | camino crítico, frente a un reloj de 30 ns | 12,66 ns | 11,86 ns |
 | DRC · LVS · XOR · temporizado con parásitos | 0 · 0 · 0 · holgura ≥ 0 | 0 · 0 · 0 · holgura ≥ 0 |
 | veredictos iguales al modelo | 10 000 / 10 000 | 10 000 / 10 000 |
+
+Table: Canny-78 y su variante recortada, firmados en sky130.
 
 La variante recortada cambia una sola cosa: la memoria de rasgos del clasificador estaba declarada con
 256 posiciones de 13 bits y sólo se usaban 168 de 9. En la FPGA eso no costaba nada —un bloque de BRAM

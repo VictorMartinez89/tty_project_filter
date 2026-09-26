@@ -100,6 +100,8 @@ por su cuenta es mucho peor que uno que lo ve ya corregido.
 | 5 | El Canny supera al Sobel bajo condiciones degradadas | Comparaba **dos puntos de operación**, no dos filtros; con el umbral implementado el resultado se invierte |
 | 6 | La discrepancia entre SPICE y el analizador estático es la **resistencia** de la interconexión | La resistencia aporta **0,017 ns**, el 0,1 %. La causa son los parásitos internos de la celda (§5.7.3) |
 
+Table: Seis afirmaciones propias que la medida corrigió.
+
 Las seis comparten una forma, y conviene enunciarla porque es la lección metodológica del trabajo:
 **ninguna procedía de una medición equivocada.** Las mediciones eran correctas en todos los casos. Lo
 que falló fue la lectura: comparar en puntos de operación distintos, estimar la variabilidad con un

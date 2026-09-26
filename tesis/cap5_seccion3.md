@@ -29,6 +29,8 @@ Todos se llevaron a GDSII con **OpenLane** sobre el PDK abierto **sky130A**, bib
 | `vision_top` | cámara + Sobel + framebuffer + pantalla | 1,75 mm² | 35 653 | DRC/LVS/XOR = 0 |
 | `vision_canny` | cámara + Canny + framebuffer + pantalla | 2,04 mm² | 41 925 | DRC/LVS/XOR = 0 |
 
+Table: Los bloques llevados a silicio en sky130: área, celdas y firma.
+
 **Diez circuitos, diez veces DRC, LVS y XOR en cero.**
 
 ## 5.3.2 Lo que la tabla muestra de un vistazo
@@ -64,6 +66,8 @@ Un circuito se puede contar en dos momentos del flujo, y las dos cifras son leg�
 | celdas de **síntesis** | el resultado de traducir el RTL a compuertas | la tabla de la §5.4 |
 | celdas **emplazadas** | lo que queda tras emplazar y rutear, con los amortiguadores que el flujo inserta para el árbol de reloj y la reparación de tiempos | **esta** tabla y la §5.6 |
 
+Table: Las dos definiciones de «celda» y dónde se usa cada una.
+
 Durante la redacción, la columna «celdas» de este capítulo **mezclaba las dos**, porque las fichas del
 cuaderno habían registrado en cada momento el campo que la herramienta ofrecía. **Se rehízo el
 recuento**: se contaron las instancias de celda estándar directamente sobre el **netlist posterior al
@@ -86,6 +90,8 @@ Como en nueve circuitos se conservan las dos cifras, el paso de una a otra no ha
 | Mediana | ×1,20 |
 | Rango | ×1,16 a ×1,26 |
 | Desviación típica | 0,04 |
+
+Table: Factor de conversión de celdas de síntesis a celdas tras el emplazamiento, medido sobre nueve circuitos.
 
 **El emplazamiento agrega entre un 16 % y un 26 % de celdas**, con una dispersión estrecha. De modo
 que una cifra de la §5.4 se lleva a la escala de ésta multiplicándola por 1,21, y el error de esa

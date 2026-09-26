@@ -29,6 +29,8 @@ cada resultado de este documento:
 | **Visualización de layout** | KLayout con interfaz gráfica | **máquina virtual** |
 | Grabación del *bitstream* | copia al volumen de la tarjeta | equipo principal |
 
+Table: Etapas del flujo y máquina en que corre cada una.
+
 La consecuencia práctica es que **un resultado de silicio no se puede reproducir sin la máquina
 virtual**, mientras que toda la verificación funcional y eléctrica sí se reproduce en el equipo
 principal. Esa asimetría condiciona qué partes de este trabajo son fácilmente auditables por un

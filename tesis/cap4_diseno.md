@@ -32,6 +32,8 @@ El sistema tiene **dos relojes asíncronos entre sí**:
 | `clk` | 50 MHz (20 ns) | configuración SCCB, generación del raster, driver de pantalla |
 | `cam_pclk` | 25 MHz (40 ns) | captura, submuestreo, filtro, escritura del almacenamiento |
 
+Table: Los dos dominios de reloj del sistema.
+
 La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cámara escribe en su
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
@@ -51,6 +53,8 @@ registros:
 | `0x12` | `0x00` | reinicio de la configuración |
 | `0x13` | `0xE7` | habilita AGC, AWB y AEC automáticos |
 | `0x09` | `0x18` | configura los pines de control |
+
+Table: Registros de la cámara OV7670 escritos por SCCB.
 
 La máquina espera un arranque largo —un contador de veinte bits— antes de emitir el primer bit,
 porque el sensor necesita tiempo tras la alimentación. Al terminar activa `cfg_done`, que además
@@ -153,6 +157,8 @@ Se emplea una notación mínima que distingue lo que en hardware son dos cosas d
 | `x ← e` | **registro**: se actualiza al final del ciclo, y el bloque lee el valor anterior | `x <= e` |
 | `x ≔ e` | **cable**: vale de inmediato y de forma continua | `wire` / `assign` |
 | `▷` | comentario | `//` |
+
+Table: Notación empleada para enunciar los filtros como algoritmos.
 
 **Los tres comparten el esqueleto y se diferencian en una sola caja.** Ésa es la razón de que puedan
 intercambiarse sin tocar nada aguas abajo, y de que la comparación del Capítulo 5 sea limpia: se
@@ -309,6 +315,8 @@ La iCE40UP5K ofrece tres clases de almacenamiento, y el diseño usa las tres con
 | Celdas lógicas | 5 280 | lógica y registros pequeños |
 | Bloques de memoria (4 kbit) | 30 | **memorias de línea** de las ventanas 3×3 |
 | SPRAM (256 kbit) | 4 | **framebuffers** del filtro transitivo |
+
+Table: Recursos de memoria de la iCE40UP5K y su uso en este trabajo.
 
 La asignación no es libre: una memoria de línea cabe en un bloque de memoria si el sintetizador la
 reconoce como tal, y no la reconoce si el código la escribe de una forma que no encaja con el patrón

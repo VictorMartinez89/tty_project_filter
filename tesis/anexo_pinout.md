@@ -34,6 +34,8 @@ cámara **OV7670** y una pantalla **TFT ILI9341** por SPI.
 | `led_g` | 40 | |
 | `led_b` | 41 | |
 
+Table: Asignación de pines de la iCE40UP5K.
+
 ## C.3 Una advertencia que costó media hora
 
 **Varios comentarios de cabecera de los fuentes de este trabajo contienen la asignación equivocada**
