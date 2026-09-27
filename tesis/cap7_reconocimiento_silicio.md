@@ -99,9 +99,15 @@ cuesta lo mismo lleno que vacío—; en silicio, **un cuarto del dado era memori
 Es la tesis del Capítulo 8 dicha con el número más limpio de todo el trabajo: la memoria se paga por
 los bits que se declaran, no por los que se usan.
 
-![**Figura 7.5.** Canny-78 recortado en KLayout: 905×916 µm, 0,829 mm², 93 867 instancias. A la
-izquierda el dado completo; a la derecha, una ampliación con las filas de celdas y el ruteo en los
-niveles de metal.](figuras/fig_7_canny78f9_asic.jpg)
+![**Figura 7.5.** Canny-78 recortado en KLayout, el dado completo: 905×916 µm, 0,829 mm² y 93 867
+instancias. Alrededor del borde están los pines del circuito —`in_pix`, `in_valid`, `thr_hi`, `thr_lo`,
+`digito`—, y las franjas horizontales son las tiras de alimentación. No hay un bloque de memoria a la
+vista: la memoria de rasgos, ya recortada a 168 posiciones de 9 bits, son biestables repartidos entre
+las demás celdas.](figuras/fig_7_canny78f9_chip.png)
+
+![**Figura 7.6.** Una ampliación del mismo plano: las filas de celdas estándar de sky130, con sus
+nombres legibles —los biestables `dfxtp` y los condensadores de desacoplo `decap`—, y encima el ruteo
+en los niveles de metal que las conecta.](figuras/fig_7_canny78f9_zoom.png)
 
 En Tiny Tapeout, en cambio, ninguna de las dos cabe: en el tamaño máximo de 8×2 tiles, la completa
 pide un 110,7 % del área y la recortada, al 80,3 %, se queda sin sitio para los búferes que cierran el
@@ -115,9 +121,9 @@ front-end, sin cámara ni procesador: el píxel entra por los pines y el dígito
 Sobel lleva el umbral fijo en 60 y **13 319 celdas**; el del Canny, los umbrales 90 y 32 y **14 970
 celdas**. Los dos firman con DRC y LVS en cero.
 
-![**Figura 7.6.** El reconocedor con el Sobel en los 8×2 mosaicos de Tiny Tapeout, en el render que
+![**Figura 7.7.** El reconocedor con el Sobel en los 8×2 mosaicos de Tiny Tapeout, en el render que
 genera el flujo de la lanzadera. Las columnas verticales son las tiras de
 alimentación.](figuras/fig_7_tt_mnist_sobel.png)
 
-![**Figura 7.7.** El reconocedor con el Canny en los mismos 8×2 mosaicos. Es el antecesor directo del
+![**Figura 7.8.** El reconocedor con el Canny en los mismos 8×2 mosaicos. Es el antecesor directo del
 `tt_mnist_canny_v2_vic` que cabe con el 42 % de utilización.](figuras/fig_7_tt_mnist_canny.png)
