@@ -2216,3 +2216,222 @@ module vision_canny_top (
 endmodule
 `default_nettype wire
 ```
+
+## G.11 Visión Canny Framebuffer Transitivo (§4.3.11)
+
+Es el circuito `trans_completo`, el #3 de la §5.3: 9,61 mm² en sky130. `trans_completo.v` conecta la
+cadena y declara el framebuffer de clases y el de bordes; `grad_class_top.v` calcula la clase de cada
+píxel con el suavizado, el gradiente y el doble umbral. El motor es el de la G.3, y los bloques de
+interfaz, los de la G.7.
+
+Carpeta: `Verilog_Repo/completos/trans_completo/`.
+
+### `trans_completo.v`
+
+```verilog
+// trans_completo.v — LA CADENA DE VISION con histeresis TRANSITIVA (por-cuadro), sin
+//   CPU, ASIC sky130.
+//   camara OV7670 --> [cam_frontend_top: SCCB + captura + CDC + RGB565->gris]
+// --> [grad_class_top: Gaussian -> Sobel -> doble umbral -> CLASE 2 bits]
+// --> [clsfb 60x80 x2 bits] --(motor bucle: LOAD -> barre K -> READ)--> [edgefb 60x80
+//   x1 bit]
+//                 --> [lcd_ili9341_top: SPI + ROM ILI9341] --> PMOD TFTLCD
+// Arquitectura DESACOPLADA (igual que cam_canny3_display.v en FPGA): el motor corre a
+//   su propio ritmo;
+// la camara sobrescribe clsfb (si llega cuadro nuevo mientras barre, la imagen "salta"
+//   un poco: esperado).
+// UN SOLO RELOJ (clk): el front-end sincroniza PCLK/HREF/VSYNC con 2-FF internos
+//   (Parte 152).
+`default_nettype none
+module trans_completo (
+    input  wire       clk,
+    input  wire       rst_n,
+    // ---- camara OV7670 ----
+    input  wire [7:0] cam_d,
+    input  wire       cam_pclk,
+    input  wire       cam_href,
+    input  wire       cam_vsync,
+    output wire       cam_xclk,
+    output wire       cam_sioc,
+    output wire       cam_siod_o,
+    output wire       cam_siod_oe,
+    // ---- display PMOD TFTLCD ----
+    output wire       tft_sck,
+    output wire       tft_mosi,
+    output wire       tft_cs,
+    output wire       tft_dc,
+    // ---- estado ----
+    output wire       cfg_done,
+    output wire       init_done
+);
+    // ===== 1) FRONT-END: camara -> stream de gris =====
+    wire [7:0] gray; wire gray_valid, fe_frame_start, fe_line_start;
+    cam_frontend_top u_fe (
+        .sysclk(clk), .rst_n(rst_n),
+        .cam_d(cam_d), .cam_pclk(cam_pclk), .cam_href(cam_href), .cam_vsync(cam_vsync),
+        .cam_xclk(cam_xclk), .cam_sioc(cam_sioc), .cam_siod_o(cam_siod_o),
+            .cam_siod_oe(cam_siod_oe),
+        .gray(gray), .gray_valid(gray_valid), .frame_start(fe_frame_start),
+            .line_start(fe_line_start),
+        .cfg_done(cfg_done));
+
+    // ===== 2) GENERADOR DE CLASE: gray -> Gaussian -> Sobel -> doble umbral -> 2 bits
+    //   =====
+    wire cls_v; wire [1:0] cls_p;
+    grad_class_top u_cg (
+        .clk(clk), .reset(~rst_n),
+        .in_valid(gray_valid), .in_pix(gray), .thr_hi(8'd110), .thr_lo(8'd70),
+        .out_valid(cls_v), .class_out(cls_p));
+
+    // ===== 3) CLSFB 60x80 x2 bits (mapa de clase; W=stream de camara, R=motor) =====
+    reg [1:0] clsfb [0:4799];
+    reg [12:0] wadr;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) wadr <= 13'd0;
+        else if (fe_frame_start) wadr <= 13'd0;
+        else if (cls_v) begin
+            clsfb[wadr] <= cls_p;
+            wadr <= (wadr == 13'd4799) ? 13'd0 : wadr + 1'b1;
+        end
+    end
+    reg [12:0] cls_raddr;
+    reg [1:0]  cls_rd;
+    always @(posedge clk) cls_rd <= clsfb[cls_raddr];   // lectura sincrona (1 ciclo)
+
+    // ===== 4) MOTOR transitivo + puente FSM (dominio clk) =====
+    reg        eng_nreset, eng_in_valid; reg [1:0] eng_class;
+    wire       eng_load_ready, eng_out_valid, eng_edge, eng_done;
+    trans_engine_top ENG (
+        .clk(clk), .nreset(eng_nreset),
+        .in_valid(eng_in_valid), .class_in(eng_class),
+        .load_ready(eng_load_ready), .out_valid(eng_out_valid), .edge_out(eng_edge),
+            .done(eng_done));
+
+    // ===== 5) EDGEFB 60x80 x1 bit (mapa de borde; W=motor READ, R=pantalla) =====
+    reg        edgefb [0:4799];
+    reg        edge_we; reg [12:0] edge_wa; reg edge_wd;
+    always @(posedge clk) if (edge_we) edgefb[edge_wa] <= edge_wd;
+
+    // puente FSM: reset motor -> espera LOAD -> carga clsfb -> READ escribe edgefb
+    localparam [1:0] E_RST=2'd0, E_WLOAD=2'd1, E_LOAD=2'd2, E_READ=2'd3;
+    reg [1:0]  estate; reg [3:0] rstcnt; reg [12:0] lptr; reg lphase; reg [12:0] eptr;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            estate<=E_RST; rstcnt<=4'd0; lptr<=13'd0; lphase<=1'b0; eptr<=13'd0;
+            eng_nreset<=1'b0; eng_in_valid<=1'b0; eng_class<=2'd0; edge_we<=1'b0;
+                cls_raddr<=13'd0;
+        end else begin
+            eng_in_valid <= 1'b0; edge_we <= 1'b0;
+            case (estate)
+            E_RST: begin
+                eng_nreset <= 1'b0; rstcnt <= rstcnt + 1'b1;
+                if (rstcnt == 4'd8) begin eng_nreset<=1'b1; estate<=E_WLOAD; lptr<=13'd0;
+                    lphase<=1'b0; end
+            end
+            E_WLOAD: begin
+                eng_nreset <= 1'b1;
+                if (eng_load_ready) begin cls_raddr <= lptr; lphase <= 1'b0; estate <= E_LOAD;
+                    end
+            end
+            E_LOAD: begin
+                eng_nreset <= 1'b1;
+                // direcciona pixel lptr
+                if (lphase == 1'b0) begin cls_raddr <= lptr; lphase <= 1'b1; end
+                else begin
+                    // emite el valido
+                    eng_in_valid <= 1'b1; eng_class <= cls_rd;
+                    lphase <= 1'b0;
+                    if (lptr == 13'd4799) begin estate<=E_READ; eptr<=13'd0; end
+                    else lptr <= lptr + 1'b1;
+                end
+            end
+            E_READ: begin
+                eng_nreset <= 1'b1;
+                if (eng_out_valid) begin edge_we<=1'b1; edge_wa<=eptr; edge_wd<=eng_edge;
+                    eptr<=eptr+1'b1; end
+                if (eng_done) begin estate<=E_RST; rstcnt<=4'd0; end
+            end
+            endcase
+        end
+    end
+
+    // ===== 6) LECTURA para el LCD (240x320 -> escala a 60x80) desde edgefb =====
+    wire lcd_next, lcd_fs;
+    reg [7:0] xcol; reg [8:0] ycol;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin xcol<=8'd0; ycol<=9'd0; end
+        else if (lcd_fs) begin xcol<=8'd0; ycol<=9'd0; end
+        else if (lcd_next) begin
+            if (xcol==8'd239) begin xcol<=8'd0; ycol<=(ycol==9'd319)?9'd0:ycol+1'b1; end
+            else xcol<=xcol+1'b1;
+        end
+    end
+    wire [6:0] fx = xcol[7:2];
+    wire [6:0] fy = ycol[8:2];
+    wire [13:0] raddr = fy*60 + fx;
+    reg fb_rd_bit;
+    always @(posedge clk) fb_rd_bit <= edgefb[raddr[12:0]];
+    wire [7:0] fb_rd = fb_rd_bit ? 8'hFF : 8'h00;
+
+    // ===== 7) LCD DRIVER =====
+    lcd_ili9341_top u_lcd (
+        .clk(clk), .rst_n(rst_n),
+        .pix_gray(fb_rd), .pix_next(lcd_next), .frame_start(lcd_fs), .init_done(init_done),
+        .tft_sck(tft_sck), .tft_mosi(tft_mosi), .tft_cs(tft_cs), .tft_dc(tft_dc));
+
+    wire _unused = &{fe_line_start, 1'b0};
+endmodule
+`default_nettype wire
+```
+
+### `grad_class_top.v`
+
+```verilog
+// grad_class_top.v — genera la CLASE (2 bits) para el motor transitivo, sin CPU.
+// gray stream -> Gaussian 3x3 -> Sobel 3x3 -> doble umbral -> class_out (0 nada / 1
+//   debil / 2 fuerte).
+// Es la MISMA cabeza del canny1_top, pero SIN la histeresis de 1 salto: aqui la
+//   histeresis la hace
+// el motor transitivo (por-cuadro, K barridos). Umbrales altos: la transitiva conecta
+//   semillas escasas.
+`default_nettype none
+module grad_class_top (
+    input  wire       clk,
+    input  wire       reset,       // sincrono, activo-alto
+    input  wire       in_valid,
+    input  wire [7:0] in_pix,
+    input  wire [7:0] thr_hi,       // umbral fuerte
+    input  wire [7:0] thr_lo,       // umbral debil
+    output reg        out_valid,
+    output reg  [1:0] class_out     // 0 nada / 1 debil / 2 fuerte
+);
+    // etapa 1: Gaussian 3x3
+    wire vg;
+    wire [7:0] gw00,gw01,gw02,gw10,gw11,gw12,gw20,gw21,gw22;
+    linebuf3x3 #(.W(60),.DW(8)) LBG (
+        .clk(clk),.in_valid(in_valid),.in_pix(in_pix),.valid_o(vg),
+        .w00(gw00),.w01(gw01),.w02(gw02),.w10(gw10),.w11(gw11),.w12(gw12),
+        .w20(gw20),.w21(gw21),.w22(gw22));
+    wire [11:0] gsum = gw00+(gw01<<1)+gw02 + (gw10<<1)+(gw11<<2)+(gw12<<1) + gw20+(gw21<<1)+gw22;
+    wire [7:0]  gout = gsum[11:4];   // /16
+    // etapa 2: Sobel 3x3 sobre la Gaussiana
+    wire vs;
+    wire [7:0] sw00,sw01,sw02,sw10,sw11,sw12,sw20,sw21,sw22;
+    linebuf3x3 #(.W(60),.DW(8)) LBS (
+        .clk(clk),.in_valid(vg),.in_pix(gout),.valid_o(vs),
+        .w00(sw00),.w01(sw01),.w02(sw02),.w10(sw10),.w11(sw11),.w12(sw12),
+        .w20(sw20),.w21(sw21),.w22(sw22));
+    wire [10:0] gxp=sw02+(sw12<<1)+sw22, gxn=sw00+(sw10<<1)+sw20;
+    wire [10:0] gyp=sw20+(sw21<<1)+sw22, gyn=sw00+(sw01<<1)+sw02;
+    wire [10:0] agx=(gxp>=gxn)?(gxp-gxn):(gxn-gxp);
+    wire [10:0] agy=(gyp>=gyn)?(gyp-gyn):(gyn-gyp);
+    wire [11:0] mag12=agx+agy;
+    wire [7:0]  mag=(mag12>12'd255)?8'd255:mag12[7:0];
+    wire [1:0]  cls = (mag>thr_hi)?2'd2 : (mag>thr_lo)?2'd1 : 2'd0;   // doble umbral
+    always @(posedge clk) begin
+        if (reset) begin out_valid<=1'b0; class_out<=2'd0; end
+        else begin out_valid<=vs; class_out<=cls; end
+    end
+endmodule
+`default_nettype wire
+```

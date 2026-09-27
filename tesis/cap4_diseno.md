@@ -36,7 +36,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.33 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.37 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -175,7 +175,7 @@ emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](fi
 #### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.34 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.38 reúne las seis escenas.
 
 ![**Figura 4.4.** El Sobel corriendo en la iCESugar sobre las cinco escenas: la mariposa `monarch`, la flor, la
 mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
@@ -749,7 +749,7 @@ nota ᵃ). Frente a la cadena del Sobel son un 16 % más de celdas y un 18 % má
 esperar de tres memorias de línea en lugar de una. Llegar ahí costó dos batallas: un fallo de OpenROAD
 en la optimización de temporizado, que se esquivó desactivándola porque el temporizado ya se cumplía
 con holgura, y la congestión del ruteo, que bajó de 138 684 violaciones a cero al repartir las celdas
-con una densidad de 0,20. Su plano en KLayout es la Figura 5.13.
+con una densidad de 0,20. Su plano en KLayout es la Figura 5.14.
 
 ### Visión Sobel
 
@@ -805,8 +805,11 @@ Sobel y la cadena con la cámara emulada son las de las Figuras 4.2 y 4.3.
 
 #### En la tarjeta
 
-Su versión para la FPGA, `cam_sobel_display.v`, es un diseño que corrió en la iCESugar con la cámara y
-la pantalla.
+Su versión para la FPGA, `cam_sobel_display.v`, corrió en la iCESugar con la cámara y la pantalla.
+
+![**Figura 4.30.** El sistema de visión con el Sobel en vivo en la iCESugar —cámara OV7670, Sobel y
+pantalla— sobre seis objetos: la flor, las mariposas `monarch` y `butterfly`, la mano y las dos mitades
+de la tarjeta, «HO» y «LA».](figuras/fig_4_vision_placa.jpg)
 
 #### En silicio
 
@@ -823,7 +826,7 @@ dos relojes y el mismo framebuffer de ocho bits por píxel. El esqueleto —cám
 pantalla— no cambia; cambia el camino de datos, que pasa de una ventana de 3×3 a tres, con umbrales de
 70 y 30.
 
-![**Figura 4.30.** Los dos sistemas de visión, uno sobre otro: `vision_top` con el Sobel, un juego de
+![**Figura 4.31.** Los dos sistemas de visión, uno sobre otro: `vision_top` con el Sobel, un juego de
 memorias de línea; `vision_canny_top` con el Canny, tres. Todo lo demás es igual.](figuras/fig_4_visioncanny_cauces.png)
 
 #### Pseudocódigo
@@ -857,7 +860,10 @@ cadena con la cámara emulada son las de las Figuras 4.6 y 4.7.
 
 #### En la tarjeta
 
-![**Figura 4.31.** El Canny de un salto con la cámara y la pantalla en la iCESugar, el 22 de julio de
+![**Figura 4.32.** El sistema de visión con el Canny de un salto en vivo en la iCESugar, sobre los
+mismos seis objetos que el del Sobel.](figuras/fig_4_visioncanny_vivo.jpg)
+
+![**Figura 4.33.** El Canny de un salto con la cámara y la pantalla en la iCESugar, el 22 de julio de
 2026, en fotogramas de los videos de la tarjeta.](figuras/fig_4_visioncanny_placa.jpg)
 
 #### En silicio
@@ -865,6 +871,67 @@ cadena con la cámara emulada son las de las Figuras 4.6 y 4.7.
 En sky130 ocupa **2,04 mm²** y **41 925 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero según
 su ficha (§5.2). Frente al sistema con el Sobel, el Canny cuesta **0,29 mm²** más y eleva la potencia
 típica estimada por el flujo de 66,9 a 90,9 mW. Su plano en KLayout es la Figura 5.4.
+
+### Visión Canny Framebuffer Transitivo
+
+#### Resumen
+
+Es la cadena de visión con el tercer filtro, `trans_completo`, y la única que no puede ser un flujo. El
+transitivo necesita el cuadro entero (§4.3.3), así que la cadena lleva **dos framebuffers**: uno de
+clases, de dos bits por píxel, que escribe la cámara, y otro de bordes, de un bit, que lee la pantalla.
+Entre los dos, el motor da vueltas **a su propio ritmo**: carga el cuadro de clases, lo barre hasta el
+punto fijo y escribe los bordes. Es la misma arquitectura desacoplada de su versión para la FPGA,
+`cam_canny3_display.v`: si la cámara entrega un cuadro nuevo mientras el motor barre, sobrescribe las
+clases, y la imagen salta un poco. Funciona con un solo reloj.
+
+![**Figura 4.34.** La arquitectura desacoplada de `trans_completo`: la cámara llena el framebuffer de
+clases, el motor lo barre en bucle hasta el punto fijo y llena el de bordes, y la pantalla lee este
+último.](figuras/fig_4_visiontrans_diagrama.png)
+
+#### Pseudocódigo
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 11   Visión transitivo: dos framebuffers y un motor en bucle
+──────────────────────────────────────────────────────────────────────
+ 1–3.  idénticos al Algoritmo 7                    ▷ SCCB, sincronía, gris
+ 4.    CLS[y][x] ← clase(gris, 110, 70)             ▷ pasos 1-10 del Algoritmo 3
+ ▷ el motor, en bucle y a su propio ritmo
+ 5.    repetir para siempre
+ 6.       M ← CLS                                   ▷ carga
+ 7.       barrer M hasta el punto fijo              ▷ pasos 13-18 del Algoritmo 3
+ 8.       EDGE ← (M = 2)                            ▷ un bit por píxel
+ 9.    la pantalla lee EDGE                         ▷ como en el Algoritmo 7
+──────────────────────────────────────────────────────────────────────
+```
+
+#### El código
+
+`trans_completo.v` conecta la cadena y declara los dos framebuffers; `grad_class_top.v` calcula la clase
+de cada píxel. Se reproducen en el Anexo G.11; el motor es el de la G.3 y los bloques de interfaz, los de
+la G.7.
+
+#### Simulación en Python
+
+Su modelo es el del transitivo (§4.3.3), con umbrales de 110 y 70.
+
+#### Simulación en Verilog
+
+La cadena se ensambló con bloques simulados por separado: el motor en las Figuras 4.10 y 4.11, que lo
+muestran cargando, barriendo y llegando al punto fijo, y la cadena con la cámara emulada en la última
+columna de la Figura 4.12.
+
+#### En la tarjeta
+
+![**Figura 4.35.** El Canny transitivo en vivo en la iCESugar sobre los seis objetos, con umbrales de
+110 y 70.](figuras/fig_4_visiontrans_placa.jpg)
+
+#### En silicio
+
+En sky130 es el circuito más grande del trabajo: **9,61 mm²** y **137 092 celdas** de síntesis, con DRC,
+LVS y XOR en cero según su ficha —sólo se conservaron sus fuentes—. Y es uno de los dos que **no cierran
+el temporizado**: a 20 ns le faltan 19,35, de modo que pediría 39,4 ns, unos 25 MHz (§5.3). Su plano en
+KLayout es la Figura 5.12.
 
 ### Para concluir: lo que los filtros toman del de Maldonado
 
@@ -919,13 +986,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.32.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.36.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.33.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.37.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
@@ -1116,7 +1183,7 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.34.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+![**Figura 4.38.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
 la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
 cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
 montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
