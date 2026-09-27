@@ -36,7 +36,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.6 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.10 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -175,7 +175,7 @@ emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](fi
 #### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.7 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.11 reúne las seis escenas.
 
 ![**Figura 4.4.** El Sobel corriendo en la iCESugar: la mariposa `monarch`, la mano y la palabra «la»,
 fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
@@ -211,7 +211,9 @@ decisión aguas abajo. Y la respuesta que da el Capítulo 5 es que entonces **lo
 filtro y pasa a ser la memoria**, que es exactamente lo que el diseño de Maldonado había dejado fuera del
 chip.
 
-### Canny de un salto
+### Filtro Canny 1-streaming
+
+#### Resumen
 
 El Canny completo consta de suavizado gaussiano, cálculo del gradiente, supresión de no-máximos,
 doble umbral e histéresis. La histéresis es el problema: exige seguir cadenas de píxeles débiles
@@ -224,7 +226,93 @@ fuertes —afirmación que la §4.10.3 confirma midiendo que el proceso completo
 
 El precio arquitectónico es que esta cadena encadena **tres** etapas de ventana 3×3 en lugar de una,
 y por eso necesita tres `linebuf3x3` y presenta ocho ciclos de latencia de cauce frente a los cuatro del
-Sobel. El esquemático que genera el sintetizador muestra las tres cajas.
+Sobel. El esquemático que genera el sintetizador muestra las tres cajas, y en las señales de la Figura 4.6 se
+ven sus tres `valid`, escalonados.
+
+#### Pseudocódigo
+
+El Canny de un salto es el anterior **con una etapa más**, y con una dificultad que no se ve a simple
+vista:
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 2   Front-end Canny de un salto
+──────────────────────────────────────────────────────────────────────
+ FRONTEND_CANNY1(in_pix, thr_hi, thr_lo)
+ 1–9.  idéntico al Algoritmo 1                   ▷ mismo suavizado, mismo gradiente
+10.  cls ≔ (mag > thr_hi) ? 2 : (mag > thr_lo) ? 1 : 0        ▷ DOBLE umbral
+11.  bin_raw ≔ ⟨σy, σx, |Gy|>|Gx|⟩               ▷ el octante
+ ▷ etapa 3 — histéresis de un salto
+12.  (c₀₀…c₂₂, v_c) ≔ LINEBUF3X3⟨W,5⟩(v_s, ⟨bin_raw, cls⟩)    ▷ 5 bits: 3 + 2
+13.  fuerte_cerca ≔ ⋁_{(i,j)≠(1,1)} (c_ij[1:0] = 2)
+14.  cen ≔ c₁₁[1:0]
+15.  borde ≔ (cen = 2) ? verdadero : (cen = 1) ? fuerte_cerca : falso
+16.  LAT  ≔ 3·(W+2)                              ▷ TRES etapas, no dos
+──────────────────────────────────────────────────────────────────────
+```
+
+> **El paso 12 merece explicación.** La histéresis necesita la *clase* del vecindario y la etapa
+> siguiente necesita la *orientación* del píxel central. Si ambas viajan por memorias de línea
+> separadas **llegan desfasadas**, y se acaba contando la orientación de un píxel con la decisión de
+> otro.
+>
+> La solución es **empaquetarlas en la misma memoria**, cinco bits que viajan juntos. El punto
+> central de la ventana devuelve entonces las dos cosas del mismo píxel **por construcción**, y no
+> por cuidado de quien escribe. El desfase no se corrige: se vuelve imposible.
+>
+> Y el paso 16 no es un detalle: con la latencia mal puesta el histograma queda corrido dos columnas
+> y las zonas se mezclan. Está anotado como advertencia en el propio archivo, porque costó
+> encontrarlo.
+
+#### El código
+
+El RTL del Canny de un salto es `canny1_top.v`: suavizado gaussiano, gradiente, doble umbral e
+histéresis de un salto, sobre tres instancias del mismo `linebuf3x3` del Sobel (Anexo G.1). Se reproduce
+completo en el Anexo G.2.
+
+#### Simulación en Python
+
+El modelo de referencia en Python descompone el Canny clásico en sus pasos. El circuito se queda con
+parte de ellos: **omite la supresión de no-máximos** y reemplaza la histéresis completa por un solo
+salto. Su modelo exacto, el que el RTL tiene que igualar, es el de la Figura 4.7.
+
+![**Figura 4.5.** El Canny clásico en Python, paso a paso sobre `flower`: la imagen original, el
+suavizado gaussiano de 3×3, la magnitud del gradiente, la supresión de no-máximos, el doble umbral y la
+histéresis.](figuras/fig_4_canny_python.png)
+
+#### Simulación en Verilog: las señales
+
+La misma imagen de prueba de 16×12 que el Sobel, ahora a través de las tres etapas de ventana.
+
+![**Figura 4.6.** El Canny de un salto a 16×12 en GTKWave. Arriba, la entrada y la salida del banco
+con el contador de bordes. Abajo, el interior: la salida del gaussiano (`gsum`, `gout`), las componentes
+del gradiente (`gxp`, `gxn`, `gyp`, `gyn`), la magnitud (`mag`), la clase de cada píxel (`cls_in`,
+`cw00`) y la decisión de la histéresis (`edge_1hop`, `any_strong`), con los dos umbrales. Las tres
+últimas señales, `vg`, `vs` y `vc`, son los `valid` de las tres memorias de línea, cada uno detrás del
+anterior.](figuras/fig_4_canny_gtkwave.jpg)
+
+#### Simulación en Verilog: la imagen
+
+Como con el Sobel, el RTL se compara píxel a píxel con el modelo (§4.8): primero el núcleo solo, y
+después la cadena completa con la cámara emulada.
+
+![**Figura 4.7.** El Canny de un salto simulado en Verilog sobre las cinco imágenes a 60×80: la
+entrada, el modelo de referencia, el núcleo RTL —idéntico al modelo píxel a píxel— y la cadena completa
+con la cámara OV7670 emulada. A esta resolución y con los umbrales del banco, las zonas con textura
+quedan casi enteras marcadas como borde.](figuras/fig_4_canny_rtl.png)
+
+#### En la tarjeta
+
+Grabado en la iCE40UP5K, el filtro corre en vivo entre la cámara y la pantalla, igual que el Sobel.
+
+![**Figura 4.8.** El Canny de un salto corriendo en la iCESugar: la mariposa `monarch`, la mano y la
+flor, fotografiadas directamente de la pantalla.](figuras/fig_4_canny_placa.jpg)
+
+#### En silicio
+
+Llevado solo a sky130, sin cámara ni pantalla, ocupa **0,360 mm²** y **12 993 celdas** tras el
+emplazamiento, con DRC, LVS y XOR en cero (§5.2): algo más del doble que el Sobel, por el suavizado
+gaussiano y la memoria de clases, dos memorias de línea más. Su plano en KLayout es la Figura 5.1.
 
 ### Canny transitivo: la histéresis como punto fijo
 
@@ -280,38 +368,7 @@ cambia una pieza y nada más.
 
 El Algoritmo 1, el del Sobel, se enuncia en la §4.3.1. Los otros dos parten de él.
 
-El Canny de un salto es el anterior **con una etapa más**, y con una dificultad que no se ve a simple
-vista:
-
-```
-──────────────────────────────────────────────────────────────────────
- Algoritmo 2   Front-end Canny de un salto
-──────────────────────────────────────────────────────────────────────
- FRONTEND_CANNY1(in_pix, thr_hi, thr_lo)
- 1–9.  idéntico al Algoritmo 1                   ▷ mismo suavizado, mismo gradiente
-10.  cls ≔ (mag > thr_hi) ? 2 : (mag > thr_lo) ? 1 : 0        ▷ DOBLE umbral
-11.  bin_raw ≔ ⟨σy, σx, |Gy|>|Gx|⟩               ▷ el octante
- ▷ etapa 3 — histéresis de un salto
-12.  (c₀₀…c₂₂, v_c) ≔ LINEBUF3X3⟨W,5⟩(v_s, ⟨bin_raw, cls⟩)    ▷ 5 bits: 3 + 2
-13.  fuerte_cerca ≔ ⋁_{(i,j)≠(1,1)} (c_ij[1:0] = 2)
-14.  cen ≔ c₁₁[1:0]
-15.  borde ≔ (cen = 2) ? verdadero : (cen = 1) ? fuerte_cerca : falso
-16.  LAT  ≔ 3·(W+2)                              ▷ TRES etapas, no dos
-──────────────────────────────────────────────────────────────────────
-```
-
-> **El paso 12 merece explicación.** La histéresis necesita la *clase* del vecindario y la etapa
-> siguiente necesita la *orientación* del píxel central. Si ambas viajan por memorias de línea
-> separadas **llegan desfasadas**, y se acaba contando la orientación de un píxel con la decisión de
-> otro.
->
-> La solución es **empaquetarlas en la misma memoria**, cinco bits que viajan juntos. El punto
-> central de la ventana devuelve entonces las dos cosas del mismo píxel **por construcción**, y no
-> por cuidado de quien escribe. El desfase no se corrige: se vuelve imposible.
->
-> Y el paso 16 no es un detalle: con la latencia mal puesta el histograma queda corrido dos columnas
-> y las zonas se mezclan. Está anotado como advertencia en el propio archivo, porque costó
-> encontrarlo.
+El Algoritmo 2, el del Canny de un salto, se enuncia en la §4.3.2, con la explicación de sus pasos 12 y 16.
 
 El transitivo, en cambio, **no es un filtro más caro: es otra clase de objeto**, y el enunciado lo
 muestra en un solo paso:
@@ -363,13 +420,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.5.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.9.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.6.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.10.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
@@ -560,7 +617,7 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.7.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+![**Figura 4.11.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
 la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
 cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
 montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
