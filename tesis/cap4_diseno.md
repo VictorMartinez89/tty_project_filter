@@ -487,7 +487,7 @@ tarjeta.](figuras/fig_4_socsobel_placa.jpg)
 En sky130 ocupa **0,37 mm²** y **12 043 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
 (§5.2). Frente al Sobel solo, el procesador y su periférico añaden **6 220 celdas**: es el precio de que
 el umbral lo fije un programa, la cifra que la §8.6 compara con la de comprar esa misma robustez en el
-filtro. Su plano en KLayout es la Figura 5.8.
+filtro. Su plano en KLayout es la Figura 5.10.
 
 ### SoC Femto con filtro Canny 1-streaming
 
@@ -553,7 +553,7 @@ tarjeta.](figuras/fig_4_soccanny_placa.jpg)
 #### En silicio
 
 En sky130 ocupa **0,67 mm²** y **22 054 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
-(§5.2). Su plano en KLayout es la Figura 5.9.
+(§5.2). Su plano en KLayout es la Figura 5.11.
 
 ### SoC Femto con filtro Canny Framebuffer Transitivo
 
@@ -625,7 +625,7 @@ tarjeta.](figuras/fig_4_soctrans_placa.jpg)
 
 En sky130 ocupa **3,42 mm²** y **72 337 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
 (§5.2): el más grande de los seis bloques de filtrado, y casi todo por el cuadro en biestables. Su plano
-en KLayout es la Figura 5.10.
+en KLayout es la Figura 5.12.
 
 ### Sobel completo
 
@@ -692,7 +692,7 @@ la Figura 4.26.
 En sky130 ocupa **2,45 mm²** y **36 730 celdas** de síntesis, con DRC, LVS y XOR en cero según su ficha
 —los informes no se conservaron (§5.3, nota ᵃ)—: unas
 quince veces el Sobel solo. Llegar ahí exigió el framebuffer de un bit: con uno de ocho, el ruteo
-acababa con cerca de un millón de violaciones de DRC. Su plano en KLayout es la Figura 5.11.
+acababa con cerca de un millón de violaciones de DRC. Su plano en KLayout es la Figura 5.13.
 
 ### Canny 1-streaming completo
 
@@ -749,7 +749,7 @@ nota ᵃ). Frente a la cadena del Sobel son un 16 % más de celdas y un 18 % má
 esperar de tres memorias de línea en lugar de una. Llegar ahí costó dos batallas: un fallo de OpenROAD
 en la optimización de temporizado, que se esquivó desactivándola porque el temporizado ya se cumplía
 con holgura, y la congestión del ruteo, que bajó de 138 684 violaciones a cero al repartir las celdas
-con una densidad de 0,20. Su plano en KLayout es la Figura 5.14.
+con una densidad de 0,20. Su plano en KLayout es la Figura 5.16.
 
 ### Visión Sobel
 
@@ -931,7 +931,106 @@ columna de la Figura 4.12.
 En sky130 es el circuito más grande del trabajo: **9,61 mm²** y **137 092 celdas** de síntesis, con DRC,
 LVS y XOR en cero según su ficha —sólo se conservaron sus fuentes—. Y es uno de los dos que **no cierran
 el temporizado**: a 20 ns le faltan 19,35, de modo que pediría 39,4 ns, unos 25 MHz (§5.3). Su plano en
-KLayout es la Figura 5.12.
+KLayout es la Figura 5.14.
+
+### Mini Sobel en Tiny Tapeout
+
+#### Resumen
+
+Es el Sobel de la §4.3.1 envuelto para caber en un proyecto de Tiny Tapeout: `tt_um_sobel_vic`, en
+**3×2 mosaicos**. La interfaz de la lanzadera es de ocho entradas, ocho salidas y ocho bidireccionales,
+así que el píxel entra por `ui_in`, su validez por `uio_in[0]`, el resultado sale por `uo_out` y su
+validez por `uio_out[1]`. No quedan pines para el umbral: va fijo en 90. En 2×2 mosaicos el flujo no
+pudo emplazar las celdas con la densidad que pedía, y por eso son seis.
+
+Hay además una diferencia que no se ve en la interfaz. El generador de ventana de esta versión lleva
+**reinicio explícito** en sus contadores; el original (Anexo G.1) los arranca con valores iniciales, que
+la FPGA respeta porque el *bitstream* los carga, pero que en silicio no existen: los biestables arrancan
+en cualquier estado y la señal de validez no se resuelve. Es el cambio 2 de la §5.1, y apareció aquí, en
+la simulación de compuertas de Tiny Tapeout.
+
+#### Pseudocódigo
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 12   Mini Sobel en Tiny Tapeout
+──────────────────────────────────────────────────────────────────────
+ 1.  (in_pix, in_valid) ≔ (ui_in, uio_in[0]) ; reset ≔ ¬rst_n
+ 2.  (out_pix, out_valid) ≔ FRONTEND_SOBEL(in_pix, 90)   ▷ sin suavizado, W = 60
+ 3.  uo_out ≔ out_pix ; uio_out[1] ≔ out_valid ; uio_oe ≔ 0000_0010
+──────────────────────────────────────────────────────────────────────
+```
+
+#### El código
+
+`tt_um_sobel_vic.v` es el envoltorio de la lanzadera; `sobel_top.v` y `linebuf3x3.v` son los de la
+G.1 con el reinicio explícito. Los tres se reproducen en el Anexo G.12.
+
+#### Simulación en Python
+
+Su modelo es el del Sobel (Figura 4.1) con el umbral en 90.
+
+#### Simulación en Verilog
+
+El repositorio de Tiny Tapeout trae su propio banco de pruebas en cocotb: le entrega un escalón de
+brillo y exige que salgan píxeles válidos, que alguno sea borde y que no lo sean todos —es decir, que el
+umbral discrimine—. Lo corre GitHub en cada cambio, junto con la comprobación previa al envío.
+
+#### En la tarjeta
+
+No hay tarjeta: el chip no se ha fabricado. En la FPGA, el mismo Sobel es el de la Figura 4.4.
+
+#### En silicio
+
+En los 3×2 mosaicos de sky130 ocupa **0,115 mm²** con un **56 %** de utilización y **3 463 celdas** de
+síntesis, consume unos **4,3 mW** y cierra el temporizado en las nueve esquinas de proceso. La
+comprobación previa de Tiny Tapeout —DRC de Magic y de KLayout, pines, alimentación, capas— pasa
+entera, y el LVS da cero; quedan cuatro redes con aviso de antena. Su plano es la Figura 5.7.
+
+### Mini Canny 1-streaming en Tiny Tapeout
+
+#### Resumen
+
+Es el Canny de un salto de la §4.3.2 envuelto del mismo modo, `tt_um_canny1_vic`, en **6×2 mosaicos**:
+con unas diez mil celdas, doce mosaicos dejan unas ochocientas cincuenta por mosaico, cerca de las
+ochocientas que el flujo rutea con comodidad. Los dos umbrales van fijos, 90 y 40, y las tres memorias
+de línea usan el generador de ventana con reinicio explícito.
+
+#### Pseudocódigo
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 13   Mini Canny 1-streaming en Tiny Tapeout
+──────────────────────────────────────────────────────────────────────
+ 1.  idéntico al Algoritmo 12                          ▷ los mismos pines
+ 2.  (out_pix, out_valid) ≔ FRONTEND_CANNY1(in_pix, 90, 40)
+ 3.  idéntico al Algoritmo 12
+──────────────────────────────────────────────────────────────────────
+```
+
+#### El código
+
+`tt_um_canny1_vic.v` y `canny1_top.v`, este último el de la G.2 con el reinicio explícito, se
+reproducen en el Anexo G.13; el generador de ventana es el de la G.12.
+
+#### Simulación en Python
+
+Su modelo es el del Canny de un salto (§4.3.2) con umbrales de 90 y 40.
+
+#### Simulación en Verilog
+
+Como el del Sobel, su banco de cocotb le entrega un flujo de píxeles y exige que salgan píxeles
+válidos; GitHub lo corre en cada cambio.
+
+#### En la tarjeta
+
+Tampoco se ha fabricado. En la FPGA, el mismo Canny es el de la Figura 4.8.
+
+#### En silicio
+
+En los 6×2 mosaicos ocupa **0,233 mm²** con un **61 %** de utilización y **7 607 celdas** de síntesis,
+consume unos **9,0 mW** y cierra el temporizado en las nueve esquinas. La comprobación previa pasa entera
+y el LVS da cero; quedan cinco redes con aviso de antena. Su plano es la Figura 5.8.
 
 ### Para concluir: lo que los filtros toman del de Maldonado
 

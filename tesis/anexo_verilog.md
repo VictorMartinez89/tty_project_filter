@@ -2435,3 +2435,270 @@ module grad_class_top (
 endmodule
 `default_nettype wire
 ```
+
+## G.12 Mini Sobel en Tiny Tapeout (§4.3.12)
+
+Es el proyecto `tt_um_sobel_vic`, de 3×2 mosaicos. `tt_um_sobel_vic.v` adapta los pines de la
+lanzadera; `sobel_top.v` es el de la G.1 con una línea más —pasa el reinicio al generador de ventana— y
+`linebuf3x3.v` es el de la G.1 **con reinicio explícito** en todos sus registros, la versión que el
+silicio necesita.
+
+Carpeta: `tinytapeout/tt_sobel/src/` del repositorio de la tesis.
+
+### `tt_um_sobel_vic.v`
+
+```verilog
+// tt_um_sobel_vic.v — Sobel 3x3 de bordes (Victor, UNAL) envuelto para Tiny Tapeout.
+// Interfaz TT (8 in + 8 out + 8 bidi + clk/rst_n/ena). Umbral fijo (TT no alcanza para
+//   8 pines mas).
+// Pixel entra por ui_in; in_valid por uio_in[0]; out_pix por uo_out; out_valid por
+//   uio_out[1].
+// Es el filtro mas chico de los tres: solo 2 line-buffers y sumadores, sin Gaussiano
+//   ni CPU.
+`default_nettype none
+module tt_um_sobel_vic (
+    input  wire [7:0] ui_in,    // in_pix[7:0]
+    output wire [7:0] uo_out,   // out_pix[7:0]
+    input  wire [7:0] uio_in,   // uio_in[0] = in_valid
+    output wire [7:0] uio_out,  // uio_out[1] = out_valid
+    output wire [7:0] uio_oe,   // habilitacion bidi (1=salida)
+    input  wire       ena,      // 1 cuando el diseno esta activo
+    input  wire       clk,
+    input  wire       rst_n     // reset activo-bajo
+);
+    wire out_valid;
+    localparam [7:0] THR = 8'd90;   // umbral de borde (fijo; el mismo del SoC en FPGA)
+
+    sobel_top u_sobel (
+        .clk(clk), .reset(~rst_n),                  // sobel_top usa reset activo-alto
+        .in_valid(uio_in[0]), .in_pix(ui_in),
+        .thr(THR),
+        .out_valid(out_valid), .out_pix(uo_out));
+
+    assign uio_out = {6'b0, out_valid, 1'b0};       // out_valid en bit 1
+    assign uio_oe  = 8'b0000_0010;                  // uio[1]=salida; resto entradas
+    wire _unused = &{ena, uio_in[7:1], 1'b0};       // evita warnings de senales sin usar
+endmodule
+`default_nettype wire
+```
+
+### `sobel_top.v`
+
+```verilog
+// sobel_top.v — Sobel de bordes AUTOCONTENIDO para ASIC (sky130), datapath de Victor.
+//   Stream raster de pixeles (in_valid/in_pix 8-bit) -> ventana 3x3 (linebuf3x3) ->
+//   |Gx|+|Gy| (satura a 255) -> umbral -> out_pix (FF=borde / 00=plano).
+// Misma matematica que el SoC femto (cam_femto_display.v), sin CPU ni camara: listo
+//   para OpenLane.
+module sobel_top (
+    input  wire       clk,
+    input  wire       reset,       // sincrono, activo-alto
+    input  wire       in_valid,
+    input  wire [7:0] in_pix,
+    input  wire [7:0] thr,         // umbral de borde
+    output reg        out_valid,
+    output reg  [7:0] out_pix      // 8'hFF borde / 8'h00 plano
+);
+    // ventana 3x3 por line-buffers
+    wire [7:0] w00,w01,w02, w10,w11,w12, w20,w21,w22;
+    wire       vin;
+    linebuf3x3 #(.W(60), .DW(8)) LB (
+        .clk(clk), .reset(reset), .in_valid(in_valid), .in_pix(in_pix), .valid_o(vin),
+        .w00(w00),.w01(w01),.w02(w02), .w10(w10),.w11(w11),.w12(w12),
+        .w20(w20),.w21(w21),.w22(w22));
+
+    // Sobel 3x3: Gx/Gy con centro x2, magnitud Manhattan |Gx|+|Gy|
+    wire [10:0] gxp = w02 + (w12<<1) + w22;
+    wire [10:0] gxn = w00 + (w10<<1) + w20;
+    wire [10:0] gyp = w20 + (w21<<1) + w22;
+    wire [10:0] gyn = w00 + (w01<<1) + w02;
+    wire [10:0] agx = (gxp>=gxn) ? (gxp-gxn) : (gxn-gxp);
+    wire [10:0] agy = (gyp>=gyn) ? (gyp-gyn) : (gyn-gyp);
+    wire [11:0] mag12 = agx + agy;
+    wire [7:0]  mag = (mag12 > 12'd255) ? 8'd255 : mag12[7:0];
+
+    always @(posedge clk) begin
+        if (reset) begin out_valid <= 1'b0; out_pix <= 8'd0; end
+        else begin
+            out_valid <= vin;
+            out_pix   <= (mag > thr) ? 8'hFF : 8'h00;
+        end
+    end
+endmodule
+```
+
+### `linebuf3x3.v`, con reinicio explícito
+
+```verilog
+`timescale 1ns/1ps
+// linebuf3x3.v — generador de ventana 3x3 con LINE-BUFFERS EN BRAM (reusable,
+//   parametrico).
+// Guarda las 2 filas anteriores en BRAM (lectura sincrona + escritura, doble puerto)
+//   en vez
+// de shift-registers. Entra un stream raster (in_valid/in_pix), salen los 9 taps +
+//   valid_o.
+//   Ventana:  w00 w01 w02   (fila n-2)
+//             w10 w11 w12   (fila n-1)   centro = w11 = (n-1, x-1)
+//             w20 w21 w22   (fila n)     col: w*2=x(nuevo) w*1=x-1 w*0=x-2
+//
+// VERSION PARA SILICIO: lleva RESET EXPLICITO (sincrono, activo-alto).
+// La version original arrancaba los contadores con valores iniciales (reg x=0, v1=0),
+//   lo que
+// funciona en simulacion RTL y en FPGA (el bitstream inicializa los flops) pero NO en
+//   un ASIC:
+// ahi los flip-flops arrancan aleatorios y el `valid` nunca se resuelve. Es la misma
+//   leccion
+// del port a sky130 ("el firmware no se carga solo"), aplicada a los contadores.
+module linebuf3x3 #(parameter W=160, parameter DW=8) (
+    input  wire            clk,
+    input  wire            reset,        // sincrono, activo-alto
+    input  wire            in_valid,
+    input  wire [DW-1:0]   in_pix,
+    output reg             valid_o,
+    output reg [DW-1:0]    w00,w01,w02, w10,w11,w12, w20,w21,w22
+);
+    reg [DW-1:0] lb_a [0:W-1];   // fila n-2
+    reg [DW-1:0] lb_b [0:W-1];   // fila n-1
+    reg [DW-1:0] q_a, q_b, cur;
+    reg [8:0] x, xd; reg v1;
+
+    // etapa 1: lectura sincrona + avanzar columna
+    always @(posedge clk) begin
+        if (reset) begin
+            x <= 9'd0; xd <= 9'd0; v1 <= 1'b0;
+            q_a <= {DW{1'b0}}; q_b <= {DW{1'b0}}; cur <= {DW{1'b0}};
+        end else begin
+            v1 <= 1'b0;
+            if (in_valid) begin
+                q_a <= lb_a[x]; q_b <= lb_b[x]; cur <= in_pix;
+                xd  <= x; x <= (x==W-1) ? 9'd0 : x+9'd1; v1 <= 1'b1;
+            end
+        end
+    end
+    // etapa 2: escritura de retorno (rota filas) + ventana
+    always @(posedge clk) begin
+        if (reset) begin
+            valid_o <= 1'b0;
+            w00<={DW{1'b0}}; w01<={DW{1'b0}}; w02<={DW{1'b0}};
+            w10<={DW{1'b0}}; w11<={DW{1'b0}}; w12<={DW{1'b0}};
+            w20<={DW{1'b0}}; w21<={DW{1'b0}}; w22<={DW{1'b0}};
+        end else begin
+            valid_o <= 1'b0;
+            if (v1) begin
+                lb_a[xd] <= q_b;    // fila n-1 -> n-2
+                lb_b[xd] <= cur;    // pixel nuevo -> n-1
+                w00<=w01; w01<=w02; w02<=q_a;
+                w10<=w11; w11<=w12; w12<=q_b;
+                w20<=w21; w21<=w22; w22<=cur;
+                valid_o <= 1'b1;
+            end
+        end
+    end
+endmodule
+```
+
+## G.13 Mini Canny 1-streaming en Tiny Tapeout (§4.3.13)
+
+Es el proyecto `tt_um_canny1_vic`, de 6×2 mosaicos. El generador de ventana es el de la G.12.
+
+Carpeta: `tinytapeout/tt_canny1/src/` del repositorio de la tesis.
+
+### `tt_um_canny1_vic.v`
+
+```verilog
+// tt_um_canny1_vic.v — Canny 1-streaming (Victor, UNAL) envuelto para Tiny Tapeout.
+// Interfaz TT (8 in + 8 out + 8 bidi + clk/rst_n/ena). Umbrales fijos (TT no alcanza
+//   para 16 pines mas).
+// Pixel entra por ui_in; in_valid por uio_in[0]; out_pix por uo_out; out_valid por
+//   uio_out[1].
+`default_nettype none
+module tt_um_canny1_vic (
+    input  wire [7:0] ui_in,    // in_pix[7:0]
+    output wire [7:0] uo_out,   // out_pix[7:0]
+    input  wire [7:0] uio_in,   // uio_in[0] = in_valid
+    output wire [7:0] uio_out,  // uio_out[1] = out_valid
+    output wire [7:0] uio_oe,   // habilitacion bidi (1=salida)
+    input  wire       ena,      // 1 cuando el diseno esta activo
+    input  wire       clk,
+    input  wire       rst_n     // reset activo-bajo
+);
+    wire out_valid;
+    localparam [7:0] THR_HI = 8'd90;   // umbral alto (fijo)
+    localparam [7:0] THR_LO = 8'd40;   // umbral bajo (fijo)
+
+    canny1_top u_canny1 (
+        .clk(clk), .reset(~rst_n),                 // canny1 usa reset activo-alto
+        .in_valid(uio_in[0]), .in_pix(ui_in),
+        .thr_hi(THR_HI), .thr_lo(THR_LO),
+        .out_valid(out_valid), .out_pix(uo_out));
+
+    assign uio_out = {6'b0, out_valid, 1'b0};       // out_valid en bit 1
+    assign uio_oe  = 8'b0000_0010;                  // uio[1]=salida; resto entradas
+    wire _unused = &{ena, uio_in[7:1], 1'b0};       // evita warnings de senales sin usar
+endmodule
+`default_nettype wire
+```
+
+### `canny1_top.v`
+
+```verilog
+// canny1_top.v — Canny 1-salto (streaming) AUTOCONTENIDO para ASIC (sky130).
+//   Stream raster de pixeles (in_valid/in_pix 8-bit) -> Gaussian 3x3 -> Sobel 3x3 ->
+// doble umbral (clase 0/1/2) -> histeresis de 1 salto -> out_pix (FF=borde /
+//   00=plano).
+// Mismo datapath modo-1 que el SoC femto (cam_femto_multi.v), sin CPU ni camara.
+module canny1_top (
+    input  wire       clk,
+    input  wire       reset,       // sincrono, activo-alto
+    input  wire       in_valid,
+    input  wire [7:0] in_pix,
+    input  wire [7:0] thr_hi,      // umbral alto (borde fuerte)
+    input  wire [7:0] thr_lo,      // umbral bajo (borde debil)
+    output reg        out_valid,
+    output reg  [7:0] out_pix      // 8'hFF borde / 8'h00 plano
+);
+    // ===== etapa 1: Gaussian 3x3 (line-buffer) =====
+    wire vg;
+    wire [7:0] gw00,gw01,gw02,gw10,gw11,gw12,gw20,gw21,gw22;
+    linebuf3x3 #(.W(60),.DW(8)) LBG (
+        .clk(clk),.reset(reset),.in_valid(in_valid),.in_pix(in_pix),.valid_o(vg),
+        .w00(gw00),.w01(gw01),.w02(gw02),.w10(gw10),.w11(gw11),.w12(gw12),
+        .w20(gw20),.w21(gw21),.w22(gw22));
+    wire [11:0] gsum = gw00+(gw01<<1)+gw02 + (gw10<<1)+(gw11<<2)+(gw12<<1) + gw20+(gw21<<1)+gw22;
+    wire [7:0]  gout = gsum[11:4];   // /16
+
+    // ===== etapa 2: Sobel 3x3 sobre la Gaussiana (line-buffer) =====
+    wire vs;
+    wire [7:0] sw00,sw01,sw02,sw10,sw11,sw12,sw20,sw21,sw22;
+    linebuf3x3 #(.W(60),.DW(8)) LBS (
+        .clk(clk),.reset(reset),.in_valid(vg),.in_pix(gout),.valid_o(vs),
+        .w00(sw00),.w01(sw01),.w02(sw02),.w10(sw10),.w11(sw11),.w12(sw12),
+        .w20(sw20),.w21(sw21),.w22(sw22));
+    wire [10:0] gxp=sw02+(sw12<<1)+sw22, gxn=sw00+(sw10<<1)+sw20;
+    wire [10:0] gyp=sw20+(sw21<<1)+sw22, gyn=sw00+(sw01<<1)+sw02;
+    wire [10:0] agx=(gxp>=gxn)?(gxp-gxn):(gxn-gxp);
+    wire [10:0] agy=(gyp>=gyn)?(gyp-gyn):(gyn-gyp);
+    wire [11:0] mag12=agx+agy;
+    wire [7:0]  mag=(mag12>12'd255)?8'd255:mag12[7:0];
+    wire [1:0]  cls_in = (mag>thr_hi)?2'd2 : (mag>thr_lo)?2'd1 : 2'd0;  // doble umbral
+
+    // ===== etapa 3: clase (line-buffer DW=2) -> histeresis 1-salto =====
+    wire vc;
+    wire [1:0] cw00,cw01,cw02,cw10,cw11,cw12,cw20,cw21,cw22;
+    linebuf3x3 #(.W(60),.DW(2)) LBC (
+        .clk(clk),.reset(reset),.in_valid(vs),.in_pix(cls_in),.valid_o(vc),
+        .w00(cw00),.w01(cw01),.w02(cw02),.w10(cw10),.w11(cw11),.w12(cw12),
+        .w20(cw20),.w21(cw21),.w22(cw22));
+    wire any_strong = (cw00==2'd2)|(cw01==2'd2)|(cw02==2'd2)|(cw10==2'd2)|
+                      (cw12==2'd2)|(cw20==2'd2)|(cw21==2'd2)|(cw22==2'd2);
+    wire edge_1hop  = (cw11==2'd2) ? 1'b1 : (cw11==2'd1) ? any_strong : 1'b0;
+
+    always @(posedge clk) begin
+        if (reset) begin out_valid <= 1'b0; out_pix <= 8'd0; end
+        else begin
+            out_valid <= vc;
+            out_pix   <= edge_1hop ? 8'hFF : 8'h00;
+        end
+    end
+endmodule
+```
