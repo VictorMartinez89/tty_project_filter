@@ -100,6 +100,10 @@ anterior.](figuras/fig_5_socsobel_asic.png)
 ![**Figura 5.5.** El SoC con el Canny de un salto en silicio: `soc_canny1_top.gds` en KLayout,
 0,67 mm².](figuras/fig_5_soccanny_asic.png)
 
+![**Figura 5.6.** El SoC con el Canny transitivo en silicio: `soc_trans_top.gds` en KLayout, 3,42 mm².
+El procesador ocupa una parte pequeña; el resto es el motor y su cuadro de unos 10 600
+biestables.](figuras/fig_5_soctrans_asic.png)
+
 ### 5.2.3 El recuento de celdas, y cómo cruzar las dos tablas
 
 Esta advertencia no es un tecnicismo: afecta a cualquier comparación que un lector intente hacer entre
@@ -199,7 +203,7 @@ pediría 39,4 ns —25,4 MHz— y el #6, 54,2 ns, es decir 18,4 MHz en lugar de 
 > convirtió la tabla entera: se prefirió una tabla homogénea en su propia escala antes que una tabla
 > mixta con dos filas estimadas.
 
-![**Figura 5.6.** El mismo tipo de acercamiento, ahora sobre el sistema de visión completo. La
+![**Figura 5.7.** El mismo tipo de acercamiento, ahora sobre el sistema de visión completo. La
 diferencia con la figura anterior no está en la textura sino en la escala: aquí caben cámara, filtro,
 memoria de cuadro y controlador de pantalla en el mismo dado. Es la forma que toma en silicio la
 frase «el filtro es una pieza y no el circuito».](figuras/fig_5_3_mar_de_celdas_vision.jpg)
@@ -317,7 +321,7 @@ La variante **D0 es un control**, idéntica a la D salvo en que sus resistencias
 el efecto de la resistencia y el de *repartir* la capacitancia a lo largo del árbol en vez de
 agruparla en un nodo quedarían sumados en una sola cifra y no podrían separarse.
 
-![**Figura 5.7.** El desglose completo de la verificación. El panel A explica por qué se simula el
+![**Figura 5.8.** El desglose completo de la verificación. El panel A explica por qué se simula el
 camino y no el chip; el B reparte los 12,23 ns del `pan_sobel` y los 9,89 del `pan_canny` en sumandos
 que no dejan residuo; el C recoge las tres hipótesis que la medida desmintió; el D contrapone la
 celda del esquemático con la extraída del dibujo en los dos experimentos independientes; y el E
@@ -410,7 +414,7 @@ Dos circuitos distintos, dos caminos críticos que no comparten una sola instanc
 cuatro décimas de punto: **algo más de la quinta parte del retardo de un camino crítico la ponen los
 parásitos que el dibujo añade dentro de las celdas.**
 
-![**Figura 5.8.** La salida del simulador, tal como éste la dibuja. Cada traza es un nodo del camino
+![**Figura 5.9.** La salida del simulador, tal como éste la dibuja. Cada traza es un nodo del camino
 crítico, desplazada dos voltios respecto de la anterior para que las diez quepan en el mismo eje; la
 cascada de transiciones de arriba abajo es la señal propagándose etapa por etapa. El último nodo del
 `pan_sobel` conmuta a unos 8,2 ns y el del `pan_canny` a unos 7,6, que son las variantes D de la

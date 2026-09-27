@@ -36,7 +36,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.22 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.26 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -175,7 +175,7 @@ emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](fi
 #### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.23 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.27 reúne las seis escenas.
 
 ![**Figura 4.4.** El Sobel corriendo en la iCESugar sobre las cinco escenas: la mariposa `monarch`, la flor, la
 mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
@@ -555,6 +555,78 @@ tarjeta.](figuras/fig_4_soccanny_placa.jpg)
 En sky130 ocupa **0,67 mm²** y **22 054 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
 (§5.2). Su plano en KLayout es la Figura 5.5.
 
+### SoC Femto con filtro Canny Framebuffer Transitivo
+
+#### Resumen
+
+Es el tercer SoC, y el que la restricción de recursos convirtió en un hallazgo (§4.9.4). En la FPGA el
+procesador y el Canny transitivo no caben juntos de ninguna de las dos formas naturales: con la
+histéresis resuelta por software el conjunto ocupa el 99 % del dispositivo y el reloj del sistema no
+pasa de 8,7 MHz; con el motor como periférico, ni siquiera emplaza (≈ 127 %). Allí el transitivo que
+funciona con holgura es el motor dedicado, sin procesador.
+
+En silicio, donde el área no la fija un dispositivo, el procesador vuelve a caber junto al motor, y ése
+es este circuito: el FemtoRV32 con su ROM y su periférico, al lado del motor de la §4.3.3. El cuadro de
+62×82 píxeles de dos bits que el motor barre se convierte en unos **10 600 biestables**. En esta
+versión el motor recibe el flujo de clases desde fuera del chip.
+
+#### Pseudocódigo
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 6   SoC Femto con filtro Canny transitivo
+──────────────────────────────────────────────────────────────────────
+ ▷ el programa: el del Algoritmo 4, con dos constantes distintas
+ 1.  x1 ← 0x0045_0000                         ▷ base del periférico
+ 2.  CTRL(x1+0) ← 0x12                        ▷ modo 2 = transitivo ; enable = 1
+ 3.  THR(x1+4)  ← 0x6E46                      ▷ thr_hi = 110 ; thr_lo = 70
+ 4.  repetir para siempre                     ▷ jal x0, 0
+ ▷ el hardware, en paralelo
+ 5.  (modo, thr_hi, thr_lo) ≔ registros del periférico
+ 6.  borde ≔ MOTOR_TRANSITIVO(clase)          ▷ pasos 11-19 del Algoritmo 3
+ 7.  STAT.eng_busy ≔ ¬done                    ▷ el procesador puede sondearlo
+──────────────────────────────────────────────────────────────────────
+```
+
+#### El código
+
+`soc_trans_top.v` reúne el procesador, la ROM, el periférico y el motor; se reproduce en el Anexo G.6.
+El motor es el de la G.3 y el periférico el de la G.4.
+
+#### Simulación en Python
+
+El modelo es el del transitivo (§4.3.3) con los umbrales que escribe el programa, 110 y 70. La versión
+en la que el propio procesador resuelve la histéresis por software —la que no cabía en la FPGA— se
+comprobó en simulación, con un 92,8 % de concordancia (§4.9.4).
+
+#### Simulación en Verilog: las señales
+
+![**Figura 4.21.** El arranque del SoC con el transitivo, en GTKWave. El procesador lee la ROM, activa
+`cs_filter` para escribir `00000012` en el periférico y `mode_o` pasa de `00` a `10`: el modo 2, el
+transitivo. Los umbrales no cambian a la vista porque el programa escribe 110 y 70, que son justamente
+los valores de reinicio del periférico (`6E` y `46`).](figuras/fig_4_soctrans_arranque.jpg)
+
+![**Figura 4.22.** El mismo SoC después del arranque: el procesador repite su lazo final, en la
+dirección `0x18`, con el modo y los umbrales ya fijos, a la espera del flujo de
+clases.](figuras/fig_4_soctrans_gtkwave.jpg)
+
+#### Simulación en Verilog: la imagen
+
+![**Figura 4.23.** Lo que produce el SoC simulado en Icarus Verilog a 160×120 cuando el programa elige
+el transitivo: arriba, las cinco imágenes de prueba; abajo, sus bordes.](figuras/fig_4_soctrans_rtl.png)
+
+#### En la tarjeta
+
+![**Figura 4.24.** El SoC con el Canny transitivo corriendo en la iCESugar sobre las cinco escenas
+—`monarch`, la flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
+tarjeta.](figuras/fig_4_soctrans_placa.jpg)
+
+#### En silicio
+
+En sky130 ocupa **3,42 mm²** y **72 337 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
+(§5.2): el más grande de los seis bloques de filtrado, y casi todo por el cuadro en biestables. Su plano
+en KLayout es la Figura 5.6.
+
 ### Para concluir: lo que los filtros toman del de Maldonado
 
 El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
@@ -608,13 +680,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.21.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.25.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.22.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.26.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
@@ -805,7 +877,7 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.23.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+![**Figura 4.27.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
 la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
 cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
 montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
