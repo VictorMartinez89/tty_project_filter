@@ -36,7 +36,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.15 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.18 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -82,7 +82,7 @@ El almacenamiento, en cambio, **no se sincroniza**: se escribe en un reloj y se 
 protección, porque la escritura completa un cuadro antes de que la lectura lo alcance. Es una
 decisión deliberada y conviene declararla como tal.
 
-## 4.3 Los tres filtros
+## 4.3 Los diseños: los filtros y los sistemas que los usan
 
 ### Filtro Sobel
 
@@ -175,7 +175,7 @@ emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](fi
 #### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.16 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.19 reúne las seis escenas.
 
 ![**Figura 4.4.** El Sobel corriendo en la iCESugar sobre las cinco escenas: la mariposa `monarch`, la flor, la
 mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
@@ -422,6 +422,73 @@ Llevado solo a sky130 ocupa **3,13 mm²** y **65 659 celdas** tras el emplazamie
 en cero (§5.2): casi veinte veces el área del Sobel, porque el cuadro que en la FPGA vivía en la SPRAM
 aquí es un banco de biestables. Su plano en KLayout es la Figura 5.1.
 
+### SoC Femto con filtro Sobel
+
+#### Resumen
+
+El primer sistema reúne el procesador FemtoRV32 (§4.5), una ROM con su programa y el periférico de
+control en `0x0045` alrededor del Sobel de la §4.3.1. **Los píxeles no pasan por el procesador**: el
+camino de imagen sigue siendo un flujo, y el procesador sólo escribe dos registros —el filtro activo y
+el umbral—. Lo que se gana es que el umbral deja de estar cableado y lo fija el programa.
+
+En silicio el programa no puede vivir en una RAM inicializada, que arrancaría con valores aleatorios:
+va en una **ROM sintetizada de siete instrucciones**, y como el programa no usa datos, no hace falta
+ninguna RAM escribible.
+
+#### Pseudocódigo
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 4   SoC Femto con filtro Sobel
+──────────────────────────────────────────────────────────────────────
+ ▷ el programa: siete instrucciones en ROM
+ 1.  x1 ← 0x0045_0000                         ▷ base del periférico
+ 2.  CTRL(x1+0) ← 0x10                        ▷ modo 0 = Sobel ; enable = 1
+ 3.  THR(x1+4)  ← 0x5A00                      ▷ thr_hi = 90 ; thr_lo = 0
+ 4.  repetir para siempre                     ▷ jal x0, 0
+ ▷ el hardware, en paralelo y sin pasar por el procesador
+ 5.  (modo, thr_hi) ≔ registros del periférico
+ 6.  out_pix ≔ FRONTEND_SOBEL(in_pix, thr_hi) ▷ Algoritmo 1
+──────────────────────────────────────────────────────────────────────
+```
+
+#### El código
+
+`soc_sobel_top.v` instancia el procesador, la ROM, el periférico y el Sobel; `peripheral_filter.v` es
+el periférico. Se reproducen en el Anexo G.4; el núcleo `femtorv32_quark.v` es de Levy y se cita.
+
+#### Simulación en Python
+
+El SoC **no cambia la aritmética**: su modelo en Python es el del Sobel (Figura 4.1) con el umbral que
+escribe el programa, 90. Lo que el SoC agrega —que ese umbral lo fije el procesador y no un cable— sólo
+se puede comprobar en la simulación del hardware, que es la que sigue.
+
+#### Simulación en Verilog: las señales
+
+![**Figura 4.14.** El SoC con el Sobel a 16×12 en GTKWave. `thr_o` vale `5A`: el 90 que escribió el
+programa. El contador de programa del FemtoRV32, `PC`, está detenido en `0x18`, la séptima instrucción,
+el lazo final; y mientras tanto el Sobel sigue sacando píxeles de borde (`FF`) y de fondo (`00`) por su
+cuenta.](figuras/fig_4_socsobel_gtkwave.jpg)
+
+#### Simulación en Verilog: la imagen
+
+![**Figura 4.15.** Lo que produce el SoC simulado en Icarus Verilog a 160×120, con el programa que
+elige el Sobel y fija el umbral en 90: arriba, las cinco imágenes de prueba; abajo, sus
+bordes.](figuras/fig_4_socsobel_rtl.png)
+
+#### En la tarjeta
+
+![**Figura 4.16.** El SoC con el Sobel corriendo en la iCESugar sobre las cinco escenas —`monarch`, la
+flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
+tarjeta.](figuras/fig_4_socsobel_placa.jpg)
+
+#### En silicio
+
+En sky130 ocupa **0,37 mm²** y **12 043 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
+(§5.2). Frente al Sobel solo, el procesador y su periférico añaden **6 220 celdas**: es el precio de que
+el umbral lo fije un programa, la cifra que la §8.6 compara con la de comprar esa misma robustez en el
+filtro. Su plano en KLayout es la Figura 5.4.
+
 ### Para concluir: lo que los filtros toman del de Maldonado
 
 El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
@@ -475,13 +542,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.14.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.17.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.15.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.18.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
@@ -672,7 +739,7 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.16.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+![**Figura 4.19.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
 la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
 cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
 montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el

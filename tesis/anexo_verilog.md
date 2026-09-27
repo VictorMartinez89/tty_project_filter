@@ -7,8 +7,8 @@ que se entregó al sintetizador o al flujo a silicio.
 
 Se incluyen los módulos escritos para este trabajo. El núcleo del procesador, `femtorv32_quark.v`, es
 de B. Levy [ref. 1] y se cita en lugar de reproducirse. En los listados, sólo las líneas de comentario
-que no cabían en la página se han partido en dos; el código no se ha tocado, salvo una línea de
-varias sentencias de la G.3, que se explica allí.
+que no cabían en la página se han partido en dos; el código no se ha tocado, salvo alguna línea con
+varias sentencias, que se parte entre dos de ellas y se indica en su sección.
 
 ## G.1 Filtro Sobel (§4.3.1)
 
@@ -403,4 +403,175 @@ module hysteresis_frame_bram_sync #(
     end
 endmodule
 `default_nettype wire
+```
+
+## G.4 SoC Femto con filtro Sobel (§4.3.4)
+
+Es el circuito `soc_sobel` de la §5.2: 0,37 mm² en sky130. `soc_sobel_top.v` reúne el FemtoRV32, la ROM
+de siete instrucciones, el periférico y el Sobel; el programa está escrito en la propia ROM, con cada
+instrucción comentada. `peripheral_filter.v` es el periférico de control en `0x0045`, el mismo que usan
+los otros dos SoC. El núcleo `femtorv32_quark.v` es de Levy [ref. 1] y no se reproduce; `linebuf3x3.v`
+está en el Anexo G.1. Una línea de `soc_sobel_top.v` con dos sentencias se ha partido entre ellas.
+
+Carpeta: `Verilog_Repo/soc_sobel/`.
+
+### `soc_sobel_top.v`
+
+```verilog
+// soc_sobel_top.v — SoC femto (FemtoRV32 + ROM + periferico + Sobel) AUTOCONTENIDO
+//   para ASIC sky130.
+// El CPU corre un firmware de 7 instrucciones que elige Sobel y fija el umbral
+//   (thr=90) escribiendo
+// el periferico 0x0045; el datapath Sobel usa ESE umbral (no cableado). Sin
+//   camara/display/LED.
+// CLAVE ASIC: el programa va en una ROM SINTETIZADA (permanente), no en RAM init'd
+//   (que en silicio
+// arrancaria aleatoria). El firmware no usa RAM de datos -> no hace falta RAM
+//   writable.
+`default_nettype none
+module soc_sobel_top (
+    input  wire       clk,
+    input  wire       resetn,        // 0 = reset, 1 = corre
+    input  wire       in_valid,
+    input  wire [7:0] in_pix,
+    output reg        out_valid,
+    output reg  [7:0] out_pix,       // FF=borde / 00=plano
+    output wire       cpu_wrote_filter,
+    output wire [7:0] thr_o          // el umbral que fijo el CPU (observabilidad)
+);
+    // ---------------- CPU FemtoRV32 ----------------
+    wire [31:0] mem_addr, mem_wdata; wire [3:0] mem_wmask; wire mem_rstrb;
+    reg  [31:0] mem_rdata;
+    FemtoRV32 CPU (
+        .clk(clk), .reset(resetn),
+        .mem_addr(mem_addr), .mem_wdata(mem_wdata), .mem_wmask(mem_wmask),
+        .mem_rdata(mem_rdata), .mem_rstrb(mem_rstrb), .mem_rbusy(1'b0), .mem_wbusy(1'b0));
+    wire cpu_wr = |mem_wmask;
+    wire cpu_rd = mem_rstrb;
+    wire cs_filter = (mem_addr[31:16] == 16'h0045);
+
+    // ---------------- ROM de programa (7 instrucciones, lectura sincrona)
+    //   ----------------
+    reg [31:0] rom_q;
+    always @(posedge clk) begin
+        case (mem_addr[4:2])
+            3'd0: rom_q <= 32'h004500b7;  // lui  x1,0x450
+            3'd1: rom_q <= 32'h01000113;  // addi x2,x0,16
+            3'd2: rom_q <= 32'h0020a023;  // sw   x2,0(x1)   -> mode=Sobel, enable
+            3'd3: rom_q <= 32'h000061b7;  // lui  x3,0x6
+            3'd4: rom_q <= 32'ha0018193;  // addi x3,x3,-1536 -> x3=0x5A00
+            3'd5: rom_q <= 32'h0030a223;  // sw   x3,4(x1)   -> thr_hi=90
+            3'd6: rom_q <= 32'h0000006f;  // jal  x0,0       -> loop
+            default: rom_q <= 32'h00000013; // NOP (addi x0,x0,0)
+        endcase
+    end
+
+    // ---------------- periferico del filtro ----------------
+    wire [1:0] flt_mode; wire flt_enable, flt_engrst;
+    wire [7:0] flt_thi, flt_tlo; wire [31:0] filt_dout;
+    peripheral_filter PER (
+        .clk(clk), .reset(~resetn),
+        .d_in(mem_wdata), .cs(cs_filter), .addr(mem_addr[4:0]), .rd(cpu_rd), .wr(cpu_wr),
+        .d_out(filt_dout),
+        .mode(flt_mode), .enable(flt_enable), .eng_reset(flt_engrst),
+        .thr_hi(flt_thi), .thr_lo(flt_tlo),
+        .cfg_done(1'b1), .eng_busy(1'b0), .vsync_alive(1'b1), .frame_count(16'd0));
+    assign thr_o = flt_thi;
+
+    // mux de lectura del bus: periferico o ROM
+    always @(*) mem_rdata = cs_filter ? filt_dout : rom_q;
+
+    reg wrote = 1'b0;
+    always @(posedge clk) if (!resetn) wrote <= 1'b0;
+        else if (cs_filter && cpu_wr) wrote <= 1'b1;
+    assign cpu_wrote_filter = wrote;
+
+    // ---------------- datapath Sobel (stream externo, mismo reloj) ----------------
+    wire vin;
+    wire [7:0] w00,w01,w02, w10,w11,w12, w20,w21,w22;
+    linebuf3x3 #(.W(60), .DW(8)) LB (
+        .clk(clk), .in_valid(in_valid), .in_pix(in_pix), .valid_o(vin),
+        .w00(w00),.w01(w01),.w02(w02), .w10(w10),.w11(w11),.w12(w12),
+        .w20(w20),.w21(w21),.w22(w22));
+    wire [10:0] gxp = w02 + (w12<<1) + w22;
+    wire [10:0] gxn = w00 + (w10<<1) + w20;
+    wire [10:0] gyp = w20 + (w21<<1) + w22;
+    wire [10:0] gyn = w00 + (w01<<1) + w02;
+    wire [10:0] agx = (gxp>=gxn) ? (gxp-gxn) : (gxn-gxp);
+    wire [10:0] agy = (gyp>=gyn) ? (gyp-gyn) : (gyn-gyp);
+    wire [11:0] mag12 = agx + agy;
+    wire [7:0]  mag = (mag12 > 12'd255) ? 8'd255 : mag12[7:0];
+
+    always @(posedge clk) begin
+        if (!resetn) begin out_valid <= 1'b0; out_pix <= 8'd0; end
+        else begin
+            out_valid <= vin;
+            out_pix   <= (mag > flt_thi) ? 8'hFF : 8'h00;   // umbral puesto por el CPU
+        end
+    end
+endmodule
+`default_nettype wire
+```
+
+### `peripheral_filter.v`
+
+```verilog
+// peripheral_filter.v — periferico de CONTROL/ESTADO del filtro de imagen para el
+// SoC femto2 (FemtoRV32). Sigue el MISMO patron de bus que peripheral_mult/uart:
+//   (clk, reset, d_in, cs, addr, rd, wr, d_out).
+//
+// FILOSOFIA: los pixeles NO pasan por el bus del CPU (serian demasiados). El camino
+// de imagen es en streaming: camara -> filter_core -> LCD. Este periferico solo
+// EXPONE al CPU un puñado de registros para elegir el filtro EN VIVO y leer estado.
+//
+// Mapa de registros (base 0x0045_0000, offset = addr):
+//   0x00  CTRL  (W): [1:0] mode (0=Sobel, 1=Canny1-salto, 2=Canny transitivo)
+//                    [4]   enable        [5] eng_reset (pulso al motor transitivo)
+//   0x04  THR   (W): [7:0] thr_lo        [15:8] thr_hi   (doble umbral)
+//   0x08  STAT  (R): [0] cfg_done  [1] eng_busy  [2] vsync_alive  [23:8] frame_count
+module peripheral_filter (
+    input             clk,
+    input             reset,
+    input      [31:0] d_in,
+    input             cs,
+    input      [4:0]  addr,
+    input             rd,
+    input             wr,
+    output reg [31:0] d_out,
+    // ---- hacia/desde el datapath de imagen (dominio de la camara/pantalla) ----
+    output reg [1:0]  mode,          // filtro activo
+    output reg        enable,
+    output reg        eng_reset,     // pulso de reset al motor transitivo
+    output reg [7:0]  thr_hi,
+    output reg [7:0]  thr_lo,
+    input             cfg_done,      // SCCB configurado (LED verde)
+    input             eng_busy,      // motor transitivo barriendo
+    input             vsync_alive,   // llegan cuadros de la camara
+    input      [15:0] frame_count
+);
+    // ------------------ escritura de registros ------------------
+    always @(posedge clk) begin
+        if (reset) begin
+            mode <= 2'd0; enable <= 1'b1; eng_reset <= 1'b0;
+            thr_hi <= 8'd110; thr_lo <= 8'd70;      // arranque = Canny transitivo tipico
+        end else begin
+            eng_reset <= 1'b0;                       // auto-limpia (pulso de 1 ciclo)
+            if (cs && wr) case (addr)
+                5'h00: begin mode <= d_in[1:0]; enable <= d_in[4]; eng_reset <= d_in[5]; end
+                5'h04: begin thr_lo <= d_in[7:0]; thr_hi <= d_in[15:8]; end
+                default: ;
+            endcase
+        end
+    end
+    // ------------------ lectura de registros ------------------
+    always @(*) begin
+        d_out = 32'd0;
+        if (cs && rd) case (addr)
+            5'h00: d_out = {26'd0, eng_reset, enable, 2'b00, mode};
+            5'h04: d_out = {16'd0, thr_hi, thr_lo};
+            5'h08: d_out = {8'd0, frame_count, 5'd0, vsync_alive, eng_busy, cfg_done};
+            default: d_out = 32'd0;
+        endcase
+    end
+endmodule
 ```
