@@ -115,7 +115,26 @@ buffer y una copia de la imagen, y es el fundamento de toda la arquitectura de f
 El Sobel es el más simple de los tres y fija el esqueleto que los otros dos extienden: suavizado,
 gradiente y un umbral. La notación es la de la §4.4.
 
-El Algoritmo 1, el del Sobel, se enuncia en la §4.3.1. Los otros dos parten de él.
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 1   Front-end Sobel
+──────────────────────────────────────────────────────────────────────
+ FRONTEND_SOBEL(in_pix, thr)                     ▷ parámetros: H, W
+ ▷ etapa 1 — suavizado
+ 1.  (g₀₀…g₂₂, v_g) ≔ LINEBUF3X3⟨W,8⟩(in_valid, in_pix)
+ 2.  gsum ≔ g₀₀+2g₀₁+g₀₂ + 2g₁₀+4g₁₁+2g₁₂ + g₂₀+2g₂₁+g₂₂
+ 3.  gout ≔ gsum ≫ 4                             ▷ dividir entre 16 es desplazar
+ ▷ etapa 2 — gradiente
+ 4.  (s₀₀…s₂₂, v_s) ≔ LINEBUF3X3⟨W,8⟩(v_g, gout)
+ 5.  Gx⁺ ≔ s₀₂+2s₁₂+s₂₂ ;   Gx⁻ ≔ s₀₀+2s₁₀+s₂₀
+ 6.  Gy⁺ ≔ s₂₀+2s₂₁+s₂₂ ;   Gy⁻ ≔ s₀₀+2s₀₁+s₀₂
+ 7.  σx ≔ (Gx⁺ ≥ Gx⁻) ;     σy ≔ (Gy⁺ ≥ Gy⁻)     ▷ los signos, que dan la orientación
+ 8.  |Gx| ≔ |Gx⁺−Gx⁻| ;     |Gy| ≔ |Gy⁺−Gy⁻|
+ 9.  mag ≔ mín(|Gx|+|Gy|, 255)                   ▷ norma L1: sin raíz y sin multiplicar
+10.  borde ≔ (mag > thr)                         ▷ UN umbral
+11.  LAT  ≔ 2·(W+2)                              ▷ dos etapas de ventana
+──────────────────────────────────────────────────────────────────────
+```
 
 #### El código
 
@@ -193,22 +212,6 @@ decisión aguas abajo. Y la respuesta que da el Capítulo 5 es que entonces **lo
 filtro y pasa a ser la memoria**, que es exactamente lo que el diseño de Maldonado había dejado fuera del
 chip.
 
-#### Qué toma este trabajo del filtro de Maldonado
-
-El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
-(`flower`, `monarch`, `butterfly`), que atraviesan todo el Capítulo 5; la norma L1 con saturación como
-magnitud; y, para Tiny Tapeout, la lección de **serializar la entrada y la salida** para ahorrar pines y área. Lo
-que agrega es lo que Maldonado dejó conscientemente fuera:
-
-- **el control programable**: el FemtoRV32 escribe el modo y los umbrales en vivo, a través del
-  periférico `0x0045` (§4.5);
-- **el motor de histéresis transitiva**, la reconstrucción morfológica de punto fijo, que es el filtro
-  que de verdad cuesta;
-- **la cadena cámara → filtro → memoria → pantalla**, funcionando y fotografiada en una iCE40UP5K;
-- **el co-diseño medido**: el Canny transitivo no cabía junto al procesador —127 % de ocupación— y por
-  eso su motor pasó a hardware (§5.2);
-- y **el reconocimiento de dígitos**, del borde al número (§5.6).
-
 ### Canny de un salto
 
 El Canny completo consta de suavizado gaussiano, cálculo del gradiente, supresión de no-máximos,
@@ -239,6 +242,22 @@ uno en el peor caso construido.
 Esta es la única de las tres arquitecturas que **exige el cuadro completo residente**, y de esa
 exigencia se derivan casi todos los resultados del Capítulo 6.
 
+### Para concluir: lo que los filtros toman del de Maldonado
+
+El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
+(`flower`, `monarch`, `butterfly`), que atraviesan todo el Capítulo 5; la norma L1 con saturación como
+magnitud; y, para Tiny Tapeout, la lección de **serializar la entrada y la salida** para ahorrar pines y área. Lo
+que agrega es lo que Maldonado dejó conscientemente fuera:
+
+- **el control programable**: el FemtoRV32 escribe el modo y los umbrales en vivo, a través del
+  periférico `0x0045` (§4.5);
+- **el motor de histéresis transitiva**, la reconstrucción morfológica de punto fijo, que es el filtro
+  que de verdad cuesta;
+- **la cadena cámara → filtro → memoria → pantalla**, funcionando y fotografiada en una iCE40UP5K;
+- **el co-diseño medido**: el Canny transitivo no cabía junto al procesador —127 % de ocupación— y por
+  eso su motor pasó a hardware (§5.2);
+- y **el reconocimiento de dígitos**, del borde al número (§5.6).
+
 ## 4.4 Los tres filtros, enunciados como algoritmos
 
 Las descripciones anteriores son narrativas. Esta sección las enuncia de forma que puedan compararse
@@ -260,26 +279,7 @@ Table: Notación empleada para enunciar los filtros como algoritmos.
 intercambiarse sin tocar nada aguas abajo, y de que la comparación del Capítulo 5 sea limpia: se
 cambia una pieza y nada más.
 
-```
-──────────────────────────────────────────────────────────────────────
- Algoritmo 1   Front-end Sobel
-──────────────────────────────────────────────────────────────────────
- FRONTEND_SOBEL(in_pix, thr)                     ▷ parámetros: H, W
- ▷ etapa 1 — suavizado
- 1.  (g₀₀…g₂₂, v_g) ≔ LINEBUF3X3⟨W,8⟩(in_valid, in_pix)
- 2.  gsum ≔ g₀₀+2g₀₁+g₀₂ + 2g₁₀+4g₁₁+2g₁₂ + g₂₀+2g₂₁+g₂₂
- 3.  gout ≔ gsum ≫ 4                             ▷ dividir entre 16 es desplazar
- ▷ etapa 2 — gradiente
- 4.  (s₀₀…s₂₂, v_s) ≔ LINEBUF3X3⟨W,8⟩(v_g, gout)
- 5.  Gx⁺ ≔ s₀₂+2s₁₂+s₂₂ ;   Gx⁻ ≔ s₀₀+2s₁₀+s₂₀
- 6.  Gy⁺ ≔ s₂₀+2s₂₁+s₂₂ ;   Gy⁻ ≔ s₀₀+2s₀₁+s₀₂
- 7.  σx ≔ (Gx⁺ ≥ Gx⁻) ;     σy ≔ (Gy⁺ ≥ Gy⁻)     ▷ los signos, que dan la orientación
- 8.  |Gx| ≔ |Gx⁺−Gx⁻| ;     |Gy| ≔ |Gy⁺−Gy⁻|
- 9.  mag ≔ mín(|Gx|+|Gy|, 255)                   ▷ norma L1: sin raíz y sin multiplicar
-10.  borde ≔ (mag > thr)                         ▷ UN umbral
-11.  LAT  ≔ 2·(W+2)                              ▷ dos etapas de ventana
-──────────────────────────────────────────────────────────────────────
-```
+El Algoritmo 1, el del Sobel, se enuncia en la §4.3.1. Los otros dos parten de él.
 
 El Canny de un salto es el anterior **con una etapa más**, y con una dificultad que no se ve a simple
 vista:
