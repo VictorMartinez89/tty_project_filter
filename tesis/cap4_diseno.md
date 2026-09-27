@@ -36,7 +36,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.7 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.6 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -175,7 +175,7 @@ emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](fi
 #### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.8 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.7 reúne las seis escenas.
 
 ![**Figura 4.4.** El Sobel corriendo en la iCESugar: la mariposa `monarch`, la mano y la palabra «la»,
 fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
@@ -184,11 +184,9 @@ fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
 
 El filtro solo, sin cámara ni pantalla, se llevó a sky130 con OpenLane: **0,167 mm²** y **5 823
 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero (§5.2). Es la versión sin suavizado
-gaussiano, con líneas de 60 píxeles (Anexo G.1). Es el circuito más pequeño de la
+gaussiano, con líneas de 60 píxeles (Anexo G.1). Su plano en KLayout se muestra en la §5.2.2. Es el circuito más pequeño de la
 tabla, y el punto de partida de todos los demás.
 
-![**Figura 4.5.** El filtro Sobel en silicio: `sobel_top.gds` abierto en KLayout, con los pines del
-píxel de entrada y de salida en el perímetro.](figuras/fig_4_sobel_asic.png)
 
 #### Ventajas y desventajas frente al filtro de Maldonado
 
@@ -365,13 +363,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.6.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.5.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.7.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.6.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
@@ -562,7 +560,7 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.8.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+![**Figura 4.7.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
 la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
 cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
 montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
