@@ -29,6 +29,15 @@ camino crítico de aquéllos.
 **Son los primeros circuitos de este trabajo cuya salida no es una imagen.** Los diez presentados en
 las secciones §5.2 y §5.3 procesan; éstos reconocen.
 
+![**Figura 7.1.** Pan Sobel en KLayout: 914×925 µm y 92 857 instancias, contando las celdas de relleno
+y de alimentación. A la izquierda el dado completo; a la derecha, una ampliación con las filas de
+celdas estándar. No hay un bloque que destaque: sin *framebuffer*, el área es lógica repartida —el
+procesador, el extractor y el clasificador—.](figuras/fig_7_pansobel_asic.png)
+
+![**Figura 7.2.** Pan Canny en KLayout: 938×949 µm y 97 533 instancias. Es el plano anterior con el
+tercer *line-buffer* del Canny; la diferencia de área entre ambos, un 5 %, es la de la
+§7.2.](figuras/fig_7_pancanny_asic.png)
+
 ## 7.2 El costo relativo del front-end depende del sistema
 
 La comparación de área entre ambos front-ends admite cuatro niveles de integración. Las cuatro filas
@@ -54,7 +63,18 @@ mientras que la diferencia se reduce al tercer *line-buffer*.
 
 De ello se sigue una conclusión condicional: **el Sobel aventaja al Canny en área únicamente cuando
 el filtro constituye el circuito completo.** En un sistema que reconoce, esa ventaja —la única que el
-Sobel conserva, según §6.2 a §6.4— deja de ser determinante.
+Sobel conserva, según las §6.2, §6.4 y §6.5— deja de ser determinante.
+
+Las dos últimas filas de la tabla son los circuitos que además muestran el resultado, los de las
+§6.3.3 y §6.3.4. Son los mayores de los reconocedores, y sus planos lo hacen visible.
+
+![**Figura 7.3.** Visión Sobel MNIST en KLayout: 1 420×1 431 µm, 2,032 mm². Ve, reconoce y muestra:
+la cámara, la ventana de 28×28, el clasificador, el *framebuffer* de la ventana y el controlador de la
+pantalla.](figuras/fig_7_visionsobel_asic.png)
+
+![**Figura 7.4.** Visión Canny MNIST en KLayout: 1 441×1 452 µm, 2,092 mm², con un 2,8 % más de celdas
+que el del Sobel. Entre los dos planos apenas se distingue la diferencia: es la de la última fila de la
+tabla.](figuras/fig_7_visioncanny_asic.png)
 
 ## 7.3 Canny-78 en silicio
 
@@ -79,9 +99,25 @@ cuesta lo mismo lleno que vacío—; en silicio, **un cuarto del dado era memori
 Es la tesis del Capítulo 8 dicha con el número más limpio de todo el trabajo: la memoria se paga por
 los bits que se declaran, no por los que se usan.
 
+![**Figura 7.5.** Canny-78 recortado en KLayout: 905×916 µm, 0,829 mm², 93 867 instancias. A la
+izquierda el dado completo; a la derecha, una ampliación con las filas de celdas y el ruteo en los
+niveles de metal.](figuras/fig_7_canny78f9_asic.jpg)
+
 En Tiny Tapeout, en cambio, ninguna de las dos cabe: en el tamaño máximo de 8×2 tiles, la completa
 pide un 110,7 % del área y la recortada, al 80,3 %, se queda sin sitio para los búferes que cierran el
 *hold*. El reconocedor que sí cabe es el de cuarenta rasgos (94,20 %), que en la lanzadera abierta de
 sky130 (SKY26d) ocupa el 42 % de 8×2 tiles, con DRC, LVS y antenas en cero y el temporizado limpio en
 las tres esquinas de proceso (repositorio `tt_mnist_canny_v2_vic`, ejecución 36048035078). No se ha
 enviado a fabricar.
+
+Antes de esa versión se armaron para Tiny Tapeout dos reconocedores de 8×2 mosaicos, uno con cada
+front-end, sin cámara ni procesador: el píxel entra por los pines y el dígito sale por ellos. El del
+Sobel lleva el umbral fijo en 60 y **13 319 celdas**; el del Canny, los umbrales 90 y 32 y **14 970
+celdas**. Los dos firman con DRC y LVS en cero.
+
+![**Figura 7.6.** El reconocedor con el Sobel en los 8×2 mosaicos de Tiny Tapeout, en el render que
+genera el flujo de la lanzadera. Las columnas verticales son las tiras de
+alimentación.](figuras/fig_7_tt_mnist_sobel.png)
+
+![**Figura 7.7.** El reconocedor con el Canny en los mismos 8×2 mosaicos. Es el antecesor directo del
+`tt_mnist_canny_v2_vic` que cabe con el 42 % de utilización.](figuras/fig_7_tt_mnist_canny.png)

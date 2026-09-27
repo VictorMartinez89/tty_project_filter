@@ -13,6 +13,7 @@ def _partir_codigo(linea):
         sep = 1
         if corte < len(ind) + 8: corte = resto.rfind(", ", 0, MAX - 2)
         if corte < len(ind) + 8: corte, sep = resto.rfind(" + ", 0, MAX - 2), 0   # en una suma larga
+        if corte < len(ind) + 8: corte, sep = resto.rfind(" : ", 0, MAX - 2), 0   # en un ?: encadenado
         assert corte > len(ind) + 8, "no se puede partir: " + linea
         out.append(resto[:corte + sep].rstrip()); resto = ind + "    " + resto[corte + 1:].lstrip()
     return out + [resto]

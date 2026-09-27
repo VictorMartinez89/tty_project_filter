@@ -1247,7 +1247,7 @@ puede producir varias en la salida.
 > Segunda: la **densidad de bordes** —la fracción de píxeles marcados, en torno al 2 % en las
 > imágenes de prueba— aparece en varias figuras de este trabajo y **no es una medida de calidad**. Es
 > una propiedad de la escena y del punto de operación elegido, y su valor «correcto» depende de para
-> qué se vaya a usar el mapa de bordes. La §6.4 muestra precisamente que mover ese punto de
+> qué se vaya a usar el mapa de bordes. La §6.5 muestra precisamente que mover ese punto de
 > operación cambia el resultado de clasificación más que cambiar de filtro.
 
 ## 4.9 Resultados en FPGA
@@ -1384,7 +1384,7 @@ transitivo, por ejemplo, pasó de 110/70 en el banco de pruebas a **60/30 en la 
 
 El ajuste no es arbitrario ni es un defecto: una imagen almacenada y un flujo de cámara tienen
 histogramas distintos, y el punto de operación que extrae la estructura de una no es el que la extrae
-de la otra. La §6.4 mide exactamente cuánto importa esa elección, y muestra que **mover el umbral
+de la otra. La §6.5 mide exactamente cuánto importa esa elección, y muestra que **mover el umbral
 dentro de un filtro cambia el resultado de clasificación más que cambiar de filtro**.
 
 ---
