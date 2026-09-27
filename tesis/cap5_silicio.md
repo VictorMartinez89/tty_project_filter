@@ -70,12 +70,16 @@ Table: Los bloques llevados a silicio en sky130: área, celdas y firma.
 once veces más celdas— pese a ejecutar aritmética comparable. La razón, ya anticipada, es el cuadro completo residente: en la FPGA
 ese cuadro vivía en SPRAM y no consumía lógica; aquí es un banco de biestables.
 
+![**Figura 5.1.** El Canny transitivo en silicio: `trans_engine_top.gds` abierto en KLayout. Con
+3,13 mm² es el bloque más grande de la tabla, porque el cuadro completo se guarda en
+biestables.](figuras/fig_5_trans_asic.png)
+
 **Los dos bloques de interfaz son casi gratis.** El front-end de cámara y el driver de pantalla ocupan
 menos de dieciocho milésimas de milímetro cuadrado cada uno, alrededor de 560 celdas. Conviene tenerlo
 medido porque desmonta una intuición común: el costo de un sistema de visión embebido no está en
 hablar con los periféricos, está en lo que se hace con los datos entre medias.
 
-![**Figura 5.1.** Acercamiento al GDSII del `canny1` en KLayout. Lo que se ve no es un esquema sino
+![**Figura 5.2.** Acercamiento al GDSII del `canny1` en KLayout. Lo que se ve no es un esquema sino
 el plano que iría a fábrica: filas de celdas estándar y, sobre ellas, las capas de metal que las
 conectan. La mancha más clara del centro es una región de menor densidad de ruteo. Las 12 993 celdas
 de la tabla anterior son, literalmente, estas.](figuras/fig_5_2_malla_canny1.jpg)
@@ -85,7 +89,7 @@ de la tabla anterior son, literalmente, estas.](figuras/fig_5_2_malla_canny1.jpg
 iCE40 cerraba entre 9 y 28 MHz. En silicio la lógica es rápida; **lo caro es el área**, y ése es el
 eje sobre el que gira todo este capítulo.
 
-![**Figura 5.2.** El filtro Sobel en silicio: `sobel_top.gds` abierto en KLayout. Con 0,167 mm² es el
+![**Figura 5.3.** El filtro Sobel en silicio: `sobel_top.gds` abierto en KLayout. Con 0,167 mm² es el
 circuito más pequeño de la tabla; en el perímetro, los pines del píxel de entrada y de
 salida.](figuras/fig_4_sobel_asic.png)
 
@@ -188,7 +192,7 @@ pediría 39,4 ns —25,4 MHz— y el #6, 54,2 ns, es decir 18,4 MHz en lugar de 
 > convirtió la tabla entera: se prefirió una tabla homogénea en su propia escala antes que una tabla
 > mixta con dos filas estimadas.
 
-![**Figura 5.3.** El mismo tipo de acercamiento, ahora sobre el sistema de visión completo. La
+![**Figura 5.4.** El mismo tipo de acercamiento, ahora sobre el sistema de visión completo. La
 diferencia con la figura anterior no está en la textura sino en la escala: aquí caben cámara, filtro,
 memoria de cuadro y controlador de pantalla en el mismo dado. Es la forma que toma en silicio la
 frase «el filtro es una pieza y no el circuito».](figuras/fig_5_3_mar_de_celdas_vision.jpg)
@@ -306,7 +310,7 @@ La variante **D0 es un control**, idéntica a la D salvo en que sus resistencias
 el efecto de la resistencia y el de *repartir* la capacitancia a lo largo del árbol en vez de
 agruparla en un nodo quedarían sumados en una sola cifra y no podrían separarse.
 
-![**Figura 5.4.** El desglose completo de la verificación. El panel A explica por qué se simula el
+![**Figura 5.5.** El desglose completo de la verificación. El panel A explica por qué se simula el
 camino y no el chip; el B reparte los 12,23 ns del `pan_sobel` y los 9,89 del `pan_canny` en sumandos
 que no dejan residuo; el C recoge las tres hipótesis que la medida desmintió; el D contrapone la
 celda del esquemático con la extraída del dibujo en los dos experimentos independientes; y el E
@@ -399,7 +403,7 @@ Dos circuitos distintos, dos caminos críticos que no comparten una sola instanc
 cuatro décimas de punto: **algo más de la quinta parte del retardo de un camino crítico la ponen los
 parásitos que el dibujo añade dentro de las celdas.**
 
-![**Figura 5.5.** La salida del simulador, tal como éste la dibuja. Cada traza es un nodo del camino
+![**Figura 5.6.** La salida del simulador, tal como éste la dibuja. Cada traza es un nodo del camino
 crítico, desplazada dos voltios respecto de la anterior para que las diez quepan en el mismo eje; la
 cascada de transiciones de arriba abajo es la señal propagándose etapa por etapa. El último nodo del
 `pan_sobel` conmuta a unos 8,2 ns y el del `pan_canny` a unos 7,6, que son las variantes D de la

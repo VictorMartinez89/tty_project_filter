@@ -36,7 +36,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.10 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.15 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -175,10 +175,10 @@ emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](fi
 #### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.11 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.16 reúne las seis escenas.
 
-![**Figura 4.4.** El Sobel corriendo en la iCESugar: la mariposa `monarch`, la mano y la palabra «la»,
-fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
+![**Figura 4.4.** El Sobel corriendo en la iCESugar sobre las cinco escenas: la mariposa `monarch`, la flor, la
+mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
 
 #### En silicio
 
@@ -305,16 +305,19 @@ quedan casi enteras marcadas como borde.](figuras/fig_4_canny_rtl.png)
 
 Grabado en la iCE40UP5K, el filtro corre en vivo entre la cámara y la pantalla, igual que el Sobel.
 
-![**Figura 4.8.** El Canny de un salto corriendo en la iCESugar: la mariposa `monarch`, la mano y la
-flor, fotografiadas directamente de la pantalla.](figuras/fig_4_canny_placa.jpg)
+![**Figura 4.8.** El Canny de un salto corriendo en la iCESugar sobre las cinco escenas: la mariposa
+`monarch`, la flor, la mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente
+de la pantalla.](figuras/fig_4_canny_placa.jpg)
 
 #### En silicio
 
 Llevado solo a sky130, sin cámara ni pantalla, ocupa **0,360 mm²** y **12 993 celdas** tras el
 emplazamiento, con DRC, LVS y XOR en cero (§5.2): algo más del doble que el Sobel, por el suavizado
-gaussiano y la memoria de clases, dos memorias de línea más. Su plano en KLayout es la Figura 5.1.
+gaussiano y la memoria de clases, dos memorias de línea más. Su plano en KLayout es la Figura 5.2.
 
-### Canny transitivo: la histéresis como punto fijo
+### Filtro Canny Framebuffer Transitivo
+
+#### Resumen
 
 El tercer filtro no aproxima: resuelve la histéresis completa. Formalmente es una **reconstrucción
 morfológica** —la reconstrucción de la máscara de píxeles débiles a partir de los fuertes como
@@ -329,46 +332,7 @@ uno en el peor caso construido.
 Esta es la única de las tres arquitecturas que **exige el cuadro completo residente**, y de esa
 exigencia se derivan casi todos los resultados del Capítulo 8.
 
-### Para concluir: lo que los filtros toman del de Maldonado
-
-El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
-(`flower`, `monarch`, `butterfly`), que atraviesan los Capítulos 4 y 5; la norma L1 con saturación como
-magnitud; y, para Tiny Tapeout, la lección de **serializar la entrada y la salida** para ahorrar pines y área. Lo
-que agrega es lo que Maldonado dejó conscientemente fuera:
-
-- **el control programable**: el FemtoRV32 escribe el modo y los umbrales en vivo, a través del
-  periférico `0x0045` (§4.5);
-- **el motor de histéresis transitiva**, la reconstrucción morfológica de punto fijo, que es el filtro
-  que de verdad cuesta;
-- **la cadena cámara → filtro → memoria → pantalla**, funcionando y fotografiada en una iCE40UP5K;
-- **el co-diseño medido**: el Canny transitivo no cabía junto al procesador —127 % de ocupación— y por
-  eso su motor pasó a hardware (§4.9);
-- y **el reconocimiento de dígitos**, del borde al número (Capítulo 6).
-
-## 4.4 Los tres filtros, enunciados como algoritmos
-
-Las descripciones anteriores son narrativas. Esta sección las enuncia de forma que puedan compararse
-sin ambigüedad, porque la afirmación central del trabajo —que dos de los filtros son objetos
-computacionales de una clase y el tercero de otra— **no se sostiene sobre lo que los filtros hacen
-sino sobre su estructura**, y la estructura hay que escribirla.
-
-Se emplea una notación mínima que distingue lo que en hardware son dos cosas distintas:
-
-| símbolo | significa | en Verilog |
-|:--:|---|---|
-| `x ← e` | **registro**: se actualiza al final del ciclo, y el bloque lee el valor anterior | `x <= e` |
-| `x ≔ e` | **cable**: vale de inmediato y de forma continua | `wire` / `assign` |
-| `▷` | comentario | `//` |
-
-Table: Notación empleada para enunciar los filtros como algoritmos.
-
-**Los tres comparten el esqueleto y se diferencian en una sola caja.** Ésa es la razón de que puedan
-intercambiarse sin tocar nada aguas abajo, y de que la comparación de los Capítulos 4 y 5 sea limpia: se
-cambia una pieza y nada más.
-
-El Algoritmo 1, el del Sobel, se enuncia en la §4.3.1. Los otros dos parten de él.
-
-El Algoritmo 2, el del Canny de un salto, se enuncia en la §4.3.2, con la explicación de sus pasos 12 y 16.
+#### Pseudocódigo
 
 El transitivo, en cambio, **no es un filtro más caro: es otra clase de objeto**, y el enunciado lo
 muestra en un solo paso:
@@ -407,6 +371,97 @@ muestra en un solo paso:
 > estado de barrido. **Un lazo cuyo número de vueltas no se conoce al sintetizar es, en hardware, lo
 > más caro que puede escribirse.**
 
+#### El código
+
+El motor son dos ficheros: `trans_engine_top.v`, que lo envuelve, y `hysteresis_frame_bram_sync.sv`, la
+máquina de estados que borra el cuadro, lo carga, lo barre hasta el punto fijo y lo lee. Los dos se
+reproducen en el Anexo G.3.
+
+#### Simulación en Python
+
+El modelo compara la histéresis completa —la que resuelve este filtro— con la de un salto de la §4.3.2,
+sobre la mariposa `monarch`. La diferencia es pequeña y está en las cadenas largas de píxeles débiles:
+es lo que el transitivo recupera y el de un salto pierde.
+
+![**Figura 4.9.** Histéresis completa frente a la de un salto, en Python, sobre `monarch`: los
+candidatos fuertes y débiles tras la supresión de no-máximos, la histéresis completa, la de un salto y
+su diferencia.](figuras/fig_4_trans_python.png)
+
+#### Simulación en Verilog: las señales
+
+Sobre la misma imagen de 16×12, el motor ya no procesa un flujo: carga el cuadro, lo barre y lo lee.
+
+![**Figura 4.10.** El motor transitivo a 16×12 en GTKWave, en el instante en que termina la carga:
+`load_ready` e `in_valid` bajan, `state` pasa de 001 (carga) a 010 (barrido) y las direcciones de la
+memoria (`mem_ra`, `a1`, `a2`) empiezan a recorrer el cuadro.](figuras/fig_4_trans_gtkwave.jpg)
+
+![**Figura 4.11.** La misma simulación, dibujada entera desde el VCD. Tras cargar el cuadro (estado
+1), el motor encadena barridos (estado 2) mientras `changed` sube; en este cuadro son seis, cinco con
+cambios y uno sin ellos. Ese último es el punto fijo: el motor pasa a la lectura (estado 4) y salen
+`eng_out_valid` y los bordes.](figuras/fig_4_trans_motor.png)
+
+#### Simulación en Verilog: la imagen
+
+Como los otros dos, el RTL se compara píxel a píxel con el modelo (§4.8).
+
+![**Figura 4.12.** El Canny transitivo simulado en Verilog sobre las cinco imágenes a 60×80: la
+entrada, el modelo de referencia, el núcleo RTL —idéntico al modelo píxel a píxel— y la cadena completa
+con la cámara OV7670 emulada.](figuras/fig_4_trans_rtl.png)
+
+#### En la tarjeta
+
+Grabado en la iCE40UP5K, con el cuadro de clases en la memoria SPRAM, corre en vivo como los otros dos.
+
+![**Figura 4.13.** El Canny transitivo corriendo en la iCESugar sobre las cinco escenas: la mariposa
+`monarch`, la flor, la mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente de
+la pantalla.](figuras/fig_4_trans_placa.jpg)
+
+#### En silicio
+
+Llevado solo a sky130 ocupa **3,13 mm²** y **65 659 celdas** tras el emplazamiento, con DRC, LVS y XOR
+en cero (§5.2): casi veinte veces el área del Sobel, porque el cuadro que en la FPGA vivía en la SPRAM
+aquí es un banco de biestables. Su plano en KLayout es la Figura 5.1.
+
+### Para concluir: lo que los filtros toman del de Maldonado
+
+El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
+(`flower`, `monarch`, `butterfly`), que atraviesan los Capítulos 4 y 5; la norma L1 con saturación como
+magnitud; y, para Tiny Tapeout, la lección de **serializar la entrada y la salida** para ahorrar pines y área. Lo
+que agrega es lo que Maldonado dejó conscientemente fuera:
+
+- **el control programable**: el FemtoRV32 escribe el modo y los umbrales en vivo, a través del
+  periférico `0x0045` (§4.5);
+- **el motor de histéresis transitiva**, la reconstrucción morfológica de punto fijo, que es el filtro
+  que de verdad cuesta;
+- **la cadena cámara → filtro → memoria → pantalla**, funcionando y fotografiada en una iCE40UP5K;
+- **el co-diseño medido**: el Canny transitivo no cabía junto al procesador —127 % de ocupación— y por
+  eso su motor pasó a hardware (§4.9);
+- y **el reconocimiento de dígitos**, del borde al número (Capítulo 6).
+
+## 4.4 Los tres filtros, enunciados como algoritmos
+
+Las descripciones anteriores son narrativas. Esta sección las enuncia de forma que puedan compararse
+sin ambigüedad, porque la afirmación central del trabajo —que dos de los filtros son objetos
+computacionales de una clase y el tercero de otra— **no se sostiene sobre lo que los filtros hacen
+sino sobre su estructura**, y la estructura hay que escribirla.
+
+Se emplea una notación mínima que distingue lo que en hardware son dos cosas distintas:
+
+| símbolo | significa | en Verilog |
+|:--:|---|---|
+| `x ← e` | **registro**: se actualiza al final del ciclo, y el bloque lee el valor anterior | `x <= e` |
+| `x ≔ e` | **cable**: vale de inmediato y de forma continua | `wire` / `assign` |
+| `▷` | comentario | `//` |
+
+Table: Notación empleada para enunciar los filtros como algoritmos.
+
+**Los tres comparten el esqueleto y se diferencian en una sola caja.** Ésa es la razón de que puedan
+intercambiarse sin tocar nada aguas abajo, y de que la comparación de los Capítulos 4 y 5 sea limpia: se
+cambia una pieza y nada más.
+
+Los tres algoritmos se enuncian junto a su filtro: el del Sobel en la §4.3.1, el del Canny de un salto
+en la §4.3.2 y el del transitivo en la §4.3.3, cada uno con lo que lo distingue del anterior.
+
 ## 4.5 El SoC: procesador, periférico y firmware
 
 El procesador es un **FemtoRV32 Quark**, una implementación mínima de RV32I. Se le añaden una memoria
@@ -420,13 +475,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.9.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.14.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.10.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.15.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
@@ -617,7 +672,7 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.11.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+![**Figura 4.16.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
 la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
 cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
 montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
