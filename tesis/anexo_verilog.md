@@ -1460,3 +1460,108 @@ module lcd_ili9341_top #(
 endmodule
 `default_nettype wire
 ```
+
+## G.8 Canny 1-streaming completo (§4.3.8)
+
+Es el circuito `canny1_completo`, el #2 de la §5.3: 2,90 mm² en sky130. `canny1_completo.v` conecta el
+front-end de cámara, el Canny de un salto de la G.2, el framebuffer de 60×80 bits y el controlador de
+pantalla. Los bloques de interfaz son idénticos a los de la G.7 y no se repiten.
+
+Carpeta: `Verilog_Repo/completos/canny1_completo/`.
+
+### `canny1_completo.v`
+
+```verilog
+// canny1_completo.v — LA CADENA DE VISION COMPLETA con Canny 1-salto (streaming), sin
+//   CPU, para ASIC sky130.
+//   camara OV7670 --> [cam_frontend_top: SCCB + captura + CDC + RGB565->gris]
+// --> [canny1_top: Gaussian 3x3 -> Sobel 3x3 -> doble umbral -> histeresis 1-salto]
+// --> [framebuffer 60x80, 1 bit/pixel] (puente stream->pantalla; bordes binarios)
+//                 --> [lcd_ili9341_top: SPI + ROM ILI9341] --> PMOD TFTLCD
+// Misma receta ganadora del sobel_completo (framebuffer de 1 bit). UN SOLO RELOJ
+//   (clk): el front-end
+// sincroniza PCLK/HREF/VSYNC con 2-FF internos (Parte 152), asi que no hay dual-clock.
+`default_nettype none
+module canny1_completo (
+    input  wire       clk,
+    input  wire       rst_n,
+    // ---- camara OV7670 ----
+    input  wire [7:0] cam_d,
+    input  wire       cam_pclk,
+    input  wire       cam_href,
+    input  wire       cam_vsync,
+    output wire       cam_xclk,
+    output wire       cam_sioc,
+    output wire       cam_siod_o,
+    output wire       cam_siod_oe,
+    // ---- display PMOD TFTLCD ----
+    output wire       tft_sck,
+    output wire       tft_mosi,
+    output wire       tft_cs,
+    output wire       tft_dc,
+    // ---- estado ----
+    output wire       cfg_done,
+    output wire       init_done
+);
+    // ===== 1) FRONT-END: camara -> stream de gris (dominio clk) =====
+    wire [7:0] gray; wire gray_valid, fe_frame_start, fe_line_start;
+    cam_frontend_top u_fe (
+        .sysclk(clk), .rst_n(rst_n),
+        .cam_d(cam_d), .cam_pclk(cam_pclk), .cam_href(cam_href), .cam_vsync(cam_vsync),
+        .cam_xclk(cam_xclk), .cam_sioc(cam_sioc), .cam_siod_o(cam_siod_o),
+            .cam_siod_oe(cam_siod_oe),
+        .gray(gray), .gray_valid(gray_valid), .frame_start(fe_frame_start),
+            .line_start(fe_line_start),
+        .cfg_done(cfg_done));
+
+    // ===== 2) FILTRO: Canny 1-salto (streaming), doble umbral fijo =====
+    wire can_v; wire [7:0] can_p;
+    canny1_top u_can (
+        .clk(clk), .reset(~rst_n),
+        .in_valid(gray_valid), .in_pix(gray), .thr_hi(8'd90), .thr_lo(8'd40),
+        .out_valid(can_v), .out_pix(can_p));
+
+    // ===== 3) FRAMEBUFFER 60x80, 1 bit/pixel (bordes binarios) =====
+    // Canny1 entrega 0xFF/0x00 -> basta 1 bit: 4800 flops (no 38400) y mux de lectura
+    //   8x mas angosto.
+    reg fb [0:4799];
+    reg [12:0] wadr;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) wadr <= 13'd0;
+        else if (fe_frame_start) wadr <= 13'd0;                 // alinear con el cuadro
+        else if (can_v) begin
+            // 0xFF->1 (borde) / 0x00->0 (plano)
+            fb[wadr] <= can_p[7];
+            wadr <= (wadr == 13'd4799) ? 13'd0 : wadr + 1'b1;
+        end
+    end
+
+    // ===== 4) generador de direccion de lectura para el LCD (240x320 -> escala a
+    //   60x80) =====
+    wire lcd_next, lcd_fs;
+    reg [7:0] xcol; reg [8:0] ycol;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin xcol <= 8'd0; ycol <= 9'd0; end
+        else if (lcd_fs) begin xcol <= 8'd0; ycol <= 9'd0; end
+        else if (lcd_next) begin
+            if (xcol == 8'd239) begin xcol <= 8'd0; ycol <= (ycol==9'd319)?9'd0:ycol+1'b1; end
+            else xcol <= xcol + 1'b1;
+        end
+    end
+    wire [6:0] fx = xcol[7:2];
+    wire [6:0] fy = ycol[8:2];
+    wire [13:0] raddr = fy*60 + fx;
+    reg fb_rd_bit;
+    always @(posedge clk) fb_rd_bit <= fb[raddr[12:0]];        // lee 1 bit
+    wire [7:0] fb_rd = fb_rd_bit ? 8'hFF : 8'h00;              // expande a 8 bits para el LCD
+
+    // ===== 5) LCD DRIVER: pinta el framebuffer por SPI =====
+    lcd_ili9341_top u_lcd (
+        .clk(clk), .rst_n(rst_n),
+        .pix_gray(fb_rd), .pix_next(lcd_next), .frame_start(lcd_fs), .init_done(init_done),
+        .tft_sck(tft_sck), .tft_mosi(tft_mosi), .tft_cs(tft_cs), .tft_dc(tft_dc));
+
+    wire _unused = &{fe_line_start, 1'b0};
+endmodule
+`default_nettype wire
+```

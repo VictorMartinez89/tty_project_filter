@@ -36,7 +36,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.28 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.30 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -175,7 +175,7 @@ emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](fi
 #### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.29 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.31 reúne las seis escenas.
 
 ![**Figura 4.4.** El Sobel corriendo en la iCESugar sobre las cinco escenas: la mariposa `monarch`, la flor, la
 mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
@@ -689,9 +689,67 @@ la Figura 4.26.
 
 #### En silicio
 
-En sky130 ocupa **2,45 mm²** y **36 730 celdas** de síntesis, con DRC, LVS y XOR en cero (§5.3): unas
+En sky130 ocupa **2,45 mm²** y **36 730 celdas** de síntesis, con DRC, LVS y XOR en cero según su ficha
+—los informes no se conservaron (§5.3, nota ᵃ)—: unas
 quince veces el Sobel solo. Llegar ahí exigió el framebuffer de un bit: con uno de ocho, el ruteo
 acababa con cerca de un millón de violaciones de DRC. Su plano en KLayout es la Figura 5.8.
+
+### Canny 1-streaming completo
+
+#### Resumen
+
+Es la cadena de la §4.3.7 con el Canny de un salto de la §4.3.2 en lugar del Sobel, y con la misma
+receta que la hizo caber: framebuffer de un bit por píxel y un solo reloj. Los umbrales quedan fijos en
+90 y 40. Entre la cámara y el framebuffer, el píxel atraviesa ahora tres memorias de línea en lugar de
+una.
+
+![**Figura 4.27.** El cauce del Canny de un salto dentro de la cadena: del gris a la decisión de borde
+en un solo pase, con tres memorias de línea —gaussiano, gradiente e histéresis— frente a la única del
+Sobel.](figuras/fig_4_cannycomp_cauce.png)
+
+#### Pseudocódigo
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 8   Canny 1-streaming completo: la cadena en un chip
+──────────────────────────────────────────────────────────────────────
+ 1–3.  idénticos al Algoritmo 7                       ▷ SCCB, sincronía, gris
+ 4.    borde ≔ FRONTEND_CANNY1(gris, 90, 40)          ▷ Algoritmo 2
+ 5.    FB[y][x] ← borde                               ▷ 60×80, un bit
+ 6–7.  idénticos al Algoritmo 7                       ▷ la pantalla lee FB
+──────────────────────────────────────────────────────────────────────
+```
+
+#### El código
+
+`canny1_completo.v` conecta los mismos bloques de interfaz que la cadena del Sobel alrededor del Canny;
+se reproduce en el Anexo G.8. El Canny es el de la G.2, y el front-end y el controlador de pantalla, los
+de la G.7.
+
+#### Simulación en Python
+
+Su modelo es el del Canny de un salto (§4.3.2), con los umbrales fijos en 90 y 40.
+
+#### Simulación en Verilog: las señales y la imagen
+
+Como en la cadena del Sobel, los bloques se simularon por separado: el Canny en la Figura 4.6, con sus
+tres memorias de línea; la cadena con la cámara emulada es la última columna de la Figura 4.7.
+
+#### En la tarjeta
+
+![**Figura 4.28.** La cadena del Canny de un salto en la iCESugar, en fotogramas de los videos de la
+tarjeta: dos escenas en la pantalla y el montaje entero, con la placa, el cableado y la
+pantalla.](figuras/fig_4_cannycomp_placa.jpg)
+
+#### En silicio
+
+En sky130 ocupa **2,90 mm²** —1 687 × 1 686 µm— y **42 581 celdas** de síntesis, con DRC, LVS y XOR en
+cero y sin violaciones de setup ni de hold a 20 ns, según su ficha; los informes no se conservaron (§5.3,
+nota ᵃ). Frente a la cadena del Sobel son un 16 % más de celdas y un 18 % más de dado, lo que cabe
+esperar de tres memorias de línea en lugar de una. Llegar ahí costó dos batallas: un fallo de OpenROAD
+en la optimización de temporizado, que se esquivó desactivándola porque el temporizado ya se cumplía
+con holgura, y la congestión del ruteo, que bajó de 138 684 violaciones a cero al repartir las celdas
+con una densidad de 0,20. Su plano en KLayout es la Figura 5.10.
 
 ### Para concluir: lo que los filtros toman del de Maldonado
 
@@ -746,13 +804,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.27.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.29.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.28.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.30.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
@@ -943,7 +1001,7 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.29.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+![**Figura 4.31.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
 la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
 cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
 montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
