@@ -1368,6 +1368,16 @@ anterior empieza a producirlos, sin esperar a que termine de llenarse.
 > modo que su única influencia es indirecta —baja la frecuencia máxima alcanzable, y por eso los
 > mismos 125 ciclos tardan 1,05 µs en lugar de 0,96.
 
+Puestas junto al transitivo, que se mide en la §4.10.3, las dos familias se separan a simple vista. Los
+filtros en flujo procesan entre 106 y 130 millones de píxeles por segundo con una latencia de entre 1 y
+3 µs; el transitivo, con dos barridos —lo típico en una imagen real—, entre 16 y 20 millones, con 235 a
+306 µs por cuadro. Son de seis a ocho veces menos caudal y de ochenta a trescientas veces más latencia.
+
+![**Figura 4.39.** Caudal y latencia de los seis filtros, medidos en simulación. A la izquierda, el
+caudal en millones de píxeles por segundo; a la derecha, la latencia hasta el primer píxel utilizable, en
+escala logarítmica: los cuatro filtros en flujo quedan en microsegundos y los dos transitivos, en
+cientos.](figuras/fig_4_caudal_latencia.png)
+
 ### 4.10.3 El número de barridos del transitivo, medido
 
 El motor de histéresis transitiva repite barridos hasta que ninguno produce cambios. Ese número, **K**,

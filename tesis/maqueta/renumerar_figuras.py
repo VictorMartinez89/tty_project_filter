@@ -6,7 +6,7 @@ para insertar figuras nuevas sin calcular numeros a mano.
     python3 tesis/maqueta/renumerar_figuras.py        (desde la raiz del repo o desde tesis/)"""
 import re, os, glob
 T = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CAP = re.compile(r"!\[\*\*Figura ([0-9]+\.[0-9]+[a-z0-9]*)\.\*\*")
+CAP = re.compile(r"!\[\*\*Figura ([0-9]+\.[0-9]+[A-Za-z0-9]*)\.\*\*")
 caps = sorted(glob.glob(f"{T}/cap*.md"))
 mapa = {}
 for f in caps:
@@ -22,7 +22,7 @@ cambios = 0
 for f in todos:
     s = open(f).read(); o = s
     s = CAP.sub(lambda m: "![**Figura @" + mapa[m.group(1)] + ".**", s)
-    s = re.sub(r"(?<!\[\*\*)Figura ([0-9]+\.[0-9]+[a-z0-9]*)\b",
+    s = re.sub(r"(?<!\[\*\*)Figura ([0-9]+\.[0-9]+[A-Za-z0-9]*)\b",
                lambda m: "Figura @" + mapa[m.group(1)] if m.group(1) in mapa else m.group(0), s)
     s = s.replace("Figura @", "Figura ")
     if s != o: open(f, "w").write(s); cambios += 1
