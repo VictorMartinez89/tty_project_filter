@@ -946,8 +946,10 @@ pudo emplazar las celdas con la densidad que pedía, y por eso son seis.
 Hay además una diferencia que no se ve en la interfaz. El generador de ventana de esta versión lleva
 **reinicio explícito** en sus contadores; el original (Anexo G.1) los arranca con valores iniciales, que
 la FPGA respeta porque el *bitstream* los carga, pero que en silicio no existen: los biestables arrancan
-en cualquier estado y la señal de validez no se resuelve. Es el cambio 2 de la §5.1, y apareció aquí, en
-la simulación de compuertas de Tiny Tapeout.
+en cualquier estado. En la simulación de compuertas, que representa ese arranque como un valor
+indefinido, la salida no llega a resolverse nunca, y así fue como apareció. En silicio el efecto sería
+menor —las primeras líneas del primer cuadro— y la §5.1 lo precisa, pero es el cambio 2 de esa sección
+y esta versión lo cumple.
 
 #### Pseudocódigo
 

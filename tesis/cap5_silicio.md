@@ -31,6 +31,19 @@ LED RGB, entre otros— no existen en sky130. Se sustituyen por pines ordinarios
 > de fábrica mudo. Los dos únicos que se detectaron a tiempo durante este trabajo aparecieron en
 > **simulación de compuertas**, después de la síntesis, y no antes.
 
+> **Lo que no se aplicó a tiempo.** El generador de ventana `linebuf3x3` (Anexo G.1) no reinicia su
+> contador de columna: lo arranca con un valor inicial (`reg x=0`), que la FPGA respeta y el silicio no.
+> Con esa versión se firmaron los bloques `sobel`, `canny1`, `soc_sobel` y `soc_canny1` de la §5.2 y las
+> seis cadenas completas de la §5.3. En silicio el contador arrancaría en un valor cualquiera. Como todas
+> las filas comparten el mismo contador, un desfase no desalinea la ventana; sólo si arranca por encima
+> del ancho de línea lee fuera de ella hasta dar la vuelta, que con nueve bits ocurre en a lo sumo 512
+> píxeles. El efecto sería, como mucho, **las primeras líneas del primer cuadro erróneas**, no un chip
+> mudo. En la simulación de compuertas, que representa ese arranque como un valor indefinido, la salida no
+> se resuelve nunca, y así apareció, en Tiny Tapeout (§4.3.12). Los diseños posteriores —los reconocedores
+> del Capítulo 7 y los proyectos de Tiny Tapeout— llevan el reinicio explícito; los GDS de las §5.2 y §5.3
+> no se regeneraron. Que el DRC y el LVS den cero no dice nada de esto: ninguna de las dos comprobaciones
+> mira el arranque.
+
 ## 5.2 Resultados en ASIC: los bloques
 
 > **Sobre el recuento.** Toda la columna «celdas» de la tabla de esta sección son **celdas lógicas
