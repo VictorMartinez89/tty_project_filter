@@ -7,8 +7,11 @@ que se entregó al sintetizador o al flujo a silicio.
 
 Se incluyen los módulos escritos para este trabajo. El núcleo del procesador, `femtorv32_quark.v`, es
 de B. Levy [ref. 1] y se cita en lugar de reproducirse. En los listados, sólo las líneas de comentario
-que no cabían en la página se han partido en dos; el código no se ha tocado, salvo alguna línea con
-varias sentencias, que se parte entre dos de ellas y se indica en su sección.
+que no cabían en la página se han partido en dos; el código no se ha tocado, salvo en un sentido: las
+líneas de código demasiado largas se parten entre dos sentencias, dos argumentos o dos sumandos, y los
+comentarios al final de ellas suben a la línea anterior. En Verilog un salto de línea equivale a un
+espacio, de modo que el circuito descrito es el mismo; se comprobó fichero por fichero, comparando el
+código sin espacios ni comentarios.
 
 ## G.1 Filtro Sobel (§4.3.1)
 
@@ -809,6 +812,651 @@ module soc_trans_top (
     always @(posedge clk) if (!resetn) wrote <= 1'b0;
         else if (cs_filter && cpu_wr) wrote <= 1'b1;
     assign cpu_wrote_filter = wrote;
+endmodule
+`default_nettype wire
+```
+
+## G.7 Sobel completo (§4.3.7)
+
+Es el circuito `sobel_completo`, el #1 de la §5.3: 2,45 mm² en sky130. `sobel_completo.v` conecta el
+front-end de cámara, el Sobel de la G.1, el framebuffer de 60×80 bits y el controlador de pantalla. Los
+bloques de interfaz —las cuatro piezas del front-end y el controlador de la ILI9341— son los mismos que
+usan las demás cadenas completas y los sistemas de visión, y sólo se reproducen aquí.
+
+Carpeta: `Verilog_Repo/completos/sobel_completo/`.
+
+### `sobel_completo.v`
+
+```verilog
+// sobel_completo.v — LA CADENA DE VISION COMPLETA en un chip, pieza a pieza (sin CPU),
+//   para ASIC sky130.
+//   camara OV7670 --> [cam_frontend_top: SCCB + captura + CDC + RGB565->gris]
+//                 --> [sobel_top: Sobel 3x3, umbral fijo]
+// --> [framebuffer 60x80] (puente stream->pantalla; guarda bordes binarios)
+//                 --> [lcd_ili9341_top: SPI + ROM ILI9341] --> PMOD TFTLCD
+// Ensamblado con los MODULOS reusables ya verificados (fases 7, 1, 8). UN SOLO RELOJ
+//   (clk): el
+// front-end sincroniza PCLK/HREF/VSYNC con 2-FF internos (Parte 152), asi que no hay
+//   dual-clock.
+`default_nettype none
+module sobel_completo (
+    input  wire       clk,
+    input  wire       rst_n,
+    // ---- camara OV7670 ----
+    input  wire [7:0] cam_d,
+    input  wire       cam_pclk,
+    input  wire       cam_href,
+    input  wire       cam_vsync,
+    output wire       cam_xclk,
+    output wire       cam_sioc,
+    output wire       cam_siod_o,
+    output wire       cam_siod_oe,
+    // ---- display PMOD TFTLCD ----
+    output wire       tft_sck,
+    output wire       tft_mosi,
+    output wire       tft_cs,
+    output wire       tft_dc,
+    // ---- estado ----
+    output wire       cfg_done,
+    output wire       init_done
+);
+    // ===== 1) FRONT-END: camara -> stream de gris (dominio clk) =====
+    wire [7:0] gray; wire gray_valid, fe_frame_start, fe_line_start;
+    cam_frontend_top u_fe (
+        .sysclk(clk), .rst_n(rst_n),
+        .cam_d(cam_d), .cam_pclk(cam_pclk), .cam_href(cam_href), .cam_vsync(cam_vsync),
+        .cam_xclk(cam_xclk), .cam_sioc(cam_sioc), .cam_siod_o(cam_siod_o),
+            .cam_siod_oe(cam_siod_oe),
+        .gray(gray), .gray_valid(gray_valid), .frame_start(fe_frame_start),
+            .line_start(fe_line_start),
+        .cfg_done(cfg_done));
+
+    // ===== 2) FILTRO: Sobel 3x3 (umbral fijo 90) =====
+    wire sob_v; wire [7:0] sob_p;
+    sobel_top u_sob (
+        .clk(clk), .reset(~rst_n),
+        .in_valid(gray_valid), .in_pix(gray), .thr(8'd90),
+        .out_valid(sob_v), .out_pix(sob_p));
+
+    // ===== 3) FRAMEBUFFER 60x80 (bordes binarios -> 1 bit/pixel EXPLICITO) =====
+    // El Sobel entrega 0xFF/0x00, asi que basta 1 bit por pixel: 4800 flops (no 38400)
+    // y el mux de lectura queda 8x mas angosto -> muchisima menos congestion de ruteo.
+    reg fb [0:4799];
+    reg [12:0] wadr;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) wadr <= 13'd0;
+        else if (fe_frame_start) wadr <= 13'd0;                 // alinear con el cuadro
+        else if (sob_v) begin
+            // 0xFF->1 (borde) / 0x00->0 (plano)
+            fb[wadr] <= sob_p[7];
+            wadr <= (wadr == 13'd4799) ? 13'd0 : wadr + 1'b1;
+        end
+    end
+
+    // ===== 4) generador de direccion de lectura para el LCD (240x320 -> escala a
+    //   60x80) =====
+    wire lcd_next, lcd_fs;
+    reg [7:0] xcol; reg [8:0] ycol;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin xcol <= 8'd0; ycol <= 9'd0; end
+        else if (lcd_fs) begin xcol <= 8'd0; ycol <= 9'd0; end
+        else if (lcd_next) begin
+            if (xcol == 8'd239) begin xcol <= 8'd0; ycol <= (ycol==9'd319)?9'd0:ycol+1'b1; end
+            else xcol <= xcol + 1'b1;
+        end
+    end
+    wire [6:0] fx = xcol[7:2];
+    wire [6:0] fy = ycol[8:2];
+    wire [13:0] raddr = fy*60 + fx;
+    reg fb_rd_bit;
+    always @(posedge clk) fb_rd_bit <= fb[raddr[12:0]];        // lee 1 bit
+    wire [7:0] fb_rd = fb_rd_bit ? 8'hFF : 8'h00;              // expande a 8 bits para el LCD
+
+    // ===== 5) LCD DRIVER: pinta el framebuffer por SPI =====
+    lcd_ili9341_top u_lcd (
+        .clk(clk), .rst_n(rst_n),
+        .pix_gray(fb_rd), .pix_next(lcd_next), .frame_start(lcd_fs), .init_done(init_done),
+        .tft_sck(tft_sck), .tft_mosi(tft_mosi), .tft_cs(tft_cs), .tft_dc(tft_dc));
+
+    wire _unused = &{fe_line_start, 1'b0};
+endmodule
+`default_nettype wire
+```
+
+### `cam_frontend_top.v`
+
+```verilog
+// cam_frontend_top.v — FRONT-END de la OV7670 AUTOCONTENIDO para ASIC sky130 (fase 7).
+// Une las 3 piezas verificadas en FPGA: SCCB (config) + captura (PCLK/HREF/VSYNC/D7:0
+//   -> RGB565,
+// con sincronizadores 2-FF = CDC) + RGB565->gris. Entrega un STREAM DE GRIS
+//   (gray/gray_valid)
+// listo para cualquiera de los 6 filtros. La salida SCCB open-drain se parte en
+//   dato+enable
+//   (siod_o/siod_oe): el tri-state vive en el anillo de I/O (Parte 114).
+`default_nettype none
+module cam_frontend_top #(
+    parameter integer SYSCLK_HZ = 48_000_000,
+    parameter integer XCLK_HZ   = 12_000_000
+)(
+    input  wire       sysclk,        // reloj del sistema (dominio del core)
+    input  wire       rst_n,         // reset asincrono activo-bajo
+    // ---- pines de la camara OV7670 ----
+    input  wire [7:0] cam_d,         // D7..D0
+    input  wire       cam_pclk,      // reloj de pixel (entra; se sincroniza -> CDC)
+    input  wire       cam_href,      // linea valida
+    input  wire       cam_vsync,     // inicio de cuadro
+    output wire       cam_xclk,      // reloj que el chip da a la camara
+    output wire       cam_sioc,      // SCCB clock
+    output wire       cam_siod_o,    // SCCB data (open-drain: dato)
+    // SCCB data (open-drain: enable) -> el pad hace el tri-state
+    output wire       cam_siod_oe,
+    // ---- stream de gris (dominio del core) ----
+    output wire [7:0] gray,
+    output wire       gray_valid,
+    output wire       frame_start,
+    output wire       line_start,
+    output wire       cfg_done
+);
+    // 1) SCCB: configura la camara al arrancar (start atado a 1)
+    ov7670_sccb #(.SYSCLK_HZ(SYSCLK_HZ)) u_sccb (
+        .clk(sysclk), .rst_n(rst_n), .start(1'b1),
+        .sioc(cam_sioc), .siod_o(cam_siod_o), .siod_oe(cam_siod_oe),
+        .done(cfg_done), .dbg_reg());
+
+    // 2) captura PCLK/HREF/VSYNC/D -> RGB565 (con sincronizadores = CDC hacia sysclk)
+    wire [15:0] px565; wire px_valid;
+    ov7670_capture #(.SYSCLK_HZ(SYSCLK_HZ), .XCLK_HZ(XCLK_HZ)) u_cap (
+        .sysclk(sysclk), .rst_n(rst_n),
+        .cam_d(cam_d), .cam_pclk(cam_pclk), .cam_href(cam_href), .cam_vsync(cam_vsync),
+        .cam_xclk(cam_xclk),
+        .pixel_rgb565(px565), .pixel_valid(px_valid),
+        .frame_start(frame_start), .line_start(line_start));
+
+    // 3) RGB565 -> gris 8 bits
+    rgb565_to_gray u_gray (.rgb565(px565), .gray(gray));
+    assign gray_valid = px_valid;
+endmodule
+`default_nettype wire
+```
+
+### `ov7670_sccb.v`
+
+```verilog
+// ov7670_sccb.v (VARIANTE ASIC) — identico al SCCB verificado en FPGA, PERO la salida
+//   open-drain se parte en dato+enable (siod_o / siod_oe) en vez de 1'bz. En el ASIC el
+// tri-state vive en el ANILLO DE I/O (el pad hace: pad = siod_oe ? siod_o : Z). Ver
+//   Parte 114.
+`default_nettype none
+module ov7670_sccb #(
+    parameter integer SYSCLK_HZ = 12_000_000,
+    parameter integer SCCB_HZ   = 100_000,
+    parameter [7:0]   CAM_ADDR  = 8'h42,
+    parameter integer NREGS     = 5
+)(
+    input  wire       clk,
+    input  wire       rst_n,
+    input  wire       start,
+    output reg        sioc,
+    output wire       siod_o,      // dato SCCB (en open-drain siempre 0 cuando activo)
+    // 1 = maneja 0 ; 0 = suelta (el pad -> Z, pull-up externo -> 1)
+    output wire       siod_oe,
+    output reg        done,
+    output reg [7:0]  dbg_reg
+);
+    function [15:0] rom(input [7:0] i);
+        case (i)
+            8'd0: rom = 16'h12_14;   // COM7  : QVGA + RGB
+            8'd1: rom = 16'h40_d0;   // COM15 : RGB565, rango full
+            8'd2: rom = 16'h11_01;   // CLKRC : prescaler de reloj
+            8'd3: rom = 16'h0C_04;   // COM3  : enable scaling
+            8'd4: rom = 16'h3E_19;   // COM14 : divide para QQVGA
+            default: rom = 16'h0000;
+        endcase
+    endfunction
+
+    localparam integer DIV = SYSCLK_HZ / (4 * SCCB_HZ);
+    reg [15:0] div_cnt;
+    wire tick = (div_cnt == DIV[15:0] - 1);
+    always @(posedge clk or negedge rst_n)
+        if (!rst_n) div_cnt <= 16'd0;
+        else        div_cnt <= tick ? 16'd0 : div_cnt + 16'd1;
+
+    reg armed;
+    always @(posedge clk or negedge rst_n)
+        if (!rst_n)                 armed <= 1'b0;
+        else if (start)             armed <= 1'b1;
+        else if (sioc == 1'b0)      armed <= armed;
+
+    reg siod_low;                    // 1 => maneja 0 ; 0 => suelta
+    assign siod_o  = 1'b0;           // open-drain: el dato manejado es siempre 0
+    assign siod_oe = siod_low;       // el enable decide 0 vs Z (el tri-state va en el pad)
+
+    localparam [2:0] S_IDLE=0, S_START=1, S_BIT=2, S_STOP=3, S_DELAY=4, S_DONE=5;
+    reg [2:0] state;
+    reg [1:0] q;
+    reg [3:0] bitc;
+    reg [1:0] bytec;
+    reg [7:0] regc;
+
+    wire [15:0] cur      = rom(regc);
+    wire [7:0]  byte_sel = (bytec == 2'd0) ? CAM_ADDR :
+                           (bytec == 2'd1) ? cur[15:8] : cur[7:0];
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            state<=S_IDLE; sioc<=1'b1; siod_low<=1'b0; done<=1'b0;
+            q<=0; bitc<=0; bytec<=0; regc<=0; dbg_reg<=0;
+        end else if (tick) begin
+            case (state)
+            S_IDLE: begin
+                sioc<=1'b1; siod_low<=1'b0; done<=1'b0;
+                if (armed) begin
+                    regc<=0; bytec<=0; bitc<=0; q<=0; dbg_reg<=cur[15:8];
+                    state<=S_START;
+                end
+            end
+            S_START: begin
+                case (q)
+                    2'd0: begin siod_low<=1'b0; sioc<=1'b1; end
+                    2'd1: begin siod_low<=1'b1; sioc<=1'b1; end
+                    2'd2: begin siod_low<=1'b1; sioc<=1'b0; end
+                    2'd3: begin bytec<=0; bitc<=0; state<=S_BIT; end
+                endcase
+                q<=q+2'd1;
+            end
+            S_BIT: begin
+                case (q)
+                    2'd0: begin sioc<=1'b0;
+                                if (bitc<=4'd7) siod_low <= ~byte_sel[7-bitc[2:0]];
+                                else            siod_low <= 1'b0;
+                          end
+                    2'd1: sioc<=1'b1;
+                    2'd2: sioc<=1'b1;
+                    2'd3: begin sioc<=1'b0;
+                                if (bitc==4'd8) begin
+                                    if (bytec==2'd2) state<=S_STOP;
+                                    else begin bytec<=bytec+2'd1; bitc<=0; end
+                                end else bitc<=bitc+4'd1;
+                          end
+                endcase
+                q<=q+2'd1;
+            end
+            S_STOP: begin
+                case (q)
+                    2'd0: begin siod_low<=1'b1; sioc<=1'b0; end
+                    2'd1: begin siod_low<=1'b1; sioc<=1'b1; end
+                    2'd2: begin siod_low<=1'b0; sioc<=1'b1; end
+                    2'd3: state<=S_DELAY;
+                endcase
+                q<=q+2'd1;
+            end
+            S_DELAY: begin
+                sioc<=1'b1; siod_low<=1'b0;
+                if (q==2'd3) begin
+                    if (regc==NREGS-1) state<=S_DONE;
+                    else begin regc<=regc+8'd1; dbg_reg<=rom(regc+8'd1) >> 8; state<=S_START; end
+                end
+                q<=q+2'd1;
+            end
+            S_DONE: done<=1'b1;
+            endcase
+        end
+    end
+endmodule
+`default_nettype wire
+```
+
+### `ov7670_capture.v`
+
+```verilog
+// ============================================================================
+// ov7670_capture.v
+//
+// OV7670 camera capture front-end for the femto2 SoC (tty_project_filter thesis).
+// Target board: iCESugar v1.5  (Lattice iCE40UP5K-SG48)
+// Wiring:       PMOD2 = pixel data D[7:0],  PMOD3 = clocks/sync/SCCB
+//
+// What this module does:
+//   1) Generates XCLK (~24 MHz) to drive the OV7670.
+//   2) Synchronises PCLK/HREF/VSYNC into the FPGA sysclk domain.
+//   3) Captures one 8-bit pixel byte on each PCLK rising edge while HREF=1.
+//   4) Combines two consecutive bytes into one 16-bit RGB565 pixel.
+//   5) Emits frame_start / line_start pulses for downstream pipeline sync.
+//
+// What this module does NOT do (separate modules needed):
+//   - SCCB (I2C-like) master to configure the camera at boot
+//     -> implement in   cores/camera/ov7670_sccb.v
+//   - Line buffering / DMA into RAM for the femto2 to read
+//     -> downstream consumer's job
+//
+// Verilog-2001 style, written to be readable as a teaching example.
+// ============================================================================
+
+`default_nettype none
+
+module ov7670_capture #(
+    parameter integer SYSCLK_HZ = 48_000_000,   // FPGA system clock (Hz)
+    parameter integer XCLK_HZ   = 24_000_000    // target XCLK to camera (Hz)
+) (
+    // -------- Clock & reset --------
+    input  wire        sysclk,                 // system clock (>= 2 * PCLK)
+    input  wire        rst_n,                  // active-low reset
+
+    // -------- OV7670 pins (cross the PMOD boundary) --------
+    input  wire [7:0]  cam_d,                  // pixel data byte   (PMOD2)
+    input  wire        cam_pclk,               // pixel clock       (PMOD3, in)
+    input  wire        cam_href,               // line valid        (PMOD3, in)
+    input  wire        cam_vsync,              // frame sync        (PMOD3, in)
+    output wire        cam_xclk,               // FPGA-gen'd clock  (PMOD3, out, ~24 MHz)
+
+    // -------- Pixel stream out (sysclk domain) --------
+    output reg  [15:0] pixel_rgb565,           // 16-bit RGB565 pixel
+    output reg         pixel_valid,            // 1 sysclk pulse when pixel_rgb565 is fresh
+    output reg         frame_start,            // pulse at start of every frame
+    output reg         line_start              // pulse at start of every line
+);
+
+    // ========================================================================
+    // 1) XCLK generator: divide sysclk down to ~XCLK_HZ
+    // ------------------------------------------------------------------------
+    // For low-jitter operation prefer the iCE40UP5K PLL (SB_PLL40_PAD); this
+    // counter-based divider is fine for the OV7670 (it tolerates wide XCLK).
+    // ========================================================================
+    localparam integer DIVIDER = (SYSCLK_HZ / (2 * XCLK_HZ));   // toggle every DIVIDER cycles
+    reg [15:0] xclk_cnt;
+    reg        xclk_r;
+    always @(posedge sysclk or negedge rst_n) begin
+        if (!rst_n) begin
+            xclk_cnt <= 16'd0;
+            xclk_r   <= 1'b0;
+        end else if (xclk_cnt == DIVIDER[15:0] - 1) begin
+            xclk_cnt <= 16'd0;
+            xclk_r   <= ~xclk_r;
+        end else begin
+            xclk_cnt <= xclk_cnt + 16'd1;
+        end
+    end
+    assign cam_xclk = xclk_r;
+
+    // ========================================================================
+    // 2) 2-FF synchronisers for the camera's async-looking inputs
+    //    (PCLK is technically derived from cam_xclk, but it returns to us
+    //     through the camera + cable: treat as async, synchronise it.)
+    // ========================================================================
+    reg [1:0] pclk_s, href_s, vsync_s;
+    always @(posedge sysclk or negedge rst_n) begin
+        if (!rst_n) begin
+            pclk_s  <= 2'b00;
+            href_s  <= 2'b00;
+            vsync_s <= 2'b00;
+        end else begin
+            pclk_s  <= {pclk_s [0], cam_pclk };
+            href_s  <= {href_s [0], cam_href };
+            vsync_s <= {vsync_s[0], cam_vsync};
+        end
+    end
+    wire pclk_now  = pclk_s [1];
+    wire href_now  = href_s [1];
+    wire vsync_now = vsync_s[1];
+
+    // Edge detection: remember previous value, compare to current.
+    reg pclk_prev, href_prev, vsync_prev;
+    always @(posedge sysclk or negedge rst_n) begin
+        if (!rst_n) begin
+            pclk_prev  <= 1'b0;
+            href_prev  <= 1'b0;
+            vsync_prev <= 1'b0;
+        end else begin
+            pclk_prev  <= pclk_now;
+            href_prev  <= href_now;
+            vsync_prev <= vsync_now;
+        end
+    end
+    wire pclk_rising  =  pclk_now  & ~pclk_prev;
+    wire href_rising  =  href_now  & ~href_prev;
+    wire vsync_rising =  vsync_now & ~vsync_prev;
+
+    // ========================================================================
+    // 3) Byte capture + RGB565 byte-pair combiner
+    //    The OV7670 sends each 16-bit RGB565 pixel as two bytes back-to-back:
+    //        byte 0 (upper) = { R[4:0] , G[5:3] }
+    //        byte 1 (lower) = { G[2:0] , B[4:0] }
+    //    Align at the start of every line via href_rising.
+    // ========================================================================
+    reg       byte_phase;     // 0 -> waiting for upper byte ; 1 -> waiting for lower byte
+    reg [7:0] upper_byte;
+
+    always @(posedge sysclk or negedge rst_n) begin
+        if (!rst_n) begin
+            byte_phase   <= 1'b0;
+            upper_byte   <= 8'h00;
+            pixel_rgb565 <= 16'h0000;
+            pixel_valid  <= 1'b0;
+            frame_start  <= 1'b0;
+            line_start   <= 1'b0;
+        end else begin
+            // Single-cycle output pulses by default.
+            pixel_valid <= 1'b0;
+            frame_start <= vsync_rising;
+            line_start  <= href_rising;
+
+            // Re-align at the start of each line so we never get half-pixels.
+            if (href_rising)
+                byte_phase <= 1'b0;
+
+            // Sample data on PCLK rising edge while the line is active.
+            if (pclk_rising && href_now) begin
+                if (byte_phase == 1'b0) begin
+                    upper_byte <= cam_d;
+                end else begin
+                    pixel_rgb565 <= {upper_byte, cam_d};
+                    pixel_valid  <= 1'b1;
+                end
+                byte_phase <= ~byte_phase;
+            end
+        end
+    end
+
+endmodule
+
+`default_nettype wire
+```
+
+### `rgb565_to_gray.v`
+
+```verilog
+// ============================================================================
+// rgb565_to_gray.v
+// Convierte un pixel RGB565 (el que sale de ov7670_capture) a gris de 8 bits.
+// Luma aproximada SIN multiplicar (estilo Diana, solo sumas y shifts):
+//     Y = (R + 2*G + B) >> 2
+// RGB565:  [15:11]=R5  [10:5]=G6  [4:0]=B5  (se expanden a 8 bits replicando MSBs).
+// ============================================================================
+`default_nettype none
+module rgb565_to_gray (
+    input  wire [15:0] rgb565,
+    output wire [7:0]  gray
+);
+    wire [4:0] r5 = rgb565[15:11];
+    wire [5:0] g6 = rgb565[10:5];
+    wire [4:0] b5 = rgb565[4:0];
+    // expandir a 8 bits (replicar los bits altos para llenar el rango)
+    wire [7:0] r8 = {r5, r5[4:2]};
+    wire [7:0] g8 = {g6, g6[5:4]};
+    wire [7:0] b8 = {b5, b5[4:2]};
+    // Y = (R + 2G + B) >> 2   -> cabe en 10 bits, tomamos los 8 altos
+    wire [9:0] sum = r8 + {g8, 1'b0} + b8;     // g8<<1 = {g8,1'b0}
+    assign gray = sum[9:2];
+endmodule
+`default_nettype wire
+```
+
+### `lcd_ili9341_top.v`
+
+```verilog
+// lcd_ili9341_top.v — DRIVER del PMOD TFTLCD (ILI9341, SPI) AUTOCONTENIDO para ASIC
+//   sky130 (fase 8).
+// El otro extremo de la cadena: toma un STREAM de pixeles en gris (pix_gray, con
+//   handshake pix_next)
+// y lo pinta en la pantalla por SPI. Hace: (1) delay de arranque, (2) secuencia de
+//   INIT del ILI9341,
+// (3) por cada cuadro CASET/RASET/RAMWR, (4) FILL: 240x320 pixeles RGB565 (2 bytes
+//   c/u).
+// Logica de SPI + ROM de comandos reusada del driver verificado en FPGA
+//   (cam_femto_display.v).
+//
+//   DECISIONES ASIC (para la tesis):
+// - SIN framebuffer interno: los pixeles vienen de AFUERA (del filtro). La memoria se
+//   queda fuera
+// -> el driver es "pegamento" barato. Handshake: pix_next pulsa cuando consume un
+//   pixel.
+// - RESET EXPLICITO: el original usaba valores `initial` (valen en FPGA por el
+//   bitstream, NO en ASIC
+//     donde los FF arrancan aleatorios). Aqui todo el estado se inicializa con rst_n.
+//   - gris -> RGB565 en grises: {g[7:3], g[7:2], g[7:3]}.
+`default_nettype none
+module lcd_ili9341_top #(
+    parameter integer BOOT_DELAY = 1_800_000,   // ~36 ms @50MHz (reset del ILI9341)
+    parameter integer NPIX       = 76800        // 240 x 320
+)(
+    input  wire       clk,
+    input  wire       rst_n,          // reset asincrono activo-bajo (ASIC: obligatorio)
+    // ---- stream de pixeles desde el filtro (upstream) ----
+    input  wire [7:0] pix_gray,       // pixel actual (gris); debe mantenerse hasta pix_next
+    output reg        pix_next,       // pulso 1 ciclo: consumi un pixel, dame el siguiente
+    output reg        frame_start,    // pulso: empieza un cuadro (upstream resetea su direccion)
+    output wire       init_done,      // 1 = ILI9341 ya inicializado
+    // ---- pines del PMOD TFTLCD (SPI) ----
+    output reg        tft_sck,
+    output reg        tft_mosi,
+    output reg        tft_cs,
+    output reg        tft_dc
+);
+    // ============ shifter SPI (modo 0, MSB primero) ============
+    reg        spi_start, spi_dcbit, spi_done;
+    reg  [7:0] spi_byte;
+    localparam S_IDLE=2'd0, S_LO=2'd1, S_HI=2'd2, S_END=2'd3;
+    reg [1:0] sst;
+    reg [2:0] sbit;
+    reg [7:0] sbuf;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            sst<=S_IDLE; sbit<=3'd0; sbuf<=8'd0; spi_done<=1'b0;
+            tft_sck<=1'b0; tft_mosi<=1'b0; tft_cs<=1'b1; tft_dc<=1'b1;
+        end else begin
+            spi_done <= 1'b0;
+            case (sst)
+                S_IDLE: if (spi_start) begin tft_cs<=1'b0; tft_dc<=spi_dcbit; sbuf<=spi_byte;
+                    sbit<=3'd0; tft_sck<=1'b0; sst<=S_LO; end
+                S_LO:  begin tft_sck<=1'b0; tft_mosi<=sbuf[7]; sst<=S_HI; end
+                S_HI:  begin tft_sck<=1'b1; sbuf<={sbuf[6:0],1'b0};
+                             if (sbit==3'd7) sst<=S_END; else begin sbit<=sbit+1'b1;
+                                 sst<=S_LO; end end
+                S_END: begin tft_sck<=1'b0; spi_done<=1'b1; sst<=S_IDLE; end
+            endcase
+        end
+    end
+
+    // ============ ROM de comandos (INIT + FRAME) ============
+    localparam T_CMD=2'd0, T_DAT=2'd1, T_DLY=2'd2, T_END=2'd3;
+    localparam M_BOOT=2'd0, M_INIT=2'd1, M_FRAME=2'd2, M_FILL=2'd3;
+    reg [1:0] dmode;
+    reg [4:0] ip;
+    reg [1:0] rt; reg [7:0] rb;
+    always @(*) begin
+        rt=T_END; rb=8'h00;
+        if (dmode==M_INIT) case (ip)
+            5'd0: begin rt=T_CMD; rb=8'h01; end   // SW reset
+            5'd1: begin rt=T_DLY; rb=8'h00; end
+            5'd2: begin rt=T_CMD; rb=8'h11; end   // sleep out
+            5'd3: begin rt=T_DLY; rb=8'h00; end
+            5'd4: begin rt=T_CMD; rb=8'h3A; end   // pixel format
+            5'd5: begin rt=T_DAT; rb=8'h55; end   //   RGB565
+            5'd6: begin rt=T_CMD; rb=8'h36; end   // MADCTL
+            5'd7: begin rt=T_DAT; rb=8'h48; end
+            5'd8: begin rt=T_CMD; rb=8'h29; end   // display ON
+            default: begin rt=T_END; rb=8'h00; end
+        endcase
+        else case (ip)                            // M_FRAME: ventana + RAMWR
+            5'd0:  begin rt=T_CMD; rb=8'h2A; end   // CASET
+            5'd1:  begin rt=T_DAT; rb=8'h00; end
+            5'd2:  begin rt=T_DAT; rb=8'h00; end
+            5'd3:  begin rt=T_DAT; rb=8'h00; end
+            5'd4:  begin rt=T_DAT; rb=8'hEF; end   //   239
+            5'd5:  begin rt=T_CMD; rb=8'h2B; end   // RASET
+            5'd6:  begin rt=T_DAT; rb=8'h00; end
+            5'd7:  begin rt=T_DAT; rb=8'h00; end
+            5'd8:  begin rt=T_DAT; rb=8'h01; end
+            5'd9:  begin rt=T_DAT; rb=8'h3F; end   //   319
+            5'd10: begin rt=T_CMD; rb=8'h2C; end   // RAMWR
+            default: begin rt=T_END; rb=8'h00; end
+        endcase
+    end
+
+    // ============ FSM de display ============
+    reg [20:0] dcnt;
+    reg [16:0] px;
+    reg        pxhi;
+    reg        sending;
+    reg [15:0] pcolor_l;
+    wire [15:0] pcolor_w = {pix_gray[7:3], pix_gray[7:2], pix_gray[7:3]}; // gris -> RGB565
+
+    assign init_done = (dmode==M_FRAME) || (dmode==M_FILL);
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            dmode<=M_BOOT; ip<=5'd0; dcnt<=21'd0; px<=17'd0; pxhi<=1'b0; sending<=1'b0;
+            spi_start<=1'b0; spi_byte<=8'd0; spi_dcbit<=1'b1; pix_next<=1'b0;
+                frame_start<=1'b0; pcolor_l<=16'd0;
+        end else begin
+            spi_start   <= 1'b0;
+            pix_next    <= 1'b0;
+            frame_start <= 1'b0;
+            case (dmode)
+            M_BOOT: begin
+                dcnt <= dcnt + 1'b1;
+                if (dcnt == BOOT_DELAY[20:0]) begin dcnt<=21'd0; dmode<=M_INIT; ip<=5'd0; end
+            end
+            M_INIT: begin
+                if (!sending) begin
+                    case (rt)
+                        T_CMD,T_DAT: begin spi_byte<=rb; spi_dcbit<=(rt==T_DAT);
+                            spi_start<=1'b1; sending<=1'b1; end
+                        T_DLY: if (dcnt==BOOT_DELAY[20:0]) begin dcnt<=21'd0; ip<=ip+1'b1;
+                            end else dcnt<=dcnt+1'b1;
+                        default: begin dmode<=M_FRAME; ip<=5'd0; end
+                    endcase
+                end else if (spi_done) begin sending<=1'b0; ip<=ip+1'b1; end
+            end
+            M_FRAME: begin
+                if (!sending) begin
+                    case (rt)
+                        T_CMD,T_DAT: begin spi_byte<=rb; spi_dcbit<=(rt==T_DAT);
+                            spi_start<=1'b1; sending<=1'b1; end
+                        default: begin dmode<=M_FILL; px<=17'd0; pxhi<=1'b0;
+                            frame_start<=1'b1; end
+                    endcase
+                end else if (spi_done) begin sending<=1'b0; ip<=ip+1'b1; end
+            end
+            M_FILL: begin
+                if (!sending) begin
+                    if (!pxhi) begin pcolor_l<=pcolor_w; spi_byte<=pcolor_w[15:8]; end
+                    else                                  spi_byte<=pcolor_l[7:0];
+                    spi_dcbit<=1'b1; spi_start<=1'b1; sending<=1'b1;
+                end else if (spi_done) begin
+                    sending<=1'b0;
+                    if (pxhi) begin
+                        // pixel completo -> pide el siguiente
+                        pxhi<=1'b0; pix_next<=1'b1;
+                        if (px==NPIX[16:0]-17'd1) begin px<=17'd0; dmode<=M_FRAME; ip<=5'd0; end
+                        else px<=px+1'b1;
+                    end else pxhi<=1'b1;
+                end
+            end
+            endcase
+        end
+    end
 endmodule
 `default_nettype wire
 ```

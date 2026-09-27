@@ -79,7 +79,11 @@ menos de dieciocho milésimas de milímetro cuadrado cada uno, alrededor de 560 
 medido porque desmonta una intuición común: el costo de un sistema de visión embebido no está en
 hablar con los periféricos, está en lo que se hace con los datos entre medias.
 
-![**Figura 5.2.** Acercamiento al GDSII del `canny1` en KLayout. Lo que se ve no es un esquema sino
+![**Figura 5.2.** Los dos bloques de interfaz en silicio, en KLayout: el front-end de cámara
+(`cam_frontend_top.gds`, 0,0177 mm²) y el controlador de pantalla (`lcd_ili9341_top.gds`, 0,0174 mm²).
+Son los chips más pequeños del trabajo.](figuras/fig_5_interfaz_asic.png)
+
+![**Figura 5.3.** Acercamiento al GDSII del `canny1` en KLayout. Lo que se ve no es un esquema sino
 el plano que iría a fábrica: filas de celdas estándar y, sobre ellas, las capas de metal que las
 conectan. La mancha más clara del centro es una región de menor densidad de ruteo. Las 12 993 celdas
 de la tabla anterior son, literalmente, estas.](figuras/fig_5_2_malla_canny1.jpg)
@@ -89,18 +93,18 @@ de la tabla anterior son, literalmente, estas.](figuras/fig_5_2_malla_canny1.jpg
 iCE40 cerraba entre 9 y 28 MHz. En silicio la lógica es rápida; **lo caro es el área**, y ése es el
 eje sobre el que gira todo este capítulo.
 
-![**Figura 5.3.** El filtro Sobel en silicio: `sobel_top.gds` abierto en KLayout. Con 0,167 mm² es el
+![**Figura 5.4.** El filtro Sobel en silicio: `sobel_top.gds` abierto en KLayout. Con 0,167 mm² es el
 circuito más pequeño de la tabla; en el perímetro, los pines del píxel de entrada y de
 salida.](figuras/fig_4_sobel_asic.png)
 
-![**Figura 5.4.** El SoC con el Sobel en silicio: `soc_sobel_top.gds` en KLayout. Con 0,37 mm², el
+![**Figura 5.5.** El SoC con el Sobel en silicio: `soc_sobel_top.gds` en KLayout. Con 0,37 mm², el
 procesador, su ROM y su periférico añaden 6 220 celdas al filtro solo de la figura
 anterior.](figuras/fig_5_socsobel_asic.png)
 
-![**Figura 5.5.** El SoC con el Canny de un salto en silicio: `soc_canny1_top.gds` en KLayout,
+![**Figura 5.6.** El SoC con el Canny de un salto en silicio: `soc_canny1_top.gds` en KLayout,
 0,67 mm².](figuras/fig_5_soccanny_asic.png)
 
-![**Figura 5.6.** El SoC con el Canny transitivo en silicio: `soc_trans_top.gds` en KLayout, 3,42 mm².
+![**Figura 5.7.** El SoC con el Canny transitivo en silicio: `soc_trans_top.gds` en KLayout, 3,42 mm².
 El procesador ocupa una parte pequeña; el resto es el motor y su cuadro de unos 10 600
 biestables.](figuras/fig_5_soctrans_asic.png)
 
@@ -192,6 +196,13 @@ blanco antes que suponer que cierran.
 para afirmar lo contrario; los dos transitivos no cierran, y conviene decirlo con el número: el #3
 pediría 39,4 ns —25,4 MHz— y el #6, 54,2 ns, es decir 18,4 MHz en lugar de los 27,8 solicitados.
 
+![**Figura 5.8.** El Sobel completo, #1 de la tabla, en silicio: `sobel_completo.gds` en KLayout,
+2,45 mm². Los pines de la cámara y de la pantalla recorren el perímetro.](figuras/fig_5_sobelcomp_asic.png)
+
+![**Figura 5.9.** Lo que costó llegar a ese plano. A la izquierda, las violaciones de DRC con un
+framebuffer de ocho bits y una utilización del 35 %, frente a ninguna con uno de un bit y una del 15 %.
+A la derecha, el área del Sobel solo frente a la de la cadena completa.](figuras/fig_5_sobelcomp_congestion.png)
+
 > **Sobre el recuento de celdas, y es importante al leer junto a la §5.2.** Las cifras de esta tabla
 > son **celdas de síntesis**; las de la §5.2 y las del Capítulo 7 son **celdas emplazadas**. Cada tabla es
 > internamente homogénea, y el paso de una escala a otra **está medido sobre nueve circuitos que
@@ -203,7 +214,7 @@ pediría 39,4 ns —25,4 MHz— y el #6, 54,2 ns, es decir 18,4 MHz en lugar de 
 > convirtió la tabla entera: se prefirió una tabla homogénea en su propia escala antes que una tabla
 > mixta con dos filas estimadas.
 
-![**Figura 5.7.** El mismo tipo de acercamiento, ahora sobre el sistema de visión completo. La
+![**Figura 5.10.** El mismo tipo de acercamiento, ahora sobre el sistema de visión completo. La
 diferencia con la figura anterior no está en la textura sino en la escala: aquí caben cámara, filtro,
 memoria de cuadro y controlador de pantalla en el mismo dado. Es la forma que toma en silicio la
 frase «el filtro es una pieza y no el circuito».](figuras/fig_5_3_mar_de_celdas_vision.jpg)
@@ -321,7 +332,7 @@ La variante **D0 es un control**, idéntica a la D salvo en que sus resistencias
 el efecto de la resistencia y el de *repartir* la capacitancia a lo largo del árbol en vez de
 agruparla en un nodo quedarían sumados en una sola cifra y no podrían separarse.
 
-![**Figura 5.8.** El desglose completo de la verificación. El panel A explica por qué se simula el
+![**Figura 5.11.** El desglose completo de la verificación. El panel A explica por qué se simula el
 camino y no el chip; el B reparte los 12,23 ns del `pan_sobel` y los 9,89 del `pan_canny` en sumandos
 que no dejan residuo; el C recoge las tres hipótesis que la medida desmintió; el D contrapone la
 celda del esquemático con la extraída del dibujo en los dos experimentos independientes; y el E
@@ -414,7 +425,7 @@ Dos circuitos distintos, dos caminos críticos que no comparten una sola instanc
 cuatro décimas de punto: **algo más de la quinta parte del retardo de un camino crítico la ponen los
 parásitos que el dibujo añade dentro de las celdas.**
 
-![**Figura 5.9.** La salida del simulador, tal como éste la dibuja. Cada traza es un nodo del camino
+![**Figura 5.12.** La salida del simulador, tal como éste la dibuja. Cada traza es un nodo del camino
 crítico, desplazada dos voltios respecto de la anterior para que las diez quepan en el mismo eje; la
 cascada de transiciones de arriba abajo es la señal propagándose etapa por etapa. El último nodo del
 `pan_sobel` conmuta a unos 8,2 ns y el del `pan_canny` a unos 7,6, que son las variantes D de la
