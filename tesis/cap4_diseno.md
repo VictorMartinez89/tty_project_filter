@@ -36,7 +36,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.18 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.22 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -175,7 +175,7 @@ emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](fi
 #### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.19 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.23 reúne las seis escenas.
 
 ![**Figura 4.4.** El Sobel corriendo en la iCESugar sobre las cinco escenas: la mariposa `monarch`, la flor, la
 mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
@@ -489,6 +489,72 @@ En sky130 ocupa **0,37 mm²** y **12 043 celdas** tras el emplazamiento, con DRC
 el umbral lo fije un programa, la cifra que la §8.6 compara con la de comprar esa misma robustez en el
 filtro. Su plano en KLayout es la Figura 5.4.
 
+### SoC Femto con filtro Canny 1-streaming
+
+#### Resumen
+
+Es el SoC de la §4.3.4 con el Canny de un salto de la §4.3.2 en lugar del Sobel. El periférico es el
+mismo, y el programa también, salvo dos constantes: elige el modo 1 y escribe **los dos umbrales** del
+Canny, el alto y el bajo. Con ello el doble umbral —la parte del Canny que más depende de la escena—
+deja de estar cableado y pasa a manos del programa.
+
+#### Pseudocódigo
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 5   SoC Femto con filtro Canny de un salto
+──────────────────────────────────────────────────────────────────────
+ ▷ el programa: el del Algoritmo 4, con dos constantes distintas
+ 1.  x1 ← 0x0045_0000                         ▷ base del periférico
+ 2.  CTRL(x1+0) ← 0x11                        ▷ modo 1 = Canny ; enable = 1
+ 3.  THR(x1+4)  ← 0x5A28                      ▷ thr_hi = 90 ; thr_lo = 40
+ 4.  repetir para siempre                     ▷ jal x0, 0
+ ▷ el hardware, en paralelo
+ 5.  (modo, thr_hi, thr_lo) ≔ registros del periférico
+ 6.  out_pix ≔ FRONTEND_CANNY1(in_pix, thr_hi, thr_lo)  ▷ Algoritmo 2
+──────────────────────────────────────────────────────────────────────
+```
+
+#### El código
+
+`soc_canny1_top.v` reúne el procesador, la ROM, el periférico y el Canny; se reproduce en el Anexo G.5.
+El periférico es idéntico al de la G.4.
+
+#### Simulación en Python
+
+Como en el SoC con el Sobel, el procesador no cambia la aritmética: el modelo es el del Canny de un
+salto (§4.3.2), con los dos umbrales que escribe el programa, 90 y 40.
+
+#### Simulación en Verilog: las señales
+
+Esta vez las señales muestran también el arranque, que es donde el procesador trabaja.
+
+![**Figura 4.17.** El arranque del SoC con el Canny, en GTKWave. El contador de programa avanza de
+cuatro en cuatro (`PC` = 0, 4, 8, C, 10, 14) mientras lee la ROM (`004500B7`, `01100113`…), y los
+registros se cargan con `00450000`, `00000011` y `00005A28`. Cuando el programa escribe el periférico,
+`cpu_wrote_filter` sube. Los umbrales todavía muestran los valores de reinicio, `6E` y `46` (110 y
+70).](figuras/fig_4_soccanny_arranque.jpg)
+
+![**Figura 4.18.** El mismo SoC unos microsegundos después: los umbrales ya son `5A` y `28` —90 y 40,
+los que escribió el programa—, el procesador está detenido en su lazo final (`PC` = `0x18`) y la
+imagen de 16×12 empieza a entrar por `in_pix`.](figuras/fig_4_soccanny_gtkwave.jpg)
+
+#### Simulación en Verilog: la imagen
+
+![**Figura 4.19.** Lo que produce el SoC simulado en Icarus Verilog a 160×120 cuando el programa elige
+el Canny de un salto: arriba, las cinco imágenes de prueba; abajo, sus bordes.](figuras/fig_4_soccanny_rtl.png)
+
+#### En la tarjeta
+
+![**Figura 4.20.** El SoC con el Canny de un salto corriendo en la iCESugar sobre las cinco escenas
+—`monarch`, la flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
+tarjeta.](figuras/fig_4_soccanny_placa.jpg)
+
+#### En silicio
+
+En sky130 ocupa **0,67 mm²** y **22 054 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
+(§5.2). Su plano en KLayout es la Figura 5.5.
+
 ### Para concluir: lo que los filtros toman del de Maldonado
 
 El estilo de la aritmética —desplazamientos y sumas, ningún multiplicador—; las imágenes de prueba
@@ -542,13 +608,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.17.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.21.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.18.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.22.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
@@ -739,7 +805,7 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.19.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+![**Figura 4.23.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
 la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
 cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
 montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
