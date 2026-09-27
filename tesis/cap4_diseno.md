@@ -117,6 +117,11 @@ gradiente y un umbral. La notación es la de la §4.4.
 
 El Algoritmo 1, el del Sobel, se enuncia en la §4.3.1. Los otros dos parten de él.
 
+#### El código
+
+El RTL del Sobel son dos ficheros: `sobel_top.v`, con el gradiente y el umbral, y `linebuf3x3.v`, el
+generador de ventana que comparten los tres filtros. Los dos se reproducen completos en el Anexo G.1.
+
 #### Simulación en Python
 
 El modelo de referencia calcula el gradiente de cada imagen de prueba y sirve de criterio para todo lo
@@ -158,7 +163,8 @@ fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
 #### En silicio
 
 El filtro solo, sin cámara ni pantalla, se llevó a sky130 con OpenLane: **0,167 mm²** y **5 823
-celdas** tras el emplazamiento, con DRC, LVS y XOR en cero (§5.3). Es el circuito más pequeño de la
+celdas** tras el emplazamiento, con DRC, LVS y XOR en cero (§5.3). Es la versión sin suavizado
+gaussiano, con líneas de 60 píxeles (Anexo G.1). Es el circuito más pequeño de la
 tabla, y el punto de partida de todos los demás.
 
 ![**Figura 4.5.** El filtro Sobel en silicio: `sobel_top.gds` abierto en KLayout, con los pines del
