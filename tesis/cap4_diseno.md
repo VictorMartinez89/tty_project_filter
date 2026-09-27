@@ -36,7 +36,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.30 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.31 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -175,7 +175,7 @@ emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](fi
 #### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.31 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.32 reúne las seis escenas.
 
 ![**Figura 4.4.** El Sobel corriendo en la iCESugar sobre las cinco escenas: la mariposa `monarch`, la flor, la
 mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente de la pantalla.](figuras/fig_4_sobel_placa.jpg)
@@ -313,7 +313,7 @@ de la pantalla.](figuras/fig_4_canny_placa.jpg)
 
 Llevado solo a sky130, sin cámara ni pantalla, ocupa **0,360 mm²** y **12 993 celdas** tras el
 emplazamiento, con DRC, LVS y XOR en cero (§5.2): algo más del doble que el Sobel, por el suavizado
-gaussiano y la memoria de clases, dos memorias de línea más. Su plano en KLayout es la Figura 5.3.
+gaussiano y la memoria de clases, dos memorias de línea más. Su plano en KLayout es la Figura 5.4.
 
 ### Filtro Canny Framebuffer Transitivo
 
@@ -487,7 +487,7 @@ tarjeta.](figuras/fig_4_socsobel_placa.jpg)
 En sky130 ocupa **0,37 mm²** y **12 043 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
 (§5.2). Frente al Sobel solo, el procesador y su periférico añaden **6 220 celdas**: es el precio de que
 el umbral lo fije un programa, la cifra que la §8.6 compara con la de comprar esa misma robustez en el
-filtro. Su plano en KLayout es la Figura 5.5.
+filtro. Su plano en KLayout es la Figura 5.6.
 
 ### SoC Femto con filtro Canny 1-streaming
 
@@ -553,7 +553,7 @@ tarjeta.](figuras/fig_4_soccanny_placa.jpg)
 #### En silicio
 
 En sky130 ocupa **0,67 mm²** y **22 054 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
-(§5.2). Su plano en KLayout es la Figura 5.6.
+(§5.2). Su plano en KLayout es la Figura 5.7.
 
 ### SoC Femto con filtro Canny Framebuffer Transitivo
 
@@ -625,7 +625,7 @@ tarjeta.](figuras/fig_4_soctrans_placa.jpg)
 
 En sky130 ocupa **3,42 mm²** y **72 337 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
 (§5.2): el más grande de los seis bloques de filtrado, y casi todo por el cuadro en biestables. Su plano
-en KLayout es la Figura 5.7.
+en KLayout es la Figura 5.8.
 
 ### Sobel completo
 
@@ -692,7 +692,7 @@ la Figura 4.26.
 En sky130 ocupa **2,45 mm²** y **36 730 celdas** de síntesis, con DRC, LVS y XOR en cero según su ficha
 —los informes no se conservaron (§5.3, nota ᵃ)—: unas
 quince veces el Sobel solo. Llegar ahí exigió el framebuffer de un bit: con uno de ocho, el ruteo
-acababa con cerca de un millón de violaciones de DRC. Su plano en KLayout es la Figura 5.8.
+acababa con cerca de un millón de violaciones de DRC. Su plano en KLayout es la Figura 5.9.
 
 ### Canny 1-streaming completo
 
@@ -749,7 +749,69 @@ nota ᵃ). Frente a la cadena del Sobel son un 16 % más de celdas y un 18 % má
 esperar de tres memorias de línea en lugar de una. Llegar ahí costó dos batallas: un fallo de OpenROAD
 en la optimización de temporizado, que se esquivó desactivándola porque el temporizado ya se cumplía
 con holgura, y la congestión del ruteo, que bajó de 138 684 violaciones a cero al repartir las celdas
-con una densidad de 0,20. Su plano en KLayout es la Figura 5.10.
+con una densidad de 0,20. Su plano en KLayout es la Figura 5.11.
+
+### Visión Sobel
+
+#### Resumen
+
+Es el otro camino hacia la misma cadena. Los diseños «completos» de las §4.3.7 y §4.3.8 se ensamblaron
+con bloques ya verificados; éste, `vision_top`, se **portó del diseño que ya funcionaba en la FPGA**,
+`cam_sobel_display.v`, con los tres cambios que el silicio exige: reinicio explícito en las máquinas de
+estado, el bus SCCB de drenador abierto partido en dato y habilitación para que el triestado lo haga el
+anillo de pines, y fuera la primitiva de los LED de la iCE40 (§5.1).
+
+Conserva por eso dos rasgos de la FPGA. Tiene **dos dominios de reloj**: la captura, el Sobel y la
+escritura del framebuffer van al ritmo de la cámara, y la configuración y la pantalla al del sistema.
+Y su framebuffer guarda **ocho bits por píxel** aunque sólo escriba bordes: 60×80×8 = **38 400
+biestables**, ocho veces lo que necesitan las cadenas completas. El gris lo toma directamente del byte
+de luminancia que entrega la cámara, y el umbral es 40.
+
+![**Figura 4.29.** `vision_top`: la cámara, la captura con submuestreo a 60×80, el Sobel y el
+framebuffer en el dominio del reloj de la cámara; la configuración por SCCB y la pantalla en el del
+sistema; el framebuffer, de unos 38 400 biestables, es el cruce entre los dos.](figuras/fig_4_vision_diagrama.png)
+
+#### Pseudocódigo
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 9   Visión Sobel: la cadena con dos relojes
+──────────────────────────────────────────────────────────────────────
+ ▷ dominio del sistema (clk)
+ 1.  SCCB: configurar la OV7670
+ ▷ dominio de la cámara (cam_pclk), por cada píxel
+ 2.  Y ← byte de luminancia ; submuestrear a 60×80
+ 3.  mag ≔ |Gx|+|Gy| de la ventana 3×3 de Y
+ 4.  FB[y][x] ← (mag > 40) ? 0xFF : 0x00          ▷ 8 bits por píxel
+ ▷ dominio del sistema, del otro lado del framebuffer
+ 5.  la pantalla lee FB y lo pinta por SPI         ▷ ILI9341
+──────────────────────────────────────────────────────────────────────
+```
+
+#### El código
+
+Todo el sistema está en un solo fichero, `vision_top.v`: la configuración de la cámara, la captura, el
+Sobel, el framebuffer y el controlador de pantalla. Se reproduce en el Anexo G.9.
+
+#### Simulación en Python
+
+Su modelo es el del Sobel (Figura 4.1) aplicado al byte de luminancia, con el umbral en 40.
+
+#### Simulación en Verilog
+
+Este top no tiene un banco de pruebas propio: su punto de partida es un diseño verificado en la
+tarjeta, y el paso a silicio se comprobó con la verificación física del flujo (§5.2). Las señales del
+Sobel y la cadena con la cámara emulada son las de las Figuras 4.2 y 4.3.
+
+#### En la tarjeta
+
+Su versión para la FPGA, `cam_sobel_display.v`, es un diseño que corrió en la iCESugar con la cámara y
+la pantalla.
+
+#### En silicio
+
+En sky130 ocupa **1,75 mm²** y **35 653 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero según
+su ficha (§5.2). Su plano en KLayout es la Figura 5.3.
 
 ### Para concluir: lo que los filtros toman del de Maldonado
 
@@ -804,13 +866,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.29.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.30.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.30.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.31.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
@@ -1001,7 +1063,7 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.31.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+![**Figura 4.32.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
 la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
 cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
 montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
