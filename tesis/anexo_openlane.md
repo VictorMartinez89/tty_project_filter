@@ -47,7 +47,7 @@ Table: Parámetros de OpenLane y qué controla cada uno.
 Table: Recetas de OpenLane empleadas en cada diseño.
 
 > **Veinte recetas, dieciséis circuitos.** La tabla tiene más filas que circuitos declara el
-> Capítulo 7, y la diferencia merece explicarse. Los seis diseños terminados en `_completo` son una
+> Capítulo 9, y la diferencia merece explicarse. Los seis diseños terminados en `_completo` son una
 > **segunda vía** hacia el mismo sistema: mientras los `vision_*` se obtuvieron **portando el diseño
 > físicamente verificado en la FPGA**, los `_completo` se **ensamblaron a partir de los bloques
 > reutilizables ya comprobados por separado** —front-end de cámara, filtro, controlador de pantalla—
@@ -73,11 +73,11 @@ que cada diseño admite es, en sí misma, una medida indirecta de cuánta interc
 
 **La tolerancia a congestión aparece exactamente donde aparece el framebuffer.** Todos los diseños
 que la activan son los que almacenan un cuadro; ninguno de los que procesan en flujo la necesita. Es
-la misma frontera que separa las dos familias en la §5.5 —por latencia— y en la §6.1 —por área—,
+la misma frontera que separa las dos familias en la §4.10 —por latencia— y en la §8.1 —por área—,
 manifestada esta vez en el ruteo.
 
 **El periodo sólo se relaja en los tres últimos.** Los tres llevan procesador *y* cadena completa, y
-son los únicos a los que no se les pudo exigir 50 MHz. La §6.3 explica qué fija el reloj en cada
+son los únicos a los que no se les pudo exigir 50 MHz. La §8.3 explica qué fija el reloj en cada
 caso.
 
 > Dicho de otro modo: **el mismo flujo, con el mismo kit y las mismas celdas, exige recetas cada vez

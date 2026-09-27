@@ -49,7 +49,7 @@ y la propuesta concretaba el problema así:
 > implementación de aplicaciones de inteligencia artificial como la detección y la clasificación?»*
 
 La misma propuesta fijaba ya la aplicación: un sistema embebido basado en RISC-V para **reconocer los
-dígitos del cero al nueve del conjunto MNIST**, que es el que recorre la §5.6.
+dígitos del cero al nueve del conjunto MNIST**, que es el que recorre el Capítulo 6.
 
 Situado así, el problema se enuncia con precisión: **qué determina si un algoritmo de reconocimiento
 cabe en un circuito integrado con restricciones duras, y qué se paga por hacerlo caber**.
@@ -103,7 +103,7 @@ Los objetivos específicos aprobados en la propuesta son tres:
 > 3. *Realizar el flujo de diseño ASIC con herramientas EDA para el procesador y el algoritmo.*
 
 Para cumplirlos con un criterio verificable, se desglosaron en cinco objetivos operativos, que son los
-que la §7.1 cierra uno por uno:
+que la §9.1 cierra uno por uno:
 
 1. **Construir un modelo de referencia** en software de los tres detectores de bordes y del
    clasificador, con precisión suficiente para servir de criterio de verificación y no de mera
@@ -127,8 +127,8 @@ La correspondencia entre unos y otros es la siguiente:
 | Objetivo aprobado | Objetivos operativos | Dónde se cumple |
 |---|---|---|
 | 1. Arquitectura mínima del microcontrolador RISC-V | 3 | §4.5: FemtoRV32 (RV32I) con su periférico de filtros, UART, pantalla por SPI y cámara por SCCB |
-| 2. El algoritmo de inteligencia artificial | 1, 2 | Caps. 2 y 3, §5.1 y §5.6: los detectores de bordes y el clasificador de dígitos, verificados contra el modelo |
-| 3. Flujo ASIC con herramientas EDA, para el procesador y el algoritmo | 4, 5 | §5.3, §5.4, §5.6.7 y §5.7: los circuitos con GDSII firmado, el procesador entre ellos, y la adaptación a Tiny Tapeout |
+| 2. El algoritmo de inteligencia artificial | 1, 2 | Caps. 2 y 3, §4.8 y el Capítulo 6: los detectores de bordes y el clasificador de dígitos, verificados contra el modelo |
+| 3. Flujo ASIC con herramientas EDA, para el procesador y el algoritmo | 4, 5 | §5.2, §5.3, §7.1 y §5.4: los circuitos con GDSII firmado, el procesador entre ellos, y la adaptación a Tiny Tapeout |
 
 Table: Correspondencia entre los objetivos aprobados en la propuesta y los objetivos operativos de este trabajo.
 
@@ -167,19 +167,26 @@ El **Capítulo 3** describe la metodología, e incluye dos apartados que no son 
 método aprendido de errores propios: la disciplina de medición y la verificación del instrumento
 antes del dato.
 
-El **Capítulo 4** describe el diseño: la arquitectura del sistema, los tres filtros, el procesador y
-su periférico, la gestión de la memoria, y las dos traducciones que el mismo RTL requirió para
-existir en FPGA y en ASIC.
+El **Capítulo 4** presenta los filtros y el procesador desde el modelo hasta la tarjeta: la arquitectura,
+cada filtro con su modelo en Python, su simulación en Verilog y su foto en la FPGA, el SoC y su
+periférico, la gestión de la memoria, la verificación contra el modelo y el rendimiento medido.
 
-El **Capítulo 5** presenta los resultados —verificación funcional, implementación en FPGA, los
-circuitos en silicio, el rendimiento medido, el reconocimiento de dígitos y la verificación eléctrica
-del camino crítico— y distingue con cuidado qué acredita cada cifra.
+El **Capítulo 5** lleva esos mismos circuitos a silicio con OpenLane, Magic y NGSpice: los cambios que el
+RTL necesita para pasar a un ASIC, los bloques y la cadena completa firmados en sky130, y la
+verificación eléctrica del camino crítico.
 
-El **Capítulo 6** discute lo anterior como tesis defendibles, y es donde reside el aporte: que la
+El **Capítulo 6** presenta el reconocimiento de dígitos: el descriptor de orientaciones por zonas —una
+pirámide espacial—, el clasificador, su exactitud sobre MNIST, su verificación contra el modelo y su
+validación en la tarjeta frente a una cámara.
+
+El **Capítulo 7** lleva el reconocedor a silicio: con cada front-end, en Tiny Tapeout y en su versión
+más completa, Canny-78.
+
+El **Capítulo 8** discute lo anterior como tesis defendibles, y es donde reside el aporte: que la
 memoria decide qué cabe, y que el front-end y el procesador son alternativas para comprar robustez y
 no complementos.
 
-El **Capítulo 7** concluye por objetivo, enumera las contribuciones y dedica un apartado a las seis
+El **Capítulo 9** concluye por objetivo, enumera las contribuciones y dedica un apartado a las seis
 afirmaciones propias que el trabajo tuvo que corregir durante su desarrollo — porque forman parte del
 resultado y no de sus defectos.
 

@@ -1,4 +1,4 @@
-# 6. Discusión
+# 8. Discusión
 
 El capítulo anterior presentó mediciones. Éste sostiene afirmaciones. La diferencia importa: una
 medición es un hecho que se comprueba repitiendo el experimento, mientras que una afirmación es una
@@ -7,14 +7,14 @@ que retractar dos afirmaciones de ese tipo durante su desarrollo, y la experienc
 disciplina que se aplica aquí: **cada tesis de este capítulo señala qué medición la sostiene y qué
 otra lectura descarta.**
 
-## 6.1 Lo que decide si un algoritmo cabe no es el algoritmo
+## 8.1 Lo que decide si un algoritmo cabe no es el algoritmo
 
 Ésta es la afirmación central del trabajo, y la más contraintuitiva para quien llega desde el
 software.
 
 Los tres filtros implementados ejecutan aritmética comparable. Ninguno multiplica; los tres recorren
 la imagen aplicando una ventana de 3×3 y comparando contra un umbral. Si el costo en silicio siguiera
-a la complejidad aritmética, los tres deberían costar aproximadamente lo mismo. La §5.4.3 midió lo
+a la complejidad aritmética, los tres deberían costar aproximadamente lo mismo. La §5.3.3 midió lo
 contrario:
 
 | desde | hasta | cuesta |
@@ -42,13 +42,13 @@ cuesta cambiar el alcance del patrón de local a global.**
 
 ### Las tres caras del mismo precio
 
-El costo de la memoria no se cobra sólo en área. La §5.4.1 muestra que **los dos circuitos
+El costo de la memoria no se cobra sólo en área. La §5.3.1 muestra que **los dos circuitos
 transitivos son también los dos únicos que no cierran temporizado**, con −19,35 ns y −18,23 ns de
 holgura una vez extraídos los parásitos. El multiplexor que lee un framebuffer de miles de entradas
 es un camino largo por construcción, y a partir de cierto tamaño deja de ser caro para volverse
 inviable.
 
-Y se cobra en manufacturabilidad. La §5.3 documenta que los diseños con framebuffer grande acumulan
+Y se cobra en manufacturabilidad. La §5.2 documenta que los diseños con framebuffer grande acumulan
 un número de violaciones de antena muy superior al resto, porque las redes de direccionamiento son
 largas y ramificadas.
 
@@ -56,14 +56,14 @@ largas y ramificadas.
 presentarlas juntas: un diseñador que optimice sólo el área concluirá que el framebuffer es
 aceptable, porque sólo verá un tercio del problema.
 
-## 6.2 El costo se movió; no se eliminó
+## 8.2 El costo se movió; no se eliminó
 
-Una lectura apresurada del clasificador de la §5.6 sugeriría que la solución al problema anterior es
+Una lectura apresurada del clasificador del Capítulo 6 sugeriría que la solución al problema anterior es
 sustituir memoria por lógica. El trabajo permite matizar eso con números propios.
 
 El clasificador de dígitos alcanza 91,04 % sobre MNIST con **400 pesos de cuatro bits** —doscientos
 bytes— frente al 91,9 % que obtienen los 784 píxeles crudos con 7 840 pesos. La memoria se redujo en
-un factor de veinte y la exactitud no se movió. Es un resultado fuerte, y se enuncia así en la §5.6.
+un factor de veinte y la exactitud no se movió. Es un resultado fuerte, y se enuncia así en el Capítulo 6.
 
 Pero el descriptor que hace posible esa reducción —histograma de orientaciones por zona, sobre bordes—
 **no es gratuito**: hay que calcularlo, y calcularlo es lógica. Las etapas cableadas que lo producen
@@ -74,7 +74,7 @@ cuestan decenas de miles de celdas.
 > sustrato la memoria es el recurso caro. En una FPGA con bloques de memoria disponibles, la misma
 > decisión sería indiferente o incluso perjudicial.
 
-## 6.3 Quién fija el reloj cambia con lo que se mete en el chip
+## 8.3 Quién fija el reloj cambia con lo que se mete en el chip
 
 Los resultados del Capítulo 5 permiten seguir el camino crítico a lo largo de una familia de diseños
 y observar que **el responsable cambia tres veces**:
@@ -91,7 +91,7 @@ Es un resultado útil para quien planifique un sistema parecido, porque implica 
 bloque que fue crítico en el diseño anterior puede no mejorar nada**. La pregunta «¿qué limita mi
 frecuencia?» no tiene una respuesta estable: tiene una respuesta por configuración.
 
-## 6.4 Integrar no es sumar, pero sólo cuando el temporizado aprieta
+## 8.4 Integrar no es sumar, pero sólo cuando el temporizado aprieta
 
 Dos observaciones de este trabajo parecen contradecirse, y el matiz está en la diferencia.
 
@@ -108,9 +108,9 @@ que la suma.
 > es una propiedad del diseño sino del margen con que se le pide cerrar.** Un mismo sistema puede
 > costar más o menos que sus partes según el reloj que se le exija.
 
-## 6.5 La restricción mueve la frontera entre software y hardware
+## 8.5 La restricción mueve la frontera entre software y hardware
 
-El episodio de la §5.2.4 es el ejemplo más claro de co-diseño de este trabajo, y conviene leerlo con
+El episodio de la §4.9.4 es el ejemplo más claro de co-diseño de este trabajo, y conviene leerlo con
 cuidado porque su lección no es la evidente.
 
 La histéresis transitiva calculada por software funcionaba correctamente en simulación. Al intentar
@@ -126,12 +126,12 @@ cuesta las mismas nueve mil celdas que junto a cualquier otro filtro.
 La misma pregunta de diseño tiene respuestas opuestas en los dos destinos, y ninguna de las dos es
 incorrecta.
 
-## 6.6 El front-end y el procesador son alternativas, no complementos
+## 8.6 El front-end y el procesador son alternativas, no complementos
 
 Éste es el aporte de ingeniería que el trabajo propone, y se apoya en tres mediciones independientes.
 
 **Primera.** Los dos filtros no se distinguen en exactitud de clasificación: 0,38 pp entre ellos
-(§5.6). El Canny no reconoce mejor.
+(Capítulo 6). El Canny no reconoce mejor.
 
 **Segunda.** Sí se distinguen en **sensibilidad al punto de operación**. Mover el umbral cambia el
 resultado del Sobel en **5,79 pp** y el del Canny en **0,90 pp**. El Sobel vive en un pico angosto del
@@ -149,7 +149,7 @@ Poniendo precio a las dos soluciones sobre el mismo silicio:
 
 Table: Precio de la robustez al umbral en el front-end y por software.
 
-![**Figura 6.1.** El balance completo entre los dos filtros, sobre seis parejas de circuitos con
+![**Figura 8.1.** El balance completo entre los dos filtros, sobre seis parejas de circuitos con
 plano firmado. El panel A los compara en celdas; el B muestra el sobrecoste del Canny cayendo del
 123 % al 3 % conforme crece el sistema; el C corrige la lectura fácil —el sobrecoste **no** es una
 cantidad fija, y lo que lo separa no es el tamaño del chip sino el de la imagen que el filtro
@@ -178,7 +178,7 @@ de la escena— y la elección entre ellos es de arquitectura, no de algoritmo.
 >
 > *Tercera: la resta de la derecha incluye* el FemtoRV32, su controlador y su periférico, no sólo el
 > núcleo: es lo que cuesta *poder escribir el umbral*, que es lo que se compara. Y la de la izquierda
-> es el sobrecoste del Canny **en ese sistema concreto**; la §5.4 muestra que en un circuito que
+> es el sobrecoste del Canny **en ese sistema concreto**; la §5.3 muestra que en un circuito que
 > procese la escena completa sería mucho mayor. La afirmación vale para sistemas de reconocimiento
 > sobre ventana pequeña, no universalmente.
 
@@ -194,13 +194,13 @@ El argumento que la reemplaza es más fuerte precisamente porque no depende de u
 sino de una **propiedad estructural del algoritmo**: la histéresis es un mecanismo de recuperación, y
 un mecanismo de recuperación es por definición menos sensible a dónde se ponga el umbral.
 
-## 6.7 Mejor detección de bordes no implica mejor reconocimiento
+## 8.7 Mejor detección de bordes no implica mejor reconocimiento
 
 El filtro transitivo produce los contornos visualmente más completos de los tres: cierra siluetas,
 rellena trazos interrumpidos y elimina el ruido aislado. Por cualquier criterio visual es el mejor
 detector de bordes del trabajo.
 
-Y **no es el mejor front-end para el clasificador**. Las métricas de la §5.6 muestran que ordena bien
+Y **no es el mejor front-end para el clasificador**. Las métricas del Capítulo 6 muestran que ordena bien
 las hipótesis pero calibra mal: engordar los contornos aumenta el número de píxeles de borde, y como
 el descriptor cuenta píxeles por zona, esa ganancia visual se traduce en falsos positivos.
 
@@ -209,7 +209,7 @@ flujo**. Necesita el cuadro completo y un número de barridos que depende de la 
 filtro más caro que los otros dos —**es otra clase de objeto computacional**, y compararlo con ellos
 en área o en latencia oculta esa diferencia de naturaleza.
 
-## 6.8 Una jerarquía construida, no esperada
+## 8.8 Una jerarquía construida, no esperada
 
 El clasificador implementa explícitamente la jerarquía *bordes → orientaciones → zonas → dígito*.
 Esa descomposición se propone habitualmente como una **esperanza** sobre lo que aprenden las capas
@@ -219,14 +219,14 @@ Aquí ocurre porque **está escrita**: cada etapa existe como hardware identific
 inspeccionables y su comportamiento es el que su nombre indica. El costo de esa transparencia es que
 alguien tuvo que decidir la descomposición en lugar de aprenderla.
 
-> Con la salvedad honesta de la §6.2: los 400 pesos de cuatro bits son doscientos bytes frente a los
+> Con la salvedad honesta de la §8.2: los 400 pesos de cuatro bits son doscientos bytes frente a los
 > decenas de kilobytes de una red equivalente, pero **las etapas cableadas que producen el descriptor
 > cuestan decenas de miles de celdas**. La comparación de memorias es correcta y la de sistemas
 > completos sería otra.
 
-## 6.9 Lo que el esquemático no muestra
+## 8.9 Lo que el esquemático no muestra
 
-Un resultado lateral, surgido al generar los esquemáticos RTL del Capítulo 5, ilustra el problema
+Un resultado lateral, surgido al generar los esquemáticos RTL de los Capítulos 4 y 5, ilustra el problema
 central desde un ángulo inesperado.
 
 En la vista RTL de cualquier herramienta, **un framebuffer es un rectángulo** —con una dirección de
@@ -241,7 +241,7 @@ almacenar 784 bytes.
 > sobre qué parte de su circuito es cara, y no porque la herramienta mienta, sino porque representa
 > con la misma tinta cosas cuyo precio difiere en tres órdenes de magnitud.
 
-## 6.10 Posición frente a los trabajos cercanos
+## 8.10 Posición frente a los trabajos cercanos
 
 Dos trabajos del mismo grupo sirven de referencia. El primero implementa un Sobel en escala de grises
 sobre sky130 mediante Tiny Tapeout; el segundo, un SoC basado en FemtoRV32 con memorias externas.
@@ -257,7 +257,7 @@ mejor —los algoritmos son de 1968, 1986 y 1993— sino **una comparación sist
 sobre silicio firmado, a igualdad de todo lo demás, a lo largo de seis sistemas de complejidad
 creciente**. Esa condición de igualdad es lo que permite atribuir cada diferencia a una causa.
 
-## 6.11 Limitaciones
+## 8.11 Limitaciones
 
 - **Ningún circuito ha sido fabricado.** Todas las afirmaciones sobre silicio se refieren a GDSII
   firmado con DRC, LVS y XOR en cero, no a medidas sobre un dado real.
@@ -266,9 +266,9 @@ creciente**. Esa condición de igualdad es lo que permite atribuir cada diferenc
   estudio, pero conviene no extrapolar los resultados a resoluciones mayores sin volver a medir.
 - **La magnitud del gradiente satura a ocho bits**, lo que en escenas de alto contraste recorta la
   información antes del umbral.
-- **Los recuentos de celdas no son homogéneos** entre todas las tablas del Capítulo 5, por las tres
-  definiciones documentadas en la §5.3.3. Los cocientes dentro de cada pareja son válidos; las
+- **Los recuentos de celdas no son homogéneos** entre las tablas de los Capítulos 5 y 7, por las tres
+  definiciones documentadas en la §5.2.3. Los cocientes dentro de cada pareja son válidos; las
   comparaciones absolutas entre tablas distintas, no.
-- **La verificación eléctrica de la §5.7 deja un residuo declarado**: la extracción del layout de las
+- **La verificación eléctrica de la §5.4 deja un residuo declarado**: la extracción del layout de las
   celdas recupera la mayor parte de la discrepancia entre SPICE y el analizador estático, pero no
   toda, y la parte restante se atribuye a la resistencia interna de la celda sin haberlo comprobado.

@@ -1,6 +1,6 @@
-# 7. Conclusiones y trabajo futuro
+# 9. Conclusiones y trabajo futuro
 
-## 7.1 Conclusiones por objetivo
+## 9.1 Conclusiones por objetivo
 
 **Sobre el modelo de referencia.** Se construyó un modelo en Python de los tres filtros y del
 clasificador, y se usó como verdad de referencia en lugar de como ilustración. La decisión de
@@ -27,19 +27,19 @@ reproducir un error específico y repetido, no.
 
 **Sobre el paso a silicio.** Se llevaron a GDSII **diecisiete circuitos** en dos procesos —quince en sky130A
 con OpenLane y dos en IHP SG13G2 con LibreLane—, todos ellos con **DRC, LVS y XOR en cero**. El
-decimoséptimo es el reconocedor Canny-78 de la §5.6.9, firmado cuando el resto del capítulo ya
-estaba medido; por eso el procedimiento de recuento de la §5.3 y el Anexo D hablan de dieciséis. La verificación
+decimoséptimo es el reconocedor Canny-78 de la §7.3, firmado cuando el resto del capítulo ya
+estaba medido; por eso el procedimiento de recuento de la §5.2 y el Anexo D hablan de dieciséis. La verificación
 eléctrica se cerró por dos vías independientes: los circuitos **cierran el temporizado con los
 parásitos del interconexionado extraídos** —holgura de 0,00 ns sobre el peor camino—, y el camino
 crítico de **dos** de ellos se simuló además en SPICE hasta repartir su retardo en sumandos sin
-residuo (§5.7).
+residuo (§5.4).
 Ninguno ha sido fabricado, y esa distinción se mantiene en todo el documento: **silicio firmado no es
 silicio**.
 
 **Sobre la medición de compromisos.** El objetivo que dio origen al trabajo era medir qué cambia al
 cruzar de un sustrato al otro, en cuatro dimensiones:
 
-- **Área.** Es la dimensión que articula el Capítulo 6: **cambia el precio de la memoria, y ese
+- **Área.** Es la dimensión que articula el Capítulo 8: **cambia el precio de la memoria, y ese
   precio decide qué algoritmo cabe.** Un procesador RISC-V completo cuesta alrededor de nueve mil
   celdas; ampliar el alcance del patrón de una ventana de 3×3 al cuadro completo cuesta noventa y
   cuatro mil quinientas.
@@ -59,7 +59,7 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
 > manifestaciones del mismo hecho.** Quien optimice sólo el área concluirá que la memoria de cuadro
 > es aceptable, porque habrá visto un tercio del problema.
 
-## 7.2 Contribuciones
+## 9.2 Contribuciones
 
 1. **Un sistema de visión embebido completo y verificado**, con tres detectores de bordes
    seleccionables por software sobre video en vivo, funcionando físicamente en una FPGA de bolsillo y
@@ -82,7 +82,7 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
 5. **Dos cuadernos reproducibles** que contienen el código, los datos y las figuras de cada
    afirmación del documento, incluidas las que fueron corregidas.
 
-## 7.3 Seis afirmaciones propias que este trabajo corrigió
+## 9.3 Seis afirmaciones propias que este trabajo corrigió
 
 Se listan porque forman parte del resultado. Un documento que enumera sus propios errores con fecha y
 evidencia es más difícil de atacar que uno que no enumera ninguno; y un jurado que encuentra un error
@@ -95,7 +95,7 @@ por su cuenta es mucho peor que uno que lo ve ya corregido.
 | 3 | Una exactitud del **97,3 %** | Provenía de un defecto del banco de medida |
 | 4 | Una dispersión estimada con cinco semillas | **Subestimada en un factor de 1,8** por solapamiento de las submuestras |
 | 5 | El Canny supera al Sobel bajo condiciones degradadas | Comparaba **dos puntos de operación**, no dos filtros; con el umbral implementado el resultado se invierte |
-| 6 | La discrepancia entre SPICE y el analizador estático es la **resistencia** de la interconexión | La resistencia aporta **0,017 ns**, el 0,1 %. La causa son los parásitos internos de la celda (§5.7.3) |
+| 6 | La discrepancia entre SPICE y el analizador estático es la **resistencia** de la interconexión | La resistencia aporta **0,017 ns**, el 0,1 %. La causa son los parásitos internos de la celda (§5.4.3) |
 
 Table: Seis afirmaciones propias que la medida corrigió.
 
@@ -110,7 +110,7 @@ conclusión lo que era una hipótesis obtenida por eliminación**.
 > que era la respuesta. La regla que se deja escrita: **las deducciones se escriben como hipótesis
 > hasta que exista una medida que las sostenga.**
 
-## 7.4 Trabajo futuro
+## 9.4 Trabajo futuro
 
 **Fabricar.** Los circuitos están firmados pero no existen. La vía practicable es un servicio de
 oblea compartida como Tiny Tapeout, que reparte el costo entre cientos de diseños pequeños a cambio
@@ -118,7 +118,7 @@ de caber en mosaicos de dimensiones fijas. Los proyectos necesarios están prepa
 los chequeos de admisión; lo que falta es enviarlos a una ventana de fabricación.
 
 **Sustituir los framebuffers de biestables por un macro de SRAM.** Es la respuesta directa al
-hallazgo central. Todo el precio documentado en el Capítulo 6 —área, frecuencia y
+hallazgo central. Todo el precio documentado en el Capítulo 8 —área, frecuencia y
 manufacturabilidad— procede de implementar memoria con lógica porque el flujo empleado no ofrecía
 otra cosa. Un generador de memoria cambiaría los tres a la vez, y permitiría cuantificar cuánto de lo
 medido es propiedad del problema y cuánto del sustrato.

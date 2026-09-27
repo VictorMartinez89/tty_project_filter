@@ -30,14 +30,11 @@ agregar cap1_introduccion.md
 agregar cap2_marco.md
 agregar cap3_metodologia.md
 agregar cap4_diseno.md
-
-# El capitulo 5 vive en seis ficheros que usan '#' para lo que son SECCIONES y no
-# tienen encabezado de capitulo. Se le pone uno y se degradan los seis.
-printf '\n# 5. Resultados\n' >> "$UNIDO"
-for n in 1 2 3 4 5 6 7; do agregar "cap5_seccion$n.md" bajar; done
-
-agregar cap6_discusion.md
-agregar cap7_conclusiones.md
+agregar cap5_silicio.md
+agregar cap6_reconocimiento.md
+agregar cap7_reconocimiento_silicio.md
+agregar cap8_discusion.md
+agregar cap9_conclusiones.md
 
 printf '\n\\newpage\n\n# Anexos\n' >> "$UNIDO"
 for a in anexo_entorno anexo_registros anexo_pinout anexo_openlane anexo_flujo_asic anexo_flujo_trabajo anexo_verilog; do agregar "$a.md" bajar; done

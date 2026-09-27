@@ -11,7 +11,7 @@ que no cabían en la página se han partido en dos; el código no se ha tocado.
 
 ## G.1 Filtro Sobel (§4.3.1)
 
-Es el circuito que la §5.3 lleva a silicio: 0,167 mm² en sky130. Recibe un flujo de píxeles en orden
+Es el circuito que la §5.2 lleva a silicio: 0,167 mm² en sky130. Recibe un flujo de píxeles en orden
 de barrido, arma la ventana de 3×3 con `linebuf3x3` y decide borde o plano con un umbral. **La versión
 para silicio omite el suavizado gaussiano** del Algoritmo 1: pasa de la ventana directamente al
 gradiente, y su ancho de línea es de 60 píxeles.

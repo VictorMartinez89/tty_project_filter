@@ -99,7 +99,7 @@ Formalmente, esa operación es una **reconstrucción morfológica** [Vincent 199
 una máscara —los píxeles débiles— a partir de unos marcadores —los fuertes— bajo una relación de
 conectividad, cuyo resultado es el **punto fijo** de una dilatación geodésica iterada.
 
-> Esta caracterización no es un tecnicismo: es lo que explica el resultado central del Capítulo 6. Un
+> Esta caracterización no es un tecnicismo: es lo que explica el resultado central del Capítulo 8. Un
 > punto fijo sobre el cuadro completo **no admite implementación en flujo**, porque no puede emitirse
 > ningún resultado definitivo hasta comprobar que ningún píxel cambia. La estructura matemática de la
 > operación determina su arquitectura, y su arquitectura determina su costo.
@@ -118,7 +118,7 @@ porque cuenta direcciones y no intensidades.
 La organización de esos histogramas en una **rejilla espacial de varios niveles** procede de la
 pirámide espacial [Lazebnik *et al.* 2006], que reintroduce información de posición en un descriptor
 que por construcción la descarta. Esa reintroducción es la que distingue, en el experimento del
-Capítulo 5, un clasificador que confunde sistemáticamente dos dígitos de uno que no lo hace.
+Capítulo 6, un clasificador que confunde sistemáticamente dos dígitos de uno que no lo hace.
 
 Como referencia de la tarea se emplea el conjunto MNIST [LeCun *et al.* 1998], por ser el punto de
 comparación estándar en reconocimiento de dígitos manuscritos y permitir situar los resultados
@@ -168,7 +168,7 @@ cumple el papel de las reglas, el fichero de plano el del objeto intercambiable,
 educativas el de la oblea compartida. **La novedad no es la posibilidad sino el precio de entrada**,
 y es sobre esa distinción que se apoya la §2.8.
 
-> Merece señalarse que la §5.7 de este trabajo mide un **límite** de la primera de esas tres ideas.
+> Merece señalarse que la §5.4 de este trabajo mide un **límite** de la primera de esas tres ideas.
 > La abstracción que permite diseñar sin conocer el proceso funciona porque alguien caracterizó cada
 > celda sobre su dibujo; cuando el modelo que se entrega a una herramienta es el esquema y no el
 > dibujo, **la abstracción se rompe en silencio, y en un 22 % del retardo**.
@@ -195,7 +195,7 @@ comerciales.
 
 Entre una FPGA y un ASIC cambian cosas que el RTL no expresa: la inicialización de los registros, la
 existencia de memoria en el sustrato, la disponibilidad de tri-estado interno y las primitivas
-específicas del fabricante. La §4.8 las enumera; aquí basta señalar que **ninguna de ellas produce un
+específicas del fabricante. La §5.1 las enumera; aquí basta señalar que **ninguna de ellas produce un
 error de simulación**, lo que las convierte en una clase de problema particularmente incómoda.
 
 ## 2.8 Trabajos relacionados
@@ -283,7 +283,7 @@ y más adelante, al justificar la ausencia de interfaz gráfica:
 
 > *«los **escasos recursos** de la ZedBoard se conservan tanto como es posible.»*
 
-La solución que adoptan es exactamente la misma estrategia que el Capítulo 5 documenta:
+La solución que adoptan es exactamente la misma estrategia que el Capítulo 6 documenta:
 **cuantizar**. Reducen los pesos de treinta y dos bits en coma flotante a ocho bits con una
 configuración única para toda la red, y hasta **cuatro bits** eligiendo la configuración por capa,
 con una caída de exactitud de **98,35 % a 97,37 %** —algo más de un punto porcentual a cambio de un
@@ -390,7 +390,7 @@ out_px_gray_o <= (red>>2)+(red>>5)+(green>>1)+(green>>4)+(blue>>4)+(blue>>5);
 Los tres pesos suman 0,9375 y no 1, así que el gris sale un 6,25 % más oscuro que la luminancia exacta:
 el blanco puro da 234. Cuánto se nota depende de la imagen. Medido contra `0,299 R + 0,587 G + 0,114 B`
 a 320×240, sobre sus tres imágenes de prueba y las dos fotografías propias de este trabajo —la mano y la
-tarjeta «HOLA»—, que se usan a lo largo del Capítulo 5:
+tarjeta «HOLA»—, que se usan a lo largo de los Capítulos 4 y 5:
 
 | Imagen | Brillo medio | Error medio (niveles de gris) | Píxeles con error de 5 o menos |
 |---|---:|---:|---:|

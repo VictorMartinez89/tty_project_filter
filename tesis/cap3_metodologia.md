@@ -98,7 +98,7 @@ conclusión:
    resultado se invertía, y la afirmación se retractó.
 3. Comparando **implementaciones distintas** del mismo algoritmo como si fueran algoritmos distintos.
 
-> La §5.6 muestra por qué la regla es especialmente severa aquí: **mover el umbral dentro de un
+> El Capítulo 6 muestra por qué la regla es especialmente severa aquí: **mover el umbral dentro de un
 > filtro cambia el resultado más que cambiar de filtro** —5,79 pp contra 0,38 pp—. En un espacio así,
 > una comparación con puntos de operación distintos no es imprecisa: mide otra cosa.
 

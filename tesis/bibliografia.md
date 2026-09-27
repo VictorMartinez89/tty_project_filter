@@ -7,7 +7,7 @@
 > de bus y el que fundó el diseño estructurado— se añadieron al documentar el linaje del SoC en la §4.5. El total son **49 entradas sin
 > duplicados**, contando las dos guías de instalación del entorno que documenta la §3.7.
 > Después se añadieron **siete** más, tomadas de la propuesta de este trabajo (la propuesta,
-> cinco antecedentes y la Estrategia Nacional Digital), y la de Chow (1970), que citaba sólo la §5.6;
+> cinco antecedentes y la Estrategia Nacional Digital), y la de Chow (1970), que citaba sólo el Capítulo 6;
 > con ellas son **57**.
 >
 > Las marcadas con **✓** tienen volumen, número, páginas y año comprobados contra la fuente. Las
@@ -65,7 +65,7 @@
 ## Reconocimiento y clasificación de patrones
 
 29. **✓** M.-K. Hu, «Visual Pattern Recognition by Moment Invariants», *IRE Transactions on Information Theory*, vol. 8, n.º 2, pp. 179–187, 1962.
-30. C. K. Chow, «On Optimum Recognition Error and Reject Tradeoff», *IEEE Transactions on Information Theory*, vol. 16, n.º 1, pp. 41–46, ene. 1970. — El fundamento de la opción de rechazo del reconocedor (§5.6).
+30. C. K. Chow, «On Optimum Recognition Error and Reject Tradeoff», *IEEE Transactions on Information Theory*, vol. 16, n.º 1, pp. 41–46, ene. 1970. — El fundamento de la opción de rechazo del reconocedor (Capítulo 6).
 31. **✓** Y. LeCun, L. Bottou, Y. Bengio y P. Haffner, «Gradient-Based Learning Applied to Document Recognition», *Proceedings of the IEEE*, vol. 86, n.º 11, pp. 2278–2324, 1998. — el conjunto MNIST.
 32. G. Csurka, C. Dance, L. Fan, J. Willamowski y C. Bray, «Visual Categorization with Bags of Keypoints», *ECCV Workshop on Statistical Learning in Computer Vision*, 2004. — el *bag of visual words* original.
 33. **✓** D. G. Lowe, «Distinctive Image Features from Scale-Invariant Keypoints», *International Journal of Computer Vision*, vol. 60, n.º 2, pp. 91–110, 2004.
@@ -137,5 +137,5 @@ Otsu, Lowe, Dalal y Triggs, Chen *et al.*, Sze *et al.*, Shalan y Edwards, y Bai
 ellas sostienen afirmaciones del Capítulo 2 que antes se apoyaban únicamente en el texto.
 
 **Veintisiete de las treinta y seis no se citan en el Capítulo 2**, y eso no es un defecto: son
-programas, hojas de datos y kits de diseño que sustentan los Capítulos 3 a 5 y los anexos. Todas las
+programas, hojas de datos y kits de diseño que sustentan los Capítulos 3 a 7 y los anexos. Todas las
 obras que el Capítulo 2 cita por autor y año figuran en esta lista.

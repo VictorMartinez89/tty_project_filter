@@ -54,14 +54,14 @@ existe para poder cambiar un parámetro en tiempo de ejecución, no para procesa
 se justifica por lo que habilita —recalibrar el sistema sin volver a sintetizar— y no por el trabajo
 que realiza.
 
-> Ese es el punto que la §6.6 desarrolla: recalibrar un sistema con procesador cuesta recompilar
+> Ese es el punto que la §8.6 desarrolla: recalibrar un sistema con procesador cuesta recompilar
 > siete instrucciones; recalibrar uno sin procesador cuesta un ciclo completo de síntesis,
 > emplazamiento y ruteo. La comparación entre ambas opciones es la que produce la razón 8:1.
 
 ## B.3 La ROM en dos sustratos
 
 El mismo programa se almacena de forma distinta según el destino, y ésta es una de las cuatro
-diferencias obligatorias de la §4.8:
+diferencias obligatorias de la §5.1:
 
 | Destino | Implementación |
 |---|---|

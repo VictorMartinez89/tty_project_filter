@@ -1,16 +1,15 @@
-# 5.6 Reconocimiento de patrones: del borde al dígito
+# 6. El reconocimiento: pirámides espaciales y MNIST
 
-Las secciones anteriores de este capítulo presentaron los resultados de un sistema que **procesa**
-imágenes: detecta bordes, los almacena y los muestra. Ésta presenta los de un sistema que las
-**reconoce**. La diferencia no es de grado sino de naturaleza: la salida deja de ser una imagen y
+Los capítulos anteriores presentaron un sistema que **procesa** imágenes: detecta bordes, los almacena
+y los muestra. Éste presenta un sistema que las **reconoce**. La diferencia no es de grado sino de naturaleza: la salida deja de ser una imagen y
 pasa a ser una decisión —un dígito de 0 a 9, o la declaración explícita de no saber— y con ello el
 trabajo enlaza con el planteamiento del Capítulo 1.
 
 Los resultados que siguen son **mediciones**, no proyecciones: un clasificador verificado contra su
 modelo de referencia sobre 70 000 imágenes, validado físicamente sobre una FPGA frente a una cámara
-real, e implementado en dos circuitos integrados con GDS firmado.
+real. Su implementación en silicio es el Capítulo 7.
 
-## 5.6.1 Arquitectura del reconocedor
+## 6.1 Arquitectura del reconocedor
 
 El reconocedor reutiliza íntegramente el extractor de bordes descrito en la §4.3 y le añade dos
 etapas. La cadena completa consta de cuatro pasos, y **ninguno de ellos contiene un multiplicador en
@@ -48,13 +47,13 @@ responde **NADA** en lugar de arriesgar una respuesta.
 > arcotangente, el nivel 0 derivado en lugar de contado, el voto binario en lugar de ponderado por
 > magnitud, y la construcción del descriptor **sin almacenar la imagen**.
 
-## 5.6.2 Exactitud sobre MNIST
+## 6.2 Exactitud sobre MNIST
 
 Se entrenó el clasificador sobre las 60 000 imágenes de entrenamiento de MNIST y se evaluó sobre las
 10 000 de prueba, con los pesos cuantizados a 4 bits y la regla de rechazo calibrada **exclusivamente
 sobre el conjunto de entrenamiento**. Se compararon seis configuraciones de front-end bajo idéntico
-procedimiento; las cinco primeras comparten el clasificador de 40 rasgos descrito en la §5.6.1, y la
-sexta, **Canny-78**, es la versión ampliada que presenta la §5.6.9:
+procedimiento; las cinco primeras comparten el clasificador de 40 rasgos descrito en la §6.1, y la
+sexta, **Canny-78**, es la versión ampliada que presenta la §6.7:
 
 | front-end | exactitud | F1 macro | precisión al responder | falsos positivos |
 |---|---:|---:|---:|---:|
@@ -63,7 +62,7 @@ sexta, **Canny-78**, es la versión ampliada que presenta la §5.6.9:
 | Canny 1-salto | 92.03 % | 0.920 | 98.66 % | 85 |
 | SoC + Canny 1-salto | 92.46 % | 0.924 | 98.84 % | 73 |
 | Canny transitivo | 89.76 % | 0.897 | 97.80 % | 139 |
-| **Canny-78** *(§5.6.9)* | **97.22 %** | **0.972** | **99.92 %** | **5** |
+| **Canny-78** *(§6.7)* | **97.22 %** | **0.972** | **99.92 %** | **5** |
 
 Table: Exactitud sobre MNIST según el front-end.
 
@@ -80,14 +79,14 @@ sino el descriptor y el clasificador que lo leen. A una cobertura comparable —
 responde y se equivoca **cinco veces en diez mil**, contra setenta y tres. Es, además, la
 configuración que corre hoy en la tarjeta.
 
-![**Figura 5.4.** El espacio de diseño del clasificador, con el eje horizontal en escala
+![**Figura 6.1.** El espacio de diseño del clasificador, con el eje horizontal en escala
 logarítmica. Cada curva es un nivel de la pirámide espacial y cada punto una precisión de peso
 distinta. El hallazgo está en el cruce: **400 pesos de 4 bits —1 600 biestables— superan a los 784
 píxeles crudos usando la vigésima parte de la memoria**, y caben bajo el presupuesto real de un chip
 de 8×2 mosaicos, marcado con la línea vertical. A igualdad de memoria, la precisión de los pesos vale
 más que el número de zonas.](figuras/fig_5_4_espacio_de_diseno.png)
 
-## 5.6.3 Lo que la exactitud no muestra
+## 6.3 Lo que la exactitud no muestra
 
 Las medidas basadas en el `argmax` descartan la información de los diez puntajes. Dos medidas que la
 conservan revelan una diferencia que la exactitud oculta:
@@ -109,7 +108,7 @@ reconstrucción morfológica engruesa los contornos, el engrosamiento infla los 
 criterio de rechazo —que compara el mejor puntaje con el segundo— deja hablar al circuito cuando
 debería callarlo.
 
-## 5.6.4 El punto de operación pesa más que el front-end
+## 6.4 El punto de operación pesa más que el front-end
 
 Las comparaciones anteriores fijan el umbral y varían el filtro. El experimento complementario
 —fijar el filtro y **barrer el umbral**— arroja el resultado de mayor consecuencia práctica de esta
@@ -138,7 +137,7 @@ adyacente a uno fuerte. **La histéresis es un mecanismo de recuperación**, y d
 > comparaciones— buena parte de la robustez que el Sobel obtiene mediante **un procesador** capaz de
 > reescribir el umbral. No son decisiones que se sumen: son, en buena medida, **alternativas**.
 
-## 5.6.5 El RTL contra el modelo, sobre el conjunto completo
+## 6.5 El RTL contra el modelo, sobre el conjunto completo
 
 Las cifras anteriores son del modelo en Python. La pregunta que decide si sirven de algo es si el
 circuito las reproduce, y se respondió por el camino más exigente disponible: **ejecutar el RTL sobre
@@ -155,7 +154,7 @@ predicción con la del modelo.
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
-![**Figura 5.5.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
+![**Figura 6.2.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
 ventana pasan uno a uno antes de que `done` presente un dígito. Es el nivel al que se hizo la
 comparación contra el modelo: no se compararon porcentajes, se compararon
@@ -163,22 +162,22 @@ señales.](figuras/fig_5_5_ventana_al_extractor.png)
 
 No son cifras «parecidas» ni «dentro del margen de error»: **las diez mil predicciones y los diez mil
 veredictos coinciden uno por uno**, y la matriz de confusión es la misma casilla por casilla. La
-verificación de los filtros de la §5.1 se hizo sobre cinco imágenes; ésta se hizo sobre diez mil, e
+verificación de los filtros de la §4.8 se hizo sobre cinco imágenes; ésta se hizo sobre diez mil, e
 incluye la decisión de rechazo, que es lógica de comparación y no de aritmética.
 
 > Conviene precisar el alcance, porque más adelante aparece una cifra distinta. Lo que aquí es
 > exacto es el **clasificador completo** —descriptor, pesos y decisión— evaluado imagen por imagen.
-> El 99.91 % que informa la §5.6.6 se refiere a otra comparación: la del **extractor de bordes**
+> El 99.91 % que informa la §6.6 se refiere a otra comparación: la del **extractor de bordes**
 > píxel a píxel dentro de la cadena, cuyas discrepancias se concentran en la última fila del cuadro
 > y no alteran ninguna de las diez mil clasificaciones. Son dos medidas de objetos distintos y no se
 > contradicen.
 
-## 5.6.6 Validación física
+## 6.6 Validación física
 
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
 
-![**Figura 5.6.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
+![**Figura 6.3.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
 la escena del dígito 3. El panel A muestra los 19 ms de dos cuadros: el veredicto sale en el primero
 y no cambia en el segundo. El panel B captura el instante en que **el procesador sustituye el umbral
 por omisión del RTL, 110, por el 90 que escribe el firmware**, con el camino de datos todavía en
@@ -197,7 +196,7 @@ completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta re
 > **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
 > en silicio se comporta como el RTL verificado, errores incluidos.
 
-![**Figura 5.7.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
+![**Figura 6.4.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
 está cableado a la señal de configuración terminada; el azul parpadea con el latido del sistema. Los
 diez veredictos salen por el puerto serie del mismo conector que alimenta la tarjeta. A la derecha,
 el mismo montaje con el cableado del módulo de pantalla ya
@@ -229,59 +228,7 @@ La verificación del extractor contra su modelo de referencia arrojó **99.91 %*
 exacta píxel a píxel para el Sobel y **99.93 %** para el Canny, concentrándose las diferencias en la
 última fila del cuadro.
 
-## 5.6.7 Implementación en silicio
-
-El reconocedor se llevó a tecnología `sky130_fd_sc_hd` en dos variantes, ejecutando el flujo completo
-de OpenLane hasta la firma del GDS:
-
-| magnitud | Sobel | Canny 1-salto |
-|---|---:|---:|
-| área del *die* | 0.845 mm² | 0.890 mm² |
-| celdas tras síntesis | 16 718 | 17 373 |
-| celdas emplazadas | 19 949 | 20 921 |
-| período de reloj | 30 ns (33.3 MHz) | 30 ns (33.3 MHz) |
-| holgura con parásitos (`spef_wns`) | **0.00 ns** | **0.00 ns** |
-| DRC · LVS · XOR | 0 · 0 · 0 | 0 · 0 · 0 |
-
-Table: El reconocedor en silicio con front-end Sobel y con Canny de un salto.
-
-Ambos circuitos cierran el temporizado con los parásitos del interconexionado extraídos y superan las
-tres verificaciones de firma sin observaciones. Merece señalarse que **cierran más rápido que los
-circuitos de visión equivalentes** —que requirieron 32 y 36 ns—, lo que resulta coherente con la
-ausencia de memoria de cuadro: es el multiplexor de lectura del *framebuffer* el que constituye el
-camino crítico de aquéllos.
-
-**Son los primeros circuitos de este trabajo cuya salida no es una imagen.** Los diez presentados en
-las secciones §5.3 y §5.4 procesan; éstos reconocen.
-
-## 5.6.8 El costo relativo del front-end depende del sistema
-
-La comparación de área entre ambos front-ends admite cuatro niveles de integración. Las cuatro filas
-están en **celdas emplazadas**, la misma escala de la §5.3, de modo que los cocientes son
-directamente comparables entre sí:
-
-| nivel | Sobel | Canny | factor |
-|---|---:|---:|---:|
-| filtro aislado | 5 823 | 12 993 | **2.23×** |
-| con procesador | 12 043 | 22 054 | 1.83× |
-| sistema de visión completo | 35 653 | 41 925 | 1.18× |
-| reconocedor con procesador | 19 949 | 20 921 | 1.05× |
-| **reconocedor que además muestra** | **38 643** | **39 794** | **1.03×** |
-
-Table: Costo relativo del front-end según el nivel del sistema.
-
-**El sobrecosto del Canny se diluye conforme crece el sistema que lo rodea.** Considerado de forma
-aislada cuesta un **123 %** más; con un procesador al lado, un 83 %; dentro de un sistema de visión,
-un 18 %; integrado en un reconocedor, un 5 %; y en un reconocedor que además dibuja en pantalla,
-un **3 %**. El motivo es que el clasificador
-—histograma, pirámide y 400 multiplicaciones— es idéntico en ambas variantes y domina el área,
-mientras que la diferencia se reduce al tercer *line-buffer*.
-
-De ello se sigue una conclusión condicional: **el Sobel aventaja al Canny en área únicamente cuando
-el filtro constituye el circuito completo.** En un sistema que reconoce, esa ventaja —la única que el
-Sobel conserva, según §5.6.2 a §5.6.4— deja de ser determinante.
-
-## 5.6.9 Canny-78: el reconocedor llevado al límite del dispositivo
+## 6.7 Canny-78: el reconocedor llevado al límite del dispositivo
 
 Las secciones anteriores fijaron el descriptor —cuatro zonas, cuarenta rasgos— y variaron el
 front-end. Esta sección hace lo contrario: fija el front-end que resultó mejor, el Canny 1-salto con
@@ -331,7 +278,7 @@ que compartían otros tres módulos del trabajo. Emplazado y ruteado con `nextpn
 **2 606 celdas lógicas (49 %)** y nueve bloques de BRAM, y cierra a **16.45 MHz** frente a los 12 MHz
 que exige la tarjeta. Cabe dentro de los 784 ciclos de un cuadro con cinco de margen.
 
-**En la tarjeta: diez mil de diez mil.** Los ensayos físicos de la §5.6.6 usaron diez dígitos, que es
+**En la tarjeta: diez mil de diez mil.** Los ensayos físicos de la §6.6 usaron diez dígitos, que es
 lo que cabe en la memoria de configuración. Para Canny-78 se adoptó otro procedimiento: la tarjeta
 no almacena imágenes, sino que recibe **las 10 000 de prueba por el puerto serie** del mismo conector
 USB y responde un byte por imagen con el dígito y la decisión de rechazo. El diseño incorpora un
@@ -353,11 +300,11 @@ final, **2 937 celdas lógicas (55 %) a 17.55 MHz**.
 Table: Canny-78 medido en la tarjeta sobre las diez mil imágenes de prueba.
 
 > **La iCE40UP5K reproduce el modelo sobre el conjunto de prueba completo de MNIST, imagen por
-> imagen, sin una sola discrepancia.** El «nueve de diez» de la §5.6.6 demostraba que el circuito
+> imagen, sin una sola discrepancia.** El «nueve de diez» de la §6.6 demostraba que el circuito
 > funcionaba; esto demuestra que funciona **exactamente** como se diseñó, sobre diez mil casos.
 
 La cobertura de la tabla (84.65 %) corresponde al punto de operación grabado en la tarjeta, más
-propenso a responder que el de la §5.6.2 (66 %, calibrado con el mismo procedimiento que los otros
+propenso a responder que el de la §6.2 (66 %, calibrado con el mismo procedimiento que los otros
 cinco front-ends). Ambos son puntos de la misma curva y no se comparan entre sí.
 
 **Frente a la cámara, lo que aún falta.** Canny-78 se integró también en el diseño de cámara y
@@ -376,31 +323,3 @@ Por dígito, los más difíciles siguen siendo el **9, el 8 y el 7** (F1 de 0.95
 confusiones que quedan son las mismas familias de siempre: el trazo recto con diagonal del 4, el 7 y
 el 9, y las curvas cerradas del 8 y el 9. **Canny-78 reduce los errores, pero no los cambia de
 sitio**: lo que distingue a esos dígitos es la geometría del trazo, y ésa no depende del circuito.
-
-**En silicio.** El mismo RTL que dio diez mil de diez mil en la tarjeta se llevó a sky130 con OpenLane,
-con la receta de los demás circuitos: reloj de 30 ns, utilización del 30 % y densidad de 0,40. Es el
-**decimoséptimo circuito** de este trabajo, y firma limpio:
-
-| | Canny-78 | Canny-78 recortado |
-|---|---:|---:|
-| dado | 1,122 mm² (1 043 × 1 042 µm) | **0,829 mm²** (−26 %) |
-| celdas tras la síntesis | 29 449 | 21 409 |
-| potencia (interna y de conmutación) | 25,3 mW | 18,6 mW |
-| camino crítico, frente a un reloj de 30 ns | 12,66 ns | 11,86 ns |
-| DRC · LVS · XOR · temporizado con parásitos | 0 · 0 · 0 · holgura ≥ 0 | 0 · 0 · 0 · holgura ≥ 0 |
-| veredictos iguales al modelo | 10 000 / 10 000 | 10 000 / 10 000 |
-
-Table: Canny-78 y su variante recortada, firmados en sky130.
-
-La variante recortada cambia una sola cosa: la memoria de rasgos del clasificador estaba declarada con
-256 posiciones de 13 bits y sólo se usaban 168 de 9. En la FPGA eso no costaba nada —un bloque de BRAM
-cuesta lo mismo lleno que vacío—; en silicio, **un cuarto del dado era memoria declarada y no usada**.
-Es la tesis del Capítulo 6 dicha con el número más limpio de todo el trabajo: la memoria se paga por
-los bits que se declaran, no por los que se usan.
-
-En Tiny Tapeout, en cambio, ninguna de las dos cabe: en el tamaño máximo de 8×2 tiles, la completa
-pide un 110,7 % del área y la recortada, al 80,3 %, se queda sin sitio para los búferes que cierran el
-*hold*. El reconocedor que sí cabe es el de cuarenta rasgos (94,20 %), que en la lanzadera abierta de
-sky130 (SKY26d) ocupa el 42 % de 8×2 tiles, con DRC, LVS y antenas en cero y el temporizado limpio en
-las tres esquinas de proceso (repositorio `tt_mnist_canny_v2_vic`, ejecución 36048035078). No se ha
-enviado a fabricar.
