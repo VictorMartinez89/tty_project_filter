@@ -560,9 +560,9 @@ En sky130 ocupa **0,67 mm²** y **22 054 celdas** tras el emplazamiento, con DRC
 #### Resumen
 
 Es el tercer SoC, y el que la restricción de recursos convirtió en un hallazgo (§4.9.4). En la FPGA el
-procesador y el Canny transitivo no caben juntos de ninguna de las dos formas naturales: con la
-histéresis resuelta por software el conjunto ocupa el 99 % del dispositivo y el reloj del sistema no
-pasa de 8,7 MHz; con el motor como periférico, ni siquiera emplaza (≈ 127 %). Allí el transitivo que
+procesador y el Canny transitivo no caben juntos con holgura de ninguna de las dos formas naturales:
+con la histéresis resuelta por software el conjunto ocupa el 99 % del dispositivo y el reloj del
+sistema no pasa de 8,7 MHz; con el motor como periférico, ni siquiera emplaza (≈ 127 %). Allí el transitivo que
 funciona con holgura es el motor dedicado, sin procesador.
 
 En silicio, donde el área no la fija un dispositivo, el procesador vuelve a caber junto al motor, y ése
@@ -596,7 +596,7 @@ El motor es el de la G.3 y el periférico el de la G.4.
 #### Simulación en Python
 
 El modelo es el del transitivo (§4.3.3) con los umbrales que escribe el programa, 110 y 70. La versión
-en la que el propio procesador resuelve la histéresis por software —la que no cabía en la FPGA— se
+en la que el propio procesador resuelve la histéresis por software —la que corre en la tarjeta— se
 comprobó en simulación, con un 92,8 % de concordancia (§4.9.4).
 
 #### Simulación en Verilog: las señales
@@ -616,6 +616,9 @@ clases.](figuras/fig_4_soctrans_gtkwave.jpg)
 el transitivo: arriba, las cinco imágenes de prueba; abajo, sus bordes.](figuras/fig_4_soctrans_rtl.png)
 
 #### En la tarjeta
+
+En la tarjeta corre la versión con la histéresis por software, la única con procesador que cabe: al
+99 % del dispositivo y con el reloj del sistema en 8,7 MHz (§4.9.3).
 
 ![**Figura 4.24.** El SoC con el Canny transitivo corriendo en la iCESugar sobre las cinco escenas
 —`monarch`, la flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
@@ -1046,8 +1049,9 @@ que agrega es lo que Maldonado dejó conscientemente fuera:
 - **el motor de histéresis transitiva**, la reconstrucción morfológica de punto fijo, que es el filtro
   que de verdad cuesta;
 - **la cadena cámara → filtro → memoria → pantalla**, funcionando y fotografiada en una iCE40UP5K;
-- **el co-diseño medido**: el Canny transitivo no cabía junto al procesador —127 % de ocupación— y por
-  eso su motor pasó a hardware (§4.9);
+- **el co-diseño medido**: por software el Canny transitivo apenas cabía junto al procesador —99 % y
+  8,7 MHz— y como periférico en hardware no cabía —127 %—; por eso su motor pasó a hardware, sin
+  procesador (§4.9);
 - y **el reconocimiento de dígitos**, del borde al número (Capítulo 6).
 
 ## 4.4 Los tres filtros, enunciados como algoritmos
@@ -1351,12 +1355,14 @@ El dato más importante de esta sección no es una cifra de utilización sino un
 arquitectura que la medida forzó**.
 
 La intención inicial era que el procesador calculara la histéresis transitiva por software, como hace
-en las versiones de los otros dos filtros. Esa versión existe y funciona en simulación, con un 92,8 %
-de concordancia. Pero al intentar sintetizar el conjunto —procesador, memoria, framebuffers y
-motor— la ocupación de celdas lógicas alcanzó el **127 %**: no cabía.
+en las versiones de los otros dos filtros. Esa versión funciona —en simulación, con un 92,8 % de
+concordancia, y en la tarjeta, que es la de la §4.3.6—, pero cabe por muy poco: ocupa el **99 %** de las
+celdas lógicas y su reloj de sistema no pasa de **8,7 MHz**. El paso natural siguiente, conservar el
+procesador y darle el motor de histéresis en hardware como periférico, ya no cabía: la ocupación
+alcanzó el **127 %** y el emplazamiento no llegó a completarse.
 
-La respuesta fue mover el motor de histéresis de software a hardware, como camino de datos en Verilog
-sin intervención del procesador. Así implementado, la síntesis reporta **1 728 tablas de consulta** y
+La respuesta fue separar las dos cosas: el motor de histéresis en hardware, como camino de datos en
+Verilog, **sin procesador**. Así implementado, la síntesis reporta **1 728 tablas de consulta** y
 el emplazamiento **2 426 celdas lógicas, el 45 % del dispositivo**, cerrando el temporizado a
 **28,7 MHz** con holgura.
 
@@ -1369,7 +1375,8 @@ el emplazamiento **2 426 celdas lógicas, el 45 % del dispositivo**, cerrando el
 > **Por qué esto es co-diseño y no una optimización.** No se trata de que el hardware sea más rápido
 > que el software, que es lo esperable. Se trata de que **la restricción de recursos cambió el reparto
 > de responsabilidades entre las dos mitades del sistema**: la misma función, expresada como programa,
-> no cabía; expresada como circuito, ocupa un tercio del dispositivo. La frontera entre lo que ejecuta
+> apenas cabía y dejaba el sistema en 8,7 MHz; expresada como circuito junto al procesador, no cabía;
+> expresada como circuito sin él, ocupa menos de la mitad del dispositivo y corre a 28,7 MHz. La frontera entre lo que ejecuta
 > el procesador y lo que ejecuta la lógica dedicada no la fijó una preferencia de diseño sino una
 > medición.
 

@@ -223,6 +223,16 @@ Su versión para la FPGA es la del segundo ensayo de la §6.7: procesador, perif
 clasificador ante dígitos manuscritos y la cámara real, **nueve de diez**, lo mismo que predecía la
 simulación.
 
+En la FPGA, el Pan llevó además la pantalla, para ver lo que el circuito ve; en silicio se quitó,
+porque la salida son los cinco bits del veredicto.
+
+![**Figura 6.6.** Uno de los dos Pan en la iCESugar —la foto no registra si
+el filtro era el Sobel o el Canny—. Arriba, la ventana de 28×28 ampliada ocho veces dentro del marco
+verde; abajo, la respuesta en siete segmentos: un 7. El dígito quedó cortado contra el borde de la
+ventana y un segundo trazo entra por la derecha: es la escena mal encuadrada que mide la §6.3.5, donde
+tres píxeles de corrimiento bastan para hundir la exactitud. Por eso esta foto ilustra el montaje y no
+es una medida.](figuras/fig_6_pan_placa.jpg)
+
 #### En silicio
 
 En sky130 ocupa **0,890 mm²** y **17 373 celdas** tras la síntesis, a 30 ns, con DRC, LVS y XOR en
@@ -273,13 +283,13 @@ Su modelo es la fila **Sobel** de la §6.2: **91.04 %**.
 
 #### Simulación en Verilog: las señales
 
-![**Figura 6.6.** La cadena sin procesador en GTKWave: el umbral es el 60 cableado (`3C`), y el
+![**Figura 6.7.** La cadena sin procesador en GTKWave: el umbral es el 60 cableado (`3C`), y el
 clasificador reconoce el 3 de la escena. Es el mismo extractor y el mismo clasificador que dieron diez
 mil de diez mil contra el modelo en la §6.6.](figuras/fig_6_visionsobel_gtkwave.png)
 
 #### Simulación en Verilog: la imagen
 
-![**Figura 6.7.** La cadena del Sobel sin procesador frente a las once escenas: **ocho de once**, como
+![**Figura 6.8.** La cadena del Sobel sin procesador frente a las once escenas: **ocho de once**, como
 con el procesador. En estas escenas, que el umbral sea 60 o 90 no cambia el
 recuento.](figuras/fig_6_cadena_sobel.png)
 
@@ -324,12 +334,12 @@ Su modelo es la fila **Canny 1-salto**: **92.03 %**.
 
 #### Simulación en Verilog: las señales
 
-![**Figura 6.8.** La cadena del Canny sin procesador en GTKWave, con los umbrales cableados, 110 y 40
+![**Figura 6.9.** La cadena del Canny sin procesador en GTKWave, con los umbrales cableados, 110 y 40
 (`6E` y `28`): el extractor cuenta 156 bordes y el clasificador responde 5.](figuras/fig_6_visioncanny_gtkwave.png)
 
 #### Simulación en Verilog: la imagen
 
-![**Figura 6.9.** La cadena del Canny sin procesador frente a las once escenas: **cuatro de once**, los
+![**Figura 6.10.** La cadena del Canny sin procesador frente a las once escenas: **cuatro de once**, los
 mismos cuatro aciertos que con el procesador. La única diferencia es el 8, que aquí toma por 9 en lugar
 de callar.](figuras/fig_6_cadena_canny.png)
 
@@ -430,7 +440,7 @@ que compartían otros tres módulos del trabajo. Emplazado y ruteado con `nextpn
 **2 606 celdas lógicas (49 %)** y nueve bloques de BRAM, y cierra a **16.45 MHz** frente a los 12 MHz
 que exige la tarjeta. Cabe dentro de los 784 ciclos de un cuadro con cinco de margen.
 
-![**Figura 6.10.** Canny-78 en GTKWave, en el paso que el diseño de cuarenta rasgos no tiene: el
+![**Figura 6.11.** Canny-78 en GTKWave, en el paso que el diseño de cuarenta rasgos no tiene: el
 **trasvase**. Al subir `frame_done` el extractor ha contado 238 bordes; `trasvase` pasa a 1 y `cuenta`
 recorre las 128 posiciones de la memoria de rasgos en unos 1,3 µs, vaciando cada contador al leerlo
 —`n_bordes` vuelve a 0—. Sólo entonces el clasificador sale de reposo (`estado` = 1) y empieza sus
@@ -439,7 +449,7 @@ multiplicaciones-acumulaciones. Mientras tanto la imagen siguiente ya está entr
 
 #### Simulación en Verilog: la imagen
 
-![**Figura 6.11.** La cadena de Canny-78 en el simulador, sobre muchos 0, 3 y 7 del conjunto de
+![**Figura 6.12.** La cadena de Canny-78 en el simulador, sobre muchos 0, 3 y 7 del conjunto de
 prueba. En verde, las imágenes que acierta; en gris, las que calla (NADA) porque el margen entre los dos
 mejores puntajes, `m`, no llega al umbral de 70; en rojo, las que falla. A la derecha, el recuento de
 cada dígito sobre sus mil imágenes: de los 887 treses a los que responde, no falla
@@ -458,7 +468,7 @@ el sintetizador**, simulado con sus celdas de la iCE40 sobre imágenes elegidas 
 del sintetizador sobre los sesgos del clasificador hubiera sido cierto —no lo era—; y el emplazamiento
 final, **2 937 celdas lógicas (55 %) a 17.55 MHz**.
 
-![**Figura 6.12.** El diseño de la tarjeta simulado con su puerto serie bit a bit antes de grabarlo.
+![**Figura 6.13.** El diseño de la tarjeta simulado con su puerto serie bit a bit antes de grabarlo.
 El panel A muestra dos lotes de cuatro imágenes que entran por `uart_rx_pin`, la pausa que realinea la
 cadena (`reset_cad`) y los ocho veredictos, todos iguales al modelo. El panel B es un píxel entrando
 —bit de inicio, ocho bits y bit de parada— y el C un veredicto saliendo: de `frame_done` a `done` pasan
@@ -573,7 +583,7 @@ predicción con la del modelo.
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
-![**Figura 6.13.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
+![**Figura 6.14.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
 ventana pasan uno a uno antes de que `done` presente un dígito. Es el nivel al que se hizo la
 comparación contra el modelo: no se compararon porcentajes, se compararon
@@ -596,7 +606,7 @@ incluye la decisión de rechazo, que es lógica de comparación y no de aritmét
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
 
-![**Figura 6.14.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
+![**Figura 6.15.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
 la escena del dígito 3. El panel A muestra los 19 ms de dos cuadros: el veredicto sale en el primero
 y no cambia en el segundo. El panel B captura el instante en que **el procesador sustituye el umbral
 por omisión del RTL, 110, por el 90 que escribe el firmware**, con el camino de datos todavía en
@@ -615,7 +625,7 @@ completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta re
 > **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
 > en silicio se comporta como el RTL verificado, errores incluidos.
 
-![**Figura 6.15.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
+![**Figura 6.16.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
 está cableado a la señal de configuración terminada; el azul parpadea con el latido del sistema. Los
 diez veredictos salen por el puerto serie del mismo conector que alimenta la tarjeta. A la derecha,
 el mismo montaje con el cableado del módulo de pantalla ya

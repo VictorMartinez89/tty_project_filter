@@ -113,9 +113,10 @@ que la suma.
 El episodio de la §4.9.4 es el ejemplo más claro de co-diseño de este trabajo, y conviene leerlo con
 cuidado porque su lección no es la evidente.
 
-La histéresis transitiva calculada por software funcionaba correctamente en simulación. Al intentar
-sintetizar el conjunto sobre la iCE40UP5K la ocupación llegó al **127 %**. Trasladada a hardware como
-camino de datos, la misma función ocupa el **33 %**.
+La histéresis transitiva calculada por software funciona, pero cabe por muy poco en la iCE40UP5K: el
+**99 %** del dispositivo, con el reloj del sistema en 8,7 MHz. Con el motor en hardware como periférico
+del procesador, la ocupación llegó al **127 %** y el diseño no emplazó. Sin el procesador, la misma
+función como camino de datos ocupa el **45 %** y cierra a 28,7 MHz.
 
 Lo interesante no es que el hardware sea más eficiente, que es esperable. Es que **la frontera entre
 lo que ejecuta el procesador y lo que ejecuta la lógica dedicada no la fijó una preferencia de diseño
