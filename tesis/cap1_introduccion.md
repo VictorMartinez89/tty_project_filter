@@ -79,6 +79,8 @@ pequeñas prototipar chips sin costos elevados. Este trabajo se hizo **íntegram
 herramientas, sobre una placa de menos de cincuenta dólares y un kit de diseño de proceso público; ese
 hecho es parte de lo que demuestra.
 
+\needspace{16\baselineskip}
+
 ## 1.3 Objetivo general
 
 El objetivo general aprobado en la propuesta es:
