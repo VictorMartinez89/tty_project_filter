@@ -555,18 +555,12 @@ registros se cargan con `00450000`, `00000011` y `00005A28`. Cuando el programa 
 los que escribió el programa—, el procesador está detenido en su lazo final (`PC` = `0x18`) y la
 imagen de 16×12 empieza a entrar por `in_pix`.](figuras/fig_4_soccanny_gtkwave.jpg)
 
-#### Simulación en Verilog: la imagen
-
 ![**Figura 4.28.** Lo que produce el SoC simulado en Icarus Verilog a 160×120 cuando el programa elige
 el Canny de un salto: arriba, las cinco imágenes de prueba; abajo, sus bordes.](figuras/fig_4_soccanny_rtl.png)
-
-#### En la tarjeta
 
 ![**Figura 4.29.** El SoC con el Canny de un salto corriendo en la iCESugar sobre las cinco escenas
 —`monarch`, la flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
 tarjeta.](figuras/fig_4_soccanny_placa.jpg)
-
-#### En silicio
 
 En sky130 ocupa **0,67 mm²** y **22 054 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
 (§5.2). Su plano en KLayout es la Figura 5.11.
