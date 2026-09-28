@@ -190,29 +190,6 @@ gaussiano, con líneas de 60 píxeles (Anexo G.1). Su plano en KLayout se muestr
 tabla, y el punto de partida de todos los demás.
 
 
-#### Ventajas y desventajas frente al filtro de Maldonado
-
-| | Maldonado (TT06) | Este trabajo |
-|---|---|---|
-| **Silicio** | **fabricado y medido** | 17 chips con GDS firmado, **ninguno fabricado todavía** |
-| Área del chip Sobel | **2 183 celdas**, 0,036 mm² (con gris, SPI y LFSR) | 5 823 celdas, 0,167 mm² (con un búfer de líneas para 60 píxeles de ancho) |
-| Memoria de imagen | **ninguna en el chip**: la tiene el host | búferes de líneas: dominan el área |
-| Entrada | imagen previa por SPI, 3 palabras por píxel | **flujo de cámara**, 1 píxel por ciclo |
-| Salida | magnitud de 8 bits | borde (con umbral), y con Canny, octante y clase |
-| Filtros | Sobel | Sobel, Canny de un salto, Canny transitivo, y un clasificador |
-| Autoprueba | **LFSR en el chip** | no la hay |
-| Verificación | cocotb, **por inspección visual** de la imagen | comparación **bit a bit** contra un modelo golden |
-
-Table: Ventajas y desventajas del chip de Maldonado (TT06) frente a este trabajo.
-
-Las dos columnas no compiten: responden preguntas distintas. La de Maldonado es **cuánto cuesta el
-filtro solo, y si el silicio hace lo que dice**; su respuesta —dos tiles, milivatios, imagen exacta a
-cientos de miles de píxeles por segundo— es la única medición física de toda esta línea de trabajo. La de
-éste es **qué pasa cuando el filtro tiene que vivir en un sistema**: con cámara, con memoria y con una
-decisión aguas abajo. Y la respuesta que da el Capítulo 5 es que entonces **lo caro deja de ser el
-filtro y pasa a ser la memoria**, que es exactamente lo que el diseño de Maldonado había dejado fuera del
-chip.
-
 ### Filtro Canny 1-streaming
 
 #### Resumen

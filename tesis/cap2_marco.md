@@ -500,5 +500,5 @@ todo se juzga **bit a bit contra el modelo golden**, sin imágenes intermedias y
 
 ### Lo que sigue
 
-La comparación con el filtro Sobel de este trabajo —sus ventajas y desventajas, y lo que éste toma del
-de Maldonado— se presenta en la §4.3.1, una vez descrito ese filtro.
+Lo que los filtros de este trabajo toman del de Maldonado se presenta al cierre de la §4.3, una vez
+descritos esos filtros.
