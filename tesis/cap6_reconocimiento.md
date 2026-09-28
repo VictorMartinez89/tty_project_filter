@@ -486,6 +486,13 @@ haría una cámara mal encuadrada, **tres píxeles de corrimiento bastan para qu
 El marco verde de la pantalla —que pide a la persona centrar el dígito— es la versión manual de ese
 normalizador; la versión en silicio queda como trabajo futuro, con su costo ya acotado.
 
+![**Figura 6.19.** La brecha de la cámara, medida sobre las diez mil imágenes de prueba con la cadena de Canny-78.
+A la izquierda, el dígito desplazado: tal como lo vería una cámara mal encuadrada (rojo), la exactitud cae del 97 al
+63 % con tres píxeles de corrimiento y queda cerca del azar a los ocho; con un normalizador que recorte y centre el
+dígito como se hizo al construir MNIST (verde), se mantiene en el 97 %. A la derecha, el mismo experimento con el
+tamaño del trazo: a la mitad de escala acierta menos de la mitad. El circuito no cambia entre una curva y otra; cambia
+lo que se le muestra.](figuras/fig_brecha_camara.png)
+
 Por dígito, los más difíciles siguen siendo el **9, el 8 y el 7** (F1 de 0.956, 0.961 y 0.963), y las
 confusiones que quedan son las mismas familias de siempre: el trazo recto con diagonal del 4, el 7 y
 el 9, y las curvas cerradas del 8 y el 9. **Canny-78 reduce los errores, pero no los cambia de
@@ -565,7 +572,7 @@ predicción con la del modelo.
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
-![**Figura 6.19.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
+![**Figura 6.20.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
 ventana pasan uno a uno antes de que `done` presente un dígito. Es el nivel al que se hizo la
 comparación contra el modelo: no se compararon porcentajes, se compararon
@@ -588,7 +595,7 @@ incluye la decisión de rechazo, que es lógica de comparación y no de aritmét
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
 
-![**Figura 6.20.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
+![**Figura 6.21.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
 la escena del dígito 3. El panel A muestra los 19 ms de dos cuadros: el veredicto sale en el primero
 y no cambia en el segundo. El panel B captura el instante en que **el procesador sustituye el umbral
 por omisión del RTL, 110, por el 90 que escribe el firmware**, con el camino de datos todavía en
@@ -607,7 +614,7 @@ completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta re
 > **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
 > en silicio se comporta como el RTL verificado, errores incluidos.
 
-![**Figura 6.21.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
+![**Figura 6.22.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
 está cableado a la señal de configuración terminada; el azul parpadea con el latido del sistema. Los
 diez veredictos salen por el puerto serie del mismo conector que alimenta la tarjeta. A la derecha,
 el mismo montaje con el cableado del módulo de pantalla ya
