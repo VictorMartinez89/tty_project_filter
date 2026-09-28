@@ -620,12 +620,8 @@ los valores de reinicio del periférico (`6E` y `46`).](figuras/fig_4_soctrans_a
 dirección `0x18`, con el modo y los umbrales ya fijos, a la espera del flujo de
 clases.](figuras/fig_4_soctrans_gtkwave.jpg)
 
-#### Simulación en Verilog: la imagen
-
 ![**Figura 4.32.** Lo que produce el SoC simulado en Icarus Verilog a 160×120 cuando el programa elige
 el transitivo: arriba, las cinco imágenes de prueba; abajo, sus bordes.](figuras/fig_4_soctrans_rtl.png)
-
-#### En la tarjeta
 
 En la tarjeta corre la versión con la histéresis por software, la única con procesador que cabe: al
 99 % del dispositivo y con el reloj del sistema en 8,7 MHz (§4.9.3).
@@ -633,8 +629,6 @@ En la tarjeta corre la versión con la histéresis por software, la única con p
 ![**Figura 4.33.** El SoC con el Canny transitivo corriendo en la iCESugar sobre las cinco escenas
 —`monarch`, la flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
 tarjeta.](figuras/fig_4_soctrans_placa.jpg)
-
-#### En silicio
 
 En sky130 ocupa **3,42 mm²** y **72 337 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
 (§5.2): el más grande de los seis bloques de filtrado, y casi todo por el cuadro en biestables. Su plano
