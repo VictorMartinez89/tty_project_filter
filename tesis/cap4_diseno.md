@@ -137,12 +137,8 @@ gradiente y un umbral. La notación es la de la §4.4.
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 El RTL del Sobel son dos ficheros: `sobel_top.v`, con el gradiente y el umbral, y `linebuf3x3.v`, el
 generador de ventana que comparten los tres filtros. Los dos se reproducen completos en el Anexo G.1.
-
-#### Simulación en Python
 
 El modelo de referencia calcula el gradiente de cada imagen de prueba y sirve de criterio para todo lo
 que sigue: el RTL se da por correcto sólo si lo reproduce bit a bit (§3.2).
@@ -150,8 +146,6 @@ que sigue: el RTL se da por correcto sólo si lo reproduce bit a bit (§3.2).
 ![**Figura 4.1.** El modelo de referencia en Python sobre las cinco imágenes de prueba —`flower`,
 `monarch`, `butterfly`, la mano y la tarjeta «HOLA»—: la imagen en gris, las componentes |Gx| y |Gy|,
 y la magnitud |Gx|+|Gy| saturada a 255, antes del umbral.](figuras/fig_4_sobel_python.jpg)
-
-#### Simulación en Verilog: las señales
 
 El mismo filtro, descrito en Verilog, se simula con Icarus Verilog y se inspecciona con GTKWave sobre
 una imagen de prueba de 16×12 píxeles, pequeña a propósito para que el cauce completo quepa en una
@@ -162,8 +156,6 @@ píxel (`in_valid`, `in_pix`) y recoge la salida (`out_valid`, `out_pix`) mientr
 Abajo, dentro de `linebuf3x3`, las dos memorias de línea (`q_a`, `q_b`) y el primer registro de la
 ventana, `w00`, que se llena antes de que `out_valid` suba.](figuras/fig_4_sobel_gtkwave.jpg)
 
-#### Simulación en Verilog: la imagen
-
 Las señales dicen cómo funciona el circuito; la imagen dice qué produce. El RTL se simula sobre las
 mismas imágenes que el modelo y su salida se compara píxel a píxel con la de éste (§4.8): primero el
 núcleo solo, y después la cadena completa, con una cámara OV7670 emulada en el banco de pruebas.
@@ -171,8 +163,6 @@ núcleo solo, y después la cadena completa, con una cámara OV7670 emulada en e
 ![**Figura 4.3.** El Sobel simulado en Verilog sobre las cinco imágenes a 60×80: la entrada, el modelo de
 referencia, el núcleo RTL —idéntico al modelo píxel a píxel— y la cadena completa con la cámara OV7670
 emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](figuras/fig_4_sobel_rtl.png)
-
-#### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
 pantalla TFT, sin intervención de ningún computador. La Figura 4.49 reúne las seis escenas.
@@ -289,8 +279,6 @@ salto. Su modelo exacto, el que el RTL tiene que igualar, es el de la Figura 4.1
 suavizado gaussiano de 3×3, la magnitud del gradiente, la supresión de no-máximos, el doble umbral y la
 histéresis.](figuras/fig_4_canny_python.png)
 
-#### Simulación en Verilog: las señales
-
 La misma imagen de prueba de 16×12 que el Sobel, ahora a través de las tres etapas de ventana.
 
 ![**Figura 4.12.** El Canny de un salto a 16×12 en GTKWave. Arriba, la entrada y la salida del banco
@@ -300,8 +288,6 @@ del gradiente (`gxp`, `gxn`, `gyp`, `gyn`), la magnitud (`mag`), la clase de cad
 últimas señales, `vg`, `vs` y `vc`, son los `valid` de las tres memorias de línea, cada uno detrás del
 anterior.](figuras/fig_4_canny_gtkwave.jpg)
 
-#### Simulación en Verilog: la imagen
-
 Como con el Sobel, el RTL se compara píxel a píxel con el modelo (§4.8): primero el núcleo solo, y
 después la cadena completa con la cámara emulada.
 
@@ -309,8 +295,6 @@ después la cadena completa con la cámara emulada.
 entrada, el modelo de referencia, el núcleo RTL —idéntico al modelo píxel a píxel— y la cadena completa
 con la cámara OV7670 emulada. A esta resolución y con los umbrales del banco, las zonas con textura
 quedan casi enteras marcadas como borde.](figuras/fig_4_canny_rtl.png)
-
-#### En la tarjeta
 
 Grabado en la iCE40UP5K, el filtro corre en vivo entre la cámara y la pantalla, igual que el Sobel.
 No hay computador de por medio: la cámara entra por trece pines de la iCE40 y la pantalla sale por
@@ -383,8 +367,6 @@ muestra en un solo paso:
 > estado de barrido. **Un lazo cuyo número de vueltas no se conoce al sintetizar es, en hardware, lo
 > más caro que puede escribirse.**
 
-#### El código
-
 El motor son dos ficheros: `trans_engine_top.v`, que lo envuelve, y `hysteresis_frame_bram_sync.sv`, la
 máquina de estados que borra el cuadro, lo carga, lo barre hasta el punto fijo y lo lee. Los dos se
 reproducen en el Anexo G.3.
@@ -399,8 +381,6 @@ es lo que el transitivo recupera y el de un salto pierde.
 candidatos fuertes y débiles tras la supresión de no-máximos, la histéresis completa, la de un salto y
 su diferencia.](figuras/fig_4_trans_python.png)
 
-#### Simulación en Verilog: las señales
-
 Sobre la misma imagen de 16×12, el motor ya no procesa un flujo: carga el cuadro, lo barre y lo lee.
 
 ![**Figura 4.17.** El motor transitivo a 16×12 en GTKWave, en el instante en que termina la carga:
@@ -412,15 +392,11 @@ memoria (`mem_ra`, `a1`, `a2`) empiezan a recorrer el cuadro.](figuras/fig_4_tra
 cambios y uno sin ellos. Ese último es el punto fijo: el motor pasa a la lectura (estado 4) y salen
 `eng_out_valid` y los bordes.](figuras/fig_4_trans_motor.png)
 
-#### Simulación en Verilog: la imagen
-
 Como los otros dos, el RTL se compara píxel a píxel con el modelo (§4.8).
 
 ![**Figura 4.19.** El Canny transitivo simulado en Verilog sobre las cinco imágenes a 60×80: la
 entrada, el modelo de referencia, el núcleo RTL —idéntico al modelo píxel a píxel— y la cadena completa
 con la cámara OV7670 emulada.](figuras/fig_4_trans_rtl.png)
-
-#### En la tarjeta
 
 Grabado en la iCE40UP5K, con el cuadro de clases en la memoria SPRAM, corre en vivo como los otros dos.
 
@@ -466,12 +442,8 @@ ninguna RAM escribible.
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 `soc_sobel_top.v` instancia el procesador, la ROM, el periférico y el Sobel; `peripheral_filter.v` es
 el periférico. Se reproducen en el Anexo G.4; el núcleo `femtorv32_quark.v` es de Levy y se cita.
-
-#### Simulación en Python
 
 El SoC **no cambia la aritmética**: su modelo en Python es el del Sobel (Figura 4.1) con el umbral que
 escribe el programa, 90. Lo que el SoC agrega —que ese umbral lo fije el procesador y no un cable— sólo
@@ -484,21 +456,15 @@ programa. El contador de programa del FemtoRV32, `PC`, está detenido en `0x18`,
 el lazo final; y mientras tanto el Sobel sigue sacando píxeles de borde (`FF`) y de fondo (`00`) por su
 cuenta.](figuras/fig_4_socsobel_gtkwave.jpg)
 
-#### Simulación en Verilog: la imagen
-
 ![**Figura 4.23.** Lo que produce el SoC simulado en Icarus Verilog a 160×120, con el programa que
 elige el Sobel y fija el umbral en 90: arriba, las cinco imágenes de prueba; abajo, sus
 bordes.](figuras/fig_4_socsobel_rtl.png)
-
-#### En la tarjeta
 
 ![**Figura 4.24.** De los pines a las cajas: el SoC Femto con el Sobel en la iCESugar. Es `cam_femto_display.v`: el FemtoRV32 con su RAM de 4 KB y el periférico `0x0045` viven en el dominio del sistema; el umbral que escribe el programa, 90, cruza al dominio de la cámara por dos biestables —`thi_p`— y el Sobel lo usa en lugar de un valor cableado. El diodo rojo se enciende cuando el procesador ha escrito el periférico. Cada flecha lleva el pin de la iCE40UP5K según el `.pcf` que funcionó en la tarjeta —el del Anexo C—; el recuadro azul es el dominio del reloj del sistema, el naranja el del reloj de píxel de la cámara, y el *framebuffer* es el cruce entre los dos.](figuras/fig_4_socsobel_pines.png)
 
 ![**Figura 4.25.** El SoC con el Sobel corriendo en la iCESugar sobre las cinco escenas —`monarch`, la
 flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
 tarjeta.](figuras/fig_4_socsobel_placa.jpg)
-
-#### En silicio
 
 En sky130 ocupa **0,37 mm²** y **12 043 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
 (§5.2). Frente al Sobel solo, el procesador y su periférico añaden **6 220 celdas**: es el precio de que
@@ -531,12 +497,8 @@ deja de estar cableado y pasa a manos del programa.
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 `soc_canny1_top.v` reúne el procesador, la ROM, el periférico y el Canny; se reproduce en el Anexo G.5.
 El periférico es idéntico al de la G.4.
-
-#### Simulación en Python
 
 Como en el SoC con el Sobel, el procesador no cambia la aritmética: el modelo es el del Canny de un
 salto (§4.3.2), con los dos umbrales que escribe el programa, 90 y 40.
@@ -597,8 +559,6 @@ versión el motor recibe el flujo de clases desde fuera del chip.
  7.  STAT.eng_busy ≔ ¬done                    ▷ el procesador puede sondearlo
 ──────────────────────────────────────────────────────────────────────
 ```
-
-#### El código
 
 `soc_trans_top.v` reúne el procesador, la ROM, el periférico y el motor; se reproduce en el Anexo G.6.
 El motor es el de la G.3 y el periférico el de la G.4.
@@ -669,32 +629,22 @@ controlador de pantalla y pantalla, en un chip y con un reloj.](figuras/fig_4_so
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 `sobel_completo.v` conecta los bloques y declara el framebuffer; el front-end son
 `cam_frontend_top.v`, `ov7670_sccb.v`, `ov7670_capture.v` y `rgb565_to_gray.v`, y el controlador de
 pantalla, `lcd_ili9341_top.v`. Se reproducen en el Anexo G.7; el Sobel es el de la G.1.
 
-#### Simulación en Python
-
 La cadena no agrega aritmética al Sobel salvo la conversión a gris: su modelo es el de la Figura 4.1.
-
-#### Simulación en Verilog: las señales y la imagen
 
 Cada bloque se simuló por separado antes de ensamblarlo: el Sobel en la Figura 4.2 y el front-end y
 el controlador de pantalla en sus propios bancos (§4.2). La cadena con la cámara emulada en el banco de
 pruebas es la última columna de la Figura 4.3, que concuerda con el modelo salvo un desfase fijo en el
 borde del cuadro.
 
-#### En la tarjeta
-
 En la FPGA esta misma cadena —cámara, Sobel, memoria y pantalla— es la que muestran la Figura 4.5 y
 la Figura 4.35.
 
 ![**Figura 4.35.** Otras dos escenas de la cadena del Sobel en la iCESugar: una mariposa y la sílaba
 «LA» de la tarjeta, fotografiadas directamente de la pantalla.](figuras/fig_4_sobelcomp_placa.jpg)
-
-#### En silicio
 
 En sky130 ocupa **2,45 mm²** y **36 730 celdas** de síntesis, con DRC, LVS y XOR en cero según su ficha
 —los informes no se conservaron (§5.3, nota ᵃ)—: unas
@@ -727,8 +677,6 @@ Sobel.](figuras/fig_4_cannycomp_cauce.png)
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 `canny1_completo.v` conecta los mismos bloques de interfaz que la cadena del Sobel alrededor del Canny;
 se reproduce en el Anexo G.8. El Canny es el de la G.2, y el front-end y el controlador de pantalla, los
 de la G.7.
@@ -741,22 +689,14 @@ cámara con dos biestables—, así que no hace falta un cruce de dominios. La c
 *framebuffer* de un bit por píxel —4 800 biestables en lugar de 38 400— que el controlador de la pantalla
 recorre a 240×320.](figuras/fig_4_cannycomp_pines.png)
 
-#### Simulación en Python
-
 Su modelo es el del Canny de un salto (§4.3.2), con los umbrales fijos en 90 y 40.
-
-#### Simulación en Verilog: las señales y la imagen
 
 Como en la cadena del Sobel, los bloques se simularon por separado: el Canny en la Figura 4.12, con sus
 tres memorias de línea; la cadena con la cámara emulada es la última columna de la Figura 4.13.
 
-#### En la tarjeta
-
 ![**Figura 4.38.** La cadena del Canny de un salto en la iCESugar, en fotogramas de los videos de la
 tarjeta: dos escenas en la pantalla y el montaje entero, con la placa, el cableado y la
 pantalla.](figuras/fig_4_cannycomp_placa.jpg)
-
-#### En silicio
 
 En sky130 ocupa **2,90 mm²** —1 687 × 1 686 µm— y **42 581 celdas** de síntesis, con DRC, LVS y XOR en
 cero y sin violaciones de setup ni de hold a 20 ns, según su ficha; los informes no se conservaron (§5.3,
@@ -803,30 +743,20 @@ sistema; el framebuffer, de unos 38 400 biestables, es el cruce entre los dos.](
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 Todo el sistema está en un solo fichero, `vision_top.v`: la configuración de la cámara, la captura, el
 Sobel, el framebuffer y el controlador de pantalla. Se reproduce en el Anexo G.9.
 
-#### Simulación en Python
-
 Su modelo es el del Sobel (Figura 4.1) aplicado al byte de luminancia, con el umbral en 40.
-
-#### Simulación en Verilog
 
 Este top no tiene un banco de pruebas propio: su punto de partida es un diseño verificado en la
 tarjeta, y el paso a silicio se comprobó con la verificación física del flujo (§5.2). Las señales del
 Sobel y la cadena con la cámara emulada son las de las Figuras 4.2 y 4.3.
-
-#### En la tarjeta
 
 Su versión para la FPGA, `cam_sobel_display.v`, corrió en la iCESugar con la cámara y la pantalla.
 
 ![**Figura 4.40.** El sistema de visión con el Sobel en vivo en la iCESugar —cámara OV7670, Sobel y
 pantalla— sobre seis objetos: la flor, las mariposas `monarch` y `butterfly`, la mano y las dos mitades
 de la tarjeta, «HO» y «LA».](figuras/fig_4_vision_placa.jpg)
-
-#### En silicio
 
 En sky130 ocupa **1,75 mm²** y **35 653 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero según
 su ficha (§5.2). Su plano en KLayout es la Figura 5.3.
@@ -859,29 +789,19 @@ memorias de línea; `vision_canny_top` con el Canny, tres. Todo lo demás es igu
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 Como el de la §4.3.9, todo el sistema está en un fichero, `vision_canny_top.v`, que se reproduce en el
 Anexo G.10.
 
-#### Simulación en Python
-
 Su modelo es el del Canny de un salto (§4.3.2) sobre el byte de luminancia, con umbrales de 70 y 30.
-
-#### Simulación en Verilog
 
 Tampoco tiene banco propio: parte de un diseño verificado en la tarjeta. Las señales del Canny y la
 cadena con la cámara emulada son las de las Figuras 4.6 y 4.7.
-
-#### En la tarjeta
 
 ![**Figura 4.42.** El sistema de visión con el Canny de un salto en vivo en la iCESugar, sobre los
 mismos seis objetos que el del Sobel.](figuras/fig_4_visioncanny_vivo.jpg)
 
 ![**Figura 4.43.** El Canny de un salto con la cámara y la pantalla en la iCESugar, el 22 de julio de
 2026, en fotogramas de los videos de la tarjeta.](figuras/fig_4_visioncanny_placa.jpg)
-
-#### En silicio
 
 En sky130 ocupa **2,04 mm²** y **41 925 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero según
 su ficha (§5.2). Frente al sistema con el Sobel, el Canny cuesta **0,29 mm²** más y eleva la potencia
@@ -920,8 +840,6 @@ clases, el motor lo barre en bucle hasta el punto fijo y llena el de bordes, y l
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 `trans_completo.v` conecta la cadena y declara los dos framebuffers; `grad_class_top.v` calcula la clase
 de cada píxel. Se reproducen en el Anexo G.11; el motor es el de la G.3 y los bloques de interfaz, los de
 la G.7.
@@ -933,22 +851,14 @@ el motor lo barre hasta que nada cambia y deja el mapa de bordes en `edgefb`, de
 la pantalla. Los dos cuadros son los dos *framebuffers* de la cadena, y el motor corre a su propio ritmo,
 desacoplado de la cámara.](figuras/fig_4_transcomp_pines.png)
 
-#### Simulación en Python
-
 Su modelo es el del transitivo (§4.3.3), con umbrales de 110 y 70.
-
-#### Simulación en Verilog
 
 La cadena se ensambló con bloques simulados por separado: el motor en las Figuras 4.10 y 4.11, que lo
 muestran cargando, barriendo y llegando al punto fijo, y la cadena con la cámara emulada en la última
 columna de la Figura 4.19.
 
-#### En la tarjeta
-
 ![**Figura 4.46.** El Canny transitivo en vivo en la iCESugar sobre los seis objetos, con umbrales de
 110 y 70.](figuras/fig_4_visiontrans_placa.jpg)
-
-#### En silicio
 
 En sky130 es el circuito más grande del trabajo: **9,61 mm²** y **137 092 celdas** de síntesis, con DRC,
 LVS y XOR en cero según su ficha —sólo se conservaron sus fuentes—. Y es uno de los dos que **no cierran
@@ -985,26 +895,16 @@ y esta versión lo cumple.
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 `tt_um_sobel_vic.v` es el envoltorio de la lanzadera; `sobel_top.v` y `linebuf3x3.v` son los de la
 G.1 con el reinicio explícito. Los tres se reproducen en el Anexo G.12.
 
-#### Simulación en Python
-
 Su modelo es el del Sobel (Figura 4.1) con el umbral en 90.
-
-#### Simulación en Verilog
 
 El repositorio de Tiny Tapeout trae su propio banco de pruebas en cocotb: le entrega un escalón de
 brillo y exige que salgan píxeles válidos, que alguno sea borde y que no lo sean todos —es decir, que el
 umbral discrimine—. Lo corre GitHub en cada cambio, junto con la comprobación previa al envío.
 
-#### En la tarjeta
-
 No hay tarjeta: el chip no se ha fabricado. En la FPGA, el mismo Sobel es el de la Figura 4.5.
-
-#### En silicio
 
 En los 3×2 mosaicos de sky130 ocupa **0,115 mm²** con un **56 %** de utilización y **3 463 celdas** de
 síntesis, consume unos **4,3 mW** y cierra el temporizado en las nueve esquinas de proceso. La
@@ -1032,25 +932,15 @@ de línea usan el generador de ventana con reinicio explícito.
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 `tt_um_canny1_vic.v` y `canny1_top.v`, este último el de la G.2 con el reinicio explícito, se
 reproducen en el Anexo G.13; el generador de ventana es el de la G.12.
 
-#### Simulación en Python
-
 Su modelo es el del Canny de un salto (§4.3.2) con umbrales de 90 y 40.
-
-#### Simulación en Verilog
 
 Como el del Sobel, su banco de cocotb le entrega un flujo de píxeles y exige que salgan píxeles
 válidos; GitHub lo corre en cada cambio.
 
-#### En la tarjeta
-
 Tampoco se ha fabricado. En la FPGA, el mismo Canny es el de la Figura 4.15.
-
-#### En silicio
 
 En los 6×2 mosaicos ocupa **0,233 mm²** con un **61 %** de utilización y **7 607 celdas** de síntesis,
 consume unos **9,0 mW** y cierra el temporizado en las nueve esquinas. La comprobación previa pasa entera
