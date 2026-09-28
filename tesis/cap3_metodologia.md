@@ -124,8 +124,7 @@ circular reintroduce por un borde lo que sale por el otro, creando estructura do
 comparación habría mostrado **2,4 puntos porcentuales inexistentes**.
 
 > **La regla operativa que se adoptó:** antes de leer un número nuevo, hacer que el instrumento
-> reproduzca un número ya publicado. Si no lo reproduce, el instrumento está roto y todo lo que
-> diga a continuación es ficción — por convincente que parezca.
+> reproduzca un número ya publicado.
 
 Esta regla tiene un corolario que este trabajo aplica también a las herramientas de terceros: **un
 número que una herramienta llama «camino crítico» no es el camino crítico hasta que se mira qué
