@@ -271,33 +271,21 @@ exige el silicio (§5.1).
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 `vision_sobel_mnist.v` contiene la configuración de la cámara, la ventana, el *framebuffer* de 28×28 y
 el controlador de pantalla; `glifo.v` dibuja el dígito, y `mnist_top.v` une el extractor y el
 clasificador de la G.14. Se reproducen en el Anexo G.16.
 
-#### Simulación en Python
-
 Su modelo es la fila **Sobel** de la §6.2: **91.04 %**.
-
-#### Simulación en Verilog: las señales
 
 ![**Figura 6.7.** La cadena sin procesador en GTKWave: el umbral es el 60 cableado (`3C`), y el
 clasificador reconoce el 3 de la escena. Es el mismo extractor y el mismo clasificador que dieron diez
 mil de diez mil contra el modelo en la §6.6.](figuras/fig_6_visionsobel_gtkwave.png)
 
-#### Simulación en Verilog: la imagen
-
 ![**Figura 6.8.** La cadena del Sobel sin procesador frente a las once escenas: **ocho de once**, como
 con el procesador. En estas escenas, que el umbral sea 60 o 90 no cambia el
 recuento.](figuras/fig_6_cadena_sobel.png)
 
-#### En la tarjeta
-
 Su versión para la FPGA, `mnist_cam_display.v`, corrió en la iCESugar con la cámara y la pantalla.
-
-#### En silicio
 
 En sky130 ocupa **2,032 mm²** y **30 745 celdas** tras la síntesis —38 643 emplazadas—, con DRC, LVS y
 XOR en cero. Es el mayor de los reconocedores por el *framebuffer* de 28×28 y el controlador de pantalla.
@@ -323,8 +311,6 @@ probado en la tarjeta.
 ──────────────────────────────────────────────────────────────────────
 ```
 
-#### El código
-
 `vision_canny_mnist.v` es el de la G.16 con esas tres líneas cambiadas; `mnist_top_canny.v` une el
 extractor de la G.15 con su clasificador. Se reproducen en el Anexo G.17.
 
@@ -337,18 +323,12 @@ Su modelo es la fila **Canny 1-salto**: **92.03 %**.
 ![**Figura 6.9.** La cadena del Canny sin procesador en GTKWave, con los umbrales cableados, 110 y 40
 (`6E` y `28`): el extractor cuenta 156 bordes y el clasificador responde 5.](figuras/fig_6_visioncanny_gtkwave.png)
 
-#### Simulación en Verilog: la imagen
-
 ![**Figura 6.10.** La cadena del Canny sin procesador frente a las once escenas: **cuatro de once**, los
 mismos cuatro aciertos que con el procesador. La única diferencia es el 8, que aquí toma por 9 en lugar
 de callar.](figuras/fig_6_cadena_canny.png)
 
-#### En la tarjeta
-
 Este circuito no se ensayó tal cual en la tarjeta: el ensayo con la cámara que se informa en la §6.7 es
 el de su pariente con procesador, el Pan Canny de la §6.3.2.
-
-#### En silicio
 
 En sky130 ocupa **2,092 mm²** y **31 620 celdas** tras la síntesis —39 794 emplazadas—, con DRC, LVS y
 XOR en cero: un **2,8 %** más que el del Sobel, la cifra que la §7.2 pone al final de su tabla. Su plano
@@ -405,14 +385,10 @@ mitad de accesos.
 > ni siquiera dónde está, sino cuántas veces hay que ir a buscarla y si se trae algo útil en cada
 > viaje.**
 
-#### El código
-
 `mnist_top78.v` une el extractor de dieciséis zonas con memoria, `mnist_feat16_mem.v`, y el clasificador
 de dos clases por pasada, `mnist_clf78_x2.v`, y hace el trasvase entre ambos. Se reproducen en el Anexo
 G.18; el generador de ventana es el de la G.12. La misma cadena, sin cambiar un fichero, es la del
 diseño de la tarjeta con el puerto serie, la del diseño con cámara y pantalla, y la que va a silicio.
-
-#### Simulación en Python
 
 **El techo del descriptor de cuarenta rasgos.** Un barrido de capacidad mostró que el nivel 1 de la
 pirámide no supera el **94.86 % ni siquiera con pesos en coma flotante**, mientras que el nivel 2
@@ -429,8 +405,6 @@ que cabe. Se seleccionaron **los 78 rasgos más informativos** de los 168, y el 
 omisión, la exactitud sube de 92.46 % a 95.38 % —95.56 % con los sesgos recalibrados—: con el mismo
 número de pesos y la misma memoria, el mero hecho de escoger qué se mide vale casi tres puntos.
 
-#### Simulación en Verilog: las señales
-
 **Verificación.** La cadena completa —extractor de dieciséis zonas, trasvase de contadores y
 clasificador— se verificó en `iverilog` contra el modelo en flujo continuo de imágenes encadenadas y
 con tiempos muertos entre píxeles: **10 000 de 10 000** veredictos idénticos, dígito y clase de
@@ -446,8 +420,6 @@ recorre las 128 posiciones de la memoria de rasgos en unos 1,3 µs, vaciando cad
 —`n_bordes` vuelve a 0—. Sólo entonces el clasificador sale de reposo (`estado` = 1) y empieza sus
 multiplicaciones-acumulaciones. Mientras tanto la imagen siguiente ya está entrando por
 `in_pix`.](figuras/fig_6_canny78_gtkwave.png)
-
-#### Simulación en Verilog: la imagen
 
 ![**Figura 6.12.** La cadena de Canny-78 en el simulador, sobre muchos 0, 3 y 7 del conjunto de
 prueba. En verde, las imágenes que acierta; en gris, las que calla (NADA) porque el margen entre los dos
