@@ -141,6 +141,8 @@ entrar en la iCE40UP5K y no entrar.
 `soc_ctrl.v`, el extractor `mnist_feat.v` y el clasificador `mnist_clf.v`. Se reproducen en el Anexo
 G.14; el periférico es el de la G.4 y el generador de ventana el de la G.12.
 
+![**Figura 6.2.** De los pines a las cajas: `pan_sobel`. Todo el chip corre al reloj de píxel de la cámara, `pclk`. La ventana `cam_win28` reduce el centro del cuadro a 28×28; dentro de `soc_mnist_top`, el SoC reducido `soc_ctrl` —el FemtoRV32 con su ROM y el periférico `0x0045`— fija el umbral en 90, el extractor cuenta los bordes en 32 contadores y el clasificador decide. Al terminar, `done` limpia los contadores para el cuadro siguiente. Los puertos son pads del chip, y dos de ellos dejan ver el umbral que usó y si el procesador llegó a escribirlo.](figuras/fig_6_pansobel_pines.png)
+
 #### Simulación en Python
 
 Su modelo es la fila **SoC + Sobel** de la tabla de la §6.2: **91.03 %** sobre las diez mil imágenes de
@@ -149,14 +151,14 @@ y no toca la aritmética.
 
 #### Simulación en Verilog: las señales
 
-![**Figura 6.2.** Pan Sobel en GTKWave, con la cámara emulada mostrando un 3. `cpu_escribio` está en
+![**Figura 6.3.** Pan Sobel en GTKWave, con la cámara emulada mostrando un 3. `cpu_escribio` está en
 alto y `thr_usado` vale `5A`, el 90 que escribió el programa; el extractor cuenta **354** píxeles de
 borde (`nb_latch`) y, al subir `done`, el clasificador entrega `digito` = 3 con `valido` en
 alto.](figuras/fig_6_pansobel_gtkwave.png)
 
 #### Simulación en Verilog: la imagen
 
-![**Figura 6.3.** Pan Sobel frente a once escenas de cámara simuladas —los diez dígitos y una escena
+![**Figura 6.4.** Pan Sobel frente a once escenas de cámara simuladas —los diez dígitos y una escena
 vacía—. Arriba, lo que vio en su ventana de 28×28; abajo, qué respondió en cada escena: **ocho de
 once**. Los fallos son el 2, que toma por 6, y el 6 y el 9, en los que prefiere
 callar.](figuras/fig_6_cadena_socsobel.png)
@@ -200,6 +202,8 @@ los promueve casi todos: la exactitud cae de 92.46 a 89.93 %. El umbral bajo sal
 al de la G.14 el doble umbral y la histéresis. Se reproducen en el Anexo G.15. El clasificador es el de
 la G.14 con otros pesos y otros límites de rechazo.
 
+![**Figura 6.5.** De los pines a las cajas: `pan_canny`. Es la Figura 6.2 con tres cambios: el programa escribe `0x5A20` —los dos umbrales, 90 y 32—, el extractor añade el doble umbral y la histéresis, y el clasificador lleva los pesos y los límites de rechazo del Canny.](figuras/fig_6_pancanny_pines.png)
+
 #### Simulación en Python
 
 Su modelo es la fila **SoC + Canny 1-salto**: **92.46 %**, la mejor de los cinco front-ends de cuarenta
@@ -207,13 +211,13 @@ rasgos, y la de menos falsos positivos, 73.
 
 #### Simulación en Verilog: las señales
 
-![**Figura 6.4.** Pan Canny en GTKWave. Los umbrales que escribió el procesador, `thr_hi` = `5A` y
+![**Figura 6.6.** Pan Canny en GTKWave. Los umbrales que escribió el procesador, `thr_hi` = `5A` y
 `thr_lo` = `20` —90 y 32—, gobiernan el extractor; en este cuadro el clasificador responde
 5.](figuras/fig_6_pancanny_gtkwave.png)
 
 #### Simulación en Verilog: la imagen
 
-![**Figura 6.5.** Pan Canny frente a las mismas once escenas: **cuatro de once**. Donde falla, sobre
+![**Figura 6.7.** Pan Canny frente a las mismas once escenas: **cuatro de once**. Donde falla, sobre
 todo, calla: responde NADA ante el 0, el 1, el 3, el 6, el 8 y el 9, y toma el 2 por 6. Con escenas de cámara el Canny se abstiene
 más que el Sobel, que es la otra cara de su precisión al responder.](figuras/fig_6_cadena_soccanny.png)
 
@@ -226,7 +230,7 @@ simulación.
 En la FPGA, el Pan llevó además la pantalla, para ver lo que el circuito ve; en silicio se quitó,
 porque la salida son los cinco bits del veredicto.
 
-![**Figura 6.6.** Uno de los dos Pan en la iCESugar —la foto no registra si
+![**Figura 6.8.** Uno de los dos Pan en la iCESugar —la foto no registra si
 el filtro era el Sobel o el Canny—. Arriba, la ventana de 28×28 ampliada ocho veces dentro del marco
 verde; abajo, la respuesta en siete segmentos: un 7. El dígito quedó cortado contra el borde de la
 ventana y un segundo trazo entra por la derecha: es la escena mal encuadrada que mide la §6.3.5, donde
@@ -275,13 +279,15 @@ exige el silicio (§5.1).
 el controlador de pantalla; `glifo.v` dibuja el dígito, y `mnist_top.v` une el extractor y el
 clasificador de la G.14. Se reproducen en el Anexo G.16.
 
+![**Figura 6.9.** De los pines a las cajas: `vision_sobel_mnist`. En el dominio de la cámara, la captura de la luma, la ventana de 28×28 y el clasificador, con el umbral cableado en 60; en el del sistema, la configuración de la cámara y el controlador de la pantalla, que dibuja la ventana ampliada, el marco verde y el dígito. Los unen dos cruces: el *framebuffer* de 784 bytes y los dos biestables por los que pasa el dígito.](figuras/fig_6_visionsobel_pines.png)
+
 Su modelo es la fila **Sobel** de la §6.2: **91.04 %**.
 
-![**Figura 6.7.** La cadena sin procesador en GTKWave: el umbral es el 60 cableado (`3C`), y el
+![**Figura 6.10.** La cadena sin procesador en GTKWave: el umbral es el 60 cableado (`3C`), y el
 clasificador reconoce el 3 de la escena. Es el mismo extractor y el mismo clasificador que dieron diez
 mil de diez mil contra el modelo en la §6.6.](figuras/fig_6_visionsobel_gtkwave.png)
 
-![**Figura 6.8.** La cadena del Sobel sin procesador frente a las once escenas: **ocho de once**, como
+![**Figura 6.11.** La cadena del Sobel sin procesador frente a las once escenas: **ocho de once**, como
 con el procesador. En estas escenas, que el umbral sea 60 o 90 no cambia el
 recuento.](figuras/fig_6_cadena_sobel.png)
 
@@ -314,16 +320,18 @@ probado en la tarjeta.
 `vision_canny_mnist.v` es el de la G.16 con esas tres líneas cambiadas; `mnist_top_canny.v` une el
 extractor de la G.15 con su clasificador. Se reproducen en el Anexo G.17.
 
+![**Figura 6.12.** De los pines a las cajas: `vision_canny_mnist`. Es la Figura 6.9 con `mnist_top_canny` en lugar de `mnist_top` y los umbrales cableados en 110 y 40.](figuras/fig_6_visioncanny_pines.png)
+
 #### Simulación en Python
 
 Su modelo es la fila **Canny 1-salto**: **92.03 %**.
 
 #### Simulación en Verilog: las señales
 
-![**Figura 6.9.** La cadena del Canny sin procesador en GTKWave, con los umbrales cableados, 110 y 40
+![**Figura 6.13.** La cadena del Canny sin procesador en GTKWave, con los umbrales cableados, 110 y 40
 (`6E` y `28`): el extractor cuenta 156 bordes y el clasificador responde 5.](figuras/fig_6_visioncanny_gtkwave.png)
 
-![**Figura 6.10.** La cadena del Canny sin procesador frente a las once escenas: **cuatro de once**, los
+![**Figura 6.14.** La cadena del Canny sin procesador frente a las once escenas: **cuatro de once**, los
 mismos cuatro aciertos que con el procesador. La única diferencia es el 8, que aquí toma por 9 en lugar
 de callar.](figuras/fig_6_cadena_canny.png)
 
@@ -390,6 +398,8 @@ de dos clases por pasada, `mnist_clf78_x2.v`, y hace el trasvase entre ambos. Se
 G.18; el generador de ventana es el de la G.12. La misma cadena, sin cambiar un fichero, es la del
 diseño de la tarjeta con el puerto serie, la del diseño con cámara y pantalla, y la que va a silicio.
 
+![**Figura 6.15.** De los pines a las cajas: `mnist_top78`, Canny-78. El extractor cuenta los bordes en 128 contadores —16 zonas por 8 octantes— guardados en una memoria síncrona; al terminar el cuadro, el trasvase los copia en 130 ciclos a la memoria del clasificador, vaciándolos al leerlos. El clasificador deriva los niveles 1 y 0 de la pirámide, recorre los 78 rasgos elegidos calculando dos clases por pasada y aplica la regla de rechazo: 777 ciclos en total, siete menos de los 784 que dura un cuadro.](figuras/fig_6_canny78_pines.png)
+
 **El techo del descriptor de cuarenta rasgos.** Un barrido de capacidad mostró que el nivel 1 de la
 pirámide no supera el **94.86 % ni siquiera con pesos en coma flotante**, mientras que el nivel 2
 —dieciséis zonas, 168 rasgos— alcanza el 97.56 % con pesos de 4 bits. Con 168 rasgos de 3 bits se
@@ -414,14 +424,14 @@ que compartían otros tres módulos del trabajo. Emplazado y ruteado con `nextpn
 **2 606 celdas lógicas (49 %)** y nueve bloques de BRAM, y cierra a **16.45 MHz** frente a los 12 MHz
 que exige la tarjeta. Cabe dentro de los 784 ciclos de un cuadro con cinco de margen.
 
-![**Figura 6.11.** Canny-78 en GTKWave, en el paso que el diseño de cuarenta rasgos no tiene: el
+![**Figura 6.16.** Canny-78 en GTKWave, en el paso que el diseño de cuarenta rasgos no tiene: el
 **trasvase**. Al subir `frame_done` el extractor ha contado 238 bordes; `trasvase` pasa a 1 y `cuenta`
 recorre las 128 posiciones de la memoria de rasgos en unos 1,3 µs, vaciando cada contador al leerlo
 —`n_bordes` vuelve a 0—. Sólo entonces el clasificador sale de reposo (`estado` = 1) y empieza sus
 multiplicaciones-acumulaciones. Mientras tanto la imagen siguiente ya está entrando por
 `in_pix`.](figuras/fig_6_canny78_gtkwave.png)
 
-![**Figura 6.12.** La cadena de Canny-78 en el simulador, sobre muchos 0, 3 y 7 del conjunto de
+![**Figura 6.17.** La cadena de Canny-78 en el simulador, sobre muchos 0, 3 y 7 del conjunto de
 prueba. En verde, las imágenes que acierta; en gris, las que calla (NADA) porque el margen entre los dos
 mejores puntajes, `m`, no llega al umbral de 70; en rojo, las que falla. A la derecha, el recuento de
 cada dígito sobre sus mil imágenes: de los 887 treses a los que responde, no falla
@@ -440,7 +450,7 @@ el sintetizador**, simulado con sus celdas de la iCE40 sobre imágenes elegidas 
 del sintetizador sobre los sesgos del clasificador hubiera sido cierto —no lo era—; y el emplazamiento
 final, **2 937 celdas lógicas (55 %) a 17.55 MHz**.
 
-![**Figura 6.13.** El diseño de la tarjeta simulado con su puerto serie bit a bit antes de grabarlo.
+![**Figura 6.18.** El diseño de la tarjeta simulado con su puerto serie bit a bit antes de grabarlo.
 El panel A muestra dos lotes de cuatro imágenes que entran por `uart_rx_pin`, la pausa que realinea la
 cadena (`reset_cad`) y los ocho veredictos, todos iguales al modelo. El panel B es un píxel entrando
 —bit de inicio, ocho bits y bit de parada— y el C un veredicto saliendo: de `frame_done` a `done` pasan
@@ -555,7 +565,7 @@ predicción con la del modelo.
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
-![**Figura 6.14.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
+![**Figura 6.19.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
 ventana pasan uno a uno antes de que `done` presente un dígito. Es el nivel al que se hizo la
 comparación contra el modelo: no se compararon porcentajes, se compararon
@@ -578,7 +588,7 @@ incluye la decisión de rechazo, que es lógica de comparación y no de aritmét
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
 
-![**Figura 6.15.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
+![**Figura 6.20.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
 la escena del dígito 3. El panel A muestra los 19 ms de dos cuadros: el veredicto sale en el primero
 y no cambia en el segundo. El panel B captura el instante en que **el procesador sustituye el umbral
 por omisión del RTL, 110, por el 90 que escribe el firmware**, con el camino de datos todavía en
@@ -597,7 +607,7 @@ completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta re
 > **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
 > en silicio se comporta como el RTL verificado, errores incluidos.
 
-![**Figura 6.16.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
+![**Figura 6.21.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
 está cableado a la señal de configuración terminada; el azul parpadea con el latido del sistema. Los
 diez veredictos salen por el puerto serie del mismo conector que alimenta la tarjeta. A la derecha,
 el mismo montaje con el cableado del módulo de pantalla ya
