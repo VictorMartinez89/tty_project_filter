@@ -56,6 +56,25 @@ largas y ramificadas.
 presentarlas juntas: un diseñador que optimice sólo el área concluirá que el framebuffer es
 aceptable, porque sólo verá un tercio del problema.
 
+### La misma tesis, en Canny-78
+
+El reconocedor más exacto del trabajo repite la lección dos veces, una en cada sustrato.
+
+En la FPGA (§6.3.5), el mismo modelo —los mismos 780 pesos, la misma exactitud— se implementó en tres
+circuitos. Con los 128 contadores en registros, leídos con índice variable, se estimó en el **202 %**
+del dispositivo: cada lectura exigía un multiplexor de 128 entradas. Con los contadores en una memoria
+síncrona y un peso por palabra, cupo en área pero no en tiempo. Con dos pesos por palabra, cupo en las
+dos, al 55 % y a 17,55 MHz. **Lo que decidió no fue cuánta memoria había, sino cómo se leía**: cuántos
+viajes hacían falta y si cada uno traía algo útil.
+
+En silicio (§7.3), la memoria de rasgos estaba declarada con 256 posiciones de 13 bits y sólo se usaban
+168 de 9. Recortarla, sin cambiar un solo veredicto —diez mil de diez mil otra vez—, bajó el dado de
+1,122 a 0,829 mm²: **un 26 %**. En la FPGA ese sobrante no costaba nada, porque un bloque de BRAM cuesta
+lo mismo lleno que vacío; en silicio se pagaba en biestables.
+
+> Las dos caras son la misma afirmación de esta sección, ahora con el circuito que más importa: **la
+> memoria no se paga por los bits que se usan sino por los que se declaran y por cómo se leen.**
+
 ## 8.2 El costo se movió; no se eliminó
 
 Una lectura apresurada del clasificador del Capítulo 6 sugeriría que la solución al problema anterior es
@@ -210,6 +229,14 @@ flujo**. Necesita el cuadro completo y un número de barridos que depende de la 
 filtro más caro que los otros dos —**es otra clase de objeto computacional**, y compararlo con ellos
 en área o en latencia oculta esa diferencia de naturaleza.
 
+Canny-78 muestra la otra mitad del mismo hecho. Con **el mismo detector de bordes** que el SoC + Canny
+—el Canny de un salto con umbrales de 90 y 32—, la exactitud sube de 92,46 a **97,22 %**: 4,76 puntos,
+3,6 veces la dispersión del procedimiento. Lo que cambió no fue el filtro sino el descriptor que lo lee:
+dieciséis zonas en lugar de cuatro, y 78 rasgos elegidos entre 168. Sobre MNIST, con esos umbrales, la
+máscara no es un contorno sino la silueta engrosada del trazo, y lo que el clasificador necesita saber
+es **dónde hay tinta**. Un mejor detector de bordes no mejoró el reconocimiento; una mejor pregunta
+sobre los mismos bordes, sí.
+
 ## 8.8 Una jerarquía construida, no esperada
 
 El clasificador implementa explícitamente la jerarquía *bordes → orientaciones → zonas → dígito*.
@@ -249,7 +276,8 @@ sobre sky130 mediante Tiny Tapeout; el segundo, un SoC basado en FemtoRV32 con m
 
 Con el primero, la expresión del gradiente es la misma, `|Gx|+|Gy|`, de modo que en Sobel puro ambas
 implementaciones son equivalentes. **La diferencia es de alcance y no de calidad**: aquí hay
-procesador, tres filtros seleccionables, cadena completa con cámara y pantalla, y un clasificador.
+procesador, tres filtros seleccionables, cadena completa con cámara y pantalla, y un clasificador que,
+en su versión Canny-78, reproduce el modelo en la tarjeta sobre las diez mil imágenes de prueba.
 Conviene decirlo así explícitamente, porque presentar un trabajo cercano como inferior cuando
 simplemente abordaba otra pregunta es tanto una imprecisión como una descortesía.
 
@@ -265,6 +293,11 @@ creciente**. Esa condición de igualdad es lo que permite atribuir cada diferenc
 - **Las resoluciones son pequeñas**: 60×80 y 160×120 para el procesamiento, 28×28 para el
   reconocimiento. Son exactamente lo que la memoria disponible permite, y ese límite es el objeto de
   estudio, pero conviene no extrapolar los resultados a resoluciones mayores sin volver a medir.
+- **El reconocedor no normaliza el dígito.** Sobre el conjunto de prueba, Canny-78 reproduce el modelo
+  imagen por imagen; frente a dígitos manuscritos reales ante la cámara acertó **seis de treinta y
+  seis**. La causa medida es el encuadre: tres píxeles de corrimiento bastan para bajar la exactitud del
+  97 al 63 %, porque MNIST llega recortado y centrado y la cámara no. El marco verde de la pantalla, que
+  pide a la persona centrar el dígito, es un sustituto manual de ese normalizador.
 - **La magnitud del gradiente satura a ocho bits**, lo que en escenas de alto contraste recorta la
   información antes del umbral.
 - **Los recuentos de celdas no son homogéneos** entre las tablas de los Capítulos 5 y 7, por las tres

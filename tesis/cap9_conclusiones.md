@@ -12,7 +12,10 @@ saturación, un signo invertido— que producen salidas de aspecto correcto.
 cero píxeles de diferencia sobre 4 800, en las cinco imágenes de prueba. El clasificador se sometió a
 una prueba más exigente —las **diez mil** imágenes del conjunto de evaluación de MNIST, comparadas una
 por una— y el resultado fue el mismo: **diez mil predicciones y diez mil veredictos de rechazo
-idénticos**, con la matriz de confusión coincidiendo casilla por casilla. Esa exactitud no es fortuita
+idénticos**, con la matriz de confusión coincidiendo casilla por casilla. La prueba se repitió después
+con Canny-78, el reconocedor de 97,22 %, y ya no en el simulador sino **en la tarjeta**: las diez mil
+imágenes enviadas por el puerto serie y diez mil respuestas iguales a la simulación, dígito y rechazo
+incluidos. Esa exactitud no es fortuita
 sino consecuencia de haber elegido una aritmética que la admite —enteros, pesos que son potencias de
 dos, norma L1, umbral por comparación—, y constituye por tanto una conclusión de diseño y no sólo de
 verificación.
@@ -23,7 +26,9 @@ sostenidos ante la cámara, el sistema con front-end Canny **reconoció nueve de
 con lo que la simulación predecía. Y en un segundo ensayo con diez dígitos grabados en el propio
 *bitstream*, el circuito reprodujo la simulación **incluidos sus dos errores**: los mismos dos
 dígitos, con las mismas respuestas equivocadas. Reproducir un acierto puede ser casualidad;
-reproducir un error específico y repetido, no.
+reproducir un error específico y repetido, no. El ensayo definitivo fue el de Canny-78: **diez mil de
+diez mil** sobre el conjunto de prueba completo, en la misma iCE40UP5K, al 55 % de sus celdas lógicas.
+Frente a la cámara, en cambio, el reconocedor aún depende de que el dígito llegue centrado (§8.11).
 
 **Sobre el paso a silicio.** Se llevaron a GDSII **diecisiete circuitos** en dos procesos —quince en sky130A
 con OpenLane y dos en IHP SG13G2 con LibreLane—, todos ellos con **DRC, LVS y XOR en cero**. El
@@ -67,8 +72,8 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
 
 2. **Un motor de histéresis transitiva en hardware**, que resuelve la reconstrucción morfológica como
    punto fijo sin intervención del procesador, junto con el hallazgo de co-diseño que lo motivó: la
-   misma función no cabía expresada como programa y ocupa un tercio del dispositivo expresada como
-   circuito.
+   misma función, expresada como programa, apenas cabía y dejaba el sistema en 8,7 MHz; como circuito
+   junto al procesador no cabía; como circuito sin él ocupa el 45 % del dispositivo y corre a 28,7 MHz.
 
 3. **Una comparación sistemática de dos front-ends sobre silicio firmado**, a igualdad de todo lo
    demás, a lo largo de seis sistemas de complejidad creciente. De ella se desprende el resultado de
@@ -77,7 +82,11 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
 
 4. **Un clasificador de patrones que cabe donde no cabe una red**: 400 pesos de cuatro bits
    —doscientos bytes— alcanzan sobre MNIST la misma exactitud que los 784 píxeles crudos con la
-   vigésima parte de la memoria, y el circuito reproduce ese resultado sin discrepancia.
+   vigésima parte de la memoria, y el circuito reproduce ese resultado sin discrepancia. Su versión
+   ampliada, **Canny-78** —dieciséis zonas y 78 rasgos elegidos—, llega al **97,22 %** en la misma
+   iCE40UP5K, lo reproduce en la tarjeta sobre las diez mil imágenes de prueba y firma en sky130 en
+   0,829 mm². La versión de cuarenta rasgos para Tiny Tapeout, de 94,20 %, cabe en 8×2 mosaicos con el
+   42 % de utilización.
 
 5. **Dos cuadernos reproducibles** que contienen el código, los datos y las figuras de cada
    afirmación del documento, incluidas las que fueron corregidas.
@@ -115,7 +124,14 @@ conclusión lo que era una hipótesis obtenida por eliminación**.
 **Fabricar.** Los circuitos están firmados pero no existen. La vía practicable es un servicio de
 oblea compartida como Tiny Tapeout, que reparte el costo entre cientos de diseños pequeños a cambio
 de caber en mosaicos de dimensiones fijas. Los proyectos necesarios están preparados y han superado
-los chequeos de admisión; lo que falta es enviarlos a una ventana de fabricación.
+los chequeos de admisión; lo que falta es enviarlos a una ventana de fabricación. El primero en la
+fila es el reconocedor de 94,20 % para la lanzadera SKY26d, con DRC, LVS y antenas en cero.
+
+**Normalizar el dígito en silicio.** Canny-78 reproduce el modelo sobre MNIST pero no frente a la
+cámara, y la causa está medida: el encuadre. Un normalizador que recorte y centre el dígito, como se
+hizo al construir MNIST, devuelve al 97 % la exactitud que un corrimiento de tres píxeles había bajado al
+63 %. Llevarlo al circuito —delante de la ventana de 28×28— es el paso que separa un reconocedor
+verificado de uno utilizable.
 
 **Sustituir los framebuffers de biestables por un macro de SRAM.** Es la respuesta directa al
 hallazgo central. Todo el precio documentado en el Capítulo 8 —área, frecuencia y
