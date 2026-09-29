@@ -1,23 +1,8 @@
 # Bibliografía
 
-> **Cómo se construyó esta lista.** Reúne las **36 referencias** recopiladas a lo largo del cuaderno
-> de laboratorio y las **17 verificadas contra la fuente** al redactar el
-> Capítulo 2. Ocho obras aparecían en ambas listas y se han fundido en una sola entrada, conservando
-> siempre los datos verificados; nueve son aportación de la verificación, y dos —el libro de texto del que procede la arquitectura
-> de bus y el que fundó el diseño estructurado— se añadieron al documentar el linaje del SoC en la §4.5. El total son **49 entradas sin
-> duplicados**, contando las dos guías de instalación del entorno que documenta la §3.7.
-> Después se añadieron **siete** más, tomadas de la propuesta de este trabajo (la propuesta,
-> cinco antecedentes y la Estrategia Nacional Digital), y la de Chow (1970), que citaba sólo el Capítulo 6;
-> con ellas son **57**.
->
-> Las marcadas con **✓** tienen volumen, número, páginas y año comprobados contra la fuente. Las
-> demás son programas, kits de diseño, hojas de datos o repositorios, que se citan por su
-> identificador público y no admiten esa comprobación.
->
-> Las notas introducidas por **▸** no señalan trabajo pendiente: son **advertencias sobre la fuente
-> misma** —una obra que nunca se publicó formalmente, otra que circula con dos numeraciones de
-> volumen, un título que cambió entre ediciones— que un lector necesita para no tomar por descuido lo
-> que es una decisión. Deben permanecer en la versión final.
+Las entradas marcadas con **✓** tienen volumen, número, páginas y año comprobados contra la fuente. Las
+demás son programas, kits de diseño, hojas de datos o repositorios, que se citan por su identificador
+público.
 
 ## Núcleo RISC-V y arquitectura
 
@@ -26,7 +11,7 @@
 3. B. Levy, *From Blinker to RISC-V* (tutoriales). <https://github.com/BrunoLevy/learn-fpga/tree/master/FemtoRV/TUTORIALS>
 4. C. Wolf (YosysHQ), *PicoRV32 — a size-optimized RISC-V CPU*. <https://github.com/YosysHQ/picorv32>
 5. S. Lefebvre, *ice-v — a tiny RISC-V in Silice*. <https://github.com/sylefeb/Silice/tree/master/projects/ice-v>
-6. **✓** A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: User-Level ISA, Document Version 2.2*, mayo de 2017. — Es la edición contra la que está escrito el decodificador del FemtoRV32 empleado, que la cita explícitamente en su propio código («Table page 104 of `riscv-spec-v2.2.pdf`»). Se cita ésa y no una posterior porque es la que describe la instrucción que el circuito implementa. ▸ Nótese que las ediciones desde 2019 retitulan este volumen como *Unprivileged ISA*; la versión 2.2 conserva el nombre *User-Level ISA*.
+6. **✓** A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: User-Level ISA, Document Version 2.2*, mayo de 2017. — Es la edición contra la que está escrito el decodificador del FemtoRV32 empleado, que la cita explícitamente en su propio código («Table page 104 of `riscv-spec-v2.2.pdf`»). Se cita ésa y no una posterior porque es la que describe la instrucción que el circuito implementa. Nótese que las ediciones desde 2019 retitulan este volumen como *Unprivileged ISA*; la versión 2.2 conserva el nombre *User-Level ISA*.
 
 ## FPGA, kit de diseño y cadena de herramientas
 
@@ -54,10 +39,10 @@
 
 ## Detección de bordes y procesamiento de imagen
 
-22. **✓** I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», charla en el Stanford Artificial Intelligence Laboratory, 1968. ▸ **No es una publicación formal**; se describe después en Pingle (1969) y en Duda y Hart (1973), razón por la cual buena parte de la literatura la cita de forma indirecta.
+22. **✓** I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», charla en el Stanford Artificial Intelligence Laboratory, 1968. No es una publicación formal; se describe después en Pingle (1969) y en Duda y Hart (1973), razón por la cual buena parte de la literatura la cita de forma indirecta.
 23. **✓** J. M. S. Prewitt, «Object Enhancement and Extraction», en B. Lipkin y A. Rosenfeld (eds.), *Picture Processing and Psychopictorics*, Academic Press, pp. 75–149, 1970.
 24. **✓** R. A. Kirsch, «Computer determination of the constituent structure of biological images», *Computers and Biomedical Research*, vol. 4, n.º 3, pp. 315–328, 1971.
-25. **✓** N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Transactions on Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. ▸ Aparece también como «vol. 9»; se adopta «SMC-9», que es la numeración del índice de la revista.
+25. **✓** N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Transactions on Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. Aparece también como «vol. 9»; se adopta «SMC-9», que es la numeración del índice de la revista.
 26. **✓** J. Canny, «A Computational Approach to Edge Detection», *IEEE Transactions on Pattern Analysis and Machine Intelligence*, vol. PAMI-8, n.º 6, pp. 679–698, nov. 1986.
 27. **✓** L. Vincent, «Morphological Grayscale Reconstruction in Image Analysis: Applications and Efficient Algorithms», *IEEE Transactions on Image Processing*, vol. 2, n.º 2, pp. 176–201, abr. 1993.
 28. R. C. Gonzalez y R. E. Woods, *Digital Image Processing*, 4.ª ed., Pearson, 2018 — histéresis, umbral doble, reconstrucción morfológica y componentes conexas.
@@ -75,7 +60,7 @@
 
 ## Aceleradores de redes neuronales
 
-37. **✓** Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *International Symposium on Computer Architecture (ISCA)*, 2016. ▸ Existe un artículo homónimo en ISSCC 2016 sobre el mismo sistema; el que desarrolla el argumento sobre el flujo de datos es el de ISCA.
+37. **✓** Y.-H. Chen, J. Emer y V. Sze, «Eyeriss: A Spatial Architecture for Energy-Efficient Dataflow for Convolutional Neural Networks», *International Symposium on Computer Architecture (ISCA)*, 2016. Existe un artículo homónimo en ISSCC 2016 sobre el mismo sistema; el que desarrolla el argumento sobre el flujo de datos es el de ISCA.
 38. **✓** V. Sze, Y.-H. Chen, T.-J. Yang y J. S. Emer, «Efficient Processing of Deep Neural Networks: A Tutorial and Survey», *Proceedings of the IEEE*, vol. 105, n.º 12, pp. 2295–2329, 2017.
 
 ## Periféricos
@@ -105,7 +90,7 @@
 
 ## La propuesta y los antecedentes en Colombia
 
-Tomadas de la propuesta de este trabajo; **no cotejadas con la fuente**.
+Tomadas de la propuesta de este trabajo; no se cotejaron con la fuente.
 
 51. V. A. Martínez Solarte, *Diseño de un microcontrolador con arquitectura RISC-V*, propuesta de trabajo final de Maestría en Ingeniería Electrónica (perfil profundización), director C. I. Camargo Bareño, Universidad Nacional de Colombia, 2025.
 52. G. Roque R., *Desarrollo de arquitectura tipo RISC para sistemas embebidos*, tesis de maestría, Pontificia Universidad Javeriana, 2010.
@@ -113,28 +98,4 @@ Tomadas de la propuesta de este trabajo; **no cotejadas con la fuente**.
 54. D. L. Ruiz P., *Desarrollo de una estrategia pedagógica para la enseñanza de arquitecturas microprocesadas con base al núcleo RISC-V Core101*, Universidad de los Andes, 2020.
 55. J. F. Camacho O., *Uso de herramientas libres para diseñar un sistema de monitoreo de variables físicas de bajo costo basado en sistemas embebidos*, Universidad Nacional de Colombia, 2020.
 56. J. A. Aponte M., *Design of Fault Tolerant Embedded Systems using Approximate Computing Techniques*, Universidad Nacional de Colombia, 2023.
-57. O. M. Lizcano *et al.*, *Estrategia Nacional Digital de Colombia 2023-2026*, cartel, Gobierno de Colombia, 2023. ▸ La propuesta la transcribe con los autores incompletos; se cita por su título.
-
-## Nota sobre el cotejo
-
-El cruce de las dos listas produjo cuatro resultados que conviene dejar anotados.
-
-**Ocho obras estaban en ambas listas**, y en seis de ellas la verificación corrigió o completó los
-datos: la de Sobel y Feldman pasó de figurar como publicación del Stanford AI Project a declararse
-como charla no publicada; la de Kirsch ganó el número de fascículo; la de Vincent recuperó el
-subtítulo completo, que la lista del cuaderno había recortado; la de Lazebnik ganó volumen y páginas;
-la de Otsu quedó con la numeración de volumen resuelta; y la de SkyWater incorporó el año y el rasgo
-que la hace pertinente al argumento. **En los seis casos se conserva la versión verificada.**
-
-**El caso de OpenLane requiere dos entradas y no una.** La lista del cuaderno remitía al repositorio
-de código; la verificación identificó el artículo de ICCAD 2020 que describe el flujo. Son dos
-objetos distintos —el programa y su descripción publicada— y el Capítulo 2 cita el segundo mientras
-que los anexos usan el primero. Se mantienen separados de forma deliberada.
-
-**Nueve referencias son aportación de la verificación** y no figuraban en el cuaderno: Hu, Prewitt,
-Otsu, Lowe, Dalal y Triggs, Chen *et al.*, Sze *et al.*, Shalan y Edwards, y Baischer *et al.* Todas
-ellas sostienen afirmaciones del Capítulo 2 que antes se apoyaban únicamente en el texto.
-
-**Veintisiete de las treinta y seis no se citan en el Capítulo 2**, y eso no es un defecto: son
-programas, hojas de datos y kits de diseño que sustentan los Capítulos 3 a 7 y los anexos. Todas las
-obras que el Capítulo 2 cita por autor y año figuran en esta lista.
+57. O. M. Lizcano *et al.*, *Estrategia Nacional Digital de Colombia 2023-2026*, cartel, Gobierno de Colombia, 2023. La propuesta la transcribe con los autores incompletos; se cita por su título.
