@@ -56,6 +56,18 @@ largas y ramificadas.
 presentarlas juntas: un diseñador que optimice sólo el área concluirá que el framebuffer es
 aceptable, porque sólo verá un tercio del problema.
 
+### El mismo filtro, en los dos sustratos
+
+El Canny de un salto cuesta, respecto del Sobel, una sola cosa más: un tercer *line-buffer*. En sky130 ese buffer se
+sintetiza en biestables, uno por bit, y el filtro aislado sale **2,23 veces** mayor que el Sobel (§7.2). En la
+iCE40UP5K el mismo buffer cae en un bloque de BRAM que ya está en el chip, se use o no: la cadena completa —cámara,
+ventana de 28×28, filtro, clasificador y pantalla— pasa de 2 942 a 2 956 LUT con el Canny, **catorce, el 0,5 %**, y de
+6 a 8 bloques de BRAM; tras el emplazamiento, de 4 453 a 4 622 celdas lógicas.
+
+> El mismo diseño, medido con las mismas herramientas, sale «más del doble» en un sustrato y «casi gratis» en el otro.
+> **Lo que decide no es el algoritmo sino la memoria, y cuánto vale la memoria depende de la tecnología**: una
+> conclusión de área sin su tecnología no significa nada.
+
 ### La misma tesis, en Canny-78
 
 El reconocedor más exacto del trabajo repite la lección dos veces, una en cada sustrato.

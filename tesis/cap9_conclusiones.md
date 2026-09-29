@@ -133,7 +133,7 @@ hizo al construir MNIST, devuelve al 97 % la exactitud que un corrimiento de tre
 63 %. Llevarlo al circuito —delante de la ventana de 28×28— es el paso que separa un reconocedor
 verificado de uno utilizable.
 
-**Usar lo que Canny-78 deja quieto.** Canny-78 es lineal y ocupa la mitad de la iCE40UP5K sin tocar dos de sus
+**Canny-98: usar lo que Canny-78 deja quieto.** Canny-78 es lineal y ocupa la mitad de la iCE40UP5K sin tocar dos de sus
 recursos más valiosos: los ocho DSP de 16×16 con acumulador y el megabit de SPRAM. Se midió en Python, sobre las diez
 mil imágenes de prueba, cuánto reconocería la misma tarjeta si el clasificador lineal se sustituye por una red de una
 capa oculta con pesos de 8 bits —lo que multiplica un DSP—:
@@ -168,7 +168,10 @@ El ancho de los pesos decide cuánta memoria pide esa red, y se midió también,
 
 Table: Exactitud de la capa oculta según el ancho de los pesos, cuantizados después de entrenar.
 
-Con **4 bits** —los mismos de Canny-78— la red sigue por encima del 98 % con la mitad de memoria. Por debajo, la caída
+Con **4 bits** —los mismos de Canny-78— la red sigue por encima del 98 % con la mitad de memoria. A esa
+configuración —el mismo front-end, los 168 rasgos de la pirámide y una capa oculta de 128 neuronas con pesos de 4
+bits, **98,09 %**— se la llama aquí **Canny-98**: es el siguiente circuito de esta línea, medido sobre el modelo y
+todavía sin RTL. Por debajo, la caída
 es en buena parte del método: los pesos se cuantizaron **después** de entrenar, y a 2 y 1 bit la práctica habitual es
 entrenar ya cuantizado, que no se ensayó aquí.
 

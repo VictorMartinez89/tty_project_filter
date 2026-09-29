@@ -411,7 +411,7 @@ mide es **dónde hay tinta**; para eso, más zonas es exactamente lo que falta.
 **Elegir cuáles, no cuántas.** El clasificador es serie —una multiplicación-acumulación por ciclo— y
 entre dos cuadros de 28×28 dispone de 784 ciclos. Diez clases por 78 rasgos suman 780: el máximo
 que cabe. Se seleccionaron **los 78 rasgos más informativos** de los 168, y el resultado fue
-**97.22 %**, a medio punto del modelo completo. Con sólo 40 rasgos elegidos, en lugar de los 40 por
+**97.22 %**, a un tercio de punto del modelo completo: los 168 rasgos dan 97.56 % con pesos de 4 bits y 98.16 % en coma flotante. Con sólo 40 rasgos elegidos, en lugar de los 40 por
 omisión, la exactitud sube de 92.46 % a 95.38 % —95.56 % con los sesgos recalibrados—: con el mismo
 número de pesos y la misma memoria, el mero hecho de escoger qué se mide vale casi tres puntos.
 
@@ -487,11 +487,12 @@ El marco verde de la pantalla —que pide a la persona centrar el dígito— es 
 normalizador; la versión en silicio queda como trabajo futuro, con su costo ya acotado.
 
 ![**Figura 6.19.** La brecha de la cámara, medida sobre las diez mil imágenes de prueba con la cadena de Canny-78.
-A la izquierda, el dígito desplazado: tal como lo vería una cámara mal encuadrada (rojo), la exactitud cae del 97 al
-63 % con tres píxeles de corrimiento y queda cerca del azar a los ocho; con un normalizador que recorte y centre el
-dígito como se hizo al construir MNIST (verde), se mantiene en el 97 %. A la derecha, el mismo experimento con el
-tamaño del trazo: a la mitad de escala acierta menos de la mitad. El circuito no cambia entre una curva y otra; cambia
-lo que se le muestra.](figuras/fig_brecha_camara.png)
+A la izquierda, el dígito desplazado. Tal como lo vería una cámara mal encuadrada (rojo), la exactitud cae del 97,22 %
+al 84,72 % con dos píxeles, al 63,19 % con tres y al 14,21 % con ocho, cerca del azar. Con un normalizador que recorte
+y centre el dígito como se hizo al construir MNIST (verde), se sostiene por encima del 97 % hasta cuatro píxeles y
+baja al 94,28 % con seis y al 81,57 % con ocho. A la derecha, el tamaño del trazo: a la mitad de escala el circuito
+acierta el 47,76 %, y con el normalizador, el 95,29 %. El circuito no cambia entre una curva y otra; cambia lo que se
+le muestra.](figuras/fig_brecha_camara.png)
 
 Por dígito, los más difíciles siguen siendo el **9, el 8 y el 7** (F1 de 0.956, 0.961 y 0.963), y las
 confusiones que quedan son las mismas familias de siempre: el trazo recto con diagonal del 4, el 7 y
