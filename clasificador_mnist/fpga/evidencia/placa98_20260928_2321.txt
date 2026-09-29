@@ -1,0 +1,10 @@
+placa98 · 2026-09-28 23:21 · /dev/cu.usbmodem11102
+bitstream: canny98_placa.bin (fpga_mnist98_stream.v + mnist_top98 + mnist_clf98, md5 d7aaaac70f1dea7e1e74fed892cd3499)
+imagenes: 20   lotes repetidos: 0
+
+PLACA == SIMULACION (digito y valido): 20 / 20
+exactitud de la placa (digito):        100.00%
+habla: 90.00%   y acierta al hablar: 100.00%
+
+respuestas crudas:
+WRAPTATYUYPVYPQUYWST

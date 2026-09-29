@@ -1,0 +1,42 @@
+[
+ {
+  "H": 120,
+  "float": 0.9865,
+  "entero_4bits": 0.9845,
+  "S": 2,
+  "acc1_bits": 13,
+  "acc2_bits": 15,
+  "b1_rango": [
+   -110,
+   184
+  ],
+  "b2_rango": [
+   -129,
+   105
+  ],
+  "pesos": 21360,
+  "kbit_pesos": 83.4,
+  "ciclos_1mac": 21360,
+  "segundos": 18.2
+ },
+ {
+  "H": 124,
+  "float": 0.9866,
+  "entero_4bits": 0.9843,
+  "S": 2,
+  "acc1_bits": 12,
+  "acc2_bits": 15,
+  "b1_rango": [
+   -127,
+   184
+  ],
+  "b2_rango": [
+   -59,
+   103
+  ],
+  "pesos": 22072,
+  "kbit_pesos": 86.2,
+  "ciclos_1mac": 22072,
+  "segundos": 18.8
+ }
+]
