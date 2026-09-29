@@ -584,8 +584,14 @@ sí lleva el margen calibrado. La exactitud no depende de esa regla.
 
 #### En silicio
 
-No se ha llevado a sky130. En silicio la BRAM no existe: los 83 kbit de pesos se sintetizarían en biestables, y el
-Capítulo 7 muestra cuánto cuesta eso. Es el siguiente paso natural, y el que haría falta medir.
+No se ha llevado a sky130, y se midió por qué no cabe en Tiny Tapeout. En silicio no hay BRAM ni SPRAM: los 83 kbit
+de pesos se vuelven lógica y las activaciones, biestables. Sintetizado sin memorias dedicadas, el clasificador de
+Canny-98 ocupa **31 143 celdas genéricas**, más del doble de las 14 431 del de Canny-78 —unas 36 000 celdas de sky130
+con el factor de 1,16 que se midió al pasar Canny-78 de una síntesis a la otra—, y Canny-78 completo ya pedía el 110,7 % de los 8×2 mosaicos.
+
+> Es la tesis del Capítulo 8 con su ejemplo más nítido: **el mismo diseño es más pequeño que Canny-78 en la FPGA y más
+> del doble en silicio**, porque en un sustrato la memoria ya está en el chip y en el otro hay que construirla. Llevar
+> Canny-98 a fabricar pide una lanzadera con macros de SRAM o un dado propio.
 
 ## 6.4 Lo que la exactitud no muestra
 
