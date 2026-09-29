@@ -1,0 +1,46 @@
+[dumpfile] "out/canny98.vcd"
+[size] 1800 1000
+[signals_width] 230
+@200
+-LO QUE ENTRA
+@28
+tb_canny98.clk
+tb_canny98.reset
+tb_canny98.in_valid
+@22
+tb_canny98.in_pix[7:0]
+@200
+-EXTRACTOR
+@28
+tb_canny98.frame_done
+@24
+tb_canny98.n_bordes[10:0]
+@200
+-TRASVASE DE LOS 128 CONTADORES
+@24
+tb_canny98.trasvase[1:0]
+tb_canny98.cuenta[7:0]
+@200
+-CLASIFICADOR (0 IDLE 1 DERIV 2 CAPA OCULTA 3 CAPA SALIDA 4 DONE)
+@24
+tb_canny98.estado[2:0]
+tb_canny98.neurona[6:0]
+tb_canny98.clase[3:0]
+tb_canny98.indice[7:0]
+@424
+tb_canny98.acc[23:0]
+@24
+tb_canny98.h8[7:0]
+@28
+tb_canny98.escribe_h
+@424
+tb_canny98.mejor[23:0]
+@24
+tb_canny98.mejor_clase[3:0]
+@200
+-LO QUE SALE
+@28
+tb_canny98.done
+tb_canny98.valido
+@24
+tb_canny98.digito[3:0]

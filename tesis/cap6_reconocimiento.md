@@ -546,6 +546,12 @@ la SPRAM, que no necesita inicializarse.
 con un nombre cambiado. Conserva sin tocar la memoria de rasgos y su derivación, y añade las dos capas: una
 multiplicación-acumulación por ciclo, 21 992 ciclos por imagen —1,8 ms a 12 MHz—. Se reproduce en el Anexo G.19.
 
+![**Figura 6.20.** De los pines a las cajas: `mnist_top98`, Canny-98. El extractor y el trasvase son los de Canny-78;
+lo nuevo está en `mnist_clf98`. La capa oculta lee los 168 rasgos de `fmem` y sus pesos de `wmem` —21 360 pesos de
+4 bits en 21 bloques de BRAM—, y deja cada activación de 8 bits en la SPRAM; la capa de salida las lee de ahí con los
+pesos de la segunda capa y se queda con la clase de mayor puntaje. El chip entero ocupa el 45 % de las celdas lógicas
+y los 30 bloques de BRAM.](figuras/fig_6_canny98_pines.png)
+
 #### Simulación en Python
 
 El modelo de referencia no es la red en coma flotante sino su versión **entera, bit a bit como la calcula el
@@ -661,7 +667,7 @@ predicción con la del modelo.
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
-![**Figura 6.20.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
+![**Figura 6.21.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
 ventana pasan uno a uno antes de que `done` presente un dígito. Es el nivel al que se hizo la
 comparación contra el modelo: no se compararon porcentajes, se compararon
@@ -684,7 +690,7 @@ incluye la decisión de rechazo, que es lógica de comparación y no de aritmét
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
 
-![**Figura 6.21.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
+![**Figura 6.22.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
 la escena del dígito 3. El panel A muestra los 19 ms de dos cuadros: el veredicto sale en el primero
 y no cambia en el segundo. El panel B captura el instante en que **el procesador sustituye el umbral
 por omisión del RTL, 110, por el 90 que escribe el firmware**, con el camino de datos todavía en
@@ -703,7 +709,7 @@ completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta re
 > **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
 > en silicio se comporta como el RTL verificado, errores incluidos.
 
-![**Figura 6.22.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
+![**Figura 6.23.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
 está cableado a la señal de configuración terminada; el azul parpadea con el latido del sistema. Los
 diez veredictos salen por el puerto serie del mismo conector que alimenta la tarjeta. A la derecha,
 el mismo montaje con el cableado del módulo de pantalla ya
