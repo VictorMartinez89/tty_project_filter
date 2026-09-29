@@ -36,7 +36,7 @@ La frontera entre ambos atraviesa el circuito **por el almacenamiento**: la cám
 reloj y la pantalla lee en el suyo. El único otro punto de cruce, en los diseños que reconocen, son
 los dos biestables que llevan el dígito al dominio de la pantalla. Todo lo demás vive enteramente a
 un lado o al otro, lo que reduce el problema de cruce de dominios a dos casos tratables por separado.
-La Figura 4.48 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
+La Figura 4.55 dibuja esa frontera sobre el diseño concreto que corre en la tarjeta.
 
 ## 4.2 Front-end de cámara
 
@@ -165,7 +165,7 @@ referencia, el núcleo RTL —idéntico al modelo píxel a píxel— y la cadena
 emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](figuras/fig_4_sobel_rtl.png)
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.49 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.56 reúne las seis escenas.
 
 ![**Figura 4.4.** De los pines a las cajas: el Sobel en la iCESugar, sin computador de por medio. Es el módulo `cam_sobel_display.v` que corrió en la tarjeta: la configuración de la cámara por SCCB y el controlador de la pantalla en el dominio del sistema; el submuestreo a 60×80, las dos líneas de retardo, el Sobel y el umbral —90— en el de la cámara. Cada flecha lleva el pin de la iCE40UP5K según el `.pcf` que funcionó en la tarjeta —el del Anexo C—; el recuadro azul es el dominio del reloj del sistema, el naranja el del reloj de píxel de la cámara, y el *framebuffer* es el cruce entre los dos.](figuras/fig_4_sobel_pines.png)
 
@@ -178,6 +178,100 @@ El filtro solo, sin cámara ni pantalla, se llevó a sky130 con OpenLane: **0,16
 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero (§5.2). Es la versión sin suavizado
 gaussiano, con líneas de 60 píxeles (Anexo G.1). Su plano en KLayout se muestra en la §5.2.2. Es el circuito más pequeño de la
 tabla, y el punto de partida de todos los demás.
+
+
+#### Sobel compass + dirección
+
+El Sobel de arriba mide *cuánto* cambia la imagen con dos núcleos, Gx y Gy. La variante *compass*
+(brújula) gira el núcleo en pasos de 45° y obtiene **ocho**: N, NE, E, SE, S, SW, W y NW. Cada uno
+responde a los bordes de una orientación, y el circuito entrega además **cuál de los ocho responde
+más fuerte**: la dirección del borde, que el Sobel de dos núcleos no da sin un arcotangente.
+
+| Dir. | Núcleo 3×3 | | Dir. | Núcleo 3×3 |
+|---|---|---|---|---|
+| N  | `[ 1  2  1 /  0  0  0 / -1 -2 -1]` | | S  | `= −N`  |
+| NE | `[ 2  1  0 /  1  0 -1 /  0 -1 -2]` | | SW | `= −NE` |
+| E  | `[ 1  0 -1 /  2  0 -2 /  1  0 -1]` | | W  | `= −E`  |
+| SE | `[ 0 -1 -2 /  1  0 -1 /  2  1  0]` | | NW | `= −SE` |
+
+Son dos ficheros, en el mismo estilo que el resto: `sobel_compass_core.sv` es 100 % combinacional y
+**sin multiplicadores** —los pesos `±1` y `±2` son sumas, restas y un desplazamiento—, y
+`sobel_compass_control.sv` le pone delante las dos memorias de línea que arman la ventana 3×3 sobre el
+flujo de píxeles. El núcleo calcula sólo **cuatro** gradientes; los otros cuatro son sus negativos, y
+cuestan una resta cada uno:
+
+```verilog
+wire signed [PIX+3:0] gN  = (p0 + (p1<<1) + p2) - (p6 + (p7<<1) + p8);
+wire signed [PIX+3:0] gNE = ((p0<<1) + p1 + p3) - (p5 + (p8<<1) + p7);
+wire signed [PIX+3:0] gE  = (p0 + (p3<<1) + p6) - (p2 + (p5<<1) + p8);
+wire signed [PIX+3:0] gSE = (p3 + (p6<<1) + p7) - (p1 + (p2<<1) + p5);
+wire signed [PIX+3:0] gS  = -gN;   // y gSW = -gNE, gW = -gE, gNW = -gSE
+```
+
+Por cada píxel interior salen las ocho magnitudes |g| saturadas a 8 bits (`mags8_o`), la mayor de
+ellas (`mag_o`, la magnitud *compass*) y el índice de la ganadora (`dir_o`, 0 = N … 7 = NW). La
+magnitud es un máximo, no una raíz: el filtro no calcula √(Gx²+Gy²) porque para eso haría falta
+multiplicar. Para tener también esa columna en Verilog, un tercer módulo, `sobel_euclid_core.sv`, lee la
+misma ventana y calcula ⌊√(Gx²+Gy²)⌋ con Gx = `gE` y Gy = `gN`: los cuadrados escritos como sumas
+desplazadas y la raíz con `isqrt.sv`, que sólo resta y desplaza. No usa el operador `*`, pero un
+cuadrado así *es* un multiplicador de 11×11 por eje, y por eso el módulo acompaña la simulación y no
+entra en ningún filtro sintetizado.
+
+El modelo de referencia es el de la Parte 12.B del cuaderno: para cada una de las cinco imágenes, la
+respuesta de cada dirección junto a la magnitud euclídea √(Gx²+Gy²), que no cambia de fila a fila y
+sirve de referencia visual.
+
+![**Figura 4.6.** El Sobel compass en Python sobre las cinco imágenes de prueba a 160×120: en cada
+fila una dirección, de N a NW; en cada par de columnas una imagen —`monarch`, `flower`, `butterfly`,
+la mano y la tarjeta «HOLA»—, con la respuesta |compass| de esa dirección a la izquierda y la magnitud
+euclídea √(Gx²+Gy²) a la derecha. Son 8 × 5 × 2 = 80 paneles. Las filas N y S, NE y SW, E y W, SE y
+NW son iguales: cada par ve la misma orientación con el signo
+cambiado.](figuras/fig_4_compass_python.jpg)
+
+El RTL se simula en Icarus Verilog sobre las mismas cinco imágenes. El banco no alimenta píxeles
+seguidos: mete una burbuja (`px_valid` = 0) cada siete píxeles y doce ciclos muertos entre línea y
+línea, como hace la cámara, y compara con el modelo entero **cada una de las 8 magnitudes, la
+magnitud compass, la dirección y la magnitud euclídea** de los 18 644 píxeles interiores de cada
+imagen. El resultado: **93 220 de 93 220 píxeles idénticos**, cinco veces `ALL TESTS PASSED`. Para
+comprobar que el banco es capaz de fallar, se sembró un error en una copia de cada núcleo —un píxel
+cambiado en el gradiente NE del compass, un peso 2 cambiado por 1 en el Gx del euclídeo— y el banco
+rechazó los dos.
+
+![**Figura 4.7.** La misma rejilla de 80 paneles, ahora con la salida del RTL: en cada fila la
+magnitud de esa dirección (`mags8_o`) y, a su lado, ⌊√(Gx²+Gy²)⌋ de `sobel_euclid_core`, que no cambia
+de fila a fila. Coincide bit a bit con el modelo entero. Las columnas compass se ven más saturadas que
+las de Python porque el hardware satura a 255 y el modelo en punto flotante se escala por panel.](figuras/fig_4_compass_rtl.jpg)
+
+La dirección tiene un detalle que el hardware hace explícito. Como |S| = |N|, |SW| = |NE|, |W| = |E| y
+|NW| = |SE|, en cada par hay un empate exacto, y el argmax se queda con el **primero**. `dir_o`, por
+tanto, sólo toma los valores 0 a 3: en los 93 220 píxeles, 32 883 salen N, 20 150 NE, 19 003 E,
+21 184 SE y ninguno de S a NW. El circuito entrega la **orientación** del borde, módulo 180°, y no su
+sentido; para el sentido habría que mirar el signo del gradiente, que el núcleo tiene pero no saca.
+
+![**Figura 4.8.** La salida `dir_o` del RTL a color, con el brillo dado por la magnitud: rojo N (y S),
+amarillo NE (y SW), azul E (y W), magenta SE (y NW). Los trazos verticales del «HOLA» y los dedos de la
+mano salen azules —borde vertical, respuesta E—, los horizontales rojos, y las diagonales de los
+triángulos amarillas o magenta según su inclinación.](figuras/fig_4_compass_dir.jpg)
+
+Las señales se inspeccionan con GTKWave, en la VM Ubuntu, sobre la imagen «HOLA». Cada línea dura
+194 ciclos: 160 píxeles, 22 burbujas y 12 ciclos muertos.
+
+![**Figura 4.9.** Las dos primeras líneas. Las memorias de línea todavía están vacías: la fila de
+arriba de la ventana (`w0`–`w2`) y los cuatro gradientes están indefinidos (`xx`, en rojo), pero
+`out_valid` no sube. Lo indefinido no llega a la salida.](figuras/fig_4_compass_gtk_lineas01.png)
+
+![**Figura 4.10.** La primera salida. En la línea 2, cuando entra la tercera columna, la ventana 3×3
+está completa: los gradientes dejan de ser `XXX`, `out_valid` sube y salen la magnitud y la dirección.
+Cada burbuja de `pv` detiene la columna y la salida en el mismo ciclo, sin perder la
+ventana.](figuras/fig_4_compass_gtk_arranque.png)
+
+![**Figura 4.11.** El fin de la línea 60 y el arranque de la 61: la columna vuelve de 159 a 0, `pv`
+se queda abajo los doce ciclos muertos y `out_valid` no vuelve a subir hasta la tercera columna de la
+línea nueva. A la izquierda, un trazo del «HOLA»: `gE` = 339 y `gNE` = 327 desbordan los 8 bits, `mag`
+se satura a 255 y la dirección es 2, E.](figuras/fig_4_compass_gtk_finlinea.png)
+
+![**Figura 4.12.** La línea 60 entera. La dirección (`dir`) salta entre 0 y 3 según la inclinación de
+cada trazo que cruza la línea, y nunca pasa de 3.](figuras/fig_4_compass_gtk_linea60.png)
 
 
 ### Filtro Canny 1-streaming
@@ -195,7 +289,7 @@ fuertes —afirmación que la §4.10.3 confirma midiendo que el proceso completo
 
 El precio arquitectónico es que esta cadena encadena **tres** etapas de ventana 3×3 en lugar de una,
 y por eso necesita tres `linebuf3x3` y presenta ocho ciclos de latencia de cauce frente a los cuatro del
-Sobel. El esquemático que genera el sintetizador muestra las tres cajas, y en las señales de la Figura 4.12 se
+Sobel. El esquemático que genera el sintetizador muestra las tres cajas, y en las señales de la Figura 4.19 se
 ven sus tres `valid`, escalonados.
 
 #### Pseudocódigo
@@ -243,28 +337,28 @@ Las cinco figuras que siguen lo recorren de los puertos a las cajas, y cada una 
 de código del que sale: primero las entradas y salidas del módulo, después sus tres etapas y por último
 el generador de ventana que usan las tres.
 
-![**Figura 4.6.** Las entradas y salidas de `canny1_top`. Entran el reloj, el reinicio síncrono, el
+![**Figura 4.13.** Las entradas y salidas de `canny1_top`. Entran el reloj, el reinicio síncrono, el
 píxel de ocho bits con su señal de validez y los dos umbrales; salen el píxel de borde —`FF` o `00`— y
 su validez. Los umbrales son puertos: dentro de una cadena los fija quien instancia el
 módulo.](figuras/fig_4_canny_puertos.png)
 
-![**Figura 4.7.** Las etapas 1 y 2 de `canny1_top`, con los nombres y los anchos del código. El
+![**Figura 4.14.** Las etapas 1 y 2 de `canny1_top`, con los nombres y los anchos del código. El
 generador de ventana `LBG` entrega los nueve píxeles `gw00…gw22`; el gaussiano los pondera 1-2-1 con
 desplazamientos y divide entre 16 tomando `gsum[11:4]`. La segunda ventana, `LBS`, alimenta el
 gradiente: cuatro sumas de once bits, dos restas en valor absoluto, la suma `mag12` y la saturación a
 255. El doble umbral reduce la magnitud a una clase de dos bits, `cls_in`. En discontinuo, la validez
 que pasa de una ventana a la siguiente, `vg` y `vs`.](figuras/fig_4_canny_etapas12.png)
 
-![**Figura 4.8.** La etapa 3 de `canny1_top`. La tercera ventana, `LBC`, guarda dos bits por píxel
+![**Figura 4.15.** La etapa 3 de `canny1_top`. La tercera ventana, `LBC`, guarda dos bits por píxel
 —la clase—; `any_strong` mira si alguno de los ocho vecinos es fuerte, y `edge_1hop` decide: el centro
 fuerte es borde, el débil lo es sólo si toca a uno fuerte. El registro de salida es lo único que usa el
 reinicio.](figuras/fig_4_canny_etapa3.png)
 
-![**Figura 4.9.** Las entradas y salidas de `linebuf3x3`, el generador de ventana que el Canny usa
+![**Figura 4.16.** Las entradas y salidas de `linebuf3x3`, el generador de ventana que el Canny usa
 tres veces y el Sobel una. Sus dos parámetros son el ancho de la fila, `W`, y los bits por píxel, `DW`;
 sale la ventana de 3×3 completa, con el centro en `w11`.](figuras/fig_4_linebuf_puertos.png)
 
-![**Figura 4.10.** `linebuf3x3` por dentro. En la etapa 1 se leen las dos filas guardadas en la
+![**Figura 4.17.** `linebuf3x3` por dentro. En la etapa 1 se leen las dos filas guardadas en la
 columna `x` y se registra el píxel nuevo; en la etapa 2 se escriben de vuelta —en naranja: la fila n−1
 pasa a ser la n−2 y el píxel nuevo entra en la n−1— y los nueve registros de la ventana avanzan una
 columna. Dos memorias de `W` posiciones bastan para tener siempre las tres filas.](figuras/fig_4_linebuf_dentro.png)
@@ -273,15 +367,15 @@ columna. Dos memorias de `W` posiciones bastan para tener siempre las tres filas
 
 El modelo de referencia en Python descompone el Canny clásico en sus pasos. El circuito se queda con
 parte de ellos: **omite la supresión de no-máximos** y reemplaza la histéresis completa por un solo
-salto. Su modelo exacto, el que el RTL tiene que igualar, es el de la Figura 4.13.
+salto. Su modelo exacto, el que el RTL tiene que igualar, es el de la Figura 4.20.
 
-![**Figura 4.11.** El Canny clásico en Python, paso a paso sobre `flower`: la imagen original, el
+![**Figura 4.18.** El Canny clásico en Python, paso a paso sobre `flower`: la imagen original, el
 suavizado gaussiano de 3×3, la magnitud del gradiente, la supresión de no-máximos, el doble umbral y la
 histéresis.](figuras/fig_4_canny_python.png)
 
 La misma imagen de prueba de 16×12 que el Sobel, ahora a través de las tres etapas de ventana.
 
-![**Figura 4.12.** El Canny de un salto a 16×12 en GTKWave. Arriba, la entrada y la salida del banco
+![**Figura 4.19.** El Canny de un salto a 16×12 en GTKWave. Arriba, la entrada y la salida del banco
 con el contador de bordes. Abajo, el interior: la salida del gaussiano (`gsum`, `gout`), las componentes
 del gradiente (`gxp`, `gxn`, `gyp`, `gyn`), la magnitud (`mag`), la clase de cada píxel (`cls_in`,
 `cw00`) y la decisión de la histéresis (`edge_1hop`, `any_strong`), con los dos umbrales. Las tres
@@ -291,7 +385,7 @@ anterior.](figuras/fig_4_canny_gtkwave.jpg)
 Como con el Sobel, el RTL se compara píxel a píxel con el modelo (§4.8): primero el núcleo solo, y
 después la cadena completa con la cámara emulada.
 
-![**Figura 4.13.** El Canny de un salto simulado en Verilog sobre las cinco imágenes a 60×80: la
+![**Figura 4.20.** El Canny de un salto simulado en Verilog sobre las cinco imágenes a 60×80: la
 entrada, el modelo de referencia, el núcleo RTL —idéntico al modelo píxel a píxel— y la cadena completa
 con la cámara OV7670 emulada. A esta resolución y con los umbrales del banco, las zonas con textura
 quedan casi enteras marcadas como borde.](figuras/fig_4_canny_rtl.png)
@@ -300,9 +394,9 @@ Grabado en la iCE40UP5K, el filtro corre en vivo entre la cámara y la pantalla,
 No hay computador de por medio: la cámara entra por trece pines de la iCE40 y la pantalla sale por
 cuatro, y el PC sólo alimenta la placa y la programa por USB.
 
-![**Figura 4.14.** De los pines a las cajas: el Canny de un salto en la iCESugar, sin computador de por medio. Es `cam_canny2_display.v`: tras el submuestreo, el gaussiano, el Sobel, el doble umbral y la histéresis de un salto, cada uno con sus dos líneas de retardo —las de clases, de dos bits—. Los umbrales son los de la tarjeta, 50 y 20, más bajos que los del modelo para la cámara en vivo (§4.9.5). Cada flecha lleva el pin de la iCE40UP5K según el `.pcf` que funcionó en la tarjeta —el del Anexo C—; el recuadro azul es el dominio del reloj del sistema, el naranja el del reloj de píxel de la cámara, y el *framebuffer* es el cruce entre los dos.](figuras/fig_4_canny_pines.png)
+![**Figura 4.21.** De los pines a las cajas: el Canny de un salto en la iCESugar, sin computador de por medio. Es `cam_canny2_display.v`: tras el submuestreo, el gaussiano, el Sobel, el doble umbral y la histéresis de un salto, cada uno con sus dos líneas de retardo —las de clases, de dos bits—. Los umbrales son los de la tarjeta, 50 y 20, más bajos que los del modelo para la cámara en vivo (§4.9.5). Cada flecha lleva el pin de la iCE40UP5K según el `.pcf` que funcionó en la tarjeta —el del Anexo C—; el recuadro azul es el dominio del reloj del sistema, el naranja el del reloj de píxel de la cámara, y el *framebuffer* es el cruce entre los dos.](figuras/fig_4_canny_pines.png)
 
-![**Figura 4.15.** El Canny de un salto corriendo en la iCESugar sobre las cinco escenas: la mariposa
+![**Figura 4.22.** El Canny de un salto corriendo en la iCESugar sobre las cinco escenas: la mariposa
 `monarch`, la flor, la mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente
 de la pantalla.](figuras/fig_4_canny_placa.jpg)
 
@@ -378,32 +472,32 @@ El modelo compara la histéresis completa —la que resuelve este filtro— con 
 sobre la mariposa `monarch`. La diferencia es pequeña y está en las cadenas largas de píxeles débiles:
 es lo que el transitivo recupera y el de un salto pierde.
 
-![**Figura 4.16.** Histéresis completa frente a la de un salto, en Python, sobre `monarch`: los
+![**Figura 4.23.** Histéresis completa frente a la de un salto, en Python, sobre `monarch`: los
 candidatos fuertes y débiles tras la supresión de no-máximos, la histéresis completa, la de un salto y
 su diferencia.](figuras/fig_4_trans_python.png)
 
 Sobre la misma imagen de 16×12, el motor ya no procesa un flujo: carga el cuadro, lo barre y lo lee.
 
-![**Figura 4.17.** El motor transitivo a 16×12 en GTKWave, en el instante en que termina la carga:
+![**Figura 4.24.** El motor transitivo a 16×12 en GTKWave, en el instante en que termina la carga:
 `load_ready` e `in_valid` bajan, `state` pasa de 001 (carga) a 010 (barrido) y las direcciones de la
 memoria (`mem_ra`, `a1`, `a2`) empiezan a recorrer el cuadro.](figuras/fig_4_trans_gtkwave.jpg)
 
-![**Figura 4.18.** La misma simulación, dibujada entera desde el VCD. Tras cargar el cuadro (estado
+![**Figura 4.25.** La misma simulación, dibujada entera desde el VCD. Tras cargar el cuadro (estado
 1), el motor encadena barridos (estado 2) mientras `changed` sube; en este cuadro son seis, cinco con
 cambios y uno sin ellos. Ese último es el punto fijo: el motor pasa a la lectura (estado 4) y salen
 `eng_out_valid` y los bordes.](figuras/fig_4_trans_motor.png)
 
 Como los otros dos, el RTL se compara píxel a píxel con el modelo (§4.8).
 
-![**Figura 4.19.** El Canny transitivo simulado en Verilog sobre las cinco imágenes a 60×80: la
+![**Figura 4.26.** El Canny transitivo simulado en Verilog sobre las cinco imágenes a 60×80: la
 entrada, el modelo de referencia, el núcleo RTL —idéntico al modelo píxel a píxel— y la cadena completa
 con la cámara OV7670 emulada.](figuras/fig_4_trans_rtl.png)
 
 Grabado en la iCE40UP5K, con el cuadro de clases en la memoria SPRAM, corre en vivo como los otros dos.
 
-![**Figura 4.20.** De los pines a las cajas: el Canny transitivo en la iCESugar, sin computador de por medio. Es `cam_trans_display.v`: dentro de `filter_multi_wh`, el gaussiano, el Sobel y el doble umbral —60 y 30— escriben el cuadro de clases en una SPRAM; el motor lo barre hasta que nada cambia y deja el mapa de bordes en la otra SPRAM, y el control por cuadro lo copia al *framebuffer*. El diodo rojo se enciende mientras el motor barre. Cada flecha lleva el pin de la iCE40UP5K según el `.pcf` que funcionó en la tarjeta —el del Anexo C—; el recuadro azul es el dominio del reloj del sistema, el naranja el del reloj de píxel de la cámara, y el *framebuffer* es el cruce entre los dos.](figuras/fig_4_trans_pines.png)
+![**Figura 4.27.** De los pines a las cajas: el Canny transitivo en la iCESugar, sin computador de por medio. Es `cam_trans_display.v`: dentro de `filter_multi_wh`, el gaussiano, el Sobel y el doble umbral —60 y 30— escriben el cuadro de clases en una SPRAM; el motor lo barre hasta que nada cambia y deja el mapa de bordes en la otra SPRAM, y el control por cuadro lo copia al *framebuffer*. El diodo rojo se enciende mientras el motor barre. Cada flecha lleva el pin de la iCE40UP5K según el `.pcf` que funcionó en la tarjeta —el del Anexo C—; el recuadro azul es el dominio del reloj del sistema, el naranja el del reloj de píxel de la cámara, y el *framebuffer* es el cruce entre los dos.](figuras/fig_4_trans_pines.png)
 
-![**Figura 4.21.** El Canny transitivo corriendo en la iCESugar sobre las cinco escenas: la mariposa
+![**Figura 4.28.** El Canny transitivo corriendo en la iCESugar sobre las cinco escenas: la mariposa
 `monarch`, la flor, la mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente de
 la pantalla.](figuras/fig_4_trans_placa.jpg)
 
@@ -452,18 +546,18 @@ se puede comprobar en la simulación del hardware, que es la que sigue.
 
 #### Simulación en Verilog: las señales
 
-![**Figura 4.22.** El SoC con el Sobel a 16×12 en GTKWave. `thr_o` vale `5A`: el 90 que escribió el
+![**Figura 4.29.** El SoC con el Sobel a 16×12 en GTKWave. `thr_o` vale `5A`: el 90 que escribió el
 programa. El contador de programa del FemtoRV32, `PC`, está detenido en `0x18`, la séptima instrucción,
 el lazo final; y mientras tanto el Sobel sigue sacando píxeles de borde (`FF`) y de fondo (`00`) por su
 cuenta.](figuras/fig_4_socsobel_gtkwave.jpg)
 
-![**Figura 4.23.** Lo que produce el SoC simulado en Icarus Verilog a 160×120, con el programa que
+![**Figura 4.30.** Lo que produce el SoC simulado en Icarus Verilog a 160×120, con el programa que
 elige el Sobel y fija el umbral en 90: arriba, las cinco imágenes de prueba; abajo, sus
 bordes.](figuras/fig_4_socsobel_rtl.png)
 
-![**Figura 4.24.** De los pines a las cajas: el SoC Femto con el Sobel en la iCESugar. Es `cam_femto_display.v`: el FemtoRV32 con su RAM de 4 KB y el periférico `0x0045` viven en el dominio del sistema; el umbral que escribe el programa, 90, cruza al dominio de la cámara por dos biestables —`thi_p`— y el Sobel lo usa en lugar de un valor cableado. El diodo rojo se enciende cuando el procesador ha escrito el periférico. Cada flecha lleva el pin de la iCE40UP5K según el `.pcf` que funcionó en la tarjeta —el del Anexo C—; el recuadro azul es el dominio del reloj del sistema, el naranja el del reloj de píxel de la cámara, y el *framebuffer* es el cruce entre los dos.](figuras/fig_4_socsobel_pines.png)
+![**Figura 4.31.** De los pines a las cajas: el SoC Femto con el Sobel en la iCESugar. Es `cam_femto_display.v`: el FemtoRV32 con su RAM de 4 KB y el periférico `0x0045` viven en el dominio del sistema; el umbral que escribe el programa, 90, cruza al dominio de la cámara por dos biestables —`thi_p`— y el Sobel lo usa en lugar de un valor cableado. El diodo rojo se enciende cuando el procesador ha escrito el periférico. Cada flecha lleva el pin de la iCE40UP5K según el `.pcf` que funcionó en la tarjeta —el del Anexo C—; el recuadro azul es el dominio del reloj del sistema, el naranja el del reloj de píxel de la cámara, y el *framebuffer* es el cruce entre los dos.](figuras/fig_4_socsobel_pines.png)
 
-![**Figura 4.25.** El SoC con el Sobel corriendo en la iCESugar sobre las cinco escenas —`monarch`, la
+![**Figura 4.32.** El SoC con el Sobel corriendo en la iCESugar sobre las cinco escenas —`monarch`, la
 flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
 tarjeta.](figuras/fig_4_socsobel_placa.jpg)
 
@@ -508,20 +602,20 @@ salto (§4.3.2), con los dos umbrales que escribe el programa, 90 y 40.
 
 Esta vez las señales muestran también el arranque, que es donde el procesador trabaja.
 
-![**Figura 4.26.** El arranque del SoC con el Canny, en GTKWave. El contador de programa avanza de
+![**Figura 4.33.** El arranque del SoC con el Canny, en GTKWave. El contador de programa avanza de
 cuatro en cuatro (`PC` = 0, 4, 8, C, 10, 14) mientras lee la ROM (`004500B7`, `01100113`…), y los
 registros se cargan con `00450000`, `00000011` y `00005A28`. Cuando el programa escribe el periférico,
 `cpu_wrote_filter` sube. Los umbrales todavía muestran los valores de reinicio, `6E` y `46` (110 y
 70).](figuras/fig_4_soccanny_arranque.jpg)
 
-![**Figura 4.27.** El mismo SoC unos microsegundos después: los umbrales ya son `5A` y `28` —90 y 40,
+![**Figura 4.34.** El mismo SoC unos microsegundos después: los umbrales ya son `5A` y `28` —90 y 40,
 los que escribió el programa—, el procesador está detenido en su lazo final (`PC` = `0x18`) y la
 imagen de 16×12 empieza a entrar por `in_pix`.](figuras/fig_4_soccanny_gtkwave.jpg)
 
-![**Figura 4.28.** Lo que produce el SoC simulado en Icarus Verilog a 160×120 cuando el programa elige
+![**Figura 4.35.** Lo que produce el SoC simulado en Icarus Verilog a 160×120 cuando el programa elige
 el Canny de un salto: arriba, las cinco imágenes de prueba; abajo, sus bordes.](figuras/fig_4_soccanny_rtl.png)
 
-![**Figura 4.29.** El SoC con el Canny de un salto corriendo en la iCESugar sobre las cinco escenas
+![**Figura 4.36.** El SoC con el Canny de un salto corriendo en la iCESugar sobre las cinco escenas
 —`monarch`, la flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
 tarjeta.](figuras/fig_4_soccanny_placa.jpg)
 
@@ -572,22 +666,22 @@ comprobó en simulación, con un 92,8 % de concordancia (§4.9.4).
 
 #### Simulación en Verilog: las señales
 
-![**Figura 4.30.** El arranque del SoC con el transitivo, en GTKWave. El procesador lee la ROM, activa
+![**Figura 4.37.** El arranque del SoC con el transitivo, en GTKWave. El procesador lee la ROM, activa
 `cs_filter` para escribir `00000012` en el periférico y `mode_o` pasa de `00` a `10`: el modo 2, el
 transitivo. Los umbrales no cambian a la vista porque el programa escribe 110 y 70, que son justamente
 los valores de reinicio del periférico (`6E` y `46`).](figuras/fig_4_soctrans_arranque.jpg)
 
-![**Figura 4.31.** El mismo SoC después del arranque: el procesador repite su lazo final, en la
+![**Figura 4.38.** El mismo SoC después del arranque: el procesador repite su lazo final, en la
 dirección `0x18`, con el modo y los umbrales ya fijos, a la espera del flujo de
 clases.](figuras/fig_4_soctrans_gtkwave.jpg)
 
-![**Figura 4.32.** Lo que produce el SoC simulado en Icarus Verilog a 160×120 cuando el programa elige
+![**Figura 4.39.** Lo que produce el SoC simulado en Icarus Verilog a 160×120 cuando el programa elige
 el transitivo: arriba, las cinco imágenes de prueba; abajo, sus bordes.](figuras/fig_4_soctrans_rtl.png)
 
 En la tarjeta corre la versión con la histéresis por software, la única con procesador que cabe: al
 99 % del dispositivo y con el reloj del sistema en 8,7 MHz (§4.9.3).
 
-![**Figura 4.33.** El SoC con el Canny transitivo corriendo en la iCESugar sobre las cinco escenas
+![**Figura 4.40.** El SoC con el Canny transitivo corriendo en la iCESugar sobre las cinco escenas
 —`monarch`, la flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
 tarjeta.](figuras/fig_4_soctrans_placa.jpg)
 
@@ -608,7 +702,7 @@ sincroniza las señales de la cámara con dos biestables en lugar de abrir un se
 El framebuffer guarda **un bit por píxel**, borde o plano, y no el gris de ocho bits. Esa decisión fue
 la que hizo posible llegar a silicio (§5.3).
 
-![**Figura 4.34.** La cadena `sobel_completo`: cámara OV7670, front-end, Sobel, framebuffer de 60×80,
+![**Figura 4.41.** La cadena `sobel_completo`: cámara OV7670, front-end, Sobel, framebuffer de 60×80,
 controlador de pantalla y pantalla, en un chip y con un reloj.](figuras/fig_4_sobelcomp_diagrama.png)
 
 #### Pseudocódigo
@@ -642,9 +736,9 @@ pruebas es la última columna de la Figura 4.3, que concuerda con el modelo salv
 borde del cuadro.
 
 En la FPGA esta misma cadena —cámara, Sobel, memoria y pantalla— es la que muestran la Figura 4.5 y
-la Figura 4.35.
+la Figura 4.42.
 
-![**Figura 4.35.** Otras dos escenas de la cadena del Sobel en la iCESugar: una mariposa y la sílaba
+![**Figura 4.42.** Otras dos escenas de la cadena del Sobel en la iCESugar: una mariposa y la sílaba
 «LA» de la tarjeta, fotografiadas directamente de la pantalla.](figuras/fig_4_sobelcomp_placa.jpg)
 
 En sky130 ocupa **2,45 mm²** y **36 730 celdas** de síntesis, con DRC, LVS y XOR en cero según su ficha
@@ -661,7 +755,7 @@ receta que la hizo caber: framebuffer de un bit por píxel y un solo reloj. Los 
 90 y 40. Entre la cámara y el framebuffer, el píxel atraviesa ahora tres memorias de línea en lugar de
 una.
 
-![**Figura 4.36.** El cauce del Canny de un salto dentro de la cadena: del gris a la decisión de borde
+![**Figura 4.43.** El cauce del Canny de un salto dentro de la cadena: del gris a la decisión de borde
 en un solo pase, con tres memorias de línea —gaussiano, gradiente e histéresis— frente a la única del
 Sobel.](figuras/fig_4_cannycomp_cauce.png)
 
@@ -682,20 +776,20 @@ Sobel.](figuras/fig_4_cannycomp_cauce.png)
 se reproduce en el Anexo G.8. El Canny es el de la G.2, y el front-end y el controlador de pantalla, los
 de la G.7.
 
-![**Figura 4.37.** De los pines a las cajas: `canny1_completo`, la cadena del Canny de un salto para
+![**Figura 4.44.** De los pines a las cajas: `canny1_completo`, la cadena del Canny de un salto para
 silicio, sin computador de por medio. Aquí no hay `.pcf`: los dieciocho puertos son pads del anillo de E/S,
 y SIOD se parte en dato y habilitación. Hay un solo reloj —`cam_frontend_top` sincroniza las señales de la
 cámara con dos biestables—, así que no hace falta un cruce de dominios. La cámara entra al front-end
-(configuración, captura y conversión a gris), el gris al `canny1_top` de la Figura 4.6, y el borde a un
+(configuración, captura y conversión a gris), el gris al `canny1_top` de la Figura 4.13, y el borde a un
 *framebuffer* de un bit por píxel —4 800 biestables en lugar de 38 400— que el controlador de la pantalla
 recorre a 240×320.](figuras/fig_4_cannycomp_pines.png)
 
 Su modelo es el del Canny de un salto (§4.3.2), con los umbrales fijos en 90 y 40.
 
-Como en la cadena del Sobel, los bloques se simularon por separado: el Canny en la Figura 4.12, con sus
-tres memorias de línea; la cadena con la cámara emulada es la última columna de la Figura 4.13.
+Como en la cadena del Sobel, los bloques se simularon por separado: el Canny en la Figura 4.19, con sus
+tres memorias de línea; la cadena con la cámara emulada es la última columna de la Figura 4.20.
 
-![**Figura 4.38.** La cadena del Canny de un salto en la iCESugar, en fotogramas de los videos de la
+![**Figura 4.45.** La cadena del Canny de un salto en la iCESugar, en fotogramas de los videos de la
 tarjeta: dos escenas en la pantalla y el montaje entero, con la placa, el cableado y la
 pantalla.](figuras/fig_4_cannycomp_placa.jpg)
 
@@ -723,7 +817,7 @@ Y su framebuffer guarda **ocho bits por píxel** aunque sólo escriba bordes: 60
 biestables**, ocho veces lo que necesitan las cadenas completas. El gris lo toma directamente del byte
 de luminancia que entrega la cámara, y el umbral es 40.
 
-![**Figura 4.39.** `vision_top`: la cámara, la captura con submuestreo a 60×80, el Sobel y el
+![**Figura 4.46.** `vision_top`: la cámara, la captura con submuestreo a 60×80, el Sobel y el
 framebuffer en el dominio del reloj de la cámara; la configuración por SCCB y la pantalla en el del
 sistema; el framebuffer, de unos 38 400 biestables, es el cruce entre los dos.](figuras/fig_4_vision_diagrama.png)
 
@@ -755,7 +849,7 @@ Sobel y la cadena con la cámara emulada son las de las Figuras 4.2 y 4.3.
 
 Su versión para la FPGA, `cam_sobel_display.v`, corrió en la iCESugar con la cámara y la pantalla.
 
-![**Figura 4.40.** El sistema de visión con el Sobel en vivo en la iCESugar —cámara OV7670, Sobel y
+![**Figura 4.47.** El sistema de visión con el Sobel en vivo en la iCESugar —cámara OV7670, Sobel y
 pantalla— sobre seis objetos: la flor, las mariposas `monarch` y `butterfly`, la mano y las dos mitades
 de la tarjeta, «HO» y «LA».](figuras/fig_4_vision_placa.jpg)
 
@@ -772,7 +866,7 @@ dos relojes y el mismo framebuffer de ocho bits por píxel. El esqueleto —cám
 pantalla— no cambia; cambia el camino de datos, que pasa de una ventana de 3×3 a tres, con umbrales de
 70 y 30.
 
-![**Figura 4.41.** Los dos sistemas de visión, uno sobre otro: `vision_top` con el Sobel, un juego de
+![**Figura 4.48.** Los dos sistemas de visión, uno sobre otro: `vision_top` con el Sobel, un juego de
 memorias de línea; `vision_canny_top` con el Canny, tres. Todo lo demás es igual.](figuras/fig_4_visioncanny_cauces.png)
 
 #### Pseudocódigo
@@ -798,10 +892,10 @@ Su modelo es el del Canny de un salto (§4.3.2) sobre el byte de luminancia, con
 Tampoco tiene banco propio: parte de un diseño verificado en la tarjeta. Las señales del Canny y la
 cadena con la cámara emulada son las de las Figuras 4.6 y 4.7.
 
-![**Figura 4.42.** El sistema de visión con el Canny de un salto en vivo en la iCESugar, sobre los
+![**Figura 4.49.** El sistema de visión con el Canny de un salto en vivo en la iCESugar, sobre los
 mismos seis objetos que el del Sobel.](figuras/fig_4_visioncanny_vivo.jpg)
 
-![**Figura 4.43.** El Canny de un salto con la cámara y la pantalla en la iCESugar, el 22 de julio de
+![**Figura 4.50.** El Canny de un salto con la cámara y la pantalla en la iCESugar, el 22 de julio de
 2026, en fotogramas de los videos de la tarjeta.](figuras/fig_4_visioncanny_placa.jpg)
 
 En sky130 ocupa **2,04 mm²** y **41 925 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero según
@@ -820,7 +914,7 @@ punto fijo y escribe los bordes. Es la misma arquitectura desacoplada de su vers
 `cam_canny3_display.v`: si la cámara entrega un cuadro nuevo mientras el motor barre, sobrescribe las
 clases, y la imagen salta un poco. Funciona con un solo reloj.
 
-![**Figura 4.44.** La arquitectura desacoplada de `trans_completo`: la cámara llena el framebuffer de
+![**Figura 4.51.** La arquitectura desacoplada de `trans_completo`: la cámara llena el framebuffer de
 clases, el motor lo barre en bucle hasta el punto fijo y llena el de bordes, y la pantalla lee este
 último.](figuras/fig_4_visiontrans_diagrama.png)
 
@@ -845,8 +939,8 @@ clases, el motor lo barre en bucle hasta el punto fijo y llena el de bordes, y l
 de cada píxel. Se reproducen en el Anexo G.11; el motor es el de la G.3 y los bloques de interfaz, los de
 la G.7.
 
-![**Figura 4.45.** De los pines a las cajas: `trans_completo`, la cadena del Canny transitivo para
-silicio. Con los mismos pads y el mismo front-end que la Figura 4.37, `grad_class_top` entrega la clase
+![**Figura 4.52.** De los pines a las cajas: `trans_completo`, la cadena del Canny transitivo para
+silicio. Con los mismos pads y el mismo front-end que la Figura 4.44, `grad_class_top` entrega la clase
 de dos bits —umbrales 110 y 70— y la cámara la escribe en `clsfb`; el puente carga ese cuadro en el motor,
 el motor lo barre hasta que nada cambia y deja el mapa de bordes en `edgefb`, de un bit, que es el que lee
 la pantalla. Los dos cuadros son los dos *framebuffers* de la cadena, y el motor corre a su propio ritmo,
@@ -856,9 +950,9 @@ Su modelo es el del transitivo (§4.3.3), con umbrales de 110 y 70.
 
 La cadena se ensambló con bloques simulados por separado: el motor en las Figuras 4.10 y 4.11, que lo
 muestran cargando, barriendo y llegando al punto fijo, y la cadena con la cámara emulada en la última
-columna de la Figura 4.19.
+columna de la Figura 4.26.
 
-![**Figura 4.46.** El Canny transitivo en vivo en la iCESugar sobre los seis objetos, con umbrales de
+![**Figura 4.53.** El Canny transitivo en vivo en la iCESugar sobre los seis objetos, con umbrales de
 110 y 70.](figuras/fig_4_visiontrans_placa.jpg)
 
 En sky130 es el circuito más grande del trabajo: **9,61 mm²** y **137 092 celdas** de síntesis, con DRC,
@@ -941,7 +1035,7 @@ Su modelo es el del Canny de un salto (§4.3.2) con umbrales de 90 y 40.
 Como el del Sobel, su banco de cocotb le entrega un flujo de píxeles y exige que salgan píxeles
 válidos; GitHub lo corre en cada cambio.
 
-Tampoco se ha fabricado. En la FPGA, el mismo Canny es el de la Figura 4.15.
+Tampoco se ha fabricado. En la FPGA, el mismo Canny es el de la Figura 4.22.
 
 En los 6×2 mosaicos ocupa **0,233 mm²** con un **61 %** de utilización y **7 607 celdas** de síntesis,
 consume unos **9,0 mW** y cierra el temporizado en las nueve esquinas. La comprobación previa pasa entera
@@ -1001,13 +1095,13 @@ en `0x0042`, divisor en `0x0043` y conversión a decimal codificado en `0x0044`�
 referencia descrito por Camargo (2025, §1.2.1)**, que es el material sobre el que se enseña diseño
 digital en el programa. **Este trabajo añade un periférico más, en la base siguiente.**
 
-![**Figura 4.47.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
+![**Figura 4.54.** El sistema en silicio, en el lenguaje de bloques del SoC de referencia. Los siete
 periféricos en gris son los heredados; el que aparece destacado, en la base `0x0045`, es la
 aportación de este trabajo. Obsérvese que **el camino de datos de imagen no pasa por el bus**: los
 píxeles entran de la cámara al filtro y salen de éste a la pantalla a un píxel por ciclo, y lo único
 que el procesador pone en el bus es el umbral.](figuras/fig_4_1_soc.png)
 
-![**Figura 4.48.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
+![**Figura 4.55.** El mismo sistema, pero sin procesador, y bajado hasta los pines: los catorce
 puertos del módulo de más alto nivel, las cuatro etapas del filtro y los dos dominios de reloj. La
 frontera que la §4.1 enuncia se ve aquí dibujada: **el almacenamiento de 60x80 se escribe con el
 reloj de píxel de la cámara y se lee con el del sistema**, y es el único punto por el que los dos
@@ -1198,7 +1292,7 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.49.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
+![**Figura 4.56.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
 la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
 cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
 montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
@@ -1391,7 +1485,7 @@ filtros en flujo procesan entre 106 y 130 millones de píxeles por segundo con u
 3 µs; el transitivo, con dos barridos —lo típico en una imagen real—, entre 16 y 20 millones, con 235 a
 306 µs por cuadro. Son de seis a ocho veces menos caudal y de ochenta a trescientas veces más latencia.
 
-![**Figura 4.50.** Caudal y latencia de los seis filtros, medidos en simulación. A la izquierda, el
+![**Figura 4.57.** Caudal y latencia de los seis filtros, medidos en simulación. A la izquierda, el
 caudal en millones de píxeles por segundo; a la derecha, la latencia hasta el primer píxel utilizable, en
 escala logarítmica: los cuatro filtros en flujo quedan en microsegundos y los dos transitivos, en
 cientos.](figuras/fig_4_caudal_latencia.png)
