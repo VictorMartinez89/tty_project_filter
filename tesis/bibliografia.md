@@ -21,22 +21,22 @@
 
 ## Núcleo RISC-V y arquitectura
 
-1. B. Levy, *FemtoRV32 / learn-fpga* — núcleos RISC-V mínimos (Quark, RV32I). https://github.com/BrunoLevy/learn-fpga
-2. B. Levy, *FemtoRV32 DESIGN Tutorial* (episodios I–X). https://github.com/BrunoLevy/learn-fpga/tree/master/FemtoRV/TUTORIALS/DESIGN
-3. B. Levy, *From Blinker to RISC-V* (tutoriales). https://github.com/BrunoLevy/learn-fpga/tree/master/FemtoRV/TUTORIALS
-4. C. Wolf (YosysHQ), *PicoRV32 — a size-optimized RISC-V CPU*. https://github.com/YosysHQ/picorv32
-5. S. Lefebvre, *ice-v — a tiny RISC-V in Silice*. https://github.com/sylefeb/Silice/tree/master/projects/ice-v
+1. B. Levy, *FemtoRV32 / learn-fpga* — núcleos RISC-V mínimos (Quark, RV32I). <https://github.com/BrunoLevy/learn-fpga>
+2. B. Levy, *FemtoRV32 DESIGN Tutorial* (episodios I–X). <https://github.com/BrunoLevy/learn-fpga/tree/master/FemtoRV/TUTORIALS/DESIGN>
+3. B. Levy, *From Blinker to RISC-V* (tutoriales). <https://github.com/BrunoLevy/learn-fpga/tree/master/FemtoRV/TUTORIALS>
+4. C. Wolf (YosysHQ), *PicoRV32 — a size-optimized RISC-V CPU*. <https://github.com/YosysHQ/picorv32>
+5. S. Lefebvre, *ice-v — a tiny RISC-V in Silice*. <https://github.com/sylefeb/Silice/tree/master/projects/ice-v>
 6. **✓** A. Waterman y K. Asanović (eds.), *The RISC-V Instruction Set Manual, Volume I: User-Level ISA, Document Version 2.2*, mayo de 2017. — Es la edición contra la que está escrito el decodificador del FemtoRV32 empleado, que la cita explícitamente en su propio código («Table page 104 of `riscv-spec-v2.2.pdf`»). Se cita ésa y no una posterior porque es la que describe la instrucción que el circuito implementa. ▸ Nótese que las ediciones desde 2019 retitulan este volumen como *Unprivileged ISA*; la versión 2.2 conserva el nombre *User-Level ISA*.
 
 ## FPGA, kit de diseño y cadena de herramientas
 
-7. Lattice Semiconductor, *iCE40 UltraPlus Family Data Sheet* (iCE40UP5K SG48). https://www.latticesemi.com/iCE40UltraPlus
-8. MuseLab / wuxx, *iCESugar v1.5* — placa de desarrollo iCE40UP5K. https://github.com/wuxx/icesugar
+7. Lattice Semiconductor, *iCE40 UltraPlus Family Data Sheet* (iCE40UP5K SG48). <https://www.latticesemi.com/iCE40UltraPlus>
+8. MuseLab / wuxx, *iCESugar v1.5* — placa de desarrollo iCE40UP5K. <https://github.com/wuxx/icesugar>
 9. Colorlight, *i9 (Artix-7)* — placa reutilizada como plataforma FPGA.
-10. C. Wolf *et al.*, *Yosys — Open SYnthesis Suite*. https://github.com/YosysHQ/yosys
-11. *nextpnr* — emplazamiento y ruteado portable. YosysHQ. https://github.com/YosysHQ/nextpnr
-12. *Project IceStorm* — bitstream iCE40 (`icepack`, `iceprog`). https://github.com/YosysHQ/icestorm
-13. *OSS CAD Suite* — distribución de herramientas. https://github.com/YosysHQ/oss-cad-suite-build
+10. C. Wolf *et al.*, *Yosys — Open SYnthesis Suite*. <https://github.com/YosysHQ/yosys>
+11. *nextpnr* — emplazamiento y ruteado portable. YosysHQ. <https://github.com/YosysHQ/nextpnr>
+12. *Project IceStorm* — bitstream iCE40 (`icepack`, `iceprog`). <https://github.com/YosysHQ/icestorm>
+13. *OSS CAD Suite* — distribución de herramientas. <https://github.com/YosysHQ/oss-cad-suite-build>
 
 ## Diseño digital y arquitectura de sistemas en silicio
 
@@ -45,12 +45,12 @@
 
 ## Flujo a silicio y procesos abiertos
 
-16. SkyWater Technology y Google, *SKY130 Open Source PDK*, 2020. Primer kit de diseño de un proceso comercial publicado sin acuerdo de confidencialidad. https://github.com/google/skywater-pdk
+16. SkyWater Technology y Google, *SKY130 Open Source PDK*, 2020. Primer kit de diseño de un proceso comercial publicado sin acuerdo de confidencialidad. <https://github.com/google/skywater-pdk>
 17. **✓** M. Shalan y T. Edwards, «Building OpenLANE: A 130nm OpenROAD-based Tapeout-Proven Flow», *IEEE/ACM International Conference on Computer-Aided Design (ICCAD)*, 2020.
-18. *OpenLane* — implementación del flujo RTL→GDSII. https://github.com/The-OpenROAD-Project/OpenLane
-19. *OpenROAD* — motor de emplazamiento y ruteado físico. https://theopenroadproject.org
-20. M. Venn *et al.*, *Tiny Tapeout* — fabricación educativa de circuitos integrados. https://tinytapeout.com
-21. *KLayout* — visor y editor de *layout* GDSII. https://www.klayout.de
+18. *OpenLane* — implementación del flujo RTL→GDSII. <https://github.com/The-OpenROAD-Project/OpenLane>
+19. *OpenROAD* — motor de emplazamiento y ruteado físico. <https://theopenroadproject.org>
+20. M. Venn *et al.*, *Tiny Tapeout* — fabricación educativa de circuitos integrados. <https://tinytapeout.com>
+21. *KLayout* — visor y editor de *layout* GDSII. <https://www.klayout.de>
 
 ## Detección de bordes y procesamiento de imagen
 
@@ -71,7 +71,7 @@
 33. **✓** D. G. Lowe, «Distinctive Image Features from Scale-Invariant Keypoints», *International Journal of Computer Vision*, vol. 60, n.º 2, pp. 91–110, 2004.
 34. **✓** N. Dalal y B. Triggs, «Histograms of Oriented Gradients for Human Detection», *IEEE Conference on Computer Vision and Pattern Recognition (CVPR)*, vol. 1, pp. 886–893, 2005.
 35. **✓** S. Lazebnik, C. Schmid y J. Ponce, «Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories», *IEEE CVPR*, vol. 2, pp. 2169–2178, 2006.
-36. F. Pedregosa *et al.*, «Scikit-learn: Machine Learning in Python», *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011. https://scikit-learn.org
+36. F. Pedregosa *et al.*, «Scikit-learn: Machine Learning in Python», *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011. <https://scikit-learn.org>
 
 ## Aceleradores de redes neuronales
 
@@ -85,24 +85,24 @@
 
 ## Verificación y modelo de referencia
 
-41. S. Williams, *Icarus Verilog* (`iverilog`, `vvp`). https://github.com/steveicarus/iverilog
-42. T. Bybell, *GTKWave* — visor de formas de onda. https://gtkwave.sourceforge.net
-43. C. R. Harris *et al.*, «Array programming with NumPy», *Nature*, vol. 585, pp. 357–362, 2020. https://numpy.org
-44. P. Virtanen *et al.*, «SciPy 1.0: fundamental algorithms for scientific computing in Python», *Nature Methods*, vol. 17, pp. 261–272, 2020. https://scipy.org
-45. J. D. Hunter, «Matplotlib: A 2D Graphics Environment», *Computing in Science & Engineering*, vol. 9, n.º 3, pp. 90–95, 2007. https://matplotlib.org
-46. S. van der Walt *et al.*, «scikit-image: image processing in Python», *PeerJ*, vol. 2, e453, 2014. https://scikit-image.org
+41. S. Williams, *Icarus Verilog* (`iverilog`, `vvp`). <https://github.com/steveicarus/iverilog>
+42. T. Bybell, *GTKWave* — visor de formas de onda. <https://gtkwave.sourceforge.net>
+43. C. R. Harris *et al.*, «Array programming with NumPy», *Nature*, vol. 585, pp. 357–362, 2020. <https://numpy.org>
+44. P. Virtanen *et al.*, «SciPy 1.0: fundamental algorithms for scientific computing in Python», *Nature Methods*, vol. 17, pp. 261–272, 2020. <https://scipy.org>
+45. J. D. Hunter, «Matplotlib: A 2D Graphics Environment», *Computing in Science & Engineering*, vol. 9, n.º 3, pp. 90–95, 2007. <https://matplotlib.org>
+46. S. van der Walt *et al.*, «scikit-image: image processing in Python», *PeerJ*, vol. 2, e453, 2014. <https://scikit-image.org>
 
 ## Trabajos de comparación
 
-47. Diana Natali Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Chip fabricado y medido; es el antecedente directo de este trabajo (§2.9). https://github.com/DianaNatali/tt06_grayscale_sobel
-48. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. https://github.com/kayaleitner/FPGA_MNIST ▸ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
+47. Diana Natali Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Chip fabricado y medido; es el antecedente directo de este trabajo (§2.9). <https://github.com/DianaNatali/tt06_grayscale_sobel>
+48. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. <https://github.com/kayaleitner/FPGA_MNIST> ▸ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
 
 ---
 
 ## Documentación de instalación del entorno
 
-49. J. Ruiz, *RepoFinal* — manual de instalación del flujo ASIC y material del trabajo de grado. https://github.com/JohanRuiz05/RepoFinal
-50. C. I. Camargo Bareño, *VLSI* — notas y guía de instalación de la asignatura, Universidad Nacional de Colombia. https://github.com/cicamargoba/VLSI
+49. J. Ruiz, *RepoFinal* — manual de instalación del flujo ASIC y material del trabajo de grado. <https://github.com/JohanRuiz05/RepoFinal>
+50. C. I. Camargo Bareño, *VLSI* — notas y guía de instalación de la asignatura, Universidad Nacional de Colombia. <https://github.com/cicamargoba/VLSI>
 
 ## La propuesta y los antecedentes en Colombia
 
