@@ -1,0 +1,84 @@
+{
+ "referencia_canny78": 0.9722,
+ "cuadros_por_s_camara": 30,
+ "filas": [
+  {
+   "entrada": "168 rasgos",
+   "oculta": 32,
+   "float": 0.9827,
+   "q8": 0.9828,
+   "pesos": 5696,
+   "bits": 45568,
+   "spram_pct": 4.3,
+   "mac_por_imagen": 5696,
+   "ciclos_8dsp": 712,
+   "imagenes_por_s": 16854,
+   "segundos": 5.9
+  },
+  {
+   "entrada": "168 rasgos",
+   "oculta": 64,
+   "float": 0.9842,
+   "q8": 0.9843,
+   "pesos": 11392,
+   "bits": 91136,
+   "spram_pct": 8.7,
+   "mac_por_imagen": 11392,
+   "ciclos_8dsp": 1424,
+   "imagenes_por_s": 8427,
+   "segundos": 6.8
+  },
+  {
+   "entrada": "168 rasgos",
+   "oculta": 128,
+   "float": 0.9872,
+   "q8": 0.9875,
+   "pesos": 22784,
+   "bits": 182272,
+   "spram_pct": 17.4,
+   "mac_por_imagen": 22784,
+   "ciclos_8dsp": 2848,
+   "imagenes_por_s": 4213,
+   "segundos": 17.0
+  },
+  {
+   "entrada": "784 píxeles",
+   "oculta": 32,
+   "float": 0.9647,
+   "q8": 0.9645,
+   "pesos": 25408,
+   "bits": 203264,
+   "spram_pct": 19.4,
+   "mac_por_imagen": 25408,
+   "ciclos_8dsp": 3176,
+   "imagenes_por_s": 3778,
+   "segundos": 10.4
+  },
+  {
+   "entrada": "784 píxeles",
+   "oculta": 64,
+   "float": 0.9746,
+   "q8": 0.9744,
+   "pesos": 50816,
+   "bits": 406528,
+   "spram_pct": 38.8,
+   "mac_por_imagen": 50816,
+   "ciclos_8dsp": 6352,
+   "imagenes_por_s": 1889,
+   "segundos": 21.0
+  },
+  {
+   "entrada": "784 píxeles",
+   "oculta": 128,
+   "float": 0.9778,
+   "q8": 0.9775,
+   "pesos": 101632,
+   "bits": 813056,
+   "spram_pct": 77.5,
+   "mac_por_imagen": 101632,
+   "ciclos_8dsp": 12704,
+   "imagenes_por_s": 945,
+   "segundos": 29.1
+  }
+ ]
+}

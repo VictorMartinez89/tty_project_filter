@@ -133,6 +133,30 @@ hizo al construir MNIST, devuelve al 97 % la exactitud que un corrimiento de tre
 63 %. Llevarlo al circuito —delante de la ventana de 28×28— es el paso que separa un reconocedor
 verificado de uno utilizable.
 
+**Usar lo que Canny-78 deja quieto.** Canny-78 es lineal y ocupa la mitad de la iCE40UP5K sin tocar dos de sus
+recursos más valiosos: los ocho DSP de 16×16 con acumulador y el megabit de SPRAM. Se midió en Python, sobre las diez
+mil imágenes de prueba, cuánto reconocería la misma tarjeta si el clasificador lineal se sustituye por una red de una
+capa oculta con pesos de 8 bits —lo que multiplica un DSP—:
+
+| entrada | capa oculta | pesos | SPRAM | ciclos con 8 DSP | exactitud |
+|---|---:|---:|---:|---:|---:|
+| Canny-78, 78 rasgos (el circuito actual) | — | 780 de 4 bits | — | 647 | 97,22 % |
+| 168 rasgos de la pirámide | 32 | 5 696 | 4,3 % | 712 | 98,28 % |
+| 168 rasgos de la pirámide | 64 | 11 392 | 8,7 % | 1 424 | 98,43 % |
+| 168 rasgos de la pirámide | 128 | 22 784 | 17,4 % | 2 848 | **98,75 %** |
+| 784 píxeles crudos | 128 | 101 632 | 77,5 % | 12 704 | 97,75 % |
+
+Table: Exactitud medida en Python de una capa oculta con pesos de 8 bits sobre el presupuesto de la iCE40UP5K.
+
+Tres lecturas. La red más pequeña cabe en el **mismo presupuesto de tiempo** que Canny-78 —712 ciclos frente a los 784
+de un cuadro— y ya gana un punto. La de 128 neuronas llega al **98,75 %** con los pesos, las activaciones y la entrada
+en 8 bits, usa la sexta parte de la SPRAM y clasificaría más de cuatro mil imágenes por segundo a 12 MHz; con 256
+neuronas ya no sube (98,65 %), de modo que el techo lo pone el descriptor y no el clasificador. Y **la misma red sobre
+los píxeles crudos reconoce menos (97,75 %) con cuatro veces y media más pesos**: el front-end de bordes sigue pagándose
+a sí mismo aunque el clasificador ya no sea lineal, que es la tesis del Capítulo 8 vista desde el otro lado. Son cotas
+medidas sobre el modelo y no un circuito; llevarlas al silicio exige repetir la verificación de diez mil imágenes que
+este trabajo hizo con Canny-78.
+
 **Sustituir los framebuffers de biestables por un macro de SRAM.** Es la respuesta directa al
 hallazgo central. Todo el precio documentado en el Capítulo 8 —área, frecuencia y
 manufacturabilidad— procede de implementar memoria con lógica porque el flujo empleado no ofrecía

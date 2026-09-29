@@ -1,0 +1,18 @@
+[
+ {
+  "oculta": 128,
+  "float": 0.9872,
+  "q8_pesos_y_activaciones": 0.9875,
+  "pesos": 22784,
+  "spram_pct": 17.4,
+  "ciclos_8dsp": 2848
+ },
+ {
+  "oculta": 256,
+  "float": 0.9866,
+  "q8_pesos_y_activaciones": 0.9865,
+  "pesos": 45568,
+  "spram_pct": 34.8,
+  "ciclos_8dsp": 5696
+ }
+]
