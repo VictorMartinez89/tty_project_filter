@@ -1,0 +1,58 @@
+[
+ {
+  "oculta": 32,
+  "bits": 8,
+  "exactitud": 0.9826,
+  "pesos": 5696,
+  "kbit": 44.5
+ },
+ {
+  "oculta": 32,
+  "bits": 4,
+  "exactitud": 0.9758,
+  "pesos": 5696,
+  "kbit": 22.2
+ },
+ {
+  "oculta": 32,
+  "bits": 2,
+  "exactitud": 0.1356,
+  "pesos": 5696,
+  "kbit": 11.1
+ },
+ {
+  "oculta": 32,
+  "bits": 1,
+  "exactitud": 0.7889,
+  "pesos": 5696,
+  "kbit": 5.6
+ },
+ {
+  "oculta": 128,
+  "bits": 8,
+  "exactitud": 0.9874,
+  "pesos": 22784,
+  "kbit": 178.0
+ },
+ {
+  "oculta": 128,
+  "bits": 4,
+  "exactitud": 0.9809,
+  "pesos": 22784,
+  "kbit": 89.0
+ },
+ {
+  "oculta": 128,
+  "bits": 2,
+  "exactitud": 0.1619,
+  "pesos": 22784,
+  "kbit": 44.5
+ },
+ {
+  "oculta": 128,
+  "bits": 1,
+  "exactitud": 0.7413,
+  "pesos": 22784,
+  "kbit": 22.2
+ }
+]

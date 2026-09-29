@@ -157,6 +157,21 @@ a sí mismo aunque el clasificador ya no sea lineal, que es la tesis del Capítu
 medidas sobre el modelo y no un circuito; llevarlas al silicio exige repetir la verificación de diez mil imágenes que
 este trabajo hizo con Canny-78.
 
+El ancho de los pesos decide cuánta memoria pide esa red, y se midió también, con las activaciones en 8 bits:
+
+| pesos | 32 neuronas | 128 neuronas | memoria de la de 128 |
+|---|---:|---:|---:|
+| 8 bits | 98,26 % | 98,74 % | 178 kbit |
+| 4 bits | 97,58 % | 98,09 % | 89 kbit |
+| 2 bits (−1, 0, +1) | 93,29 % | 94,07 % | 44 kbit |
+| 1 bit (sólo el signo) | 78,89 % | 74,13 % | 22 kbit |
+
+Table: Exactitud de la capa oculta según el ancho de los pesos, cuantizados después de entrenar.
+
+Con **4 bits** —los mismos de Canny-78— la red sigue por encima del 98 % con la mitad de memoria. Por debajo, la caída
+es en buena parte del método: los pesos se cuantizaron **después** de entrenar, y a 2 y 1 bit la práctica habitual es
+entrenar ya cuantizado, que no se ensayó aquí.
+
 **Sustituir los framebuffers de biestables por un macro de SRAM.** Es la respuesta directa al
 hallazgo central. Todo el precio documentado en el Capítulo 8 —área, frecuencia y
 manufacturabilidad— procede de implementar memoria con lógica porque el flujo empleado no ofrecía
