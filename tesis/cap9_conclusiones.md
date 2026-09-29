@@ -15,7 +15,7 @@ por una— y el resultado fue el mismo: **diez mil predicciones y diez mil vered
 idénticos**, con la matriz de confusión coincidiendo casilla por casilla. La prueba se repitió después
 con Canny-78, el reconocedor de 97,22 %, y ya no en el simulador sino **en la tarjeta**: las diez mil
 imágenes enviadas por el puerto serie y diez mil respuestas iguales a la simulación, dígito y rechazo
-incluidos. Esa exactitud no es fortuita
+incluidos; y otra vez con Canny-98, de 98,45 %, con el mismo resultado. Esa exactitud no es fortuita
 sino consecuencia de haber elegido una aritmética que la admite —enteros, pesos que son potencias de
 dos, norma L1, umbral por comparación—, y constituye por tanto una conclusión de diseño y no sólo de
 verificación.
@@ -85,7 +85,9 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
    vigésima parte de la memoria, y el circuito reproduce ese resultado sin discrepancia. Su versión
    ampliada, **Canny-78** —dieciséis zonas y 78 rasgos elegidos—, llega al **97,22 %** en la misma
    iCE40UP5K, lo reproduce en la tarjeta sobre las diez mil imágenes de prueba y firma en sky130 en
-   0,829 mm². La versión de cuarenta rasgos para Tiny Tapeout, de 94,20 %, cabe en 8×2 mosaicos con el
+   0,829 mm². **Canny-98**, con una capa oculta de 120 neuronas sobre los mismos rasgos, llega al **98,45 %** y
+   lo reproduce en la tarjeta sobre las diez mil imágenes con menos lógica que Canny-78. La versión de cuarenta
+   rasgos para Tiny Tapeout, de 94,20 %, cabe en 8×2 mosaicos con el
    42 % de utilización.
 
 5. **Dos cuadernos reproducibles** que contienen el código, los datos y las figuras de cada
@@ -168,10 +170,11 @@ El ancho de los pesos decide cuánta memoria pide esa red, y se midió también,
 
 Table: Exactitud de la capa oculta según el ancho de los pesos, cuantizados después de entrenar.
 
-Con **4 bits** —los mismos de Canny-78— la red sigue por encima del 98 % con la mitad de memoria. A esa
-configuración —el mismo front-end, los 168 rasgos de la pirámide y una capa oculta de 128 neuronas con pesos de 4
-bits, **98,09 %**— se la llama aquí **Canny-98**: es el siguiente circuito de esta línea, medido sobre el modelo y
-todavía sin RTL. Por debajo, la caída
+Con **4 bits** —los mismos de Canny-78— la red sigue por encima del 98 % con la mitad de memoria. Ese camino
+ya se recorrió una vez: **Canny-98** (§6.3.6) —el mismo front-end, los 168 rasgos y una capa oculta de 120 neuronas con
+pesos de 4 bits, en aritmética entera exacta— llega al **98,45 %** y reproduce el modelo en la tarjeta sobre las diez
+mil imágenes de prueba, con el 45 % de las celdas lógicas y todos los bloques de BRAM. Lo que queda por delante es la
+versión de 8 bits, la regla de rechazo calibrada y su paso a silicio. Por debajo, la caída
 es en buena parte del método: los pesos se cuantizaron **después** de entrenar, y a 2 y 1 bit la práctica habitual es
 entrenar ya cuantizado, que no se ensayó aquí.
 

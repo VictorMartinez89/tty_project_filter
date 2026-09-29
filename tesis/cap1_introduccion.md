@@ -178,8 +178,8 @@ RTL necesita para pasar a un ASIC, los bloques y la cadena completa firmados en 
 verificación eléctrica del camino crítico.
 
 El **Capítulo 6** presenta el reconocimiento de dígitos: el descriptor de orientaciones por zonas —una
-pirámide espacial—, el clasificador y su exactitud sobre MNIST; los cinco circuitos que lo llevan —con
-procesador o sin él, con pantalla o sin ella, y Canny-78—; su verificación contra el modelo y su
+pirámide espacial—, el clasificador y su exactitud sobre MNIST; los seis circuitos que lo llevan —con
+procesador o sin él, con pantalla o sin ella, Canny-78 y Canny-98—; su verificación contra el modelo y su
 validación en la tarjeta frente a una cámara.
 
 El **Capítulo 7** lleva el reconocedor a silicio: con cada front-end, en Tiny Tapeout y en su versión

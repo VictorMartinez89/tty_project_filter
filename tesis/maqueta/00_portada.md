@@ -34,7 +34,9 @@ Dos reconocedores llegan a silicio firmado. El de cuarenta rasgos alcanza **94,2
 mil imágenes de prueba de MNIST y cabe en ocho por dos tiles de **Tiny Tapeout**, listo para la
 lanzadera abierta SKY26d. **Canny-78**, que elige 78 rasgos entre 128 contadores de orientación,
 alcanza **97,22 %**, reproduce el modelo en la tarjeta imagen por imagen —diez mil de diez mil— y firma
-en sky130 en 1,122 mm², o en 0,829 mm² con la memoria de rasgos recortada a lo que usa.
+en sky130 en 1,122 mm², o en 0,829 mm² con la memoria de rasgos recortada a lo que usa. **Canny-98**,
+que añade una capa oculta de 120 neuronas con pesos de 4 bits sobre los mismos rasgos, alcanza **98,45 %**
+y también reproduce el modelo en la tarjeta en las diez mil imágenes, usando menos lógica que Canny-78.
 
 Las mediciones muestran que el sobrecoste en área del Canny frente al Sobel cae del 123 % al 3 %
 según cuánto más haga el circuito, y que comprar robustez al umbral en el front-end cuesta unas seis
@@ -70,6 +72,9 @@ ten-thousand-image MNIST test set and fits in eight by two **Tiny Tapeout** tile
 SKY26d open shuttle. **Canny-78**, which selects 78 features out of 128 orientation counters, reaches
 **97.22 %**, reproduces the model on the board image by image —ten thousand out of ten thousand— and
 signs off in sky130 at 1.122 mm², or 0.829 mm² with its feature memory trimmed to what it uses.
+**Canny-98**, which adds a 120-neuron hidden layer with 4-bit weights on the same features, reaches
+**98.45 %** and also reproduces the model on the board over all ten thousand images, using less logic
+than Canny-78.
 
 Measurements show that the Canny's area overhead against the Sobel falls from 123 % to 3 % depending
 on how much more the circuit does, and that buying threshold robustness in the front-end costs about

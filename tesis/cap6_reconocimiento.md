@@ -88,13 +88,13 @@ más que el número de zonas.](figuras/fig_5_4_espacio_de_diseno.png)
 
 ## 6.3 Los diseños: los reconocedores
 
-La tabla de la §6.2 compara front-ends; esta sección presenta los circuitos que los llevan. Son cinco,
+La tabla de la §6.2 compara front-ends; esta sección presenta los circuitos que los llevan. Son seis,
 y se describen con el mismo formato que los diseños de la §4.3: qué hacen, su pseudocódigo, dónde está
 el código, qué predice el modelo, qué muestra la simulación del hardware, qué se midió en la tarjeta y
 qué dio en silicio. Los cuatro primeros usan el descriptor de cuarenta rasgos de la §6.1 y difieren en
 dos decisiones: si el umbral lo fija un **procesador** o un cable, y si el resultado se **muestra** en
 una pantalla o sólo se entrega en unos pines. El quinto, Canny-78, es el mismo camino llevado al límite
-de la tarjeta.
+de la tarjeta, y el sexto, Canny-98, le añade una capa oculta.
 
 ### Pan Sobel
 
@@ -504,6 +504,88 @@ sitio**: lo que distingue a esos dígitos es la geometría del trazo, y ésa no 
 Canny-78 es el decimoséptimo circuito de este trabajo: en sky130 ocupa **1,122 mm²** y **29 449 celdas**
 tras la síntesis, y la variante con la memoria de rasgos recortada baja a **0,829 mm²**, las dos con DRC,
 LVS y XOR en cero. Los números, el porqué del recorte y su plano están en la §7.3.
+
+### Canny-98
+
+#### Resumen
+
+Canny-78 es lineal y, con la mitad de la iCE40UP5K ocupada, deja quietos dos recursos: la mayor parte de la BRAM y
+el megabit de SPRAM. Canny-98 los usa. Conserva el mismo front-end, el mismo extractor de dieciséis zonas y la misma
+memoria de 168 rasgos, y cambia sólo el clasificador: en lugar de una suma ponderada, **una capa oculta de 120
+neuronas** con activación ReLU y, detrás, las diez clases. Todo sigue siendo entero y sin una sola multiplicación por
+constante: pesos de 4 bits con una escala por capa, una activación de 8 bits que se obtiene con un desplazamiento, y el
+`argmax` al final.
+
+El tamaño no se eligió por la exactitud sino por la memoria. Con 128 neuronas el modelo da 98,43 % pero sus pesos
+piden 31 bloques de BRAM de los 30 que tiene el dispositivo; con 120 dan **98,45 %** y los 21 360 pesos de las dos
+capas caben juntos en la BRAM que deja libre el extractor: el diseño completo usa exactamente los 30 bloques. Las 120 activaciones van a
+la SPRAM, que no necesita inicializarse.
+
+#### Pseudocódigo
+
+```
+──────────────────────────────────────────────────────────────────────
+ Algoritmo 19   Canny-98: una capa oculta sobre los 168 rasgos
+──────────────────────────────────────────────────────────────────────
+ 1–3.  idénticos al Algoritmo 18                  ▷ extractor y trasvase
+ 4.    derivar los niveles 1 y 0 en fmem          ▷ 168 rasgos f[k]
+ ▷ capa oculta: 120 neuronas, pesos de 4 bits en BRAM
+ 5.    para j = 0..119:
+ 6.        acc ← b1[j] + suma de W1[j][k] · f[k], k = 0..167
+ 7.        h[j] ← min(255, max(0, acc ≫ 2))       ▷ a la SPRAM
+ ▷ capa de salida
+ 8.    para c = 0..9:
+ 9.        s[c] ← b2[c] + suma de W2[c][j] · h[j], j = 0..119
+10.    digito ← argmax s ; valido ← bordes plausibles
+──────────────────────────────────────────────────────────────────────
+```
+
+#### El código
+
+`mnist_clf98.v` sustituye a `mnist_clf78_x2.v` con la misma interfaz, de modo que `mnist_top98.v` es el `mnist_top78.v`
+con un nombre cambiado. Conserva sin tocar la memoria de rasgos y su derivación, y añade las dos capas: una
+multiplicación-acumulación por ciclo, 21 992 ciclos por imagen —1,8 ms a 12 MHz—. Se reproduce en el Anexo G.19.
+
+#### Simulación en Python
+
+El modelo de referencia no es la red en coma flotante sino su versión **entera, bit a bit como la calcula el
+circuito**: 98,65 % en coma flotante y **98,45 %** con los pesos de 4 bits, la activación de 8 bits y el
+desplazamiento. Ese es el número que el circuito tiene que reproducir.
+
+#### Simulación en Verilog
+
+El clasificador se simuló en `iverilog` sobre las diez mil imágenes de prueba, en un solo lote: **10 000 de 10 000**
+veredictos idénticos al modelo entero, dígito, decisión de rechazo y puntaje incluidos. El diseño completo de la
+tarjeta —con la UART simulada bit a bit y un byte perdido a propósito— dio además ocho de ocho.
+
+#### En la tarjeta
+
+Con el mismo procedimiento que Canny-78 —las diez mil imágenes de prueba enviadas por el puerto serie y un byte de
+respuesta por imagen—:
+
+| medición en la tarjeta | Canny-78 | **Canny-98** |
+|---|---:|---:|
+| **veredictos idénticos a la simulación** | 10 000 / 10 000 | **10 000 / 10 000** |
+| exactitud | 97,22 % | **98,45 %** |
+| celdas lógicas | 2 937 (55 %) | **2 380 (45 %)** |
+| bloques de BRAM | 9 de 30 | **30 de 30** |
+| bloques de SPRAM | 0 de 4 | **1 de 4** |
+| frecuencia máxima (la tarjeta exige 12 MHz) | 17,55 MHz | **17,76 MHz** |
+
+Table: Canny-98 frente a Canny-78, medidos en la tarjeta sobre las diez mil imágenes de prueba.
+
+> **Un punto y cuarto más, con menos lógica.** Canny-98 ocupa menos celdas lógicas que Canny-78: tiene un solo
+> multiplicador en lugar de dos, y sus pesos viven en bloques de memoria que ya estaban en el chip. Es la tesis de este trabajo vista desde el lado bueno: en la FPGA la memoria dedicada es casi gratis, y el
+> diseño que la usa es a la vez más exacto y más pequeño.
+
+La regla de rechazo de Canny-98 no se calibró todavía: decide sólo por la densidad de bordes, sin margen. Por eso
+responde el 90,47 % de las veces con un 98,30 % de acierto al responder, y no se compara con el 99,92 % de Canny-78, que
+sí lleva el margen calibrado. La exactitud no depende de esa regla.
+
+#### En silicio
+
+No se ha llevado a sky130. En silicio la BRAM no existe: los 83 kbit de pesos se sintetizarían en biestables, y el
+Capítulo 7 muestra cuánto cuesta eso. Es el siguiente paso natural, y el que haría falta medir.
 
 ## 6.4 Lo que la exactitud no muestra
 
