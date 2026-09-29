@@ -564,6 +564,29 @@ El clasificador se simuló en `iverilog` sobre las diez mil imágenes de prueba,
 veredictos idénticos al modelo entero, dígito, decisión de rechazo y puntaje incluidos. El diseño completo de la
 tarjeta —con la UART simulada bit a bit y un byte perdido a propósito— dio además ocho de ocho.
 
+Para mirarlo por dentro, un banco aparte encadena las cuatro primeras imágenes de prueba —un 7, un 2, un 1 y un 0—
+con un píxel cada 32 ciclos, como llegarían de la cámara o del puerto serie, y deja las señales con nombres legibles
+para GTKWave. Las cuatro respuestas coinciden con el modelo.
+
+![**Figura 6.21.** Canny-98 en GTKWave, las cuatro imágenes enteras. Cada `frame_done` dispara el trasvase
+(`cuenta` llega a 128), el clasificador recorre la capa oculta (`estado` 2, `neurona` de 0 a 119) y la de salida
+(`estado` 3, `clase` de 0 a 9), y `done` entrega `digito` = 7, 2, 1 y 0, con puntajes ganadores de 5 340, 3 680, 2 692
+y 4 036. Con el 1, `valido` baja: su trazo deja pocos bordes y la regla de densidad lo calla, como en el
+modelo.](figuras/fig_6_canny98_gtk_panorama.png)
+
+![**Figura 6.22.** El arranque, a los 251 µs. Sube `frame_done` con 238 bordes contados; el trasvase copia los 128
+contadores (`cuenta` de 0 a 128) y los vacía —`n_bordes` vuelve a 0—; en `estado` 1 se derivan los niveles 1 y 0 de
+la pirámide, y en `estado` 2 empieza la capa oculta: `indice` recorre los 168 rasgos y `acc` va
+acumulando.](figuras/fig_6_canny98_gtk_arranque.png)
+
+![**Figura 6.23.** La capa oculta por dentro. Cada neurona tarda 171 ciclos —1,71 µs—: 168 productos, dos de
+tubería y el cierre, en el que un pulso de `escribe_h` deja en la SPRAM su activación `h8`, el acumulador desplazado
+dos bits y recortado entre 0 y 255.](figuras/fig_6_canny98_gtk_oculta.png)
+
+![**Figura 6.24.** La capa de salida y la decisión. `clase` recorre las diez clases, cada una con sus 120
+activaciones; `mejor` sólo cambia cuando una clase supera a la anterior —−1 596, −38 con la clase 2, 110 con la 3 y
+5 340 con la 7— y, al terminar, `done` entrega `digito` = 7 con `valido` en alto, a los 472 µs.](figuras/fig_6_canny98_gtk_salida.png)
+
 #### En la tarjeta
 
 Con el mismo procedimiento que Canny-78 —las diez mil imágenes de prueba enviadas por el puerto serie y un byte de
@@ -667,7 +690,7 @@ predicción con la del modelo.
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
-![**Figura 6.21.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
+![**Figura 6.25.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
 ventana pasan uno a uno antes de que `done` presente un dígito. Es el nivel al que se hizo la
 comparación contra el modelo: no se compararon porcentajes, se compararon
@@ -690,7 +713,7 @@ incluye la decisión de rechazo, que es lógica de comparación y no de aritmét
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
 
-![**Figura 6.22.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
+![**Figura 6.26.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
 la escena del dígito 3. El panel A muestra los 19 ms de dos cuadros: el veredicto sale en el primero
 y no cambia en el segundo. El panel B captura el instante en que **el procesador sustituye el umbral
 por omisión del RTL, 110, por el 90 que escribe el firmware**, con el camino de datos todavía en
@@ -709,7 +732,7 @@ completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta re
 > **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
 > en silicio se comporta como el RTL verificado, errores incluidos.
 
-![**Figura 6.23.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
+![**Figura 6.27.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
 está cableado a la señal de configuración terminada; el azul parpadea con el latido del sistema. Los
 diez veredictos salen por el puerto serie del mismo conector que alimenta la tarjeta. A la derecha,
 el mismo montaje con el cableado del módulo de pantalla ya
