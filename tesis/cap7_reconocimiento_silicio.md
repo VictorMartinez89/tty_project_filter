@@ -11,11 +11,11 @@ de OpenLane hasta la firma del GDS:
 
 | magnitud | Sobel | Canny 1-salto |
 |---|---:|---:|
-| área del *die* | 0.845 mm² | 0.890 mm² |
+| área del *die* | 0,845 mm² | 0,890 mm² |
 | celdas tras síntesis | 16 718 | 17 373 |
 | celdas emplazadas | 19 949 | 20 921 |
-| período de reloj | 30 ns (33.3 MHz) | 30 ns (33.3 MHz) |
-| holgura con parásitos (`spef_wns`) | **0.00 ns** | **0.00 ns** |
+| período de reloj | 30 ns (33,3 MHz) | 30 ns (33,3 MHz) |
+| holgura con parásitos (`spef_wns`) | **0,00 ns** | **0,00 ns** |
 | DRC · LVS · XOR | 0 · 0 · 0 | 0 · 0 · 0 |
 
 Table: El reconocedor en silicio con front-end Sobel y con Canny de un salto.
@@ -46,11 +46,11 @@ directamente comparables entre sí:
 
 | nivel | Sobel | Canny | factor |
 |---|---:|---:|---:|
-| filtro aislado | 5 823 | 12 993 | **2.23×** |
-| con procesador | 12 043 | 22 054 | 1.83× |
-| sistema de visión completo | 35 653 | 41 925 | 1.18× |
-| reconocedor con procesador | 19 949 | 20 921 | 1.05× |
-| **reconocedor que además muestra** | **38 643** | **39 794** | **1.03×** |
+| filtro aislado | 5 823 | 12 993 | **2,23×** |
+| con procesador | 12 043 | 22 054 | 1,83× |
+| sistema de visión completo | 35 653 | 41 925 | 1,18× |
+| reconocedor con procesador | 19 949 | 20 921 | 1,05× |
+| **reconocedor que además muestra** | **38 643** | **39 794** | **1,03×** |
 
 Table: Costo relativo del front-end según el nivel del sistema.
 

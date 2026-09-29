@@ -57,24 +57,24 @@ sexta, **Canny-78**, es la versión ampliada que presenta la §6.3.5:
 
 | front-end | exactitud | F1 macro | precisión al responder | falsos positivos |
 |---|---:|---:|---:|---:|
-| Sobel | 91.04 % | 0.910 | 98.43 % | 98 |
-| SoC + Sobel | 91.03 % | 0.910 | 98.38 % | 103 |
-| Canny 1-salto | 92.03 % | 0.920 | 98.66 % | 85 |
-| SoC + Canny 1-salto | 92.46 % | 0.924 | 98.84 % | 73 |
-| Canny transitivo | 89.76 % | 0.897 | 97.80 % | 139 |
-| **Canny-78** *(§6.3.5)* | **97.22 %** | **0.972** | **99.92 %** | **5** |
+| Sobel | 91,04 % | 0,910 | 98,43 % | 98 |
+| SoC + Sobel | 91,03 % | 0,910 | 98,38 % | 103 |
+| Canny 1-salto | 92,03 % | 0,920 | 98,66 % | 85 |
+| SoC + Canny 1-salto | 92,46 % | 0,924 | 98,84 % | 73 |
+| Canny transitivo | 89,76 % | 0,897 | 97,80 % | 139 |
+| **Canny-78** *(§6.3.5)* | **97,22 %** | **0,972** | **99,92 %** | **5** |
 
 Table: Exactitud sobre MNIST según el front-end.
 
 El ruido experimental del procedimiento se estimó mediante **validación cruzada de diez pliegues
-disjuntos** sobre las 60 000 imágenes, obteniéndose **σ = 1.32 puntos porcentuales**. Bajo ese
+disjuntos** sobre las 60 000 imágenes, obteniéndose **σ = 1,32 puntos porcentuales**. Bajo ese
 criterio, **las diferencias entre los cuatro primeros front-ends no son estadísticamente
-demostrables**: el margen entre el mejor y el Sobel es de 1.42 pp, inferior a la propia σ. Únicamente
-el Canny transitivo se separa del conjunto, con 2.70 pp (2.05 σ), resultado que una prueba de
+demostrables**: el margen entre el mejor y el Sobel es de 1,42 pp, inferior a la propia σ. Únicamente
+el Canny transitivo se separa del conjunto, con 2,70 pp (2,05 σ), resultado que una prueba de
 Mann-Whitney sobre los pliegues confirma.
 
-La sexta fila es de otra escala. **Canny-78 aventaja al mejor de los cinco en 4.76 pp, es decir, en
-3.6 σ**, y lo hace con el mismo front-end que el SoC + Canny 1-salto: lo que cambia no es el filtro
+La sexta fila es de otra escala. **Canny-78 aventaja al mejor de los cinco en 4,76 pp, es decir, en
+3,6 σ**, y lo hace con el mismo front-end que el SoC + Canny 1-salto: lo que cambia no es el filtro
 sino el descriptor y el clasificador que lo leen. A una cobertura comparable —66 % frente a 63 %—
 responde y se equivoca **cinco veces en diez mil**, contra setenta y tres. Es, además, la
 configuración que corre hoy en la tarjeta.
@@ -114,6 +114,8 @@ entrar en la iCE40UP5K y no entrar.
 
 #### Pseudocódigo
 
+\needspace{22\baselineskip}
+
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 14   Pan Sobel: la cámara, el procesador y el clasificador
@@ -145,7 +147,7 @@ G.14; el periférico es el de la G.4 y el generador de ventana el de la G.12.
 
 #### Simulación en Python
 
-Su modelo es la fila **SoC + Sobel** de la tabla de la §6.2: **91.03 %** sobre las diez mil imágenes de
+Su modelo es la fila **SoC + Sobel** de la tabla de la §6.2: **91,03 %** sobre las diez mil imágenes de
 prueba, a una décima de la fila sin procesador. Es lo esperable, porque el procesador escribe un número
 y no toca la aritmética.
 
@@ -180,10 +182,12 @@ y XOR en cero. Su plano es la Figura 7.1 (§7.1).
 Es el circuito anterior con el Canny de un salto en el extractor. El programa del procesador cambia en
 una constante que resultó decisiva: escribe **los dos umbrales**, 90 y 32 (`0x5A20`). Con el programa
 original del Sobel, `0x5A00`, el umbral bajo queda en cero, todo píxel es borde débil y la histéresis
-los promueve casi todos: la exactitud cae de 92.46 a 89.93 %. El umbral bajo sale del periférico por un
+los promueve casi todos: la exactitud cae de 92,46 a 89,93 %. El umbral bajo sale del periférico por un
 **puerto declarado** —la lección de la §6.7—.
 
 #### Pseudocódigo
+
+\needspace{12\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
@@ -206,7 +210,7 @@ la G.14 con otros pesos y otros límites de rechazo.
 
 #### Simulación en Python
 
-Su modelo es la fila **SoC + Canny 1-salto**: **92.46 %**, la mejor de los cinco front-ends de cuarenta
+Su modelo es la fila **SoC + Canny 1-salto**: **92,46 %**, la mejor de los cinco front-ends de cuarenta
 rasgos, y la de menos falsos positivos, 73.
 
 #### Simulación en Verilog: las señales
@@ -259,6 +263,8 @@ exige el silicio (§5.1).
 
 #### Pseudocódigo
 
+\needspace{17\baselineskip}
+
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 16   Visión MNIST: ver, reconocer y mostrar
@@ -281,7 +287,7 @@ clasificador de la G.14. Se reproducen en el Anexo G.16.
 
 ![**Figura 6.9.** De los pines a las cajas: `vision_sobel_mnist`. En el dominio de la cámara, la captura de la luma, la ventana de 28×28 y el clasificador, con el umbral cableado en 60; en el del sistema, la configuración de la cámara y el controlador de la pantalla, que dibuja la ventana ampliada, el marco verde y el dígito. Los unen dos cruces: el *framebuffer* de 784 bytes y los dos biestables por los que pasa el dígito.](figuras/fig_6_visionsobel_pines.png)
 
-Su modelo es la fila **Sobel** de la §6.2: **91.04 %**.
+Su modelo es la fila **Sobel** de la §6.2: **91,04 %**.
 
 ![**Figura 6.10.** La cadena sin procesador en GTKWave: el umbral es el 60 cableado (`3C`), y el
 clasificador reconoce el 3 de la escena. Es el mismo extractor y el mismo clasificador que dieron diez
@@ -308,6 +314,8 @@ probado en la tarjeta.
 
 #### Pseudocódigo
 
+\needspace{10\baselineskip}
+
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 17   Visión Canny MNIST
@@ -324,7 +332,7 @@ extractor de la G.15 con su clasificador. Se reproducen en el Anexo G.17.
 
 #### Simulación en Python
 
-Su modelo es la fila **Canny 1-salto**: **92.03 %**.
+Su modelo es la fila **Canny 1-salto**: **92,03 %**.
 
 #### Simulación en Verilog: las señales
 
@@ -352,6 +360,8 @@ los umbrales 90/32 del firmware, y pregunta **cuánto más puede reconocer la mi
 amplía el descriptor. El resultado se denomina **Canny-78** por el número de rasgos con que opera.
 
 #### Pseudocódigo
+
+\needspace{20\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
@@ -401,8 +411,8 @@ diseño de la tarjeta con el puerto serie, la del diseño con cámara y pantalla
 ![**Figura 6.15.** De los pines a las cajas: `mnist_top78`, Canny-78. El extractor cuenta los bordes en 128 contadores —16 zonas por 8 octantes— guardados en una memoria síncrona; al terminar el cuadro, el trasvase los copia en 130 ciclos a la memoria del clasificador, vaciándolos al leerlos. El clasificador deriva los niveles 1 y 0 de la pirámide, recorre los 78 rasgos elegidos calculando dos clases por pasada y aplica la regla de rechazo: 777 ciclos en total, siete menos de los 784 que dura un cuadro.](figuras/fig_6_canny78_pines.png)
 
 **El techo del descriptor de cuarenta rasgos.** Un barrido de capacidad mostró que el nivel 1 de la
-pirámide no supera el **94.86 % ni siquiera con pesos en coma flotante**, mientras que el nivel 2
-—dieciséis zonas, 168 rasgos— alcanza el 97.56 % con pesos de 4 bits. Con 168 rasgos de 3 bits se
+pirámide no supera el **94,86 % ni siquiera con pesos en coma flotante**, mientras que el nivel 2
+—dieciséis zonas, 168 rasgos— alcanza el 97,56 % con pesos de 4 bits. Con 168 rasgos de 3 bits se
 obtiene más que con 40 rasgos de 8 bits: **la resolución espacial vale más que la precisión de los
 pesos**. La razón se hizo visible al observar la cadena etapa por etapa: sobre MNIST, con estos
 umbrales, la máscara no es un contorno sino la silueta engrosada del trazo, y lo que el descriptor
@@ -411,8 +421,8 @@ mide es **dónde hay tinta**; para eso, más zonas es exactamente lo que falta.
 **Elegir cuáles, no cuántas.** El clasificador es serie —una multiplicación-acumulación por ciclo— y
 entre dos cuadros de 28×28 dispone de 784 ciclos. Diez clases por 78 rasgos suman 780: el máximo
 que cabe. Se seleccionaron **los 78 rasgos más informativos** de los 168, y el resultado fue
-**97.22 %**, a un tercio de punto del modelo completo: los 168 rasgos dan 97.56 % con pesos de 4 bits y 98.16 % en coma flotante. Con sólo 40 rasgos elegidos, en lugar de los 40 por
-omisión, la exactitud sube de 92.46 % a 95.38 % —95.56 % con los sesgos recalibrados—: con el mismo
+**97,22 %**, a un tercio de punto del modelo completo: los 168 rasgos dan 97,56 % con pesos de 4 bits y 98,16 % en coma flotante. Con sólo 40 rasgos elegidos, en lugar de los 40 por
+omisión, la exactitud sube de 92,46 % a 95,38 % —95,56 % con los sesgos recalibrados—: con el mismo
 número de pesos y la misma memoria, el mero hecho de escoger qué se mide vale casi tres puntos.
 
 **Verificación.** La cadena completa —extractor de dieciséis zonas, trasvase de contadores y
@@ -421,7 +431,7 @@ con tiempos muertos entre píxeles: **10 000 de 10 000** veredictos idénticos, 
 rechazo incluidos. La verificación destapó siete fallos reales que la comparación por totales había
 ocultado; el más instructivo fue una **latencia de encadenado de `k·(W+1)` y no de `k·(W+2)`**, error
 que compartían otros tres módulos del trabajo. Emplazado y ruteado con `nextpnr`, Canny-78 ocupa
-**2 606 celdas lógicas (49 %)** y nueve bloques de BRAM, y cierra a **16.45 MHz** frente a los 12 MHz
+**2 606 celdas lógicas (49 %)** y nueve bloques de BRAM, y cierra a **16,45 MHz** frente a los 12 MHz
 que exige la tarjeta. Cabe dentro de los 784 ciclos de un cuadro con cinco de margen.
 
 ![**Figura 6.16.** Canny-78 en GTKWave, en el paso que el diseño de cuarenta rasgos no tiene: el
@@ -448,7 +458,7 @@ resto de la corrida. Antes de grabarlo se verificó en cuatro niveles: el RTL co
 simulada bit a bit; el comportamiento ante un byte perdido a propósito; **el circuito que construyó
 el sintetizador**, simulado con sus celdas de la iCE40 sobre imágenes elegidas para fallar si un aviso
 del sintetizador sobre los sesgos del clasificador hubiera sido cierto —no lo era—; y el emplazamiento
-final, **2 937 celdas lógicas (55 %) a 17.55 MHz**.
+final, **2 937 celdas lógicas (55 %) a 17,55 MHz**.
 
 ![**Figura 6.18.** El diseño de la tarjeta simulado con su puerto serie bit a bit antes de grabarlo.
 El panel A muestra dos lotes de cuatro imágenes que entran por `uart_rx_pin`, la pausa que realinea la
@@ -459,9 +469,9 @@ cadena (`reset_cad`) y los ocho veredictos, todos iguales al modelo. El panel B 
 | medición en la tarjeta | resultado |
 |---|---:|
 | **veredictos idénticos a la simulación (dígito y rechazo)** | **10 000 / 10 000** |
-| exactitud | 97.22 % |
-| cobertura (responde) | 84.65 % |
-| precisión al responder | 99.15 % |
+| exactitud | 97,22 % |
+| cobertura (responde) | 84,65 % |
+| precisión al responder | 99,15 % |
 | lotes repetidos por error de transmisión | 0 |
 
 Table: Canny-78 medido en la tarjeta sobre las diez mil imágenes de prueba.
@@ -470,7 +480,7 @@ Table: Canny-78 medido en la tarjeta sobre las diez mil imágenes de prueba.
 > imagen, sin una sola discrepancia.** El «nueve de diez» de la §6.7 demostraba que el circuito
 > funcionaba; esto demuestra que funciona **exactamente** como se diseñó, sobre diez mil casos.
 
-La cobertura de la tabla (84.65 %) corresponde al punto de operación grabado en la tarjeta, más
+La cobertura de la tabla (84,65 %) corresponde al punto de operación grabado en la tarjeta, más
 propenso a responder que el de la §6.2 (66 %, calibrado con el mismo procedimiento que los otros
 cinco front-ends). Ambos son puntos de la misma curva y no se comparan entre sí.
 
@@ -478,7 +488,7 @@ cinco front-ends). Ambos son puntos de la misma curva y no se comparan entre sí
 pantalla —**4 748 celdas lógicas (89 %)**, once bloques de BRAM, los dos relojes con margen— y, con la
 cámara emulada mostrando los diez dígitos dos cuadros cada uno, **coincidió con el modelo en los veinte
 cuadros** —incluido el 1, que el modelo también rechaza por tener un trazo demasiado fino—. Frente a dígitos
-manuscritos reales, en cambio, acertó **seis de treinta y seis intentos** (16.7 %), cifra que con tan
+manuscritos reales, en cambio, acertó **seis de treinta y seis intentos** (16,7 %), cifra que con tan
 pocos ensayos no se distingue del azar. El circuito no es la causa: es el mismo que dio diez mil de
 diez mil. La causa es la escena, y se midió: desplazando las diez mil imágenes de prueba como lo
 haría una cámara mal encuadrada, **tres píxeles de corrimiento bastan para que la exactitud caiga del
@@ -494,7 +504,7 @@ baja al 94,28 % con seis y al 81,57 % con ocho. A la derecha, el tamaño del tra
 acierta el 47,76 %, y con el normalizador, el 95,29 %. El circuito no cambia entre una curva y otra; cambia lo que se
 le muestra.](figuras/fig_brecha_camara.png)
 
-Por dígito, los más difíciles siguen siendo el **9, el 8 y el 7** (F1 de 0.956, 0.961 y 0.963), y las
+Por dígito, los más difíciles siguen siendo el **9, el 8 y el 7** (F1 de 0,956, 0,961 y 0,963), y las
 confusiones que quedan son las mismas familias de siempre: el trazo recto con diagonal del 4, el 7 y
 el 9, y las curvas cerradas del 8 y el 9. **Canny-78 reduce los errores, pero no los cambia de
 sitio**: lo que distingue a esos dígitos es la geometría del trazo, y ésa no depende del circuito.
@@ -522,6 +532,8 @@ capas caben juntos en la BRAM que deja libre el extractor: el diseño completo u
 la SPRAM, que no necesita inicializarse.
 
 #### Pseudocódigo
+
+\needspace{18\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
@@ -629,11 +641,11 @@ conservan revelan una diferencia que la exactitud oculta:
 
 | front-end | AUC macro | Brier | Brier skill |
 |---|---:|---:|---:|
-| SoC + Canny 1-salto | **0.9960** | **0.1465** | **0.8371** |
-| Canny 1-salto | 0.9957 | 0.1558 | 0.8268 |
-| Sobel | 0.9945 | 0.1746 | 0.8059 |
-| Canny transitivo | 0.9942 | **0.1991** | 0.7787 |
-| SoC + Sobel | 0.9939 | 0.1749 | 0.8056 |
+| SoC + Canny 1-salto | **0,9960** | **0,1465** | **0,8371** |
+| Canny 1-salto | 0,9957 | 0,1558 | 0,8268 |
+| Sobel | 0,9945 | 0,1746 | 0,8059 |
+| Canny transitivo | 0,9942 | **0,1991** | 0,7787 |
+| SoC + Sobel | 0,9939 | 0,1749 | 0,8056 |
 
 Table: Calibración del clasificador según el front-end: AUC y puntaje de Brier.
 
@@ -652,9 +664,9 @@ sección:
 
 | magnitud | rango de exactitud | en unidades de σ |
 |---|---:|---:|
-| el umbral, dentro del Sobel | **5.79 pp** | **4.4 σ** |
-| el umbral, dentro del Canny | 0.90 pp | 0.7 σ |
-| el filtro, cada uno en su óptimo | 0.38 pp | 0.3 σ |
+| el umbral, dentro del Sobel | **5,79 pp** | **4,4 σ** |
+| el umbral, dentro del Canny | 0,90 pp | 0,7 σ |
+| el filtro, cada uno en su óptimo | 0,38 pp | 0,3 σ |
 
 Table: Peso del punto de operación frente al del front-end en la exactitud.
 
@@ -685,10 +697,10 @@ predicción con la del modelo.
 | Comparación | Resultado |
 |---|---|
 | Predicciones idénticas | **10 000 / 10 000** |
-| Exactitud del RTL / del modelo | **91.04 % / 91.04 %** |
+| Exactitud del RTL / del modelo | **91,04 % / 91,04 %** |
 | Matriz de confusión | idéntica elemento por elemento |
 | Veredictos de la clase de rechazo | **10 000 / 10 000** idénticos |
-| Cuadros aceptados · precisión al responder | 8 838 (88.38 %) · 95.44 %, en ambos |
+| Cuadros aceptados · precisión al responder | 8 838 (88,38 %) · 95,44 %, en ambos |
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
@@ -705,7 +717,7 @@ incluye la decisión de rechazo, que es lógica de comparación y no de aritmét
 
 > Conviene precisar el alcance, porque más adelante aparece una cifra distinta. Lo que aquí es
 > exacto es el **clasificador completo** —descriptor, pesos y decisión— evaluado imagen por imagen.
-> El 99.91 % que informa la §6.7 se refiere a otra comparación: la del **extractor de bordes**
+> El 99,91 % que informa la §6.7 se refiere a otra comparación: la del **extractor de bordes**
 > píxel a píxel dentro de la cadena, cuyas discrepancias se concentran en la última fila del cuadro
 > y no alteran ninguna de las diez mil clasificaciones. Son dos medidas de objetos distintos y no se
 > contradicen.
@@ -762,6 +774,6 @@ diez: el valor que la simulación predecía.
 > escrita la regla de trabajo que se adoptó a partir de aquí: **toda señal que cruce una frontera de
 > módulo se declara como puerto**, aunque el simulador acepte el atajo.
 
-La verificación del extractor contra su modelo de referencia arrojó **99.91 %** de coincidencia
-exacta píxel a píxel para el Sobel y **99.93 %** para el Canny, concentrándose las diferencias en la
+La verificación del extractor contra su modelo de referencia arrojó **99,91 %** de coincidencia
+exacta píxel a píxel para el Sobel y **99,93 %** para el Canny, concentrándose las diferencias en la
 última fila del cuadro.

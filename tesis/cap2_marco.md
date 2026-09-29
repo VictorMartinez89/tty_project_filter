@@ -428,6 +428,8 @@ assign out_sobel_core_o = (sum_xy_grad > 255) ? 255 : sum_xy_grad;
 
 Con la notación de la §4.4:
 
+\needspace{19\baselineskip}
+
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 0   Gris + Sobel de Maldonado (TT06)
