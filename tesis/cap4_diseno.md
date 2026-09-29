@@ -180,7 +180,7 @@ gaussiano, con líneas de 60 píxeles (Anexo G.1). Su plano en KLayout se muestr
 tabla, y el punto de partida de todos los demás.
 
 
-#### Sobel compass + dirección
+#### Filtro Sobel de brújula y dirección
 
 El Sobel de arriba mide *cuánto* cambia la imagen con dos núcleos, Gx y Gy. La variante *compass*
 (brújula) gira el núcleo en pasos de 45° y obtiene **ocho**: N, NE, E, SE, S, SW, W y NW. Cada uno
