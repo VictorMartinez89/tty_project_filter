@@ -221,7 +221,7 @@ desplazadas y la raíz con `isqrt.sv`, que sólo resta y desplaza. No usa el ope
 cuadrado así *es* un multiplicador de 11×11 por eje, y por eso el módulo acompaña la simulación y no
 entra en ningún filtro sintetizado.
 
-El modelo de referencia en Python muestra, para cada una de las cinco imágenes, la
+El modelo de referencia, simulado en Python, muestra para cada una de las cinco imágenes la
 respuesta de cada dirección junto a la magnitud euclídea √(Gx²+Gy²), que no cambia de fila a fila y
 sirve de referencia visual.
 
