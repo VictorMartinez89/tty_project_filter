@@ -127,7 +127,7 @@ iCE40 cerraba entre 9 y 28 MHz. En silicio la lógica es rápida; **lo caro es e
 eje sobre el que gira todo este capítulo.
 
 ![**Figura 5.9.** El filtro Sobel en silicio: `sobel_top.gds` abierto en KLayout. Con 0,167 mm² es el
-circuito más pequeño de la tabla; en el perímetro, los pines del píxel de entrada y de
+filtro más pequeño de la tabla; en el perímetro, los pines del píxel de entrada y de
 salida.](figuras/fig_4_sobel_asic.png)
 
 ![**Figura 5.10.** El SoC con el Sobel en silicio: `soc_sobel_top.gds` en KLayout. Con 0,37 mm², el
@@ -199,6 +199,8 @@ La §5.2 presentó bloques: filtros solos, un front-end de cámara, un driver de
 visualización— en un solo dado. Los seis están organizados como una matriz de dos variables, el
 **filtro** y la **presencia de procesador**, de modo que cada comparación entre dos de ellos aísla una
 sola causa.
+
+\needspace{14\baselineskip}
 
 ### 5.3.1 La tabla maestra
 
@@ -477,7 +479,7 @@ otro, prácticamente el mismo valor absoluto en dos caminos distintos— que la 
 La explicación más probable es que el procedimiento empleado conserva las **capacidades** internas de
 la celda pero no sus **resistencias**, de modo que su metal interno sigue comportándose como un
 cortocircuito ideal. Se anota como **probable y no comprobada**. Y la realimentación de pendientes a
-lo largo de la cadena resulta asimétrica entre los dos chips —+1,47 ns en uno y −0,04 en el otro—
+lo largo de la cadena resulta asimétrica entre los dos chips (+1,47 ns en uno y −0,04 en el otro)
 sin explicación disponible.
 
 > **La conclusión.** El simulador y el analizador no discrepan sobre la física: discrepan sobre el

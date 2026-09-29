@@ -213,7 +213,7 @@ vista:
 11.  bin_raw ≔ ⟨σy, σx, |Gy|>|Gx|⟩               ▷ el octante
  ▷ etapa 3 — histéresis de un salto
 12.  (c₀₀…c₂₂, v_c) ≔ LINEBUF3X3⟨W,5⟩(v_s, ⟨bin_raw, cls⟩)    ▷ 5 bits: 3 + 2
-13.  fuerte_cerca ≔ ⋁_{(i,j)≠(1,1)} (c_ij[1:0] = 2)
+13.  fuerte_cerca ≔ algún vecino (i,j) ≠ (1,1) con c_ij = 2
 14.  cen ≔ c₁₁[1:0]
 15.  borde ≔ (cen = 2) ? verdadero : (cen = 1) ? fuerte_cerca : falso
 16.  LAT  ≔ 3·(W+2)                              ▷ TRES etapas, no dos
@@ -301,6 +301,7 @@ No hay computador de por medio: la cámara entra por trece pines de la iCE40 y l
 cuatro, y el PC sólo alimenta la placa y la programa por USB.
 
 ![**Figura 4.14.** De los pines a las cajas: el Canny de un salto en la iCESugar, sin computador de por medio. Es `cam_canny2_display.v`: tras el submuestreo, el gaussiano, el Sobel, el doble umbral y la histéresis de un salto, cada uno con sus dos líneas de retardo —las de clases, de dos bits—. Los umbrales son los de la tarjeta, 50 y 20, más bajos que los del modelo para la cámara en vivo (§4.9.5). Cada flecha lleva el pin de la iCE40UP5K según el `.pcf` que funcionó en la tarjeta —el del Anexo C—; el recuadro azul es el dominio del reloj del sistema, el naranja el del reloj de píxel de la cámara, y el *framebuffer* es el cruce entre los dos.](figuras/fig_4_canny_pines.png)
+
 ![**Figura 4.15.** El Canny de un salto corriendo en la iCESugar sobre las cinco escenas: la mariposa
 `monarch`, la flor, la mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente
 de la pantalla.](figuras/fig_4_canny_placa.jpg)

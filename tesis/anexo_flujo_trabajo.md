@@ -1,8 +1,8 @@
 # Anexo F. El flujo de trabajo, paso a paso
 
 > Si el Anexo E describe **con qué** se trabaja, éste describe **en qué orden**. Recorre el camino
-> completo, desde el primer fichero Verilog hasta comprobar que el circuito enviado a fabricación se
-> comporta como el simulado. Sigue el procedimiento documentado por J. Ruiz (ref. 49), que es el que
+> completo, desde el primer fichero Verilog hasta comprobar que el circuito que se enviaría a fabricación
+> se comporta como el simulado. Sigue el procedimiento documentado por J. Ruiz (ref. 49), que es el que
 > se adoptó en este trabajo, y anota en cada paso lo que la experiencia posterior añadió.
 
 ## F.1 Compilación y simulación del RTL
@@ -170,7 +170,7 @@ uno y se corrigen antes de que se acumulen. La parte que produce el plano tarda 
 > explícitamente porque tiene consecuencia: **un flujo que pasa con las comprobaciones desactivadas
 > no está verificando el diseño, sólo está comprobando que compila.**
 
-## F.6 Comprobación del circuito fabricado
+## F.6 Comprobación del circuito que se enviaría a fabricar
 
 Cuando el flujo remoto termina, publica sus resultados como un archivo descargable. Dentro están el
 Verilog sintetizado y el plano final, y ese plano puede reabrirse en Magic igual que el generado

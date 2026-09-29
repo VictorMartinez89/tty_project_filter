@@ -60,7 +60,7 @@
 25. **✓** N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Transactions on Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. ▸ Aparece también como «vol. 9»; se adopta «SMC-9», que es la numeración del índice de la revista.
 26. **✓** J. Canny, «A Computational Approach to Edge Detection», *IEEE Transactions on Pattern Analysis and Machine Intelligence*, vol. PAMI-8, n.º 6, pp. 679–698, nov. 1986.
 27. **✓** L. Vincent, «Morphological Grayscale Reconstruction in Image Analysis: Applications and Efficient Algorithms», *IEEE Transactions on Image Processing*, vol. 2, n.º 2, pp. 176–201, abr. 1993.
-28. R. C. Gonzalez y R. E. Woods, *Digital Image Processing*, Pearson — histéresis, umbral doble, reconstrucción morfológica y componentes conexas.
+28. R. C. Gonzalez y R. E. Woods, *Digital Image Processing*, 4.ª ed., Pearson, 2018 — histéresis, umbral doble, reconstrucción morfológica y componentes conexas.
 
 ## Reconocimiento y clasificación de patrones
 
@@ -97,7 +97,6 @@
 47. Diana Natali Maldonado Ramírez, *tt06_grayscale_sobel — Gray scale and Sobel filter*, Tiny Tapeout 06, sky130, 2024. Chip fabricado y medido; es el antecedente directo de este trabajo (§2.9). <https://github.com/DianaNatali/tt06_grayscale_sobel>
 48. L. Baischer, A. Leitner, B. Kulnik, S. Marschner y M. Cerv, *FPGA-Net: A Neural Network Hardware Accelerator*, proyecto universitario, Technische Universität Wien. <https://github.com/kayaleitner/FPGA_MNIST> ▸ **No es una publicación revisada por pares**, y así se cita en el Capítulo 2.
 
----
 
 ## Documentación de instalación del entorno
 

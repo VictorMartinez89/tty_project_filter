@@ -1,7 +1,7 @@
 ---
 title: "Diseño de un MicroControlador con arquitectura RISC-V"
 subtitle: "Un SoC RISC-V con tres detectores de bordes y un clasificador de dígitos, del modelo de referencia al GDSII firmado"
-author: "Victor Alfonso Martinez Solarte"
+author: "Victor Alfonso Martínez Solarte"
 lang: es-CO
 documentclass: report
 toc: true

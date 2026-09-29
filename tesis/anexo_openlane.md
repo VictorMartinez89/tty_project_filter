@@ -76,8 +76,9 @@ que la activan son los que almacenan un cuadro; ninguno de los que procesan en f
 la misma frontera que separa las dos familias en la §4.10 —por latencia— y en la §8.1 —por área—,
 manifestada esta vez en el ruteo.
 
-**El periodo sólo se relaja en los tres últimos.** Los tres llevan procesador *y* cadena completa, y
-son los únicos a los que no se les pudo exigir 50 MHz. La §8.3 explica qué fija el reloj en cada
+**El periodo sólo se relaja en cinco diseños**: los dos `pan_*`, a 30 ns, y los tres `soc_*_completo`, a 32 y
+36 ns. Los cinco llevan procesador junto a algo más —el clasificador o la cadena completa—, y son los únicos a
+los que no se les pudo exigir 50 MHz. La §8.3 explica qué fija el reloj en cada
 caso.
 
 > Dicho de otro modo: **el mismo flujo, con el mismo kit y las mismas celdas, exige recetas cada vez

@@ -159,7 +159,7 @@ alto.](figuras/fig_6_pansobel_gtkwave.png)
 #### Simulación en Verilog: la imagen
 
 ![**Figura 6.4.** Pan Sobel frente a once escenas de cámara simuladas —los diez dígitos y una escena
-vacía—. Arriba, lo que vio en su ventana de 28×28; abajo, qué respondió en cada escena: **ocho de
+vacía—. A la izquierda, lo que vio en su ventana de 28×28; a la derecha, qué respondió en cada escena: **ocho de
 once**. Los fallos son el 2, que toma por 6, y el 6 y el 9, en los que prefiere
 callar.](figuras/fig_6_cadena_socsobel.png)
 
@@ -584,8 +584,8 @@ tubería y el cierre, en el que un pulso de `escribe_h` deja en la SPRAM su acti
 dos bits y recortado entre 0 y 255.](figuras/fig_6_canny98_gtk_oculta.png)
 
 ![**Figura 6.24.** La capa de salida y la decisión. `clase` recorre las diez clases, cada una con sus 120
-activaciones; `mejor` sólo cambia cuando una clase supera a la anterior —−1 596, −38 con la clase 2, 110 con la 3 y
-5 340 con la 7— y, al terminar, `done` entrega `digito` = 7 con `valido` en alto, a los 472 µs.](figuras/fig_6_canny98_gtk_salida.png)
+activaciones; `mejor` sólo cambia cuando una clase supera a la anterior: −1 596 con la clase 0, −38 con la 2, 110 con la 3 y
+5 340 con la 7; y, al terminar, `done` entrega `digito` = 7 con `valido` en alto, a los 472 µs.](figuras/fig_6_canny98_gtk_salida.png)
 
 #### En la tarjeta
 
@@ -679,6 +679,8 @@ Las cifras anteriores son del modelo en Python. La pregunta que decide si sirven
 circuito las reproduce, y se respondió por el camino más exigente disponible: **ejecutar el RTL sobre
 las diez mil imágenes de prueba** en el simulador y comparar, no los porcentajes agregados, sino cada
 predicción con la del modelo.
+
+\needspace{12\baselineskip}
 
 | Comparación | Resultado |
 |---|---|

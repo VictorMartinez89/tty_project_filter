@@ -4320,6 +4320,9 @@ están en `mnist_weights78_x2.vh`. El generador de ventana es el de la G.12. Est
 mismos, con la misma suma md5, en el diseño de la tarjeta, en el de cámara y pantalla y en el que va a
 silicio.
 
+Dos de estos ficheros conservan en su primera línea el nombre del módulo del que se derivaron
+—`mnist_feat_canny.v` y `mnist_clf78_bram.v`—; se imprimen tal cual, como el resto del anexo.
+
 Carpeta: `Verilog_Repo/canny78/asic/`.
 
 ### `mnist_top78.v`

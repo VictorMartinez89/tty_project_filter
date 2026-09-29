@@ -280,7 +280,7 @@ sudo make install prefix=/usr/local
 
 ## E.10 El entorno de Tiny Tapeout
 
-Reproducir exactamente el circuito que se envió a fabricación exige algo distinto de instalar
+Reproducir exactamente el circuito que se envíe a fabricación exige algo distinto de instalar
 herramientas: exige **reconstruir el entorno tal como estaba el día del envío**. Para eso hay un guion
 que fija las versiones históricas del proyecto —una versión concreta del flujo, una del kit de
 diseño, una de open_pdks y una de las herramientas de soporte— en lugar de tomar las más recientes.
@@ -329,10 +329,10 @@ TT_INSTALL_DEPS=0 ./Docs/create_SDK_TinyTapeOut.sh docker setup
 
 Los resultados quedan bajo `~/ttsky25b-sdk/`, en un subdirectorio por modo.
 
-## E.11 Simulación del netlist fabricado
+## E.11 Simulación del netlist final
 
-El último paso del entorno no sirve para construir un circuito sino para **comprobar el que ya está
-fabricado**. A partir del netlist posterior al emplazamiento y ruteo del circuito enviado, junto con
+El último paso del entorno no sirve para construir un circuito sino para **comprobar el que se
+fabricaría**. A partir del netlist posterior al emplazamiento y ruteo del circuito final, junto con
 su banco de pruebas y sus reglas de compilación, se simula el diseño tal como quedó en silicio y no
 tal como se describió en el RTL.
 
