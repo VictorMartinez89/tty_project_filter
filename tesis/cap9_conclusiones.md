@@ -100,7 +100,7 @@ evidencia es más difícil de atacar que uno que no enumera ninguno; y un jurado
 por su cuenta es mucho peor que uno que lo ve ya corregido.
 
 | # | Lo que se afirmó | Lo que la medida mostró |
-|---|---|---|
+|------|------------------------------------------------------------|------------------------------------------------------------|
 | 1 | Una señal de sincronismo ausente en el sensor | Era un desplazamiento de uno en el conteo de línea |
 | 2 | Un umbral óptimo hallado sobre 20 000 imágenes | No se transfiere al conjunto completo de 60 000 |
 | 3 | Una exactitud del **97,3 %** | Provenía de un defecto del banco de medida |
@@ -141,7 +141,7 @@ mil imágenes de prueba, cuánto reconocería la misma tarjeta si el clasificado
 capa oculta con pesos de 8 bits —lo que multiplica un DSP—:
 
 | entrada | capa oculta | pesos | SPRAM | ciclos con 8 DSP | exactitud |
-|---|---:|---:|---:|---:|---:|
+|----------------------------------------|-----------:|-------------:|------:|----------------:|---------:|
 | Canny-78, 78 rasgos (el circuito actual) | — | 780 de 4 bits | — | 647 | 97,22 % |
 | 168 rasgos de la pirámide | 32 | 5 696 | 4,3 % | 712 | 98,28 % |
 | 168 rasgos de la pirámide | 64 | 11 392 | 8,7 % | 1 424 | 98,43 % |

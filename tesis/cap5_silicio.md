@@ -149,7 +149,7 @@ esta tabla y la de la §5.3.
 Un circuito se puede contar en dos momentos del flujo, y las dos cifras son legítimas:
 
 | Definición | Qué cuenta | Dónde se usa |
-|---|---|---|
+|------------------|------------------------------------------------------------|--------------------------|
 | celdas de **síntesis** | el resultado de traducir el RTL a compuertas | la tabla de la §5.3 |
 | celdas **emplazadas** | lo que queda tras emplazar y rutear, con los amortiguadores que el flujo inserta para el árbol de reloj y la reparación de tiempos | **esta** tabla y el Capítulo 6 |
 
@@ -292,7 +292,7 @@ El mismo ejercicio, hecho ahora sobre el eje del filtro en lugar del procesador,
 central de este capítulo:
 
 | Alcance del patrón | Filtro | Celdas (sin CPU) | Δ respecto al anterior |
-|---|---|---:|---:|
+|-----------------------|-----------------|----------------:|----------------------:|
 | local, ventana 3×3 | Sobel | 36 730 | — |
 | local más un salto | Canny de un salto | 42 581 | +5 851 |
 | **global, cuadro completo** | Canny transitivo | **137 092** | **+94 511** |
@@ -359,7 +359,7 @@ Se aplicaron cinco variantes del mismo banco, cada una añadiendo un ingrediente
 que la diferencia entre dos renglones consecutivos aísla la contribución de ese ingrediente:
 
 | | `pan_sobel` (37 etapas) | `pan_canny` (36 etapas) |
-|---|---:|---:|
+|---------------------------------------------------------|---------------------:|---------------------:|
 | **Analizador estático, con parásitos** | **12,230 ns** | **9,890 ns** |
 | A · las puertas solas | 4,646 ns | 4,424 ns |
 | B · más la capacitancia extraída, agrupada | 8,159 ns | 7,552 ns |
@@ -442,7 +442,7 @@ extrajeron con Magic las **cuarenta y seis celdas** que aparecen en los dos cami
 los dos experimentos sin cambiar nada más.
 
 | razón biblioteca / simulación | celda del **esquemático** | celda **extraída** |
-|---|---:|---:|
+|------------------------------------|---------------------:|--------------:|
 | capacitancia de pin · `pan_sobel` | 1,30 | **0,98** |
 | capacitancia de pin · `pan_canny` | 1,27 | **0,99** |
 | retardo de celda aislada · `pan_sobel` | 1,31 | **1,05** |
@@ -458,7 +458,7 @@ justamente lo que faltaba.
 Repartidos los 12,230 ns sin residuo, el término que importa sale igual en los dos circuitos:
 
 | | `pan_sobel` | `pan_canny` |
-|---|---:|---:|
+|--------------------------------------------|---------:|---------:|
 | **el modelo de celda, como fracción del camino** | **22,6 %** | **22,1 %** |
 | resistencia de la interconexión | 0,1 % | 0,2 % |
 

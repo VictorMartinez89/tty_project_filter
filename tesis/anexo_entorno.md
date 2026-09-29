@@ -15,7 +15,7 @@ El reparto resultante es el siguiente, y conviene tenerlo escrito porque determi
 cada resultado de este documento:
 
 | Etapa | Herramienta | Dónde corre |
-|---|---|---|
+|------------------------------|------------------------------|----------------|
 | Modelo de referencia | Python, NumPy | equipo principal |
 | Simulación RTL y verificación | Icarus Verilog, cocotb | equipo principal |
 | Síntesis lógica | yosys | equipo principal |

@@ -127,7 +127,7 @@ que la §9.1 cierra uno por uno:
 La correspondencia entre unos y otros es la siguiente:
 
 | Objetivo aprobado | Objetivos operativos | Dónde se cumple |
-|---|---|---|
+|------------------------------------------------------------|--------------------|------------------------------------------------------------|
 | 1. Arquitectura mínima del microcontrolador RISC-V | 3 | §4.5: FemtoRV32 (RV32I) con su periférico de filtros, UART, pantalla por SPI y cámara por SCCB |
 | 2. El algoritmo de inteligencia artificial | 1, 2 | Caps. 2 y 3, §4.8 y el Capítulo 6: los detectores de bordes y el clasificador de dígitos, verificados contra el modelo |
 | 3. Flujo ASIC con herramientas EDA, para el procesador y el algoritmo | 4, 5 | §5.2, §5.3, §7.1 y §5.4: los circuitos con GDSII firmado, el procesador entre ellos, y la adaptación a Tiny Tapeout |

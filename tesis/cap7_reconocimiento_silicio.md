@@ -45,7 +45,7 @@ están en **celdas emplazadas**, la misma escala de la §5.2, de modo que los co
 directamente comparables entre sí:
 
 | nivel | Sobel | Canny | factor |
-|---|---:|---:|---:|
+|------------------------------|------:|------:|------:|
 | filtro aislado | 5 823 | 12 993 | **2,23×** |
 | con procesador | 12 043 | 22 054 | 1,83× |
 | sistema de visión completo | 35 653 | 41 925 | 1,18× |
@@ -83,7 +83,7 @@ con la receta de los demás circuitos: reloj de 30 ns, utilización del 30 % y d
 **decimoséptimo circuito** de este trabajo, y firma limpio:
 
 | | Canny-78 | Canny-78 recortado |
-|---|---:|---:|
+|-------------------------------------------|----------------------------:|-----------------------:|
 | dado | 1,122 mm² (1 043 × 1 042 µm) | **0,829 mm²** (−26 %) |
 | celdas tras la síntesis | 29 449 | 21 409 |
 | potencia (interna y de conmutación) | 25,3 mW | 18,6 mW |

@@ -111,7 +111,7 @@ Los resultados del Capítulo 5 permiten seguir el camino crítico a lo largo de 
 y observar que **el responsable cambia tres veces**:
 
 | Diseño | Quién fija la frecuencia |
-|---|---|
+|----------------------|-----------------------------------------|
 | Filtros solos | el camino de datos del filtro |
 | Con procesador | **el FemtoRV32** |
 | Con framebuffer grande | **el multiplexor de lectura del framebuffer** |
@@ -175,7 +175,7 @@ para eso está el procesador con su periférico. Un Canny insensible no lo neces
 Poniendo precio a las dos soluciones sobre el mismo silicio:
 
 | lo que se compra | dónde | cuesta |
-|---|---|---:|
+|----------------------------------|----------------------------|------------:|
 | robustez al umbral **en el front-end** | el Canny, en el reconocedor | **972 celdas** |
 | robustez al umbral **por software** | el procesador y su periferia | **6 220 celdas** |
 

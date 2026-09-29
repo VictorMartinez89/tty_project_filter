@@ -47,7 +47,7 @@ Si el cómputo es el mismo, **lo que distingue a las cuatro es de dónde sale la
 criterio produce una agrupación en tres familias que organiza el resto del capítulo:
 
 | Familia | De dónde sale la plantilla | Ejemplo en este trabajo |
-|---|---|---|
+|--------------|------------------------------------------------------------|----------------------------|
 | **escrita a mano** | una persona la deriva de un modelo de qué es un borde | Sobel, Prewitt, Kirsch |
 | **buscada** | se obtiene optimizando un criterio, o la operación misma busca | Canny; histéresis transitiva |
 | **aprendida** | se ajusta a partir de datos | los pesos del clasificador |
@@ -393,7 +393,7 @@ a 320×240, sobre sus tres imágenes de prueba y las dos fotografías propias de
 tarjeta «HOLA»—, que se usan a lo largo de los Capítulos 4 y 5:
 
 | Imagen | Brillo medio | Error medio (niveles de gris) | Píxeles con error de 5 o menos |
-|---|---:|---:|---:|
+|------------------------------------|------------:|-----------------------------:|------------------------------:|
 | `flower` (Maldonado) | 6,5 | 0,85 | 93,6 % |
 | `monarch` (Maldonado) | 93,4 | 8,33 | 21,5 % |
 | `butterfly` (Maldonado) | 125,7 | 9,82 | 14,0 % |
@@ -459,7 +459,7 @@ Con una Raspberry Pi como host, Maldonado barrió la frecuencia del chip, la del
 alimentación, y comparó cada imagen devuelta con la calculada en software:
 
 | Medición (modo gris, imagen de 320×240) | Resultado |
-|---|---|
+|-------------------------------------------------------|------------------------------------------------------------|
 | Caudal más alto con la imagen **idéntica** a la de software | **371 662 píxeles/s** (reloj del chip 100 MHz, SPI 9,8 MHz, 1,8 V) |
 | Potencia a 1,8 V, 100 MHz, SPI a 9 MHz | **2,87 mW** |
 | A 1,3 V, según su propia figura | sigue exacta a 346 514 píxeles/s, con ≈ 1,3 mW |

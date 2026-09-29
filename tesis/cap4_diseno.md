@@ -26,7 +26,7 @@ no altera la latencia del cauce: cuatro ciclos siguen siendo cuatro ciclos.
 El sistema tiene **dos relojes asíncronos entre sí**:
 
 | Dominio | Frecuencia | Qué vive ahí |
-|---|---|---|
+|--------|--------------|------------------------------------------------------------|
 | `clk` | 50 MHz (20 ns) | configuración SCCB, generación del raster, driver de pantalla |
 | `cam_pclk` | 25 MHz (40 ns) | captura, submuestreo, filtro, escritura del almacenamiento |
 
@@ -195,6 +195,8 @@ más fuerte**: la dirección del borde, que el Sobel de dos núcleos no da sin u
 | NE | `[ 2  1  0 /  1  0 -1 /  0 -1 -2]` | | SW | `= −NE` |
 | E  | `[ 1  0 -1 /  2  0 -2 /  1  0 -1]` | | W  | `= −E`  |
 | SE | `[ 0 -1 -2 /  1  0 -1 /  2  1  0]` | | NW | `= −SE` |
+
+Table: Los ocho núcleos de la brújula; los de S a NW son los negativos de los de N a SE.
 
 Son dos ficheros, en el mismo estilo que el resto: `sobel_compass_core.sv` es 100 % combinacional y
 **sin multiplicadores** —los pesos `±1` y `±2` son sumas, restas y un desplazamiento—, y
@@ -1164,7 +1166,7 @@ desde FPGA, porque el código funciona idénticamente en simulación en ambos ca
 La iCE40UP5K ofrece tres clases de almacenamiento, y el diseño usa las tres con criterios distintos:
 
 | Recurso | Cantidad | Uso en este trabajo |
-|---|---|---|
+|---------------------------|--------|-------------------------------------|
 | Celdas lógicas | 5 280 | lógica y registros pequeños |
 | Bloques de memoria (4 kbit) | 30 | **memorias de línea** de las ventanas 3×3 |
 | SPRAM (256 kbit) | 4 | **framebuffers** del filtro transitivo |
@@ -1307,7 +1309,7 @@ origen del resultado de la §5.3.3.
 ### 4.9.2 Los tres filtros, funcionando
 
 | Filtro | Arquitectura | Implementación física | Umbrales en la placa |
-|---|---|---|---|
+|-----------------|------------|-----------------------------------------|--------------------|
 | Sobel | flujo | hardware, con procesador FemtoRV32 | 90 |
 | Canny de un salto | flujo | hardware, con procesador FemtoRV32 | 50 / 20 |
 | Canny transitivo | **framebuffer** | hardware, motor en Verilog **sin procesador** | 60 / 30 |
@@ -1331,12 +1333,12 @@ La tabla recoge el **Device utilisation** que informa `nextpnr-ice40` tras el em
 dispositivo. Las cinco filas de una misma columna proceden de **una sola corrida con una sola versión
 de las herramientas**, para que sean comparables entre sí.
 
-| Diseño | LC / 5 280 | BRAM / 30 | SPRAM / 4 | E/S / 39 | *f*máx sistema | *f*máx cámara |
-|---|---:|---:|---:|---:|---:|---:|
-| Transitivo, motor dedicado **sin procesador** | 2 426 (45 %) | 17 (56 %) | **2 (50 %)** | 18 (46 %) | **28,7 MHz** ✓ | 20,6 MHz ✓ |
-| SoC + Sobel | 4 848 (91 %) | 20 (66 %) | 0 | 18 (46 %) | 9,5 MHz ✗ | 20,7 MHz ✓ |
-| SoC + Canny de un salto | 5 234 (**99 %**) | 24 (80 %) | 0 | 18 (46 %) | 9,5 MHz ✗ | 17,7 MHz ✓ |
-| SoC + transitivo **por software** | 5 251 (**99 %**) | 28 (93 %) | 0 | 18 (46 %) | 8,7 MHz ✗ | 20,5 MHz ✓ |
+| Diseño | LC / 5 280 | BRAM / 30 | SPRAM / 4 | E/S / 39 | *f*máx sistema (MHz) | *f*máx cámara (MHz) |
+|----------------------|-------------:|----------:|---------:|----------:|-----------:|-----------:|
+| Transitivo, motor dedicado **sin procesador** | 2 426 (45 %) | 17 (56 %) | **2 (50 %)** | 18 (46 %) | **28,7** ✓ | 20,6 ✓ |
+| SoC + Sobel | 4 848 (91 %) | 20 (66 %) | 0 | 18 (46 %) | 9,5 ✗ | 20,7 ✓ |
+| SoC + Canny de un salto | 5 234 (**99 %**) | 24 (80 %) | 0 | 18 (46 %) | 9,5 ✗ | 17,7 ✓ |
+| SoC + transitivo **por software** | 5 251 (**99 %**) | 28 (93 %) | 0 | 18 (46 %) | 8,7 ✗ | 20,5 ✓ |
 | SoC + transitivo **como periférico** | no emplaza (≈ 127 %) | — | — | — | — | — |
 
 Table: Utilización de la iCE40UP5K y frecuencias máximas de cada diseño.
@@ -1451,7 +1453,7 @@ milisegundos en hacerlo.
 ### 4.10.1 Las dos arquitecturas
 
 | | Flujo (Sobel, Canny de un salto) | Framebuffer (Canny transitivo) |
-|---|---|---|
+|--------|------------------------------------------|-------------------------------------------|
 | Ritmo | un píxel por ciclo, una vez lleno el cauce | barre el cuadro **K** veces hasta el punto fijo |
 | Latencia | baja — llenar el cauce | alta — todo el cuadro por K barridos |
 | Caudal | alto | bajo |
@@ -1480,7 +1482,7 @@ memorias de línea arrancan sin inicializar, y se busca el último ciclo cuya sa
 ese contenido indefinido.
 
 | Filtro | Etapas 3×3 | Latencia de cauce | Primer píxel utilizable | En tiempo, a su reloj |
-|---|---:|---:|---:|---:|
+|-----------------------|----------:|-----------------:|-----------------------:|---------------------:|
 | Sobel | 1 | **4 ciclos** | **125 ciclos** | ≈ 0,96 µs |
 | Canny de un salto | 3 | **8 ciclos** | **313 ciclos** | ≈ 2,7 µs |
 | SoC + Sobel | 1 | 4 ciclos | 125 ciclos | ≈ 1,05 µs |
@@ -1524,7 +1526,7 @@ que contarlo. Un banco instrumentado cuenta las entradas al estado de barrido y 
 hasta la señal de terminado:
 
 | Imagen de clases | K | Ciclos totales | A 81 MHz | A 106 MHz |
-|---|---:|---:|---:|---:|
+|--------------------------------|------:|--------------:|--------:|---------:|
 | Sólo bordes fuertes | **1** | 19 772 | 243 µs | 187 µs |
 | **Bordes típicos** | **2** | **24 859** | **306 µs** | 235 µs |
 | Peor caso: cadena débil de 50 px | **51** | 274 122 | 3,37 ms | 2,59 ms |

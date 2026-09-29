@@ -9,7 +9,7 @@ en la base **`0x0045_0000`**. Su diseño obedece a la decisión de arquitectura 
 píxeles no pasan por el bus**. El periférico expone tres registros y nada más.
 
 | Desplazamiento | Nombre | Acceso | Campos |
-|---|---|---|---|
+|--------------|------|---------|------------------------------------------------------------|
 | `0x00` | `CTRL` | escritura | `[1:0]` modo · `[4]` habilitación · `[5]` reinicio del motor |
 | `0x04` | `THR` | escritura | `[7:0]` umbral bajo · `[15:8]` umbral alto |
 | `0x08` | `STAT` | lectura | `[0]` configuración terminada · `[1]` motor ocupado · `[2]` sincronismo vivo · `[23:8]` cuenta de cuadros |

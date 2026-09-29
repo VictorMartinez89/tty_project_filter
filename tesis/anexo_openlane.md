@@ -10,7 +10,7 @@ trabajo. El resto conserva su valor por omisión, y esa contención es deliberad
 modificado es una variable más que explicar si un resultado sale distinto del esperado.
 
 | Parámetro | Qué controla |
-|---|---|
+|--------------------|-------------------------------------------------------|
 | `CLOCK_PERIOD` | el periodo objetivo, en nanosegundos |
 | `FP_CORE_UTIL` | la fracción del núcleo que se pretende llenar de celdas |
 | `PL_TARGET_DENSITY` | la densidad objetivo del emplazador |

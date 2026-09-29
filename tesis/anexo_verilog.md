@@ -11,7 +11,9 @@ que no cabían en la página se han partido en dos; el código no se ha tocado, 
 líneas de código demasiado largas se parten entre dos sentencias, dos argumentos, dos sumandos o dos ramas de una condición, y los
 comentarios al final de ellas suben a la línea anterior. En Verilog un salto de línea equivale a un
 espacio, de modo que el circuito descrito es el mismo; se comprobó fichero por fichero, comparando el
-código sin espacios ni comentarios.
+código sin espacios ni comentarios. Por la misma razón pudieron tocarse los comentarios en un segundo
+sentido: los que remitían a la numeración interna del cuaderno de trabajo («Parte 152», «fase 7») se
+retiraron, o se cambiaron por la sección equivalente de esta tesis.
 
 ## G.1 Filtro Sobel (§4.3.1)
 
@@ -834,9 +836,9 @@ Carpeta: `Verilog_Repo/completos/sobel_completo/`.
 //                 --> [sobel_top: Sobel 3x3, umbral fijo]
 // --> [framebuffer 60x80] (puente stream->pantalla; guarda bordes binarios)
 //                 --> [lcd_ili9341_top: SPI + ROM ILI9341] --> PMOD TFTLCD
-// Ensamblado con los MODULOS reusables ya verificados (fases 7, 1, 8). UN SOLO RELOJ
+// Ensamblado con los MODULOS reusables ya verificados. UN SOLO RELOJ
 //   (clk): el
-// front-end sincroniza PCLK/HREF/VSYNC con 2-FF internos (Parte 152), asi que no hay
+// front-end sincroniza PCLK/HREF/VSYNC con 2-FF internos (§4.2), asi que no hay
 //   dual-clock.
 `default_nettype none
 module sobel_completo (
@@ -926,14 +928,14 @@ endmodule
 ### `cam_frontend_top.v`
 
 ```verilog
-// cam_frontend_top.v — FRONT-END de la OV7670 AUTOCONTENIDO para ASIC sky130 (fase 7).
+// cam_frontend_top.v — FRONT-END de la OV7670 AUTOCONTENIDO para ASIC sky130.
 // Une las 3 piezas verificadas en FPGA: SCCB (config) + captura (PCLK/HREF/VSYNC/D7:0
 //   -> RGB565,
 // con sincronizadores 2-FF = CDC) + RGB565->gris. Entrega un STREAM DE GRIS
 //   (gray/gray_valid)
 // listo para cualquiera de los 6 filtros. La salida SCCB open-drain se parte en
 //   dato+enable
-//   (siod_o/siod_oe): el tri-state vive en el anillo de I/O (Parte 114).
+//   (siod_o/siod_oe): el tri-state vive en el anillo de I/O.
 `default_nettype none
 module cam_frontend_top #(
     parameter integer SYSCLK_HZ = 48_000_000,
@@ -985,8 +987,7 @@ endmodule
 ```verilog
 // ov7670_sccb.v (VARIANTE ASIC) — identico al SCCB verificado en FPGA, PERO la salida
 //   open-drain se parte en dato+enable (siod_o / siod_oe) en vez de 1'bz. En el ASIC el
-// tri-state vive en el ANILLO DE I/O (el pad hace: pad = siod_oe ? siod_o : Z). Ver
-//   Parte 114.
+// tri-state vive en el ANILLO DE I/O (el pad hace: pad = siod_oe ? siod_o : Z).
 `default_nettype none
 module ov7670_sccb #(
     parameter integer SYSCLK_HZ = 12_000_000,
@@ -1113,57 +1114,57 @@ endmodule
 // ============================================================================
 // ov7670_capture.v
 //
-// OV7670 camera capture front-end for the femto2 SoC (tty_project_filter thesis).
-// Target board: iCESugar v1.5  (Lattice iCE40UP5K-SG48)
-// Wiring:       PMOD2 = pixel data D[7:0],  PMOD3 = clocks/sync/SCCB
+// Captura de la camara OV7670 para el SoC femto2 (esta tesis).
+// Tarjeta:      iCESugar v1.5  (Lattice iCE40UP5K-SG48)
+// Conexion:     PMOD2 = datos de pixel D[7:0],  PMOD3 = relojes/sincronismo/SCCB
 //
-// What this module does:
-//   1) Generates XCLK (~24 MHz) to drive the OV7670.
-//   2) Synchronises PCLK/HREF/VSYNC into the FPGA sysclk domain.
-//   3) Captures one 8-bit pixel byte on each PCLK rising edge while HREF=1.
-//   4) Combines two consecutive bytes into one 16-bit RGB565 pixel.
-//   5) Emits frame_start / line_start pulses for downstream pipeline sync.
+// Lo que hace este modulo:
+//   1) Genera XCLK (~24 MHz) para la OV7670.
+//   2) Sincroniza PCLK/HREF/VSYNC al dominio sysclk de la FPGA.
+//   3) Captura un byte de pixel en cada flanco de subida de PCLK mientras HREF=1.
+//   4) Junta dos bytes consecutivos en un pixel RGB565 de 16 bits.
+//   5) Emite los pulsos frame_start / line_start para sincronizar lo que sigue.
 //
-// What this module does NOT do (separate modules needed):
-//   - SCCB (I2C-like) master to configure the camera at boot
-//     -> implement in   cores/camera/ov7670_sccb.v
-//   - Line buffering / DMA into RAM for the femto2 to read
-//     -> downstream consumer's job
+// Lo que NO hace (va en otros modulos):
+//   - el maestro SCCB (parecido a I2C) que configura la camara al arrancar
+//     -> en cores/camera/ov7670_sccb.v
+//   - guardar lineas o copiarlas por DMA a la RAM para que las lea el femto2
+//     -> es trabajo de quien consume el flujo
 //
-// Verilog-2001 style, written to be readable as a teaching example.
+// Verilog-2001, escrito para leerse como ejemplo didactico.
 // ============================================================================
 
 `default_nettype none
 
 module ov7670_capture #(
-    parameter integer SYSCLK_HZ = 48_000_000,   // FPGA system clock (Hz)
-    parameter integer XCLK_HZ   = 24_000_000    // target XCLK to camera (Hz)
+    parameter integer SYSCLK_HZ = 48_000_000,   // reloj del sistema de la FPGA (Hz)
+    parameter integer XCLK_HZ   = 24_000_000    // XCLK deseado para la camara (Hz)
 ) (
-    // -------- Clock & reset --------
-    input  wire        sysclk,                 // system clock (>= 2 * PCLK)
-    input  wire        rst_n,                  // active-low reset
+    // -------- Reloj y reinicio --------
+    input  wire        sysclk,                 // reloj del sistema (>= 2 * PCLK)
+    input  wire        rst_n,                  // reinicio activo en bajo
 
-    // -------- OV7670 pins (cross the PMOD boundary) --------
-    input  wire [7:0]  cam_d,                  // pixel data byte   (PMOD2)
-    input  wire        cam_pclk,               // pixel clock       (PMOD3, in)
-    input  wire        cam_href,               // line valid        (PMOD3, in)
-    input  wire        cam_vsync,              // frame sync        (PMOD3, in)
-    output wire        cam_xclk,               // FPGA-gen'd clock  (PMOD3, out, ~24 MHz)
+    // -------- Pines de la OV7670 (cruzan el PMOD) --------
+    input  wire [7:0]  cam_d,                  // byte de pixel     (PMOD2)
+    input  wire        cam_pclk,               // reloj de pixel    (PMOD3, entrada)
+    input  wire        cam_href,               // linea valida      (PMOD3, entrada)
+    input  wire        cam_vsync,              // sincronismo de cuadro (PMOD3, entrada)
+    output wire        cam_xclk,               // reloj que genera la FPGA (PMOD3, salida, ~24 MHz)
 
-    // -------- Pixel stream out (sysclk domain) --------
-    output reg  [15:0] pixel_rgb565,           // 16-bit RGB565 pixel
-    output reg         pixel_valid,            // 1 sysclk pulse when pixel_rgb565 is fresh
-    output reg         frame_start,            // pulse at start of every frame
-    output reg         line_start              // pulse at start of every line
+    // -------- Flujo de pixeles de salida (dominio sysclk) --------
+    output reg  [15:0] pixel_rgb565,           // pixel RGB565 de 16 bits
+    output reg         pixel_valid,            // pulso de 1 ciclo cuando pixel_rgb565 es nuevo
+    output reg         frame_start,            // pulso al comienzo de cada cuadro
+    output reg         line_start              // pulso al comienzo de cada linea
 );
 
     // ========================================================================
-    // 1) XCLK generator: divide sysclk down to ~XCLK_HZ
+    // 1) Generador de XCLK: divide sysclk hasta ~XCLK_HZ
     // ------------------------------------------------------------------------
-    // For low-jitter operation prefer the iCE40UP5K PLL (SB_PLL40_PAD); this
-    // counter-based divider is fine for the OV7670 (it tolerates wide XCLK).
+    // Para menos fluctuacion conviene el PLL de la iCE40UP5K (SB_PLL40_PAD); este
+    // divisor con contador basta para la OV7670 (tolera un XCLK amplio).
     // ========================================================================
-    localparam integer DIVIDER = (SYSCLK_HZ / (2 * XCLK_HZ));   // toggle every DIVIDER cycles
+    localparam integer DIVIDER = (SYSCLK_HZ / (2 * XCLK_HZ));   // conmuta cada DIVIDER ciclos
     reg [15:0] xclk_cnt;
     reg        xclk_r;
     always @(posedge sysclk or negedge rst_n) begin
@@ -1180,9 +1181,9 @@ module ov7670_capture #(
     assign cam_xclk = xclk_r;
 
     // ========================================================================
-    // 2) 2-FF synchronisers for the camera's async-looking inputs
-    //    (PCLK is technically derived from cam_xclk, but it returns to us
-    //     through the camera + cable: treat as async, synchronise it.)
+    // 2) Sincronizadores de 2 FF para las entradas de la camara, que llegan como asincronas
+    //    (PCLK sale de cam_xclk, pero vuelve a traves de la camara y el cable:
+    //     se trata como asincrono y se sincroniza.)
     // ========================================================================
     reg [1:0] pclk_s, href_s, vsync_s;
     always @(posedge sysclk or negedge rst_n) begin
@@ -1200,7 +1201,7 @@ module ov7670_capture #(
     wire href_now  = href_s [1];
     wire vsync_now = vsync_s[1];
 
-    // Edge detection: remember previous value, compare to current.
+    // Deteccion de flancos: se guarda el valor anterior y se compara con el actual.
     reg pclk_prev, href_prev, vsync_prev;
     always @(posedge sysclk or negedge rst_n) begin
         if (!rst_n) begin
@@ -1218,13 +1219,13 @@ module ov7670_capture #(
     wire vsync_rising =  vsync_now & ~vsync_prev;
 
     // ========================================================================
-    // 3) Byte capture + RGB565 byte-pair combiner
-    //    The OV7670 sends each 16-bit RGB565 pixel as two bytes back-to-back:
-    //        byte 0 (upper) = { R[4:0] , G[5:3] }
-    //        byte 1 (lower) = { G[2:0] , B[4:0] }
-    //    Align at the start of every line via href_rising.
+    // 3) Captura de bytes y union de cada par en un pixel RGB565
+    //    La OV7670 envia cada pixel RGB565 de 16 bits como dos bytes seguidos:
+    //        byte 0 (alto) = { R[4:0] , G[5:3] }
+    //        byte 1 (bajo) = { G[2:0] , B[4:0] }
+    //    Se realinea al comienzo de cada linea con href_rising.
     // ========================================================================
-    reg       byte_phase;     // 0 -> waiting for upper byte ; 1 -> waiting for lower byte
+    reg       byte_phase;     // 0 -> espera el byte alto ; 1 -> espera el byte bajo
     reg [7:0] upper_byte;
 
     always @(posedge sysclk or negedge rst_n) begin
@@ -1236,16 +1237,16 @@ module ov7670_capture #(
             frame_start  <= 1'b0;
             line_start   <= 1'b0;
         end else begin
-            // Single-cycle output pulses by default.
+            // Por defecto, los pulsos de salida duran un ciclo.
             pixel_valid <= 1'b0;
             frame_start <= vsync_rising;
             line_start  <= href_rising;
 
-            // Re-align at the start of each line so we never get half-pixels.
+            // Realinear al comienzo de cada linea para no partir nunca un pixel.
             if (href_rising)
                 byte_phase <= 1'b0;
 
-            // Sample data on PCLK rising edge while the line is active.
+            // Muestrear el dato en el flanco de subida de PCLK mientras la linea esta activa.
             if (pclk_rising && href_now) begin
                 if (byte_phase == 1'b0) begin
                     upper_byte <= cam_d;
@@ -1269,7 +1270,7 @@ endmodule
 // ============================================================================
 // rgb565_to_gray.v
 // Convierte un pixel RGB565 (el que sale de ov7670_capture) a gris de 8 bits.
-// Luma aproximada SIN multiplicar (estilo Diana, solo sumas y shifts):
+// Luma aproximada SIN multiplicar (como en el chip de Maldonado, solo sumas y shifts):
 //     Y = (R + 2*G + B) >> 2
 // RGB565:  [15:11]=R5  [10:5]=G6  [4:0]=B5  (se expanden a 8 bits replicando MSBs).
 // ============================================================================
@@ -1296,7 +1297,7 @@ endmodule
 
 ```verilog
 // lcd_ili9341_top.v — DRIVER del PMOD TFTLCD (ILI9341, SPI) AUTOCONTENIDO para ASIC
-//   sky130 (fase 8).
+//   sky130.
 // El otro extremo de la cadena: toma un STREAM de pixeles en gris (pix_gray, con
 //   handshake pix_next)
 // y lo pinta en la pantalla por SPI. Hace: (1) delay de arranque, (2) secuencia de
@@ -1480,7 +1481,7 @@ Carpeta: `Verilog_Repo/completos/canny1_completo/`.
 //                 --> [lcd_ili9341_top: SPI + ROM ILI9341] --> PMOD TFTLCD
 // Misma receta ganadora del sobel_completo (framebuffer de 1 bit). UN SOLO RELOJ
 //   (clk): el front-end
-// sincroniza PCLK/HREF/VSYNC con 2-FF internos (Parte 152), asi que no hay dual-clock.
+// sincroniza PCLK/HREF/VSYNC con 2-FF internos (§4.2), asi que no hay dual-clock.
 `default_nettype none
 module canny1_completo (
     input  wire       clk,
@@ -1577,7 +1578,7 @@ Carpeta: `Verilog_Repo/vision_top/`.
 ### `vision_top.v`
 
 ```verilog
-// vision_top.v — EL CHIP QUE VE Y MUESTRA, integrado para ASIC sky130 (fase 9, "todo
+// vision_top.v — EL CHIP QUE VE Y MUESTRA, integrado para ASIC sky130 ("todo
 //   en el ASIC").
 // camara OV7670 -> SCCB config -> submuestreo 60x80 -> SOBEL 3x3 -> framebuffer ->
 //   display ILI9341.
@@ -1909,8 +1910,7 @@ Carpeta: `Verilog_Repo/vision_canny/`.
 ### `vision_canny_top.v`
 
 ```verilog
-// vision_canny_top.v — EL CHIP QUE VE Y MUESTRA con CANNY, integrado para ASIC sky130
-//   (fase 10).
+// vision_canny_top.v — EL CHIP QUE VE Y MUESTRA con CANNY, integrado para ASIC sky130.
 // camara OV7670 -> SCCB -> submuestreo 60x80 -> Gaussian 3x3 -> Sobel 3x3 -> doble
 //   umbral ->
 // HISTERESIS 1-salto -> framebuffer -> display ILI9341.  Bordes mas limpios y
@@ -2241,7 +2241,7 @@ Carpeta: `Verilog_Repo/completos/trans_completo/`.
 // la camara sobrescribe clsfb (si llega cuadro nuevo mientras barre, la imagen "salta"
 //   un poco: esperado).
 // UN SOLO RELOJ (clk): el front-end sincroniza PCLK/HREF/VSYNC con 2-FF internos
-//   (Parte 152).
+//   (§4.2).
 `default_nettype none
 module trans_completo (
     input  wire       clk,
@@ -3185,14 +3185,14 @@ module mnist_feat #(
     //   muestras:
     // W+1 porque la ventana centrada en (r,c) recien esta cuando entro (r+1,c+1) -eso
     //   es lo
-    // que midio la Parte 168- MAS 2 por el pipeline interno del propio linebuf (etapa
+    // que midio el banco de latencia- MAS 2 por el pipeline interno del propio linebuf (etapa
     //   de
     // lectura + etapa de ventana)... y de esos 2 solo se ve 1 en el indice de muestra.
     // El valor exacto se CALIBRO contra el golden barriendo LAT: 60 para W=28, o sea
     //   2*(W+2).
     // Con LAT=2*(W+1)=58 el histograma queda corrido DOS COLUMNAS y las zonas se
     //   mezclan,
-    // aunque el total de bordes sea correcto. Es la misma trampa de la Parte 168: el
+    // aunque el total de bordes sea correcto. Es la misma trampa que midio ese banco: el
     //   total
     // no cambia con un corrimiento, asi que hay que mirar la distribucion, no la suma.
     localparam integer LAT = 2*(W+2);
@@ -3660,7 +3660,7 @@ module mnist_feat_canny #(
     //   muestras:
     // W+1 porque la ventana centrada en (r,c) recien esta cuando entro (r+1,c+1) -eso
     //   es lo
-    // que midio la Parte 168- MAS 2 por el pipeline interno del propio linebuf (etapa
+    // que midio el banco de latencia- MAS 2 por el pipeline interno del propio linebuf (etapa
     //   de
     // lectura + etapa de ventana)... y de esos 2 solo se ve 1 en el indice de muestra.
     // Con la tercera etapa del Canny son 3*(W+2) = 90 para W=28. Se verifica igual que
@@ -3669,7 +3669,7 @@ module mnist_feat_canny #(
     //   corrimiento-.
     // Con LAT=2*(W+1)=58 el histograma queda corrido DOS COLUMNAS y las zonas se
     //   mezclan,
-    // aunque el total de bordes sea correcto. Es la misma trampa de la Parte 168: el
+    // aunque el total de bordes sea correcto. Es la misma trampa que midio ese banco: el
     //   total
     // no cambia con un corrimiento, asi que hay que mirar la distribucion, no la suma.
     localparam integer LAT = (LATP != 0) ? LATP : 3*(W+2);   // TRES etapas, no dos
@@ -3753,7 +3753,7 @@ Carpeta: `Verilog_Repo/vision_sobel_mnist/`.
 //   camara OV7670 -> ventana central 448x448 -> 28x28 -> CLASIFICADOR -> TFT ILI9341.
 //
 // Portado del diseno FISICO verificado en FPGA (mnist_cam_display.v, 8/10 en silicio).
-//   Los MISMOS 3 cambios ASIC que se le hicieron a vision_top.v en la fase 9:
+//   Los MISMOS 3 cambios ASIC que se le hicieron a vision_top.v:
 // (1) RESET EXPLICITO (rst_n) en todos los FSM -> en silicio los FF arrancan
 //   aleatorios,
 //         y en FPGA los inicializaba el bitstream.  Aqui no hay quien los inicialice.
@@ -4593,7 +4593,7 @@ module mnist_feat16_mem #(
     //   muestras:
     // W+1 porque la ventana centrada en (r,c) recien esta cuando entro (r+1,c+1) -eso
     //   es lo
-    // que midio la Parte 168- MAS 2 por el pipeline interno del propio linebuf (etapa
+    // que midio el banco de latencia- MAS 2 por el pipeline interno del propio linebuf (etapa
     //   de
     // lectura + etapa de ventana)... y de esos 2 solo se ve 1 en el indice de muestra.
     // Con la tercera etapa del Canny son 3*(W+1) = 87 para W=28. NO 3*(W+2)=90: los

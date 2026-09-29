@@ -56,7 +56,7 @@ procedimiento; las cinco primeras comparten el clasificador de 40 rasgos descrit
 sexta, **Canny-78**, es la versión ampliada que presenta la §6.3.5:
 
 | front-end | exactitud | F1 macro | precisión al responder | falsos positivos |
-|---|---:|---:|---:|---:|
+|-------------------|---------:|--------:|----------------------:|----------------:|
 | Sobel | 91,04 % | 0,910 | 98,43 % | 98 |
 | SoC + Sobel | 91,03 % | 0,910 | 98,38 % | 103 |
 | Canny 1-salto | 92,03 % | 0,920 | 98,66 % | 85 |
@@ -467,7 +467,7 @@ cadena (`reset_cad`) y los ocho veredictos, todos iguales al modelo. El panel B 
 778 ciclos, y el dígito sale como un byte por `uart_tx_pin`.](figuras/fig_ondas_stream78.png)
 
 | medición en la tarjeta | resultado |
-|---|---:|
+|-------------------------------------------------------|---------------:|
 | **veredictos idénticos a la simulación (dígito y rechazo)** | **10 000 / 10 000** |
 | exactitud | 97,22 % |
 | cobertura (responde) | 84,65 % |
@@ -605,7 +605,7 @@ Con el mismo procedimiento que Canny-78 —las diez mil imágenes de prueba envi
 respuesta por imagen—:
 
 | medición en la tarjeta | Canny-78 | **Canny-98** |
-|---|---:|---:|
+|-------------------------------------------|---------------:|---------------:|
 | **veredictos idénticos a la simulación** | 10 000 / 10 000 | **10 000 / 10 000** |
 | exactitud | 97,22 % | **98,45 %** |
 | celdas lógicas | 2 937 (55 %) | **2 380 (45 %)** |
@@ -695,7 +695,7 @@ predicción con la del modelo.
 \needspace{12\baselineskip}
 
 | Comparación | Resultado |
-|---|---|
+|------------------------------------------|-----------------------------------|
 | Predicciones idénticas | **10 000 / 10 000** |
 | Exactitud del RTL / del modelo | **91,04 % / 91,04 %** |
 | Matriz de confusión | idéntica elemento por elemento |
