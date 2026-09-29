@@ -339,13 +339,6 @@ necesita hacer. Decirlo importa porque delimita qué puede concluirse de él —
 tradición— y qué no: **no autoriza ninguna afirmación sobre la frecuencia relativa de unas prácticas
 frente a otras en la literatura.**
 
-Esa distinción tuvo una consecuencia concreta. La §2.8 afirmaba en su primera redacción que «la
-mayoría de los trabajos se detienen en FPGA», un cuantificador que **exigiría precisamente el
-recuento que esta revisión no hizo**. Se reformuló: donde había una afirmación sobre proporciones
-hay ahora una sobre condiciones de acceso, que las fuentes sí sostienen. Se deja constancia del
-cambio porque la afirmación retirada era cómoda para el argumento, y conviene que se vea que se
-retiró por no poder sostenerla y no por haber dejado de ser útil.
-
 ## 2.9 El antecedente directo: el filtro Sobel de Diana Natali Maldonado
 
 El punto de partida de este trabajo no es un artículo sino un chip. Diana Natali Maldonado Ramírez,
@@ -402,7 +395,7 @@ tarjeta «HOLA»—, que se usan a lo largo de los Capítulos 4 y 5:
 
 Table: La conversión a gris de Maldonado frente a la luminancia exacta, sobre cinco imágenes ordenadas por brillo.
 
-La primera cifra es la que se había anotado en el cuaderno de trabajo, y es engañosa si se lee sola:
+La primera cifra es engañosa si se lee sola:
 `flower` es casi toda negra, y en el negro la ganancia no pesa. La tabla lo ordena por brillo, y el
 error crece con él: es alrededor de un 8 % del brillo medio. Las dos fotografías tomadas con luz de
 habitación son las más claras y las que más se desvían. Pero el error es **de ganancia y no de

@@ -221,7 +221,7 @@ desplazadas y la raíz con `isqrt.sv`, que sólo resta y desplaza. No usa el ope
 cuadrado así *es* un multiplicador de 11×11 por eje, y por eso el módulo acompaña la simulación y no
 entra en ningún filtro sintetizado.
 
-El modelo de referencia es el de la Parte 12.B del cuaderno: para cada una de las cinco imágenes, la
+El modelo de referencia en Python muestra, para cada una de las cinco imágenes, la
 respuesta de cada dirección junto a la magnitud euclídea √(Gx²+Gy²), que no cambia de fila a fila y
 sirve de referencia visual.
 
@@ -1438,8 +1438,7 @@ dentro de un filtro cambia el resultado de clasificación más que cambiar de fi
 
 ## 4.10 Rendimiento: caudal y latencia
 
-Todas las latencias de esta sección están **medidas en simulación**, no estimadas. La del Canny, que
-en una versión anterior de este análisis provenía de una fórmula, resultó estar sobrestimada en un 20 %.
+Todas las latencias de esta sección están **medidas en simulación**, no estimadas.
 
 Las secciones anteriores midieron el costo de cada circuito. Ésta mide su velocidad, y lo hace
 separando dos magnitudes que la palabra «rápido» confunde: el **caudal**, o cuántos píxeles salen por
