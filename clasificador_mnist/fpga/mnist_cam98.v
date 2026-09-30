@@ -3,7 +3,7 @@
 //   previa de la pantalla reducida a 14x14 y 1 BIT por celda, en logica. Canny-98 usa los 30 bloques
 //   de BRAM de la iCE40UP5K (21 de pesos): el framebuffer de 28x28x8 pedia 2 mas (32 de 30). A 28x28x1
 //   en logica si cabia la BRAM pero no las celdas: 6 572 LC de 5 280. A 14x14 son 196 bits.
-//   Cada celda de la vista es el O de un bloque de 2x2 pixeles. La vista sirve para ENCUADRAR el
+//   Cada celda de la vista es un pixel de su bloque de 2x2 (submuestreo). La vista sirve para ENCUADRAR el
 //   digito; el clasificador sigue recibiendo la ventana completa de 28x28 a 8 bits.
 //   Es mnist_cam_canny.v con UNA pieza cambiada: el clasificador. Donde estaba la cadena de 4
 //   cuadrantes y 40 caracteristicas (92 %) va cam78_cadena: 16 zonas, 78 caracteristicas
@@ -182,8 +182,8 @@ module top #(
     wire       wbit = (w_pix >= 8'd64);         // trazo (ya invertido) o fondo
     always @(posedge cam_pclk) begin
         if (w_valid) begin
-            // el primer pixel de cada bloque 2x2 escribe; los otros tres acumulan con O
-            fb[widx] <= (wr[0] == 1'b0 && wc[0] == 1'b0) ? wbit : (fb[widx] | wbit);
+            // un pixel de cada bloque de 2x2 (submuestreo): escribir sin leer ahorra un multiplexor
+            if (wr[0] == 1'b1 && wc[0] == 1'b1) fb[widx] <= wbit;
             if (wc == 5'd27) begin wc <= 5'd0; wr <= (wr == 5'd27) ? 5'd0 : wr + 5'd1; end
             else wc <= wc + 5'd1;
         end
