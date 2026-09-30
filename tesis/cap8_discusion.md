@@ -32,7 +32,7 @@ porque su punto fijo puede propagar una decisión desde cualquier píxel hacia c
 
 La comparación que resume el capítulo es ésta: **un procesador RISC-V completo, con su memoria de
 programa y su periférico, cuesta alrededor de nueve mil celdas** —medido tres veces, sobre los tres
-filtros, con una dispersión inferior al 5 %— **es decir, aproximadamente la décima parte de lo que
+filtros, con una dispersión de ±5 %— **es decir, aproximadamente la décima parte de lo que
 cuesta cambiar el alcance del patrón de local a global.**
 
 > Dicho de otro modo: en el presupuesto de este chip, **meter un procesador entero es una decisión

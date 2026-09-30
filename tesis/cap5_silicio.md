@@ -276,7 +276,7 @@ programa y su periférico:
 Table: Costo del procesador según el filtro que acompaña.
 
 El incremento absoluto es **prácticamente constante**: alrededor de nueve mil celdas, con una
-dispersión inferior al 5 % entre el caso más barato y el más caro. Es un resultado esperable —el
+dispersión de ±5 % en torno a la media, entre el caso más barato y el más caro. Es un resultado esperable —el
 procesador no sabe qué filtro tiene al lado— pero conviene tenerlo medido, porque convierte al
 procesador en un **costo fijo y presupuestable** frente a un datapath cuyo costo varía en un factor de
 cuatro.
@@ -471,8 +471,8 @@ parásitos que el dibujo añade dentro de las celdas.**
 ![**Figura 5.19.** La salida del simulador, tal como éste la dibuja. Cada traza es un nodo del camino
 crítico, desplazada dos voltios respecto de la anterior para que las diez quepan en el mismo eje; la
 cascada de transiciones de arriba abajo es la señal propagándose etapa por etapa. El último nodo del
-`pan_sobel` conmuta a unos 8,2 ns y el del `pan_canny` a unos 7,6, que son las variantes D de la
-tabla anterior.](figuras/fig_5_9_spice_ondas.png)
+`pan_sobel` conmuta a unos 8,2 ns y el del `pan_canny` a unos 7,6, que son las variantes C de la
+Tabla 5.7.](figuras/fig_5_9_spice_ondas.png)
 
 **Lo que no cerró, y se deja escrito.** Queda un 5 % por celda —0,528 ns en un chip y 0,530 en el
 otro, prácticamente el mismo valor absoluto en dos caminos distintos— que la extracción no recupera.

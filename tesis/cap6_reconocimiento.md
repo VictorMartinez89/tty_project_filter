@@ -81,10 +81,13 @@ Canny-98 (§6.3.6), que corre en la misma tarjeta.
 
 ![**Figura 6.1.** El espacio de diseño del clasificador, con el eje horizontal en escala
 logarítmica. Cada curva es un nivel de la pirámide espacial y cada punto una precisión de peso
-distinta. El hallazgo está en el cruce: **400 pesos de 4 bits —1 600 biestables— superan a los 784
-píxeles crudos usando la vigésima parte de la memoria**, y caben bajo el presupuesto real de un chip
-de 8×2 mosaicos, marcado con la línea vertical. A igualdad de memoria, la precisión de los pesos vale
-más que el número de zonas.](figuras/fig_5_4_espacio_de_diseno.png)
+distinta. El hallazgo está en el cruce: **400 pesos de 4 bits —1 600 bits— superan a los 784
+píxeles crudos usando la vigésima parte de la memoria**, y caben bajo el presupuesto de un chip de 8×2
+mosaicos, marcado con la línea vertical. A igualdad de memoria, la precisión de los pesos vale más que
+el número de zonas. La figura es la exploración inicial: cuenta la memoria de pesos como si fueran
+biestables —el circuito final los pone en una ROM combinacional, así que el presupuesto es una cota
+conservadora— y sus exactitudes salen de un entrenamiento distinto del de la tabla anterior; por eso el
+punto de 400 pesos da 94,2 % y no 91,04 %. Lo que compara es la forma de las curvas.](figuras/fig_5_4_espacio_de_diseno.png)
 
 ## 6.3 Los diseños: los reconocedores
 
@@ -166,7 +169,8 @@ callar.](figuras/fig_6_cadena_socsobel.png)
 #### En la tarjeta
 
 En la tarjeta corrió su núcleo —extractor y clasificador con el Sobel, sin cámara ni procesador— en el
-primer ensayo de la §6.7: ocho de diez dígitos, con los mismos dos errores que la simulación.
+primer ensayo de la §6.7: ocho de diez dígitos, con los mismos dos errores que la simulación de ese
+ensayo —otra que la de las once escenas de la Figura 6.4—.
 
 #### En silicio
 
@@ -225,7 +229,7 @@ más que el Sobel, que es la otra cara de su precisión al responder.](figuras/f
 
 Su versión para la FPGA es la del segundo ensayo de la §6.7: procesador, periférico, Canny y
 clasificador ante dígitos manuscritos y la cámara real, **nueve de diez**, lo mismo que predecía la
-simulación.
+simulación de ese ensayo —las once escenas simuladas de la Figura 6.7 son otra prueba—.
 
 En la FPGA, el Pan llevó además la pantalla, para ver lo que el circuito ve; en silicio se quitó,
 porque la salida son los cinco bits del veredicto.
@@ -294,7 +298,7 @@ recuento.](figuras/fig_6_cadena_sobel.png)
 Su versión para la FPGA, `mnist_cam_display.v`, corrió en la iCESugar con la cámara y la pantalla.
 
 En sky130 ocupa **2,032 mm²** y **30 745 celdas** tras la síntesis —38 643 emplazadas—, con DRC, LVS y
-XOR en cero. Es el mayor de los reconocedores por el *framebuffer* de 28×28 y el controlador de pantalla.
+XOR en cero. Es, con su gemelo Canny, el mayor de los reconocedores por el *framebuffer* de 28×28 y el controlador de pantalla.
 Su plano es la Figura 7.3.
 
 ### Visión Canny MNIST
@@ -422,7 +426,8 @@ rechazo incluidos. La verificación destapó siete fallos reales que la comparac
 ocultado; el más instructivo fue una **latencia de encadenado de `k·(W+1)` y no de `k·(W+2)`**, error
 que compartían otros tres módulos del trabajo. Emplazado y ruteado con `nextpnr`, Canny-78 ocupa
 **2 606 celdas lógicas (49 %)** y nueve bloques de BRAM, y cierra a **16,45 MHz** frente a los 12 MHz
-que exige la tarjeta. Cabe dentro de los 784 ciclos de un cuadro con cinco de margen.
+que exige la tarjeta. Cabe dentro de los 784 ciclos de un cuadro: el trasvase y la clasificación suman
+777, siete de margen.
 
 ![**Figura 6.16.** Canny-78 en GTKWave, en el paso que el diseño de cuarenta rasgos no tiene: el
 **trasvase**. Al subir `frame_done` el extractor ha contado 238 bordes; `trasvase` pasa a 1 y `cuenta`

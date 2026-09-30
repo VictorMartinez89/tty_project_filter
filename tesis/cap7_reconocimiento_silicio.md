@@ -65,8 +65,8 @@ De ello se sigue una conclusión condicional: **el Sobel aventaja al Canny en á
 el filtro constituye el circuito completo.** En un sistema que reconoce, esa ventaja —la única que el
 Sobel conserva, según las §6.2, §6.4 y §6.5— deja de ser determinante.
 
-Las dos últimas filas de la tabla son los circuitos que además muestran el resultado, los de las
-§6.3.3 y §6.3.4. Son los mayores de los reconocedores, y sus planos lo hacen visible.
+La última fila de la tabla son los circuitos que además muestran el resultado, los de las §6.3.3 y
+§6.3.4. Son los mayores de los reconocedores, y sus planos lo hacen visible.
 
 ![**Figura 7.3.** Visión Sobel MNIST en KLayout: 1 420×1 431 µm, 2,032 mm². Ve, reconoce y muestra:
 la cámara, la ventana de 28×28, el clasificador, el *framebuffer* de la ventana y el controlador de la

@@ -48,7 +48,7 @@ registros:
 
 | Registro | Valor | Efecto |
 |---|---|---|
-| `0x12` | `0x00` | reinicio de la configuración |
+| `0x12` | `0x00` | salida en formato YUV, sin reinicio (COM7) |
 | `0x13` | `0xE7` | habilita AGC, AWB y AEC automáticos |
 | `0x09` | `0x18` | configura los pines de control |
 
@@ -603,7 +603,9 @@ deja de estar cableado y pasa a manos del programa.
 El periférico es idéntico al de la G.4.
 
 Como en el SoC con el Sobel, el procesador no cambia la aritmética: el modelo es el del Canny de un
-salto (§4.3.2), con los dos umbrales que escribe el programa, 90 y 40.
+salto (§4.3.2), con los dos umbrales que escribe el programa, 90 y 40. Ése es el programa de la versión
+para silicio; el que se grabó en la iCESugar escribe `0x3214` —50 y 20, los umbrales con que se probó
+en la tarjeta, Tabla 4.8—. Cambiar de umbrales es cambiar una constante del programa, no el circuito.
 
 #### Simulación en Verilog: las señales
 
@@ -800,7 +802,7 @@ tres memorias de línea; la cadena con la cámara emulada es la última columna 
 tarjeta: dos escenas en la pantalla y el montaje entero, con la placa, el cableado y la
 pantalla.](figuras/fig_4_cannycomp_placa.jpg)
 
-En sky130 ocupa **2,90 mm²** —1 687 × 1 686 µm— y **42 581 celdas** de síntesis, con DRC, LVS y XOR en
+En sky130 ocupa **2,90 mm²** —1 698 × 1 709 µm— y **42 581 celdas** de síntesis, con DRC, LVS y XOR en
 cero y sin violaciones de setup ni de hold a 20 ns, según su ficha; los informes no se conservaron (§5.3,
 nota ᵃ). Frente a la cadena del Sobel son un 16 % más de celdas y un 18 % más de dado, lo que cabe
 esperar de tres memorias de línea en lugar de una. Llegar ahí costó dos batallas: un fallo de OpenROAD
@@ -1018,8 +1020,8 @@ entera, y el LVS da cero; quedan cuatro redes con aviso de antena. Su plano es l
 #### Resumen
 
 Es el Canny de un salto de la §4.3.2 envuelto del mismo modo, `tt_um_canny1_vic`, en **6×2 mosaicos**:
-con unas diez mil celdas, doce mosaicos dejan unas ochocientas cincuenta por mosaico, cerca de las
-ochocientas que el flujo rutea con comodidad. Los dos umbrales van fijos, 90 y 40, y las tres memorias
+con 7 607 celdas de síntesis, doce mosaicos dejan unas seiscientas treinta por mosaico, por debajo
+de las ochocientas que el flujo rutea con comodidad. Los dos umbrales van fijos, 90 y 40, y las tres memorias
 de línea usan el generador de ventana con reinicio explícito.
 
 #### Pseudocódigo
@@ -1392,7 +1394,7 @@ el emplazamiento **2 426 celdas lógicas, el 45 % del dispositivo**, cerrando e
 > medición.
 
 Este resultado reaparece transformado en la §5.3.2: en el ASIC, donde el área no está acotada por un
-dispositivo fijo, el procesador vuelve a ser viable junto al transitivo y cuesta unas nueve mil celdas.
+dispositivo fijo, el procesador vuelve a ser viable junto al transitivo y cuesta 9 124 celdas en el sistema completo.
 La misma pregunta tiene respuestas opuestas en los dos sustratos.
 
 ### 4.9.5 Umbrales de laboratorio y umbrales de cámara
@@ -1470,8 +1472,9 @@ Table: Latencias de cauce de los tres filtros.
 
 Las dos columnas tienen explicación estructural, y no es la misma.
 
-**La de cauce** cuenta dos ciclos por etapa de ventana: el Sobel encadena una y el Canny tres
-—suavizado, gradiente y doble umbral—, de donde cuatro y ocho.
+**La de cauce** crece dos ciclos por cada etapa de ventana que se añade: el Sobel encadena una y el
+Canny tres —suavizado, gradiente y doble umbral—, y de una a tres etapas la medida pasa de cuatro a
+ocho ciclos.
 
 **La del primer píxel utilizable** la fija el llenado de las líneas de retardo, que escala con el
 ancho de la imagen. Para el Sobel la medida da **exactamente 2·(W+2) = 124 ciclos** más uno, que es lo
