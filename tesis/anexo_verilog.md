@@ -862,7 +862,7 @@ module sobel_completo (
     output wire       cfg_done,
     output wire       init_done
 );
-    // ===== 1) FRONT-END: camara -> stream de gris (dominio clk) =====
+    // ===== 1) front-end: camara -> stream de gris (dominio clk) =====
     wire [7:0] gray; wire gray_valid, fe_frame_start, fe_line_start;
     cam_frontend_top u_fe (
         .sysclk(clk), .rst_n(rst_n),
@@ -928,7 +928,7 @@ endmodule
 ### `cam_frontend_top.v`
 
 ```verilog
-// cam_frontend_top.v — FRONT-END de la OV7670 AUTOCONTENIDO para ASIC sky130.
+// cam_frontend_top.v — front-end de la OV7670 AUTOCONTENIDO para ASIC sky130.
 // Une las 3 piezas verificadas en FPGA: SCCB (config) + captura (PCLK/HREF/VSYNC/D7:0
 //   -> RGB565,
 // con sincronizadores 2-FF = CDC) + RGB565->gris. Entrega un STREAM DE GRIS
@@ -1504,7 +1504,7 @@ module canny1_completo (
     output wire       cfg_done,
     output wire       init_done
 );
-    // ===== 1) FRONT-END: camara -> stream de gris (dominio clk) =====
+    // ===== 1) front-end: camara -> stream de gris (dominio clk) =====
     wire [7:0] gray; wire gray_valid, fe_frame_start, fe_line_start;
     cam_frontend_top u_fe (
         .sysclk(clk), .rst_n(rst_n),
@@ -2264,7 +2264,7 @@ module trans_completo (
     output wire       cfg_done,
     output wire       init_done
 );
-    // ===== 1) FRONT-END: camara -> stream de gris =====
+    // ===== 1) front-end: camara -> stream de gris =====
     wire [7:0] gray; wire gray_valid, fe_frame_start, fe_line_start;
     cam_frontend_top u_fe (
         .sysclk(clk), .rst_n(rst_n),
