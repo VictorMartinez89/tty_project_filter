@@ -623,6 +623,61 @@ La regla de rechazo de Canny-98 no se calibró todavía: decide sólo por la den
 responde el 90,47 % de las veces con un 98,30 % de acierto al responder, y no se compara con el 99,92 % de Canny-78, que
 sí lleva el margen calibrado. La exactitud no depende de esa regla.
 
+#### Métricas sobre las 10 000 imágenes
+
+La exactitud resume el reconocedor en un número; las demás métricas dicen dónde acierta y dónde no. Se calcularon
+las mismas para los siete reconocedores del capítulo, sobre las 10 000 imágenes de prueba y sobre el `argmax`,
+sin regla de rechazo. Los cinco de la §6.2 se reentrenaron con su procedimiento original y reprodujeron su
+matriz de confusión casilla por casilla; Canny-78 y Canny-98 son los modelos enteros que la tarjeta reproduce.
+
+| reconocedor | exactitud | IC 95 % | precisión | recall | especif. | F1 | MCC | top-2 | AUC |
+|-------------------|---------:|-----------:|---------:|------:|--------:|------:|------:|-------:|------:|
+| Sobel | 91,04 % | 90,49–91,60 | 0,9147 | 0,9105 | 0,9901 | 0,9097 | 0,9011 | 97,25 % | 0,9942 |
+| SoC + Sobel | 91,03 % | 90,50–91,59 | 0,9150 | 0,9099 | 0,9900 | 0,9100 | 0,9008 | 97,11 % | 0,9937 |
+| Canny 1-salto | 92,03 % | 91,50–92,59 | 0,9248 | 0,9199 | 0,9911 | 0,9198 | 0,9120 | 97,70 % | 0,9954 |
+| SoC + Canny 1-salto | 92,46 % | 91,93–92,95 | 0,9276 | 0,9245 | 0,9916 | 0,9241 | 0,9166 | 97,87 % | 0,9958 |
+| Canny transitivo | 89,76 % | 89,16–90,35 | 0,9064 | 0,8980 | 0,9886 | 0,8966 | 0,8873 | 97,03 % | 0,9940 |
+| Canny-78 | 97,22 % | 96,89–97,55 | 0,9720 | 0,9722 | 0,9969 | 0,9721 | 0,9691 | 99,35 % | 0,9987 |
+| **Canny-98** | **98,45 %** | **98,21–98,69** | **0,9846** | **0,9845** | **0,9983** | **0,9845** | **0,9828** | **99,77 %** | **0,9991** |
+
+Table: Métricas de los siete reconocedores sobre las 10 000 imágenes de prueba de MNIST.
+
+Precisión, recall, especificidad y F1 son promedios macro de los diez dígitos; el MCC es el coeficiente de
+Matthews multiclase, que usa la matriz de confusión entera y no se deja engañar por una clase fácil; top-2 cuenta
+la imagen como acertada si el dígito correcto está entre los dos puntajes más altos. El intervalo de confianza
+sale de 2 000 remuestreos del conjunto de prueba —la desviación de la exactitud es de 0,12 puntos para Canny-98
+y de 0,17 para Canny-78— y mide la incertidumbre de la muestra de prueba, no la del entrenamiento, que es la σ de
+1,32 puntos de la §6.2. El AUC es el macro uno-contra-el-resto sobre el logaritmo del softmax de los puntajes
+enteros: con el softmax a secas, los puntajes de Canny-98 —de miles— saturan a 0 y 1 exactos en coma flotante y
+el AUC cae artificialmente a 0,9965; el logaritmo ordena igual y no satura, y para los otros seis cambia sólo la
+cuarta cifra respecto de la §6.4.
+
+![**Figura 6.25.** Las métricas de la tabla anterior en un mapa de calor. Canny-98 encabeza las ocho
+columnas; la especificidad y el AUC, casi saturadas en todos, separan poco, y el MCC y la exactitud son las que
+más separan.](figuras/fig_6_metricas_modelos.png)
+
+**La mejora sobre Canny-78 no es ruido.** Sobre las mismas 10 000 imágenes, 165 las acierta sólo Canny-98 y 42
+sólo Canny-78; la prueba de McNemar, que compara dos clasificadores sobre los mismos ejemplos, da p ≈ 2·10^−18^, y
+los dos intervalos de confianza no se tocan. Los errores bajan de 278 a 155, un 44 % menos.
+
+![**Figura 6.26.** Las matrices de confusión de Canny-78 y Canny-98 sobre las 10 000 imágenes de prueba. En
+verde, los aciertos de la diagonal; fuera de ella, el color crece con el número de errores. La mayor confusión de
+Canny-78, un 9 leído como 7 (17 veces), baja a 6; la que queda como la mayor de Canny-98 es un 4 leído como 9
+(13 veces), que Canny-78 cometía 12.](figuras/fig_6_confusion_98.png)
+
+![**Figura 6.27.** El F1 de cada dígito en los siete reconocedores. Canny-98 queda por encima de los demás en
+los diez dígitos, entre 0,976 —el 8 y el 9— y 0,992 —el 0—; los cinco de 40 rasgos caen por debajo de 0,90 en
+varios, y el transitivo baja a 0,79 en el 7.](figuras/fig_6_f1_digitos.png)
+
+![**Figura 6.28.** A la izquierda, la precisión y el recall de cada dígito de Canny-98 frente a Canny-78: sube
+en los veinte, y lo que más sube es el recall del 2, el 8 y el 9. A la derecha, las curvas ROC macro de los siete
+en su esquina superior izquierda, con el AUC entre paréntesis.](figuras/fig_6_digitos_98.png)
+
+Los dígitos difíciles siguen siendo los mismos —el 7, el 8 y el 9, con F1 de 0,979, 0,976 y 0,976—, y las
+confusiones, las mismas familias: el 4 con el 9, el 7 con el 2, el 8 con el 2 y el 9 con el 8. La capa oculta
+reduce los errores de todas las familias, pero **no cambia cuáles son**: igual que en Canny-78, lo que separa
+esos dígitos es la geometría del trazo que el descriptor ve.
+
 #### Con la cámara y la pantalla
 
 La versión con cámara OV7670 y pantalla TFT es la de Canny-78 con el clasificador cambiado: la misma ventana de
@@ -636,7 +691,7 @@ más: **32 de 30**. Guardarla en lógica liberó la BRAM pero llevó el problema
 hasta que el diseño cupo:
 
 | vista previa en la pantalla | síntesis | BRAM | celdas lógicas | emplaza |
-|---|---|---:|---:|---|
+|---------------------------------------|--------|--------:|--------------:|--------------------------|
 | 28×28, 8 bits, en BRAM (la de Canny-78) | — | 32 de 30 | — | no |
 | 28×28, 1 bit, en lógica | — | 30 de 30 | 6 572 (124 %) | no |
 | 14×14, 1 bit | — | 30 de 30 | 5 066 (96 %) | no |
@@ -663,7 +718,7 @@ muestra por qué: en la mayoría de los cuadros la ventana no contiene un trazo 
 ventana o más** —sombras de la mano y del teléfono, y la luz desigual sobre la hoja—, y en varios aparece la
 costura horizontal que ya se había visto con Canny-78.
 
-![**Figura 6.25.** Canny-98 frente al papel, en la iCESugar, el 29 de septiembre de 2026. A la izquierda, la
+![**Figura 6.29.** Canny-98 frente al papel, en la iCESugar, el 29 de septiembre de 2026. A la izquierda, la
 hoja con el dígito, tal como la ve el teléfono que graba; a la derecha, tres momentos de la pantalla: la
 vista previa de 7×7 —en blanco lo que la cámara ve más oscuro que gris medio— y, debajo, el veredicto. Lo que
 llega al clasificador son manchas de sombra y de luz, no el trazo; la raya es la
@@ -675,43 +730,10 @@ abstención.](figuras/fig_6_canny98_camara.jpg)
 
 #### En silicio
 
-En silicio no hay BRAM ni SPRAM, así que el circuito cambia en dos puntos y en nada más: los 21 360 pesos de
-4 bits pasan a una **ROM combinacional** —una tabla que el sintetizador convierte en lógica— y las 120
-activaciones, de la SPRAM a un banco de 128 registros de 8 bits. Es `mnist_clf98_asic.v`, generado desde los
-mismos pesos, y se comparó con el modelo entero sobre **200 imágenes de prueba: 200 idénticas** en dígito,
-decisión de rechazo y puntaje. El extractor y el tope son los de la tarjeta.
-
-El primer intento se lanzó con los parámetros de Canny-78 —25 % de utilización del núcleo— y **no ruteó**.
-El ruteo global terminó con desbordamiento: las pistas de metal quedaron ocupadas al 94,5 %, y met1 al
-99,4 %. El ruteo detallado arrancó con 455 280 violaciones y a la sexta pasada seguía en 107 252, bajando un
-5 % por vuelta. Con el núcleo al 15 % el uso de pistas bajó al 70,9 %, el ruteo detallado cerró y el flujo
-terminó limpio:
-
-| | Canny-78 | **Canny-98** |
-|---|---:|---:|
-| celdas de síntesis | 29 449 | **42 192** |
-| utilización del núcleo | 30 % | **15 %** |
-| área del dado | 1,122 mm² | **2,996 mm²** |
-| camino crítico, con parásitos (reloj de 30 ns) | 12,66 ns | **24,64 ns** |
-| DRC · LVS · XOR | 0 · 0 · 0 | **0 · 0 · 0** |
-| redes con violación de antena | 115 | **924** |
-| tiempo de máquina | 24 min | **5 h 36 min** |
-
-Table: Canny-98 frente a Canny-78 en sky130.
-
-![**Figura 6.26.** Canny-98 en sky130, visto en KLayout: 1714 × 1714 µm, 42 192 celdas de síntesis,
-DRC, LVS y XOR en cero.](figuras/fig_6_canny98_asic.jpg)
-
-![**Figura 6.27.** Un acercamiento al interior del mismo dado: las filas de celdas cubiertas casi por
-completo por el cableado. Es el cuello de botella que obligó a bajar la utilización del 25 al
-15 %.](figuras/fig_6_canny98_asic_zoom.jpg)
-
-> Es la tesis del Capítulo 8 con su ejemplo más nítido, y ahora medido: **el mismo diseño es más pequeño que
-> Canny-78 en la FPGA y 2,7 veces más grande en silicio**, con sólo 1,43 veces sus celdas, y con un camino crítico que casi se duplica porque los cables se alargan. Lo que se agota
-> primero no es el área de las celdas sino **el cableado**: la ROM de pesos, convertida en lógica, es una
-> red de multiplexores con decenas de miles de conexiones. En la FPGA la memoria ya estaba en el chip; en
-> silicio hay que construirla, y construirla con celdas estándar cuesta pistas. Llevar Canny-98 a fabricar
-> pide una lanzadera con macros de SRAM, y antes de eso, diodos para las 924 redes con violación de antena.
+Canny-98 es el decimoctavo circuito de este trabajo: en sky130 ocupa **2,996 mm²** y **42 192 celdas** tras la
+síntesis, con DRC, LVS y XOR en cero y el temporizado cerrado a 33 MHz. Es 2,7 veces el dado de Canny-78 con
+1,43 veces sus celdas, porque lo que se agota primero es el cableado. Los números, el intento que no ruteó y su
+plano están en la §7.4.
 
 ## 6.4 Lo que la exactitud no muestra
 
@@ -783,7 +805,7 @@ predicción con la del modelo.
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
-![**Figura 6.28.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
+![**Figura 6.30.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
 ventana pasan uno a uno antes de que `done` presente un dígito. Es el nivel al que se hizo la
 comparación contra el modelo: no se compararon porcentajes, se compararon
@@ -806,7 +828,7 @@ incluye la decisión de rechazo, que es lógica de comparación y no de aritmét
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
 
-![**Figura 6.29.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
+![**Figura 6.31.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
 la escena del dígito 3. El panel A muestra los 19 ms de dos cuadros: el veredicto sale en el primero
 y no cambia en el segundo. El panel B captura el instante en que **el procesador sustituye el umbral
 por omisión del RTL, 110, por el 90 que escribe el firmware**, con el camino de datos todavía en
@@ -825,7 +847,7 @@ completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta re
 > **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
 > en silicio se comporta como el RTL verificado, errores incluidos.
 
-![**Figura 6.30.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
+![**Figura 6.32.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
 está cableado a la señal de configuración terminada; el azul parpadea con el latido del sistema. Los
 diez veredictos salen por el puerto serie del mismo conector que alimenta la tarjeta. A la derecha,
 el mismo montaje con el cableado del módulo de pantalla ya

@@ -30,10 +30,10 @@ reproducir un error específico y repetido, no. El ensayo definitivo fue el de C
 diez mil** sobre el conjunto de prueba completo, en la misma iCE40UP5K, al 55 % de sus celdas lógicas.
 Frente a la cámara, en cambio, el reconocedor aún depende de que el dígito llegue centrado (§8.11).
 
-**Sobre el paso a silicio.** Se llevaron a GDSII **diecisiete circuitos** en dos procesos —quince en sky130A
+**Sobre el paso a silicio.** Se llevaron a GDSII **dieciocho circuitos** en dos procesos —dieciséis en sky130A
 con OpenLane y dos en IHP SG13G2 con LibreLane—, todos ellos con **DRC, LVS y XOR en cero**. El
-decimoséptimo es el reconocedor Canny-78 de la §7.3, firmado cuando el resto del capítulo ya
-estaba medido; por eso el procedimiento de recuento de la §5.2 y el Anexo D hablan de dieciséis. La verificación
+decimoséptimo y el decimoctavo son los reconocedores Canny-78 y Canny-98 de las §7.3 y §7.4, firmados cuando
+el resto del capítulo ya estaba medido; por eso el procedimiento de recuento de la §5.2 y el Anexo D hablan de dieciséis. La verificación
 eléctrica se cerró por dos vías independientes: los circuitos **cierran el temporizado con los
 parásitos del interconexionado extraídos** —holgura de 0,00 ns sobre el peor camino—, y el camino
 crítico de **dos** de ellos se simuló además en SPICE hasta repartir su retardo en sumandos sin
@@ -90,9 +90,6 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
    con DRC, LVS y XOR en cero. La versión de cuarenta
    rasgos para Tiny Tapeout, de 94,20 %, cabe en 8×2 mosaicos con el
    42 % de utilización.
-
-5. **Dos cuadernos reproducibles** que contienen el código, los datos y las figuras de cada
-   afirmación del documento, incluidas las que fueron corregidas.
 
 ## 9.3 Seis afirmaciones propias que este trabajo corrigió
 
@@ -174,7 +171,7 @@ Table: Exactitud de la capa oculta según el ancho de los pesos, cuantizados des
 Con **4 bits** —los mismos de Canny-78— la red sigue por encima del 98 % con la mitad de memoria. Ese camino
 ya se recorrió una vez: **Canny-98** (§6.3.6) —el mismo front-end, los 168 rasgos y una capa oculta de 120 neuronas con
 pesos de 4 bits, en aritmética entera exacta— llega al **98,45 %** y reproduce el modelo en la tarjeta sobre las diez
-mil imágenes de prueba, con el 45 % de las celdas lógicas y todos los bloques de BRAM. También firma en sky130 (§6.3.6), aunque a 2,7 veces el
+mil imágenes de prueba, con el 45 % de las celdas lógicas y todos los bloques de BRAM. También firma en sky130 (§7.4), aunque a 2,7 veces el
 dado de Canny-78. Lo que queda por delante es la versión de 8 bits y la regla de rechazo calibrada. Por debajo, la caída
 es en buena parte del método: los pesos se cuantizaron **después** de entrenar, y a 2 y 1 bit la práctica habitual es
 entrenar ya cuantizado, que no se ensayó aquí.

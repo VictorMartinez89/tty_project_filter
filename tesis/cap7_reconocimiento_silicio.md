@@ -2,7 +2,7 @@
 
 El capítulo anterior dejó el reconocedor verificado contra el modelo y funcionando en la tarjeta. Éste
 lo lleva a silicio: el reconocedor con cada front-end, lo que cuesta el front-end según el sistema, y
-Canny-78 firmado en sky130.
+Canny-78 y Canny-98 firmados en sky130.
 
 ## 7.1 Implementación en silicio
 
@@ -127,3 +127,44 @@ alimentación.](figuras/fig_7_tt_mnist_sobel.png)
 
 ![**Figura 7.8.** El reconocedor con el Canny en los mismos 8×2 mosaicos. Es el antecesor directo del
 `tt_mnist_canny_v2_vic` que cabe con el 42 % de utilización.](figuras/fig_7_tt_mnist_canny.png)
+
+## 7.4 Canny-98 en silicio
+
+En silicio no hay BRAM ni SPRAM, así que el circuito cambia en dos puntos y en nada más: los 21 360 pesos de
+4 bits pasan a una **ROM combinacional** —una tabla que el sintetizador convierte en lógica— y las 120
+activaciones, de la SPRAM a un banco de 128 registros de 8 bits. Es `mnist_clf98_asic.v`, generado desde los
+mismos pesos, y se comparó con el modelo entero sobre **200 imágenes de prueba: 200 idénticas** en dígito,
+decisión de rechazo y puntaje. El extractor y el tope son los de la tarjeta. Es el **decimoctavo circuito** de este trabajo.
+
+El primer intento se lanzó con los parámetros de Canny-78 —25 % de utilización del núcleo— y **no ruteó**.
+El ruteo global terminó con desbordamiento: las pistas de metal quedaron ocupadas al 94,5 %, y met1 al
+99,4 %. El ruteo detallado arrancó con 455 280 violaciones y a la sexta pasada seguía en 107 252, bajando un
+5 % por vuelta. Con el núcleo al 15 % el uso de pistas bajó al 70,9 %, el ruteo detallado cerró y el flujo
+terminó limpio:
+
+| | Canny-78 | **Canny-98** |
+|----------------------------------------------|---------:|----------:|
+| celdas de síntesis | 29 449 | **42 192** |
+| utilización del núcleo | 30 % | **15 %** |
+| área del dado | 1,122 mm² | **2,996 mm²** |
+| camino crítico, con parásitos (reloj de 30 ns) | 12,66 ns | **24,64 ns** |
+| DRC · LVS · XOR | 0 · 0 · 0 | **0 · 0 · 0** |
+| redes con violación de antena | 115 | **924** |
+| potencia (interna y de conmutación) | 25,3 mW | **32,1 mW** |
+| tiempo de máquina | 24 min | **5 h 36 min** |
+
+Table: Canny-98 frente a Canny-78, firmados en sky130.
+
+![**Figura 7.9.** Canny-98 en sky130, visto en KLayout: 1714 × 1714 µm, 42 192 celdas de síntesis,
+DRC, LVS y XOR en cero.](figuras/fig_6_canny98_asic.jpg)
+
+![**Figura 7.10.** Un acercamiento al interior del mismo dado: las filas de celdas cubiertas casi por
+completo por el cableado. Es el cuello de botella que obligó a bajar la utilización del 25 al
+15 %.](figuras/fig_6_canny98_asic_zoom.jpg)
+
+> Es la tesis del Capítulo 8 con su ejemplo más nítido, y ahora medido: **el mismo diseño es más pequeño que
+> Canny-78 en la FPGA y 2,7 veces más grande en silicio**, con sólo 1,43 veces sus celdas, y con un camino crítico que casi se duplica porque los cables se alargan. Lo que se agota
+> primero no es el área de las celdas sino **el cableado**: la ROM de pesos, convertida en lógica, es una
+> red de multiplexores con decenas de miles de conexiones. En la FPGA la memoria ya estaba en el chip; en
+> silicio hay que construirla, y construirla con celdas estándar cuesta pistas. Llevar Canny-98 a fabricar
+> pide una lanzadera con macros de SRAM, y antes de eso, diodos para las 924 redes con violación de antena.

@@ -25,7 +25,7 @@ manuscritos, de modo que un solo camino de datos —ventana 3×3, acumulación y
 escrito a mano, uno buscado y uno aprendido.
 
 Cada núcleo se verificó bit a bit contra el modelo de referencia, se integró físicamente en una FPGA
-iCE40UP5K con cámara y pantalla, y se llevó a ASIC: diecisiete circuitos con GDSII firmado, quince en
+iCE40UP5K con cámara y pantalla, y se llevó a ASIC: dieciocho circuitos con GDSII firmado, dieciséis en
 sky130 con OpenLane y dos en IHP SG13G2 con LibreLane. El sistema completo —procesador, front-end
 Canny y clasificador— reconoce nueve de cada diez dígitos manuscritos captados por la cámara sobre la
 FPGA física, coincidiendo con lo que la simulación predecía.
@@ -63,7 +63,7 @@ built, so that a single datapath —3×3 window, accumulation and threshold— s
 handwritten, one that is searched for, and one that is learned.
 
 Each core was verified bit-exact against the reference model, integrated physically on an iCE40UP5K
-FPGA with camera and display, and taken to ASIC: seventeen signed-off GDSII layouts, fifteen in sky130
+FPGA with camera and display, and taken to ASIC: eighteen signed-off GDSII layouts, sixteen in sky130
 with OpenLane and two in IHP SG13G2 with LibreLane. The complete system —processor, Canny front-end
 and classifier— recognises nine out of ten handwritten digits captured by the camera on the physical
 FPGA, matching what simulation had predicted.
