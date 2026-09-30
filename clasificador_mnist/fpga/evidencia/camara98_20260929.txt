@@ -7,3 +7,18 @@ con la escena (se ven -, 3, 1, 2, 2, 3, 2). La vista previa sale casi toda blanc
 imagen invertida marca como trazo todo lo que la camara ve por debajo de 192/255, y con la luz del cuarto
 el papel llega gris. Version E: umbral 128. La imagen misma esta oscura: falta luz sobre el papel.
 Sin protocolo todavia: la prueba de 33 (prueba_camara_33.md) queda para la version E.
+
+PRUEBA (version E, umbral 128, bin md5 029130d45d254712674019541511ea2c) · video camara98_20260929_prueba_b.mp4
+Anotada por Victor (mm:ss):
+  4  00:03-00:30  2 3 2 3            0/4
+  7  00:31-00:51  2 3 6 5 2 3        0/6
+  0  00:52-01:10  6 2 2 7 2 7        0/6
+  6  01:14-01:40  2 5 3 5 2 6        1/6
+  7  01:42-02:03  2 4 5 2 3          0/5
+  8  02:05-02:29  6 9 6 2 0 2        0/6
+  2  02:31-02:33  8 0 2 3 2          2/5
+  1  02:35-02:58  4 4 6 6            0/4
+  6  03:01-03:10  2 4 2 6 6          2/5
+TOTAL 5/47 = 10,6 % (azar 10 %) · dice «2» en 17/47.
+La vista previa (umbral 128) muestra manchas de sombra que ocupan media ventana o mas, no el trazo, y la
+costura horizontal en 01:28, 01:36 y 02:24. Mismo cuadro que Canny-78 (6/36). El limite es la adquisicion.
