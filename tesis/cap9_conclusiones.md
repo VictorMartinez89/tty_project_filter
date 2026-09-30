@@ -86,7 +86,8 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
    ampliada, **Canny-78** —dieciséis zonas y 78 rasgos elegidos—, llega al **97,22 %** en la misma
    iCE40UP5K, lo reproduce en la tarjeta sobre las diez mil imágenes de prueba y firma en sky130 en
    0,829 mm². **Canny-98**, con una capa oculta de 120 neuronas sobre los mismos rasgos, llega al **98,45 %** y
-   lo reproduce en la tarjeta sobre las diez mil imágenes con menos lógica que Canny-78. La versión de cuarenta
+   lo reproduce en la tarjeta sobre las diez mil imágenes con menos lógica que Canny-78; en sky130 firma en 2,996 mm²,
+   con DRC, LVS y XOR en cero. La versión de cuarenta
    rasgos para Tiny Tapeout, de 94,20 %, cabe en 8×2 mosaicos con el
    42 % de utilización.
 
@@ -173,8 +174,8 @@ Table: Exactitud de la capa oculta según el ancho de los pesos, cuantizados des
 Con **4 bits** —los mismos de Canny-78— la red sigue por encima del 98 % con la mitad de memoria. Ese camino
 ya se recorrió una vez: **Canny-98** (§6.3.6) —el mismo front-end, los 168 rasgos y una capa oculta de 120 neuronas con
 pesos de 4 bits, en aritmética entera exacta— llega al **98,45 %** y reproduce el modelo en la tarjeta sobre las diez
-mil imágenes de prueba, con el 45 % de las celdas lógicas y todos los bloques de BRAM. Lo que queda por delante es la
-versión de 8 bits, la regla de rechazo calibrada y su paso a silicio. Por debajo, la caída
+mil imágenes de prueba, con el 45 % de las celdas lógicas y todos los bloques de BRAM. También firma en sky130 (§6.3.6), aunque a 2,7 veces el
+dado de Canny-78. Lo que queda por delante es la versión de 8 bits y la regla de rechazo calibrada. Por debajo, la caída
 es en buena parte del método: los pesos se cuantizaron **después** de entrenar, y a 2 y 1 bit la práctica habitual es
 entrenar ya cuantizado, que no se ensayó aquí.
 

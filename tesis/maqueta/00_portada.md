@@ -36,7 +36,8 @@ lanzadera abierta SKY26d. **Canny-78**, que elige 78 rasgos entre 128 contadores
 alcanza **97,22 %**, reproduce el modelo en la tarjeta imagen por imagen —diez mil de diez mil— y firma
 en sky130 en 1,122 mm², o en 0,829 mm² con la memoria de rasgos recortada a lo que usa. **Canny-98**,
 que añade una capa oculta de 120 neuronas con pesos de 4 bits sobre los mismos rasgos, alcanza **98,45 %**
-y también reproduce el modelo en la tarjeta en las diez mil imágenes, usando menos lógica que Canny-78.
+y también reproduce el modelo en la tarjeta en las diez mil imágenes, usando menos lógica que Canny-78; en
+sky130 firma en 2,996 mm², casi tres veces el dado de Canny-78, porque sin memorias dedicadas lo que se agota es el cableado.
 
 Las mediciones muestran que el sobrecoste en área del Canny frente al Sobel cae del 123 % al 3 %
 según cuánto más haga el circuito, y que comprar robustez al umbral en el front-end cuesta unas seis
@@ -74,7 +75,8 @@ SKY26d open shuttle. **Canny-78**, which selects 78 features out of 128 orientat
 signs off in sky130 at 1.122 mm², or 0.829 mm² with its feature memory trimmed to what it uses.
 **Canny-98**, which adds a 120-neuron hidden layer with 4-bit weights on the same features, reaches
 **98.45 %** and also reproduces the model on the board over all ten thousand images, using less logic
-than Canny-78.
+than Canny-78; in sky130 it signs off at 2.996 mm², almost three times Canny-78's die, because without
+dedicated memories what runs out first is the wiring.
 
 Measurements show that the Canny's area overhead against the Sobel falls from 123 % to 3 % depending
 on how much more the circuit does, and that buying threshold robustness in the front-end costs about

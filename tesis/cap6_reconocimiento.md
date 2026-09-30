@@ -625,14 +625,43 @@ sí lleva el margen calibrado. La exactitud no depende de esa regla.
 
 #### En silicio
 
-No se ha llevado a sky130, y se midió por qué no cabe en Tiny Tapeout. En silicio no hay BRAM ni SPRAM: los 83 kbit
-de pesos se vuelven lógica y las activaciones, biestables. Sintetizado sin memorias dedicadas, el clasificador de
-Canny-98 ocupa **31 143 celdas genéricas**, más del doble de las 14 431 del de Canny-78 —unas 36 000 celdas de sky130
-con el factor de 1,16 que se midió al pasar Canny-78 de una síntesis a la otra—, y Canny-78 completo ya pedía el 110,7 % de los 8×2 mosaicos.
+En silicio no hay BRAM ni SPRAM, así que el circuito cambia en dos puntos y en nada más: los 21 360 pesos de
+4 bits pasan a una **ROM combinacional** —una tabla que el sintetizador convierte en lógica— y las 120
+activaciones, de la SPRAM a un banco de 128 registros de 8 bits. Es `mnist_clf98_asic.v`, generado desde los
+mismos pesos, y se comparó con el modelo entero sobre **200 imágenes de prueba: 200 idénticas** en dígito,
+decisión de rechazo y puntaje. El extractor y el tope son los de la tarjeta.
 
-> Es la tesis del Capítulo 8 con su ejemplo más nítido: **el mismo diseño es más pequeño que Canny-78 en la FPGA y más
-> del doble en silicio**, porque en un sustrato la memoria ya está en el chip y en el otro hay que construirla. Llevar
-> Canny-98 a fabricar pide una lanzadera con macros de SRAM o un dado propio.
+El primer intento se lanzó con los parámetros de Canny-78 —25 % de utilización del núcleo— y **no ruteó**.
+El ruteo global terminó con desbordamiento: las pistas de metal quedaron ocupadas al 94,5 %, y met1 al
+99,4 %. El ruteo detallado arrancó con 455 280 violaciones y a la sexta pasada seguía en 107 252, bajando un
+5 % por vuelta. Con el núcleo al 15 % el uso de pistas bajó al 70,9 %, el ruteo detallado cerró y el flujo
+terminó limpio:
+
+| | Canny-78 | **Canny-98** |
+|---|---:|---:|
+| celdas de síntesis | 29 449 | **42 192** |
+| utilización del núcleo | 30 % | **15 %** |
+| área del dado | 1,122 mm² | **2,996 mm²** |
+| camino crítico, con parásitos (reloj de 30 ns) | 12,66 ns | **24,64 ns** |
+| DRC · LVS · XOR | 0 · 0 · 0 | **0 · 0 · 0** |
+| redes con violación de antena | 115 | **924** |
+| tiempo de máquina | 24 min | **5 h 36 min** |
+
+Table: Canny-98 frente a Canny-78 en sky130.
+
+![**Figura 6.25.** Canny-98 en sky130, visto en KLayout: 1714 × 1714 µm, 42 192 celdas de síntesis,
+DRC, LVS y XOR en cero.](figuras/fig_6_canny98_asic.jpg)
+
+![**Figura 6.26.** Un acercamiento al interior del mismo dado: las filas de celdas cubiertas casi por
+completo por el cableado. Es el cuello de botella que obligó a bajar la utilización del 25 al
+15 %.](figuras/fig_6_canny98_asic_zoom.jpg)
+
+> Es la tesis del Capítulo 8 con su ejemplo más nítido, y ahora medido: **el mismo diseño es más pequeño que
+> Canny-78 en la FPGA y 2,7 veces más grande en silicio**, con sólo 1,43 veces sus celdas, y con un camino crítico que casi se duplica porque los cables se alargan. Lo que se agota
+> primero no es el área de las celdas sino **el cableado**: la ROM de pesos, convertida en lógica, es una
+> red de multiplexores con decenas de miles de conexiones. En la FPGA la memoria ya estaba en el chip; en
+> silicio hay que construirla, y construirla con celdas estándar cuesta pistas. Llevar Canny-98 a fabricar
+> pide una lanzadera con macros de SRAM, y antes de eso, diodos para las 924 redes con violación de antena.
 
 ## 6.4 Lo que la exactitud no muestra
 
@@ -704,7 +733,7 @@ predicción con la del modelo.
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
-![**Figura 6.25.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
+![**Figura 6.27.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
 ventana pasan uno a uno antes de que `done` presente un dígito. Es el nivel al que se hizo la
 comparación contra el modelo: no se compararon porcentajes, se compararon
@@ -727,7 +756,7 @@ incluye la decisión de rechazo, que es lógica de comparación y no de aritmét
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
 
-![**Figura 6.26.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
+![**Figura 6.28.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
 la escena del dígito 3. El panel A muestra los 19 ms de dos cuadros: el veredicto sale en el primero
 y no cambia en el segundo. El panel B captura el instante en que **el procesador sustituye el umbral
 por omisión del RTL, 110, por el 90 que escribe el firmware**, con el camino de datos todavía en
@@ -746,7 +775,7 @@ completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta re
 > **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
 > en silicio se comporta como el RTL verificado, errores incluidos.
 
-![**Figura 6.27.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
+![**Figura 6.29.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
 está cableado a la señal de configuración terminada; el azul parpadea con el latido del sistema. Los
 diez veredictos salen por el puerto serie del mismo conector que alimenta la tarjeta. A la derecha,
 el mismo montaje con el cableado del módulo de pantalla ya
