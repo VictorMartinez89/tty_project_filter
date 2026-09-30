@@ -31,9 +31,9 @@ diez mil** sobre el conjunto de prueba completo, en la misma iCE40UP5K, al 55 % 
 Frente a la cámara, en cambio, el reconocedor aún depende de que el dígito llegue centrado (§8.11).
 
 **Sobre el paso a silicio.** Se llevaron a GDSII **dieciocho circuitos** en dos procesos —dieciséis en sky130A
-con OpenLane y dos en IHP SG13G2 con LibreLane—, todos ellos con **DRC, LVS y XOR en cero**. El
-decimoséptimo y el decimoctavo son los reconocedores Canny-78 y Canny-98 de las §7.3 y §7.4, firmados cuando
-el resto del capítulo ya estaba medido; por eso el procedimiento de recuento de la §5.2 y el Anexo D hablan de dieciséis. La verificación
+con OpenLane y dos en IHP SG13G2 con LibreLane—, todos ellos con **DRC, LVS y XOR en cero**. Son los
+dieciséis del recuento de la §5.2 y el Anexo D —catorce en sky130A y los dos de IHP— más los reconocedores
+Canny-78 y Canny-98 de las §7.3 y §7.4, firmados en sky130A cuando el resto del capítulo ya estaba medido. La verificación
 eléctrica se cerró por dos vías independientes: los circuitos **cierran el temporizado con los
 parásitos del interconexionado extraídos** —holgura de 0,00 ns sobre el peor camino—, y el camino
 crítico de **dos** de ellos se simuló además en SPICE hasta repartir su retardo en sumandos sin
@@ -60,7 +60,7 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
 - **Manufacturabilidad.** Los diseños con memoria de cuadro grande acumulan violaciones de antena muy
   por encima del resto, porque sus redes de direccionamiento son largas y ramificadas.
 
-> Las tres primeras no son independientes: **área, frecuencia y manufacturabilidad son tres
+> Tres de ellas no son independientes: **área, frecuencia y manufacturabilidad son tres
 > manifestaciones del mismo hecho.** Quien optimice sólo el área concluirá que la memoria de cuadro
 > es aceptable, porque habrá visto un tercio del problema.
 

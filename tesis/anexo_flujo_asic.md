@@ -285,15 +285,6 @@ herramientas: exige **reconstruir el entorno tal como estaba el día del envío*
 que fija las versiones históricas del proyecto —una versión concreta del flujo, una del kit de
 diseño, una de open_pdks y una de las herramientas de soporte— en lugar de tomar las más recientes.
 
-El guion admite dos modos y cuatro acciones. Los modos deciden si el flujo se ejecuta dentro de un
-contenedor, reproduciendo el mismo procedimiento que la infraestructura de integración continua del
-proyecto, o de forma nativa sobre un entorno de paquetes reproducible. Las acciones permiten separar
-la preparación del entorno de la ejecución del endurecimiento del diseño, hacer ambas de una vez, o
-limitarse a informar de qué rutas y versiones se usarían sin modificar nada —esto último es lo
-primero que conviene ejecutar—. Varias variables de entorno permiten cambiar dónde se instala, sobre
-qué copia del proyecto se trabaja, y si se permite o no que el guion instale dependencias del sistema
-por su cuenta.
-
 Este guion está preparado para x86-64, lo que lo sitúa en el mismo caso descrito en E.7.
 
 **Uso del guion.** Admite dos modos —dentro de contenedor o de forma nativa— y cuatro acciones.

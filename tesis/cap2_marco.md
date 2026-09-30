@@ -489,7 +489,7 @@ lo que se ve en (a) son los bordes mismos, y eso ya no lo explica el signo.](fig
 
 **No es un reparo al chip, sino al instrumento**: una comparación que no puede dar
 cero no puede distinguir un error de una pérdida de compresión. Es la razón por la que en este trabajo
-todo se juzga **bit a bit contra el modelo golden**, sin imágenes intermedias y sin mirar.
+todo se juzga **bit a bit contra el modelo de referencia**, sin imágenes intermedias y sin mirar.
 
 ### Lo que sigue
 

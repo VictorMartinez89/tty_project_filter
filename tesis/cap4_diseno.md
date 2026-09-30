@@ -257,7 +257,7 @@ amarillo NE (y SW), azul E (y W), magenta SE (y NW). Los trazos verticales del �
 mano salen azules —borde vertical, respuesta E—, los horizontales rojos, y las diagonales de los
 triángulos amarillas o magenta según su inclinación.](figuras/fig_4_compass_dir.jpg)
 
-Las señales se inspeccionan con GTKWave, en la VM Ubuntu, sobre la imagen «HOLA». Cada línea dura
+Las señales se inspeccionan con GTKWave sobre la imagen «HOLA». Cada línea dura
 194 ciclos: 160 píxeles, 22 burbujas y 12 ciclos muertos.
 
 ![**Figura 4.9.** Las dos primeras líneas. Las memorias de línea todavía están vacías: la fila de
@@ -441,7 +441,7 @@ muestra en un solo paso:
  Algoritmo 3   Front-end transitivo
 ──────────────────────────────────────────────────────────────────────
  FRONTEND_TRANS(in_pix, thr_hi, thr_lo)
- 1–10. idéntico al Algoritmo 2 hasta `cls`       ▷ mismo doble umbral
+ 1–10. idéntico al Algoritmo 2 hasta cls       ▷ mismo doble umbral
  ▷ etapa 3 — reconstrucción morfológica
 11.  M ← matriz (H+2)×(W+2) en memoria           ▷ EL CUADRO ENTERO
 12.  CARGA:   M[y][x] ← cls  ∀ píxel             ▷ hay que esperar el cuadro completo
@@ -963,7 +963,7 @@ muestran cargando, barriendo y llegando al punto fijo, y la cadena con la cámar
 columna de la Figura 4.26.
 
 ![**Figura 4.53.** El Canny transitivo en vivo en la iCESugar sobre los seis objetos, con umbrales de
-110 y 70.](figuras/fig_4_visiontrans_placa.jpg)
+110 y 70 —los de este sistema de visión; el filtro solo de la §4.3.3 usa 60 y 30 (Tabla 4.8)—.](figuras/fig_4_visiontrans_placa.jpg)
 
 En sky130 es el circuito más grande del trabajo: **9,61 mm²** y **137 092 celdas** de síntesis, con DRC,
 LVS y XOR en cero según su ficha —sólo se conservaron sus fuentes—. Y es uno de los dos que **no cierran
@@ -1178,12 +1178,12 @@ libera celdas pero consume bloques, que son treinta. En varios puntos del desarr
 limitado alternativamente por uno y por otro, y la solución consistió en mover recursos entre ambos
 hasta encontrar una combinación que cerrara.
 
-**El bug del cerrojo.** Una asignación condicional incompleta dentro de un bloque combinacional
+**El error del cerrojo.** Una asignación condicional incompleta dentro de un bloque combinacional
 infiere un cerrojo en lugar de lógica. El diseño sintetiza, ocupa recursos parecidos y funciona en
 simulación; en la placa produce un comportamiento dependiente de la temporización. La herramienta lo
 advierte, y la advertencia es fácil de ignorar entre otras muchas.
 
-**El bring-up incremental.** El sistema se puso en marcha por etapas, cada una verificable por sí
+**La puesta en marcha incremental.** El sistema se puso en marcha por etapas, cada una verificable por sí
 misma: parpadeo, reloj, configuración SCCB, imagen en gris, memorias de línea, filtro, umbral, motor,
 procesador. La razón es que **cada etapa es el banco de pruebas de la siguiente**: cuando el filtro no
 produjo imagen, disponer de la etapa anterior funcionando permitió decidir en un solo intento si el
@@ -1198,7 +1198,7 @@ resultado es bueno. Aquí sólo se responde la primera. La segunda pertenece al 
 
 ### 4.8.1 El criterio
 
-Cada filtro se especificó primero como un programa en Python —el **modelo golden** descrito en la
+Cada filtro se especificó primero como un programa en Python —el **modelo de referencia** descrito en la
 §3.2— y sólo después se escribió su descripción en Verilog. La verificación consiste en ejecutar
 ambos sobre la misma entrada y comparar **píxel a píxel**, no en inspeccionar visualmente la salida.
 

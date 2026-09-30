@@ -39,7 +39,7 @@ público.
 
 ## Detección de bordes y procesamiento de imagen
 
-22. **✓** I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», charla en el Stanford Artificial Intelligence Laboratory, 1968. No es una publicación formal; se describe después en Pingle (1969) y en Duda y Hart (1973), razón por la cual buena parte de la literatura la cita de forma indirecta.
+22. **✓** I. Sobel y G. Feldman, «A 3×3 Isotropic Gradient Operator for Image Processing», charla en el Stanford Artificial Intelligence Laboratory, 1968. No es una publicación formal; la describieron después otros autores, y por eso buena parte de la literatura la cita de forma indirecta.
 23. **✓** J. M. S. Prewitt, «Object Enhancement and Extraction», en B. Lipkin y A. Rosenfeld (eds.), *Picture Processing and Psychopictorics*, Academic Press, pp. 75–149, 1970.
 24. **✓** R. A. Kirsch, «Computer determination of the constituent structure of biological images», *Computers and Biomedical Research*, vol. 4, n.º 3, pp. 315–328, 1971.
 25. **✓** N. Otsu, «A Threshold Selection Method from Gray-Level Histograms», *IEEE Transactions on Systems, Man, and Cybernetics*, vol. SMC-9, n.º 1, pp. 62–66, ene. 1979. Aparece también como «vol. 9»; se adopta «SMC-9», que es la numeración del índice de la revista.

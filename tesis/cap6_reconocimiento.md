@@ -258,7 +258,7 @@ con comparaciones —`glifo.v`—, sin memoria de fuente. Si el clasificador cal
 No lleva procesador: el umbral está cableado a 60. Conserva los dos dominios de reloj de `vision_top`
 (§4.3.9): la captura, la ventana y el clasificador al ritmo de la cámara; la configuración y la pantalla
 al del sistema. El dígito cruza entre ambos con dos biestables, porque cambia a lo sumo una vez por
-cuadro. Se portó del diseño que corrió en la FPGA, `mnist_cam_display.v`, con los tres cambios que
+cuadro. Se portó del diseño que corrió en la FPGA, `mnist_cam_display.v`, con los cambios que
 exige el silicio (§5.1).
 
 #### Pseudocódigo
@@ -459,7 +459,7 @@ final, **2 937 celdas lógicas (55 %) a 17,55 MHz**.
 El panel A muestra dos lotes de cuatro imágenes que entran por `uart_rx_pin`, la pausa que realinea la
 cadena (`reset_cad`) y los ocho veredictos, todos iguales al modelo. El panel B es un píxel entrando
 —bit de inicio, ocho bits y bit de parada— y el C un veredicto saliendo: de `frame_done` a `done` pasan
-778 ciclos, y el dígito sale como un byte por `uart_tx_pin`.](figuras/fig_ondas_stream78.png)
+778 ciclos —los 777 del diseño más el ciclo en que se registra `done`—, y el dígito sale como un byte por `uart_tx_pin`.](figuras/fig_ondas_stream78.png)
 
 | medición en la tarjeta | resultado |
 |-------------------------------------------------------|---------------:|
@@ -625,13 +625,13 @@ matriz de confusión casilla por casilla; Canny-78 y Canny-98 son los modelos en
 
 | reconocedor | exactitud | IC 95 % | precisión | recall | especif. | F1 | MCC | top-2 | AUC |
 |-------------------|---------:|-----------:|---------:|------:|--------:|------:|------:|-------:|------:|
-| Sobel | 91,04 % | 90,49–91,60 | 0,9147 | 0,9105 | 0,9901 | 0,9097 | 0,9011 | 97,25 % | 0,9942 |
-| SoC + Sobel | 91,03 % | 90,50–91,59 | 0,9150 | 0,9099 | 0,9900 | 0,9100 | 0,9008 | 97,11 % | 0,9937 |
-| Canny 1-salto | 92,03 % | 91,50–92,59 | 0,9248 | 0,9199 | 0,9911 | 0,9198 | 0,9120 | 97,70 % | 0,9954 |
-| SoC + Canny 1-salto | 92,46 % | 91,93–92,95 | 0,9276 | 0,9245 | 0,9916 | 0,9241 | 0,9166 | 97,87 % | 0,9958 |
-| Canny transitivo | 89,76 % | 89,16–90,35 | 0,9064 | 0,8980 | 0,9886 | 0,8966 | 0,8873 | 97,03 % | 0,9940 |
-| Canny-78 | 97,22 % | 96,89–97,55 | 0,9720 | 0,9722 | 0,9969 | 0,9721 | 0,9691 | 99,35 % | 0,9987 |
-| **Canny-98** | **98,45 %** | **98,21–98,69** | **0,9846** | **0,9845** | **0,9983** | **0,9845** | **0,9828** | **99,77 %** | **0,9991** |
+| Sobel | 91,04 % | 90,5–91,6 | 0,9147 | 0,9105 | 0,9901 | 0,9097 | 0,9011 | 97,25 % | 0,9942 |
+| SoC + Sobel | 91,03 % | 90,5–91,6 | 0,9150 | 0,9099 | 0,9900 | 0,9100 | 0,9008 | 97,11 % | 0,9937 |
+| Canny 1-salto | 92,03 % | 91,5–92,6 | 0,9248 | 0,9199 | 0,9911 | 0,9198 | 0,9120 | 97,70 % | 0,9954 |
+| SoC + Canny 1-salto | 92,46 % | 91,9–93,0 | 0,9276 | 0,9245 | 0,9916 | 0,9241 | 0,9166 | 97,87 % | 0,9958 |
+| Canny transitivo | 89,76 % | 89,2–90,3 | 0,9064 | 0,8980 | 0,9886 | 0,8966 | 0,8873 | 97,03 % | 0,9940 |
+| Canny-78 | 97,22 % | 96,9–97,5 | 0,9720 | 0,9722 | 0,9969 | 0,9721 | 0,9691 | 99,35 % | 0,9987 |
+| **Canny-98** | **98,45 %** | **98,2–98,7** | **0,9846** | **0,9845** | **0,9983** | **0,9845** | **0,9828** | **99,77 %** | **0,9991** |
 
 Table: Métricas de los siete reconocedores sobre las 10 000 imágenes de prueba de MNIST.
 
@@ -794,9 +794,12 @@ predicción con la del modelo.
 | Exactitud del RTL / del modelo | **91,04 % / 91,04 %** |
 | Matriz de confusión | idéntica elemento por elemento |
 | Veredictos de la clase de rechazo | **10 000 / 10 000** idénticos |
-| Cuadros aceptados · precisión al responder | 8 838 (88,38 %) · 95,44 %, en ambos |
+| Cuadros aceptados · precisión al responder | 8 838 (88,38 %) · 95,44 %, en ambos ᵃ |
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
+
+ᵃ Con la regla de rechazo del RTL, que no es la calibrada de la Tabla 6.1; por eso la precisión al responder
+del Sobel es aquí 95,44 % y allí 98,43 %. La exactitud, sin rechazo, es la misma.
 
 ![**Figura 6.30.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la

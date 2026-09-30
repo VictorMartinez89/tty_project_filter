@@ -6,7 +6,7 @@ el origen y la suma md5 de cada fichero, de modo que puede comprobarse que el te
 que se entregó al sintetizador o al flujo a silicio.
 
 Se incluyen los módulos escritos para este trabajo. El núcleo del procesador, `femtorv32_quark.v`, es
-de B. Levy [ref. 1] y se cita en lugar de reproducirse. En los listados, sólo las líneas de comentario
+de B. Levy [Levy] y se cita en lugar de reproducirse. En los listados, sólo las líneas de comentario
 que no cabían en la página se han partido en dos; el código no se ha tocado, salvo en un sentido: las
 líneas de código demasiado largas se parten entre dos sentencias, dos argumentos, dos sumandos o dos ramas de una condición, y los
 comentarios al final de ellas suben a la línea anterior. En Verilog un salto de línea equivale a un
@@ -239,7 +239,7 @@ endmodule
 ```verilog
 // =============================================================================
 // hysteresis_frame_bram_sync.sv -- Histeresis TRANSITIVA de Canny, mapeable a BRAM.
-//   Igual semantica que hysteresis_frame_bram.sv (verificado vs golden) pero con
+//   Igual semantica que hysteresis_frame_bram.sv (verificado vs modelo) pero con
 //   LECTURA SINCRONA para que 'mem' infiera BRAM de verdad:
 //     - 'mem' vive en un always @(posedge clk) SIN reset (la BRAM no se resetea;
 //       para poner el frame a 0 esta la fase CLR). 1 escritura + 1 lectura por
@@ -253,7 +253,7 @@ endmodule
 //     a2  = ra retrasado 2 -> la ventana ya esta formada; su centro es w4 =
 //                             celda (a2 - PW - 1); ahi se calcula y ESCRIBE newc.
 //   Frame PADDED (H+2 x W+2), borde=0 -> toda celda real tiene ventana 3x3 completa.
-//   Escritura in-place = converge al MISMO punto fijo que el golden; termina cuando
+//   Escritura in-place = converge al MISMO punto fijo que el modelo; termina cuando
 //   un barrido no confirma nada ('changed'==0).
 // =============================================================================
 `default_nettype none
@@ -415,7 +415,7 @@ endmodule
 Es el circuito `soc_sobel` de la §5.2: 0,37 mm² en sky130. `soc_sobel_top.v` reúne el FemtoRV32, la ROM
 de siete instrucciones, el periférico y el Sobel; el programa está escrito en la propia ROM, con cada
 instrucción comentada. `peripheral_filter.v` es el periférico de control en `0x0045`, el mismo que usan
-los otros dos SoC. El núcleo `femtorv32_quark.v` es de Levy [ref. 1] y no se reproduce; `linebuf3x3.v`
+los otros dos SoC. El núcleo `femtorv32_quark.v` es de Levy [Levy] y no se reproduce; `linebuf3x3.v`
 está en el Anexo G.1. Una línea de `soc_sobel_top.v` con dos sentencias se ha partido entre ellas.
 
 Carpeta: `Verilog_Repo/soc_sobel/`.
@@ -3103,9 +3103,9 @@ endmodule
 //   comparaciones y
 // cero multiplicaciones; un atan2 pediria un CORDIC o una tabla. Son los mismos 8
 //   sectores de
-// 45 grados, con los bordes en 0/45/90... en vez de centrados. El golden de Python se
+// 45 grados, con los bordes en 0/45/90... en vez de centrados. El modelo de Python se
 //   cambio
-// para modelar ESTO, que es la regla de toda la tesis: el golden modela lo que el
+// para modelar ESTO, que es la regla de toda la tesis: el modelo modela lo que el
 //   silicio hace.
 //
 // `clr` limpia el histograma SIN tocar los line-buffers. Hace falta porque la imagen
@@ -3188,7 +3188,7 @@ module mnist_feat #(
     // que midio el banco de latencia- MAS 2 por el pipeline interno del propio linebuf (etapa
     //   de
     // lectura + etapa de ventana)... y de esos 2 solo se ve 1 en el indice de muestra.
-    // El valor exacto se CALIBRO contra el golden barriendo LAT: 60 para W=28, o sea
+    // El valor exacto se CALIBRO contra el modelo barriendo LAT: 60 para W=28, o sea
     //   2*(W+2).
     // Con LAT=2*(W+1)=58 el histograma queda corrido DOS COLUMNAS y las zonas se
     //   mezclan,
@@ -3407,7 +3407,8 @@ endmodule
 
 `pan_canny.v` y `soc_mnist_canny_fw_top.v` cambian respecto de la G.14 en el programa —los dos
 umbrales, `0x5A20`— y en el extractor, `mnist_feat_canny.v`, que añade el doble umbral y la histéresis.
-El clasificador, `mnist_clf_canny_fw.v`, es el `mnist_clf.v` de la G.14 con otro nombre, otros pesos
+La cabecera de `soc_mnist_canny_fw_top.v` conserva el nombre `soc_mnist_canny_top.v` del fichero del que
+se derivó; se imprime tal cual. El clasificador, `mnist_clf_canny_fw.v`, es el `mnist_clf.v` de la G.14 con otro nombre, otros pesos
 (`mnist_weights_canny_fw.vh`) y otros límites de rechazo: 174 y 376 bordes y un margen de 70, en lugar
 de 140, 430 y 30. `soc_ctrl.v` y `cam_win28.v` son los de la G.14.
 
@@ -3551,9 +3552,9 @@ endmodule
 //   comparaciones y
 // cero multiplicaciones; un atan2 pediria un CORDIC o una tabla. Son los mismos 8
 //   sectores de
-// 45 grados, con los bordes en 0/45/90... en vez de centrados. El golden de Python se
+// 45 grados, con los bordes en 0/45/90... en vez de centrados. El modelo de Python se
 //   cambio
-// para modelar ESTO, que es la regla de toda la tesis: el golden modela lo que el
+// para modelar ESTO, que es la regla de toda la tesis: el modelo modela lo que el
 //   silicio hace.
 //
 // `clr` limpia el histograma SIN tocar los line-buffers. Hace falta porque la imagen
@@ -3665,7 +3666,7 @@ module mnist_feat_canny #(
     // lectura + etapa de ventana)... y de esos 2 solo se ve 1 en el indice de muestra.
     // Con la tercera etapa del Canny son 3*(W+2) = 90 para W=28. Se verifica igual que
     //   antes:
-    // contra el golden, contador por contador -no por la suma, que no cambia con un
+    // contra el modelo, contador por contador -no por la suma, que no cambia con un
     //   corrimiento-.
     // Con LAT=2*(W+1)=58 el histograma queda corrido DOS COLUMNAS y las zonas se
     //   mezclan,
@@ -3912,7 +3913,7 @@ module vision_sobel_mnist #(
         .pix_y(curY), .pix_valid(py_valid), .invertir(INVERTIR[0]),
         .out_valid(w_valid), .out_pix(w_pix), .frame_fin(w_fin));
 
-    // ======== el clasificador (el MISMO verificado bit a bit contra el golden)
+    // ======== el clasificador (el MISMO verificado bit a bit contra el modelo)
     //   ========
     wire       clf_done; wire [3:0] clf_dig; wire clf_val;
     // clr cuando TERMINA de clasificar, no en cada cuadro: el video es continuo y el
@@ -4276,7 +4277,7 @@ Carpeta: `Verilog_Repo/vision_canny_mnist/`.
 //   con histeresis, y el clasificador lleva pesos entrenados CON ese front-end (no son
 //   intercambiables: usar los pesos del Sobel aca da resultados sin sentido).
 //
-//   ESTADO: el extractor NO esta verificado bit a bit contra el golden de Python (mejor
+//   ESTADO: el extractor NO esta verificado bit a bit contra el modelo de Python (mejor
 // coincidencia medida: 97.3 % del mapa de bordes). Esta cadena SIRVE PARA VER CORRER
 //   EL
 //   SISTEMA, no para reportar precision.
@@ -4468,9 +4469,9 @@ endmodule
 //   comparaciones y
 // cero multiplicaciones; un atan2 pediria un CORDIC o una tabla. Son los mismos 8
 //   sectores de
-// 45 grados, con los bordes en 0/45/90... en vez de centrados. El golden de Python se
+// 45 grados, con los bordes en 0/45/90... en vez de centrados. El modelo de Python se
 //   cambio
-// para modelar ESTO, que es la regla de toda la tesis: el golden modela lo que el
+// para modelar ESTO, que es la regla de toda la tesis: el modelo modela lo que el
 //   silicio hace.
 //
 // `clr` limpia el histograma SIN tocar los line-buffers. Hace falta porque la imagen
@@ -4606,7 +4607,7 @@ module mnist_feat16_mem #(
     //
     // ESTO SE MIDIO, no se dedujo: se barrio LATP de 84 a 92 volcando el mapa
     //   de
-    // bordes posicion por posicion y comparandolo con el golden. Encaje: 74.7 % a 84,
+    // bordes posicion por posicion y comparandolo con el modelo. Encaje: 74.7 % a 84,
     //   99.6 %
     // a 87, y de vuelta a 75.1 % a 90. Con 87 y una pasada desde reset, 484/484
     //   exactas en

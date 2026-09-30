@@ -16,7 +16,7 @@ La propiedad que lo hace útil no es su forma —es el ciclo habitual— sino la
 autor.** Un bloque no se considera terminado porque parezca correcto, sino porque existe una
 comparación numérica que lo respalda y un fichero que la contiene.
 
-## 3.2 El modelo golden
+## 3.2 El modelo de referencia
 
 Cada filtro se escribió **primero en Python** y sólo después en Verilog. El programa en Python es la
 *verdad de referencia*: define qué debe calcular el circuito, y cualquier discrepancia es un error
@@ -48,7 +48,7 @@ cero**.
 Admitir el desfase sin acotarlo sería un error de método —permitiría ocultar diferencias reales— por
 lo que el desplazamiento aceptado se registra junto al resultado.
 
-## 3.4 Bring-up incremental
+## 3.4 Puesta en marcha incremental
 
 La puesta en marcha física siguió una escalera en la que cada peldaño es verificable por sí mismo:
 

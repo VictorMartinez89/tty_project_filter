@@ -60,18 +60,18 @@ Todos se llevaron a GDSII con **OpenLane** sobre el PDK abierto **sky130A**, bib
 
 ### 5.2.1 La tabla
 
-| Circuito | Función | Área del die | Celdas | Signoff |
+| Circuito | Función | Área del dado | Celdas | DRC · LVS · XOR |
 |---|---|---:|---:|:-:|
-| `sobel` | filtro Sobel 3×3 | 0,167 mm² | 5 823 | DRC/LVS/XOR = 0 |
-| `canny1` | Canny de un salto, en flujo | 0,360 mm² | 12 993 | DRC/LVS/XOR = 0 |
-| `transitivo` | Canny con histéresis transitiva | 3,13 mm² | 65 659 | DRC/LVS/XOR = 0 |
-| `soc_sobel` | FemtoRV32 + Sobel | 0,37 mm² | 12 043 | DRC/LVS/XOR = 0 |
-| `soc_canny1` | FemtoRV32 + Canny de un salto | 0,67 mm² | 22 054 | DRC/LVS/XOR = 0 |
-| `soc_trans` | FemtoRV32 + transitivo | 3,42 mm² | 72 337 | DRC/LVS/XOR = 0 |
-| `cam_frontend` | front-end de cámara OV7670 | 0,0177 mm² | 562 | DRC/LVS/XOR = 0 |
-| `lcd_ili9341` | driver de pantalla TFT por SPI | 0,0174 mm² | 553 | DRC/LVS/XOR = 0 |
-| `vision_top` | cámara + Sobel + framebuffer + pantalla | 1,75 mm² | 35 653 | DRC/LVS/XOR = 0 |
-| `vision_canny` | cámara + Canny + framebuffer + pantalla | 2,04 mm² | 41 925 | DRC/LVS/XOR = 0 |
+| `sobel` | filtro Sobel 3×3 | 0,167 mm² | 5 823 | 0 · 0 · 0 |
+| `canny1` | Canny de un salto, en flujo | 0,360 mm² | 12 993 | 0 · 0 · 0 |
+| `transitivo` | Canny con histéresis transitiva | 3,13 mm² | 65 659 | 0 · 0 · 0 |
+| `soc_sobel` | FemtoRV32 + Sobel | 0,37 mm² | 12 043 | 0 · 0 · 0 |
+| `soc_canny1` | FemtoRV32 + Canny de un salto | 0,67 mm² | 22 054 | 0 · 0 · 0 |
+| `soc_trans` | FemtoRV32 + transitivo | 3,42 mm² | 72 337 | 0 · 0 · 0 |
+| `cam_frontend` | front-end de cámara OV7670 | 0,0177 mm² | 562 | 0 · 0 · 0 |
+| `lcd_ili9341` | driver de pantalla TFT por SPI | 0,0174 mm² | 553 | 0 · 0 · 0 |
+| `vision_top` | cámara + Sobel + framebuffer + pantalla | 1,75 mm² | 35 653 | 0 · 0 · 0 |
+| `vision_canny` | cámara + Canny + framebuffer + pantalla | 2,04 mm² | 41 925 | 0 · 0 · 0 |
 
 Table: Los bloques llevados a silicio en sky130: área, celdas y firma.
 
@@ -151,7 +151,7 @@ Un circuito se puede contar en dos momentos del flujo, y las dos cifras son leg�
 | Definición | Qué cuenta | Dónde se usa |
 |------------------|------------------------------------------------------------|--------------------------|
 | celdas de **síntesis** | el resultado de traducir el RTL a compuertas | la tabla de la §5.3 |
-| celdas **emplazadas** | lo que queda tras emplazar y rutear, con los amortiguadores que el flujo inserta para el árbol de reloj y la reparación de tiempos | **esta** tabla y el Capítulo 6 |
+| celdas **emplazadas** | lo que queda tras emplazar y rutear, con los amortiguadores que el flujo inserta para el árbol de reloj y la reparación de tiempos | **esta** tabla y el Capítulo 7 |
 
 Table: Las dos definiciones de «celda» y dónde se usa cada una.
 

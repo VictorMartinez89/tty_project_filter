@@ -31,7 +31,7 @@ unas pocas líneas; el tercero necesita el cuadro entero residente y accesible e
 porque su punto fijo puede propagar una decisión desde cualquier píxel hacia cualquier otro.
 
 La comparación que resume el capítulo es ésta: **un procesador RISC-V completo, con su memoria de
-programa y su periférico, cuesta alrededor de nueve mil celdas** —medido tres veces, sobre los tres
+programa y su periférico, cuesta alrededor de nueve mil celdas** de síntesis —medido tres veces, sobre los tres
 filtros, con una dispersión de ±5 %— **es decir, aproximadamente la décima parte de lo que
 cuesta cambiar el alcance del patrón de local a global.**
 
@@ -76,7 +76,7 @@ En la FPGA (§6.3.5), el mismo modelo —los mismos 780 pesos, la misma exactitu
 circuitos. Con los 128 contadores en registros, leídos con índice variable, se estimó en el **202 %**
 del dispositivo: cada lectura exigía un multiplexor de 128 entradas. Con los contadores en una memoria
 síncrona y un peso por palabra, cupo en área pero no en tiempo. Con dos pesos por palabra, cupo en las
-dos, al 55 % y a 17,55 MHz. **Lo que decidió no fue cuánta memoria había, sino cómo se leía**: cuántos
+dos: al 55 % y a 17,55 MHz en la versión de la tarjeta, con el puerto serie. **Lo que decidió no fue cuánta memoria había, sino cómo se leía**: cuántos
 viajes hacían falta y si cada uno traía algo útil.
 
 En silicio (§7.3), la memoria de rasgos estaba declarada con 256 posiciones de 13 bits y sólo se usaban

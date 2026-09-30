@@ -40,7 +40,7 @@ tercer *line-buffer* del Canny; la diferencia de área entre ambos, un 5 %, es l
 
 ## 7.2 El costo relativo del front-end depende del sistema
 
-La comparación de área entre ambos front-ends admite cuatro niveles de integración. Las cuatro filas
+La comparación de área entre ambos front-ends admite cinco niveles de integración. Las cinco filas
 están en **celdas emplazadas**, la misma escala de la §5.2, de modo que los cocientes son
 directamente comparables entre sí:
 
@@ -109,11 +109,11 @@ las demás celdas.](figuras/fig_7_canny78f9_chip.png)
 nombres legibles —los biestables `dfxtp` y los condensadores de desacoplo `decap`—, y encima el ruteo
 en los niveles de metal que las conecta.](figuras/fig_7_canny78f9_zoom.png)
 
-En Tiny Tapeout, en cambio, ninguna de las dos cabe: en el tamaño máximo de 8×2 tiles, la completa
+En Tiny Tapeout, en cambio, ninguna de las dos cabe: en el tamaño máximo de 8×2 mosaicos, la completa
 pide un 110,7 % del área y la recortada, al 80,3 %, se queda sin sitio para los búferes que cierran el
 *hold*. El reconocedor que sí cabe es el de cuarenta rasgos (94,20 %), que en la lanzadera abierta de
-sky130 (SKY26d) ocupa el 42 % de 8×2 tiles, con DRC, LVS y antenas en cero y el temporizado limpio en
-las tres esquinas de proceso (repositorio `tt_mnist_canny_v2_vic`, ejecución 36048035078). No se ha
+sky130 (SKY26d) ocupa el 42 % de 8×2 mosaicos, con DRC, LVS y antenas en cero y el temporizado limpio en
+las tres esquinas de proceso (repositorio `tt_mnist_canny_v2_vic`). No se ha
 enviado a fabricar.
 
 Antes de esa versión se armaron para Tiny Tapeout dos reconocedores de 8×2 mosaicos, uno con cada
