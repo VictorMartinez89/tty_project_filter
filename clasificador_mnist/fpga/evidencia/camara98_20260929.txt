@@ -1,0 +1,9 @@
+camara98 · 2026-09-29 22:23 · iCESugar v1.5 + OV7670 + TFT · Canny-98 (mnist_cam98.v, version D)
+bitstream mnist_cam98.bin md5 22804ee5b0a756e1f29f19969fbd112b · 4 264 LC (80 %), 30/30 BRAM, 1 DSP, 1 SPRAM
+cam_pclk 20,82 MHz y clk 25,16 MHz maximos (PASS a 12 MHz) · video: camara98_20260929_2223.mp4 (22 s)
+
+Primera corrida: el diseno arranca, dibuja el marco, la vista previa de 7x7 y el digito; el veredicto cambia
+con la escena (se ven -, 3, 1, 2, 2, 3, 2). La vista previa sale casi toda blanca: con umbral 64 sobre la
+imagen invertida marca como trazo todo lo que la camara ve por debajo de 192/255, y con la luz del cuarto
+el papel llega gris. Version E: umbral 128. La imagen misma esta oscura: falta luz sobre el papel.
+Sin protocolo todavia: la prueba de 33 (prueba_camara_33.md) queda para la version E.
