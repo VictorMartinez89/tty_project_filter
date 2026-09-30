@@ -133,6 +133,18 @@ hizo al construir MNIST, devuelve al 97 % la exactitud que un corrimiento de tre
 63 %. Llevarlo al circuito —delante de la ventana de 28×28— es el paso que separa un reconocedor
 verificado de uno utilizable.
 
+**Una segunda plataforma: Artix-7 y otra cámara.** Todo lo medido en FPGA se midió en una sola familia, la
+iCE40UP5K, y con una sola cámara, la OV7670. El paso siguiente es repetir el sistema —FemtoRV32, front-end Canny
+y Canny-98— en un módulo Colorlight i9+, con una Artix-7 XC7A50T de Xilinx, y con otra cámara, el módulo CAM-130
+de 1,3 megapíxeles. La XC7A50T tiene 52 160 celdas lógicas y 120 bloques DSP, casi diez veces las celdas y
+quince veces los DSP de la iCE40UP5K, y eso cambia tres preguntas de este trabajo. La primera, si la jerarquía de
+costo entre Sobel y Canny se sostiene en otra arquitectura de lógica programable. La segunda, qué cabe cuando el
+presupuesto deja de apretar: Canny-98 con la vista previa completa y el normalizador del dígito, que en la
+iCE40UP5K no cupieron juntos (§6.3.6). La tercera, si la brecha frente al papel es de la OV7670 o de la escena:
+con otra cámara y la misma cadena, la diferencia se podría atribuir. La Artix-7 comparte además la familia de
+lógica programable de la ZedBoard de la §2.8.2, así que la comparación con el estado del arte dejaría de cruzar
+de fabricante.
+
 **Canny-98: usar lo que Canny-78 deja quieto.** Canny-78 es lineal y ocupa la mitad de la iCE40UP5K sin tocar dos de sus
 recursos más valiosos: los ocho DSP de 16×16 con acumulador y el megabit de SPRAM. Se midió en Python, sobre las diez
 mil imágenes de prueba, cuánto reconocería la misma tarjeta si el clasificador lineal se sustituye por una red de una
