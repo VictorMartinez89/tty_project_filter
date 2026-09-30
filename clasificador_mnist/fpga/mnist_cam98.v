@@ -180,7 +180,7 @@ module top #(
     (* ram_style = "logic" *) reg fb [0:48];
     reg [4:0]  wc = 5'd0, wr = 5'd0;            // columna y fila del pixel que llega, 0..27
     wire [5:0] widx = wr[4:2]*7 + wc[4:2];      // su celda de 4x4
-    wire       wbit = (w_pix >= 8'd64);         // trazo (ya invertido) o fondo
+    wire       wbit = w_pix[7];                 // trazo (ya invertido: la camara lo vio mas oscuro que gris medio) o fondo. Con 64 la vista salia casi toda blanca con la luz del cuarto (29-sep)
     always @(posedge cam_pclk) begin
         if (w_valid) begin
             // un pixel de cada bloque de 4x4 (submuestreo), cerca del centro del bloque
