@@ -26,7 +26,7 @@ público.
 ## Diseño digital y arquitectura de sistemas en silicio
 
 14. **✓** C. Mead y L. Conway, *Introduction to VLSI Systems*, Addison-Wesley, 1980. — El texto que estableció el diseño estructurado: reglas escalables, separación entre diseño y fabricación, y la oblea compartida.
-15. C. I. Camargo Bareño, *Diseño de Sistemas Digitales*, Universidad Nacional de Colombia, 21 de enero de 2025. Licencia Creative Commons BY-SA. — §1.2.1, «Sistemas sobre Silicio SoC», y la figura 1.3: **el SoC de referencia cuyo mapa de direcciones y arquitectura de bus extiende este trabajo**.
+15. C. I. Camargo Bareño, *Diseño de Sistemas Digitales*, Universidad Nacional de Colombia, 21 de enero de 2025. Licencia Creative Commons BY-SA. — §1.2.1, «Sistemas sobre Silicio SoC», y la figura 1.3: el SoC de referencia cuyo mapa de direcciones y arquitectura de bus extiende este trabajo.
 
 ## Flujo a silicio y procesos abiertos
 

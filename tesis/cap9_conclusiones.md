@@ -9,7 +9,7 @@ inspección visual, lo que a su vez hizo detectables errores —un desplazamient
 saturación, un signo invertido— que producen salidas de aspecto correcto.
 
 **Sobre la verificación.** Los tres núcleos de filtrado resultaron **idénticos bit a bit** al modelo:
-cero píxeles de diferencia sobre 4 800, en las cinco imágenes de prueba. El clasificador se sometió a
+cero píxeles de diferencia sobre 4 800, en las cinco imágenes de prueba. El clasificador se sometió a
 una prueba más exigente —las **diez mil** imágenes del conjunto de evaluación de MNIST, comparadas una
 por una— y el resultado fue el mismo: **diez mil predicciones y diez mil veredictos de rechazo
 idénticos**, con la matriz de confusión coincidiendo casilla por casilla. La prueba se repitió después
@@ -85,7 +85,7 @@ cruzar de un sustrato al otro, en cuatro dimensiones:
    vigésima parte de la memoria, y el circuito reproduce ese resultado sin discrepancia. Su versión
    ampliada, **Canny-78** —dieciséis zonas y 78 rasgos elegidos—, llega al **97,22 %** en la misma
    iCE40UP5K, lo reproduce en la tarjeta sobre las diez mil imágenes de prueba y firma en sky130 en
-   0,829 mm². **Canny-98**, con una capa oculta de 120 neuronas sobre los mismos rasgos, llega al **98,45 %** y
+   0,829 mm². **Canny-98**, con una capa oculta de 120 neuronas sobre los 168 rasgos de la pirámide, llega al **98,45 %** y
    lo reproduce en la tarjeta sobre las diez mil imágenes con menos lógica que Canny-78; en sky130 firma en 2,996 mm²,
    con DRC, LVS y XOR en cero. La versión de cuarenta
    rasgos para Tiny Tapeout, de 94,20 %, cabe en 8×2 mosaicos con el
@@ -100,7 +100,7 @@ por su cuenta es mucho peor que uno que lo ve ya corregido.
 | # | Lo que se afirmó | Lo que la medida mostró |
 |------|------------------------------------------------------------|------------------------------------------------------------|
 | 1 | Una señal de sincronismo ausente en el sensor | Era un desplazamiento de uno en el conteo de línea |
-| 2 | Un umbral óptimo hallado sobre 20 000 imágenes | No se transfiere al conjunto completo de 60 000 |
+| 2 | Un umbral óptimo hallado sobre 20 000 imágenes | No se transfiere al conjunto completo de 60 000 |
 | 3 | Una exactitud del **97,3 %** | Provenía de un defecto del banco de medida |
 | 4 | Una dispersión estimada con cinco semillas | **Subestimada en un factor de 1,8** por solapamiento de las submuestras |
 | 5 | El Canny supera al Sobel bajo condiciones degradadas | Comparaba **dos puntos de operación**, no dos filtros; con el umbral implementado el resultado se invierte |
@@ -136,7 +136,7 @@ verificado de uno utilizable.
 **Una segunda plataforma: Artix-7 y otra cámara.** Todo lo medido en FPGA se midió en una sola familia, la
 iCE40UP5K, y con una sola cámara, la OV7670. El paso siguiente es repetir el sistema —FemtoRV32, front-end Canny
 y Canny-98— en un módulo Colorlight i9+, con una Artix-7 XC7A50T de Xilinx, y con otra cámara, el módulo CAM-130
-de 1,3 megapíxeles. La XC7A50T tiene 52 160 celdas lógicas y 120 bloques DSP, casi diez veces las celdas y
+de 1,3 megapíxeles. La XC7A50T tiene 52 160 celdas lógicas y 120 bloques DSP, casi diez veces las celdas y
 quince veces los DSP de la iCE40UP5K, y eso cambia tres preguntas de este trabajo. La primera, si la jerarquía de
 costo entre Sobel y Canny se sostiene en otra arquitectura de lógica programable. La segunda, qué cabe cuando el
 presupuesto deja de apretar: Canny-98 con la vista previa completa y el normalizador del dígito, que en la
@@ -153,10 +153,10 @@ capa oculta con pesos de 8 bits —lo que multiplica un DSP—:
 | entrada | capa oculta | pesos | SPRAM | ciclos con 8 DSP | exactitud |
 |----------------------------------------|-----------:|-------------:|------:|----------------:|---------:|
 | Canny-78, 78 rasgos (el circuito actual) | — | 780 de 4 bits | — | 647 | 97,22 % |
-| 168 rasgos de la pirámide | 32 | 5 696 | 4,3 % | 712 | 98,28 % |
-| 168 rasgos de la pirámide | 64 | 11 392 | 8,7 % | 1 424 | 98,43 % |
-| 168 rasgos de la pirámide | 128 | 22 784 | 17,4 % | 2 848 | **98,75 %** |
-| 784 píxeles crudos | 128 | 101 632 | 77,5 % | 12 704 | 97,75 % |
+| 168 rasgos de la pirámide | 32 | 5 696 | 4,3 % | 712 | 98,28 % |
+| 168 rasgos de la pirámide | 64 | 11 392 | 8,7 % | 1 424 | 98,43 % |
+| 168 rasgos de la pirámide | 128 | 22 784 | 17,4 % | 2 848 | **98,75 %** |
+| 784 píxeles crudos | 128 | 101 632 | 77,5 % | 12 704 | 97,75 % |
 
 Table: Exactitud medida en Python de una capa oculta con pesos de 8 bits sobre el presupuesto de la iCE40UP5K.
 
@@ -184,7 +184,7 @@ Con **4 bits** —los mismos de Canny-78— la red sigue por encima del 98 % con
 ya se recorrió una vez: **Canny-98** (§6.3.6) —el mismo front-end, los 168 rasgos y una capa oculta de 120 neuronas con
 pesos de 4 bits, en aritmética entera exacta— llega al **98,45 %** y reproduce el modelo en la tarjeta sobre las diez
 mil imágenes de prueba, con el 45 % de las celdas lógicas y todos los bloques de BRAM. También firma en sky130 (§7.4), aunque a 2,7 veces el
-dado de Canny-78. Lo que queda por delante es la versión de 8 bits y la regla de rechazo calibrada. Por debajo, la caída
+dado completo de Canny-78 (1,122 mm²). Lo que queda por delante es la versión de 8 bits y la regla de rechazo calibrada. Por debajo, la caída
 es en buena parte del método: los pesos se cuantizaron **después** de entrenar, y a 2 y 1 bit la práctica habitual es
 entrenar ya cuantizado, que no se ensayó aquí.
 

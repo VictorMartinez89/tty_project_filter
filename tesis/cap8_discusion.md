@@ -19,8 +19,8 @@ contrario:
 
 | desde | hasta | cuesta |
 |---|---|---:|
-| Sobel | Canny de un salto | **+5 851 celdas** |
-| Canny de un salto | Canny transitivo | **+94 511 celdas** |
+| Sobel | Canny de un salto | **+5 851 celdas** |
+| Canny de un salto | Canny transitivo | **+94 511 celdas** |
 
 Table: Lo que cuesta ampliar el alcance de la ventana.
 
@@ -61,8 +61,8 @@ aceptable, porque sólo verá un tercio del problema.
 El Canny de un salto cuesta, respecto del Sobel, una sola cosa más: un tercer *line-buffer*. En sky130 ese buffer se
 sintetiza en biestables, uno por bit, y el filtro aislado sale **2,23 veces** mayor que el Sobel (§7.2). En la
 iCE40UP5K el mismo buffer cae en un bloque de BRAM que ya está en el chip, se use o no: la cadena completa —cámara,
-ventana de 28×28, filtro, clasificador y pantalla— pasa de 2 942 a 2 956 LUT con el Canny, **catorce, el 0,5 %**, y de
-6 a 8 bloques de BRAM; tras el emplazamiento, de 4 453 a 4 622 celdas lógicas.
+ventana de 28×28, filtro, clasificador y pantalla— pasa de 2 942 a 2 956 LUT con el Canny, **catorce, el 0,5 %**, y de
+6 a 8 bloques de BRAM; tras el emplazamiento, de 4 453 a 4 622 celdas lógicas.
 
 > El mismo diseño, medido con las mismas herramientas, sale «más del doble» en un sustrato y «casi gratis» en el otro.
 > **Lo que decide no es el algoritmo sino la memoria, y cuánto vale la memoria depende de la tecnología**: una
@@ -93,7 +93,7 @@ Una lectura apresurada del clasificador del Capítulo 6 sugeriría que la soluci
 sustituir memoria por lógica. El trabajo permite matizar eso con números propios.
 
 El clasificador de dígitos alcanza 91,04 % sobre MNIST con **400 pesos de cuatro bits** —doscientos
-bytes— frente al 91,9 % que obtienen los 784 píxeles crudos con 7 840 pesos. La memoria se redujo en
+bytes— frente al 91,9 % que obtienen los 784 píxeles crudos con 7 840 pesos. La memoria se redujo en
 un factor de veinte y la exactitud no se movió. Es un resultado fuerte, y se enuncia así en el Capítulo 6.
 
 Pero el descriptor que hace posible esa reducción —histograma de orientaciones por zona, sobre bordes—
@@ -127,7 +127,7 @@ frecuencia?» no tiene una respuesta estable: tiene una respuesta por configurac
 Dos observaciones de este trabajo parecen contradecirse, y el matiz está en la diferencia.
 
 Al integrar el procesador con el filtro Canny en un die apretado, el resultado superó la predicción
-ingenua —la suma de las partes— en unas 6 500 celdas. En otro diseño de la misma familia, con die
+ingenua —la suma de las partes— en unas 6 500 celdas. En otro diseño de la misma familia, con die
 holgado y reloj relajado, el resultado quedó un **1,6 % por debajo** de esa predicción.
 
 Las dos medidas son correctas. Lo que las separa es **si el flujo tuvo que trabajar para cerrar
@@ -177,7 +177,7 @@ Poniendo precio a las dos soluciones sobre el mismo silicio:
 | lo que se compra | dónde | cuesta |
 |----------------------------------|----------------------------|------------:|
 | robustez al umbral **en el front-end** | el Canny, en el reconocedor | **972 celdas** |
-| robustez al umbral **por software** | el procesador y su periferia | **6 220 celdas** |
+| robustez al umbral **por software** | el procesador y su periferia | **6 220 celdas** |
 
 Table: Precio de la robustez al umbral en el front-end y por software.
 
@@ -273,7 +273,7 @@ En la vista RTL de cualquier herramienta, **un framebuffer es un rectángulo** �
 entrada y un dato de salida— dibujado del mismo tamaño que un sumador. El esquemático no distingue
 entre una memoria y una compuerta.
 
-En silicio, ese mismo rectángulo son **6 400 biestables** que ocupan un tercio del circuito, para
+En silicio, ese mismo rectángulo son **6 400 biestables** que ocupan un tercio del circuito, para
 almacenar 784 bytes.
 
 > **La abstracción que hace legible el diagrama es precisamente la que oculta el costo dominante.**

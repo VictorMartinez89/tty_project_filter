@@ -19,7 +19,7 @@ cada resultado de este documento:
 | Modelo de referencia | Python, NumPy | equipo principal |
 | Simulación RTL y verificación | Icarus Verilog, cocotb | equipo principal |
 | Síntesis lógica | yosys | equipo principal |
-| Simulación eléctrica | NGSpice | equipo principal |
+| Simulación eléctrica | NGSpice, Xyce | equipo principal |
 | Esquemáticos RTL | yosys + netlistsvg | equipo principal |
 | **Emplazamiento y ruteo en FPGA** | nextpnr-ice40, icepack | **máquina virtual** |
 | **Flujo completo a ASIC** | OpenLane sobre Docker | **máquina virtual** |

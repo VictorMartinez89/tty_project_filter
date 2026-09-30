@@ -254,7 +254,7 @@ sumadores** en aritmética de punto fijo de dieciséis bits, ocupando menos de l
 dispositivo. Otra, sobre ZedBoard, dispone además de un procesador ARM de aplicación junto a la
 lógica programable.
 
-El sistema de este trabajo opera sobre un dispositivo de 5 280 celdas lógicas y **no emplea ningún
+El sistema de este trabajo opera sobre un dispositivo de 5 280 celdas lógicas y **no emplea ningún
 multiplicador en el camino de datos de imagen**. La comparación no pretende mostrar superioridad: las
 tareas resueltas no son equivalentes, y una red convolucional de siete capas reconoce mejor que un
 clasificador lineal sobre descriptores de orientación. Lo que muestra es **dónde se sitúa el punto de
@@ -286,7 +286,7 @@ y más adelante, al justificar la ausencia de interfaz gráfica:
 La solución que adoptan es exactamente la misma estrategia que el Capítulo 6 documenta:
 **cuantizar**. Reducen los pesos de treinta y dos bits en coma flotante a ocho bits con una
 configuración única para toda la red, y hasta **cuatro bits** eligiendo la configuración por capa,
-con una caída de exactitud de **98,35 % a 97,37 %** —algo más de un punto porcentual a cambio de un
+con una caída de exactitud de **98,35 % a 97,37 %** —casi un punto porcentual a cambio de un
 factor de ocho en memoria.
 
 > Que un grupo con diez veces más presupuesto de hardware describa sus recursos como escasos y
@@ -366,7 +366,7 @@ el reloj.
   el LFSR de autoprueba puede reemplazar al host como fuente de píxeles
 ```
 
-Ocupa **1×2 tiles**: 0,036 mm² de dado, **2 104 celdas** tras la síntesis y 2 183 tras el emplazamiento
+Ocupa **1×2 tiles**: 0,036 mm² de dado, **2 104 celdas** tras la síntesis y 2 183 tras el emplazamiento
 —310 de ellas biestables—, con DRC, LVS y antenas en cero.
 
 ### El código
@@ -451,9 +451,9 @@ alimentación, y comparó cada imagen devuelta con la calculada en software:
 
 | Medición (modo gris, imagen de 320×240) | Resultado |
 |-------------------------------------------------------|------------------------------------------------------------|
-| Caudal más alto con la imagen **idéntica** a la de software | **371 662 píxeles/s** (reloj del chip 100 MHz, SPI 9,8 MHz, 1,8 V) |
+| Caudal más alto con la imagen **idéntica** a la de software | **371 662 píxeles/s** (reloj del chip 100 MHz, SPI 9,8 MHz, 1,8 V) |
 | Potencia a 1,8 V, 100 MHz, SPI a 9 MHz | **2,87 mW** |
-| A 1,3 V, según su propia figura | sigue exacta a 346 514 píxeles/s, con ≈ 1,3 mW |
+| A 1,3 V, según su propia figura | sigue exacta a 346 514 píxeles/s, con ≈ 1,3 mW |
 
 Table: Lo que Maldonado midió sobre su chip fabricado, en modo gris.
 

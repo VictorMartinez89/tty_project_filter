@@ -62,16 +62,16 @@ Todos se llevaron a GDSII con **OpenLane** sobre el PDK abierto **sky130A**, bib
 
 | Circuito | Función | Área del die | Celdas | Signoff |
 |---|---|---:|---:|:-:|
-| `sobel` | filtro Sobel 3×3 | 0,167 mm² | 5 823 | DRC/LVS/XOR = 0 |
-| `canny1` | Canny de un salto, en flujo | 0,360 mm² | 12 993 | DRC/LVS/XOR = 0 |
-| `transitivo` | Canny con histéresis transitiva | 3,13 mm² | 65 659 | DRC/LVS/XOR = 0 |
-| `soc_sobel` | FemtoRV32 + Sobel | 0,37 mm² | 12 043 | DRC/LVS/XOR = 0 |
-| `soc_canny1` | FemtoRV32 + Canny de un salto | 0,67 mm² | 22 054 | DRC/LVS/XOR = 0 |
-| `soc_trans` | FemtoRV32 + transitivo | 3,42 mm² | 72 337 | DRC/LVS/XOR = 0 |
+| `sobel` | filtro Sobel 3×3 | 0,167 mm² | 5 823 | DRC/LVS/XOR = 0 |
+| `canny1` | Canny de un salto, en flujo | 0,360 mm² | 12 993 | DRC/LVS/XOR = 0 |
+| `transitivo` | Canny con histéresis transitiva | 3,13 mm² | 65 659 | DRC/LVS/XOR = 0 |
+| `soc_sobel` | FemtoRV32 + Sobel | 0,37 mm² | 12 043 | DRC/LVS/XOR = 0 |
+| `soc_canny1` | FemtoRV32 + Canny de un salto | 0,67 mm² | 22 054 | DRC/LVS/XOR = 0 |
+| `soc_trans` | FemtoRV32 + transitivo | 3,42 mm² | 72 337 | DRC/LVS/XOR = 0 |
 | `cam_frontend` | front-end de cámara OV7670 | 0,0177 mm² | 562 | DRC/LVS/XOR = 0 |
 | `lcd_ili9341` | driver de pantalla TFT por SPI | 0,0174 mm² | 553 | DRC/LVS/XOR = 0 |
-| `vision_top` | cámara + Sobel + framebuffer + pantalla | 1,75 mm² | 35 653 | DRC/LVS/XOR = 0 |
-| `vision_canny` | cámara + Canny + framebuffer + pantalla | 2,04 mm² | 41 925 | DRC/LVS/XOR = 0 |
+| `vision_top` | cámara + Sobel + framebuffer + pantalla | 1,75 mm² | 35 653 | DRC/LVS/XOR = 0 |
+| `vision_canny` | cámara + Canny + framebuffer + pantalla | 2,04 mm² | 41 925 | DRC/LVS/XOR = 0 |
 
 Table: Los bloques llevados a silicio en sky130: área, celdas y firma.
 
@@ -104,11 +104,11 @@ dado de 1,75 mm²; a la derecha, un acercamiento a sus celdas.](figuras/fig_5_vi
 framebuffer.](figuras/fig_5_visioncanny_asic.jpg)
 
 ![**Figura 5.5.** Los dos sistemas de visión frente a frente: el Canny añade 0,29 mm² de dado, pasa de
-35 653 a 41 925 celdas y de 66,9 a 90,9 mW de potencia típica estimada.](figuras/fig_5_vision_comparacion.png)
+35 653 a 41 925 celdas y de 66,9 a 90,9 mW de potencia típica estimada.](figuras/fig_5_vision_comparacion.png)
 
 ![**Figura 5.6.** Acercamiento al GDSII del `canny1` en KLayout. Lo que se ve no es un esquema sino
 el plano que iría a fábrica: filas de celdas estándar y, sobre ellas, las capas de metal que las
-conectan. La mancha más clara del centro es una región de menor densidad de ruteo. Las 12 993 celdas
+conectan. La mancha más clara del centro es una región de menor densidad de ruteo. Las 12 993 celdas
 de la tabla anterior son, literalmente, estas.](figuras/fig_5_2_malla_canny1.jpg)
 
 **Los dos primeros filtros caben también en Tiny Tapeout.** Envueltos para la lanzadera, el Sobel ocupa
@@ -131,14 +131,14 @@ filtro más pequeño de la tabla; en el perímetro, los pines del píxel de entr
 salida.](figuras/fig_4_sobel_asic.png)
 
 ![**Figura 5.10.** El SoC con el Sobel en silicio: `soc_sobel_top.gds` en KLayout. Con 0,37 mm², el
-procesador, su ROM y su periférico añaden 6 220 celdas al filtro solo de la figura
+procesador, su ROM y su periférico añaden 6 220 celdas al filtro solo de la figura
 anterior.](figuras/fig_5_socsobel_asic.png)
 
 ![**Figura 5.11.** El SoC con el Canny de un salto en silicio: `soc_canny1_top.gds` en KLayout,
 0,67 mm².](figuras/fig_5_soccanny_asic.png)
 
 ![**Figura 5.12.** El SoC con el Canny transitivo en silicio: `soc_trans_top.gds` en KLayout, 3,42 mm².
-El procesador ocupa una parte pequeña; el resto es el motor y su cuadro de unos 10 600
+El procesador ocupa una parte pequeña; el resto es el motor y su cuadro de unos 10 600
 biestables.](figuras/fig_5_soctrans_asic.png)
 
 ### 5.2.3 El recuento de celdas, y cómo cruzar las dos tablas
@@ -206,12 +206,12 @@ sola causa.
 
 | # | Diseño | Área (mm²) | Celdas | Reloj de firma | Setup con parásitos | DRC · LVS · XOR |
 |---|--------------------|--------:|--------:|------------------:|-------------:|:------------:|
-| #1 | Sobel ᵃ | 2,45 | 36 730 | 20 ns · 50,0 MHz | sin dato ᵇ | 0 · 0 · 0 |
-| #2 | Canny1 ᵃ | 2,90 | 42 581 | 20 ns · 50,0 MHz | sin dato ᵇ | 0 · 0 · 0 |
-| #3 | Transitivo | 9,61 | 137 092 | 20 ns · 50,0 MHz | **−19,35 ns** | 0 · 0 · 0 |
-| #4 | SoC + Sobel | 3,03 | 46 019 | 32 ns · 31,2 MHz | **+0,00 ns** | 0 · 0 · 0 |
-| #5 | SoC + Canny1 | 3,44 | 51 037 | 36 ns · 27,8 MHz | **+0,00 ns** | 0 · 0 · 0 |
-| #6 | SoC + Transitivo | 10,19 | 146 216 | 36 ns · 27,8 MHz | **−18,23 ns** | 0 · 0 · 0 |
+| #1 | Sobel ᵃ | 2,45 | 36 730 | 20 ns · 50,0 MHz | sin dato ᵇ | 0 · 0 · 0 |
+| #2 | Canny1 ᵃ | 2,90 | 42 581 | 20 ns · 50,0 MHz | sin dato ᵇ | 0 · 0 · 0 |
+| #3 | Transitivo | 9,61 | 137 092 | 20 ns · 50,0 MHz | **−19,35 ns** | 0 · 0 · 0 |
+| #4 | SoC + Sobel | 3,03 | 46 019 | 32 ns · 31,2 MHz | **+0,00 ns** | 0 · 0 · 0 |
+| #5 | SoC + Canny1 | 3,44 | 51 037 | 36 ns · 27,8 MHz | **+0,00 ns** | 0 · 0 · 0 |
+| #6 | SoC + Transitivo | 10,19 | 146 216 | 36 ns · 27,8 MHz | **−18,23 ns** | 0 · 0 · 0 |
 
 Table: Tabla maestra de la cadena de visión completa en silicio.
 
@@ -269,9 +269,9 @@ programa y su periférico:
 
 | Filtro | sin CPU | con CPU | Δ celdas | Δ relativo |
 |---|---:|---:|---:|---:|
-| Sobel | 36 730 | 46 019 | **+9 289** | +25,3 % |
-| Canny de un salto | 42 581 | 51 037 | **+8 456** | +19,9 % |
-| Canny transitivo | 137 092 | 146 216 | **+9 124** | +6,7 % |
+| Sobel | 36 730 | 46 019 | **+9 289** | +25,3 % |
+| Canny de un salto | 42 581 | 51 037 | **+8 456** | +19,9 % |
+| Canny transitivo | 137 092 | 146 216 | **+9 124** | +6,7 % |
 
 Table: Costo del procesador según el filtro que acompaña.
 
@@ -293,9 +293,9 @@ central de este capítulo:
 
 | Alcance del patrón | Filtro | Celdas (sin CPU) | Δ respecto al anterior |
 |-----------------------|-----------------|----------------:|----------------------:|
-| local, ventana 3×3 | Sobel | 36 730 | — |
-| local más un salto | Canny de un salto | 42 581 | +5 851 |
-| **global, cuadro completo** | Canny transitivo | **137 092** | **+94 511** |
+| local, ventana 3×3 | Sobel | 36 730 | — |
+| local más un salto | Canny de un salto | 42 581 | +5 851 |
+| **global, cuadro completo** | Canny transitivo | **137 092** | **+94 511** |
 
 Table: Costo de ampliar el alcance del patrón, de un filtro al siguiente.
 
@@ -321,11 +321,11 @@ sin macro de memoria es un banco de biestables, y se paga en área, en potencia 
 
 ### 5.3.4 Balance
 
-Seis circuitos, 459 675 celdas en total, **seis de seis con DRC = LVS = XOR = 0**. Dos cierran
+Seis circuitos, 459 675 celdas en total, **seis de seis con DRC = LVS = XOR = 0**. Dos cierran
 temporizado con parásitos extraídos, dos carecen de ese dato por haberse archivado sin reportes, y dos
 no cierran y se documentan con la frecuencia que sí soportarían.
 
-Ninguno ha sido fabricado. La §6.1 describe la vía por la que podrían serlo.
+Ninguno ha sido fabricado. La §9.4 describe la vía por la que podrían serlo.
 
 ## 5.4 Verificación eléctrica del camino crítico
 
@@ -344,9 +344,9 @@ eléctrica es, por tanto, una verificación del instrumento y no del circuito.
 
 ### 5.4.1 Por qué el camino crítico y no el chip
 
-Simular los dos reconocedores enteros no es inviable por tamaño —`pan_sobel` tiene 116 314
-transistores y en este trabajo ya se simuló un procesador de 121 310— sino **por tiempo**: para que
-el clasificador vea sus 784 píxeles hay que hacerle entrar un cuadro completo, y eso son 633 800
+Simular los dos reconocedores enteros no es inviable por tamaño —`pan_sobel` tiene 116 314
+transistores y en este trabajo ya se simuló un procesador de 121 310— sino **por tiempo**: para que
+el clasificador vea sus 784 píxeles hay que hacerle entrar un cuadro completo, y eso son 633 800
 ciclos, unos treinta y dos veces más actividad que la simulación de procesador ya realizada.
 
 El camino crítico, en cambio, son **treinta y siete celdas** en un chip y treinta y seis en el otro.
@@ -465,7 +465,7 @@ Repartidos los 12,230 ns sin residuo, el término que importa sale igual en los 
 Table: Contribución del modelo de celda y de la resistencia de la interconexión al camino crítico.
 
 Dos circuitos distintos, dos caminos críticos que no comparten una sola instancia, y la misma cifra a
-cuatro décimas de punto: **algo más de la quinta parte del retardo de un camino crítico la ponen los
+cinco décimas de punto: **algo más de la quinta parte del retardo de un camino crítico la ponen los
 parásitos que el dibujo añade dentro de las celdas.**
 
 ![**Figura 5.19.** La salida del simulador, tal como éste la dibuja. Cada traza es un nodo del camino

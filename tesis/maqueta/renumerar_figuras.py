@@ -24,6 +24,9 @@ for f in todos:
     s = CAP.sub(lambda m: "![**Figura @" + mapa[m.group(1)] + ".**", s)
     s = re.sub(r"(?<!\[\*\*)Figura ([0-9]+\.[0-9]+[A-Za-z0-9]*)\b",
                lambda m: "Figura @" + mapa[m.group(1)] if m.group(1) in mapa else m.group(0), s)
+    # plurales: «Figuras 4.6 y 4.7» (sin esto quedaban corridas al insertar figuras)
+    s = re.sub(r"(Figuras )([0-9]+\.[0-9]+[A-Za-z0-9]*)((?:, | y | a | e )[0-9]+\.[0-9]+[A-Za-z0-9]*)+",
+               lambda m: re.sub(r"[0-9]+\.[0-9]+[A-Za-z0-9]*", lambda k: mapa.get(k.group(0), k.group(0)), m.group(0)), s)
     s = s.replace("Figura @", "Figura ")
     if s != o: open(f, "w").write(s); cambios += 1
 print("  figuras:", len(mapa), "· cambiadas:", sum(1 for k, v in mapa.items() if k != v), "· ficheros tocados:", cambios)

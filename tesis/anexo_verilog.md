@@ -27,7 +27,7 @@ Carpeta: `Verilog_Repo/sobel/`.
 ### `sobel_top.v`
 
 ```verilog
-// sobel_top.v — Sobel de bordes AUTOCONTENIDO para ASIC (sky130), datapath de Victor.
+// sobel_top.v — Sobel de bordes AUTOCONTENIDO para ASIC (sky130).
 //   Stream raster de pixeles (in_valid/in_pix 8-bit) -> ventana 3x3 (linebuf3x3) ->
 //   |Gx|+|Gy| (satura a 255) -> umbral -> out_pix (FF=borde / 00=plano).
 // Misma matematica que el SoC femto (cam_femto_display.v), sin CPU ni camara: listo
@@ -602,7 +602,7 @@ Carpeta: `Verilog_Repo/soc_canny1/`.
 //   (que en
 // silicio arrancaria aleatoria). El firmware no usa RAM de datos -> no hace falta RAM
 //   writable.
-// Fase 4 del roadmap ASIC: el SoC con el datapath Canny (Gaussian->Sobel->doble
+// El SoC con el datapath Canny (Gaussian->Sobel->doble
 //   umbral->histeresis).
 `default_nettype none
 module soc_canny1_top (
@@ -727,7 +727,7 @@ Carpeta: `Verilog_Repo/soc_trans/`.
 ```verilog
 // soc_trans_top.v — SoC femto (FemtoRV32 + ROM + periferico + MOTOR TRANSITIVO) para
 //   ASIC sky130.
-// El jefe final: un CPU RISC-V junto al motor de histeresis TRANSITIVA (reconstruccion
+// Un CPU RISC-V junto al motor de histeresis TRANSITIVA (reconstruccion
 //   morfologica),
 // cuyo framebuffer padded 62x82x2b se vuelve ~10 600 FLIP-FLOPS en silicio (no hay
 //   SPRAM en el ASIC).
@@ -820,7 +820,7 @@ endmodule
 
 ## G.7 Sobel completo (§4.3.7)
 
-Es el circuito `sobel_completo`, el #1 de la §5.3: 2,45 mm² en sky130. `sobel_completo.v` conecta el
+Es el circuito `sobel_completo`, el primero de la §5.3: 2,45 mm² en sky130. `sobel_completo.v` conecta el
 front-end de cámara, el Sobel de la G.1, el framebuffer de 60×80 bits y el controlador de pantalla. Los
 bloques de interfaz —las cuatro piezas del front-end y el controlador de la ILI9341— son los mismos que
 usan las demás cadenas completas y los sistemas de visión, y sólo se reproducen aquí.
@@ -1464,7 +1464,7 @@ endmodule
 
 ## G.8 Canny 1-streaming completo (§4.3.8)
 
-Es el circuito `canny1_completo`, el #2 de la §5.3: 2,90 mm² en sky130. `canny1_completo.v` conecta el
+Es el circuito `canny1_completo`, el segundo de la §5.3: 2,90 mm² en sky130. `canny1_completo.v` conecta el
 front-end de cámara, el Canny de un salto de la G.2, el framebuffer de 60×80 bits y el controlador de
 pantalla. Los bloques de interfaz son idénticos a los de la G.7 y no se repiten.
 
@@ -2219,7 +2219,7 @@ endmodule
 
 ## G.11 Visión Canny Framebuffer Transitivo (§4.3.11)
 
-Es el circuito `trans_completo`, el #3 de la §5.3: 9,61 mm² en sky130. `trans_completo.v` conecta la
+Es el circuito `trans_completo`, el tercero de la §5.3: 9,61 mm² en sky130. `trans_completo.v` conecta la
 cadena y declara el framebuffer de clases y el de bordes; `grad_class_top.v` calcula la clase de cada
 píxel con el suavizado, el gradiente y el doble umbral. El motor es el de la G.3, y los bloques de
 interfaz, los de la G.7.
@@ -2485,7 +2485,7 @@ endmodule
 ### `sobel_top.v`
 
 ```verilog
-// sobel_top.v — Sobel de bordes AUTOCONTENIDO para ASIC (sky130), datapath de Victor.
+// sobel_top.v — Sobel de bordes AUTOCONTENIDO para ASIC (sky130).
 //   Stream raster de pixeles (in_valid/in_pix 8-bit) -> ventana 3x3 (linebuf3x3) ->
 //   |Gx|+|Gy| (satura a 255) -> umbral -> out_pix (FF=borde / 00=plano).
 // Misma matematica que el SoC femto (cam_femto_display.v), sin CPU ni camara: listo
@@ -2717,7 +2717,7 @@ Carpeta: `Verilog_Repo/pan_sobel/`.
 ### `pan_sobel.v`
 
 ```verilog
-// pan_sobel.v — "PAN HABLAS" con Sobel: EL CHIP QUE MIRA Y RECONOCE.
+// pan_sobel.v — con Sobel: EL CHIP QUE MIRA Y RECONOCE.
 //
 //   OV7670  ->  cam_win28  ->  [SoC femto: FemtoRV32 + periferico 0x0045 + Sobel]
 //                                  -> mnist_feat -> mnist_clf  ->  0..9 o NADA
@@ -3112,7 +3112,7 @@ endmodule
 //   se manda
 // dos veces -los buffers arrancan vacios y la primera pasada trae basura, igual que en
 //   los
-// bancos de las Partes 29-35-: al empezar la segunda hay que poner los contadores en
+// bancos de verificacion-: al empezar la segunda hay que poner los contadores en
 //   cero
 // pero conservar las dos filas ya cargadas. Un `reset` a secas borraria las dos cosas.
 //
@@ -3161,7 +3161,7 @@ module mnist_feat #(
     //   descarta
     // el borde-, asi que la segunda etapa sigue viendo filas de W. Ponerle W-2 le
     //   desalinea el
-    // envolvimiento de fila y ensucia el resultado. Costo de este bug: media hora.
+    // envolvimiento de fila y ensucia el resultado.
     linebuf3x3 #(.W(W),.DW(8)) LBS (
         .clk(clk),.reset(reset),.in_valid(vg),.in_pix(gout),.valid_o(vs),
         .w00(s00),.w01(s01),.w02(s02),.w10(s10),.w11(s11),.w12(s12),
@@ -3394,7 +3394,7 @@ module mnist_clf #(
                               && ((mejor - segundo) > MARGEN);
                     done   <= 1'b1; st <= S_IDLE;
                 end
-                // sin default se infieren latches (la leccion de la quark)
+                // sin default se infieren latches
                 default: st <= S_IDLE;
             endcase
         end
@@ -3416,7 +3416,7 @@ Carpeta: `Verilog_Repo/pan_canny/`.
 ### `pan_canny.v`
 
 ```verilog
-// pan_canny.v — "PAN HABLAS" con Canny 1-salto: EL CHIP QUE MIRA Y RECONOCE.
+// pan_canny.v — con Canny 1-salto: EL CHIP QUE MIRA Y RECONOCE.
 //
 // OV7670  ->  cam_win28  ->  [SoC femto: FemtoRV32 + periferico 0x0045 + Canny
 //   1-salto]
@@ -3458,7 +3458,7 @@ module pan_canny (
     reg clr = 1'b0;
     always @(posedge pclk) clr <= done;
 
-    // UMBRALES = 16'h5A20 -> thr_hi=90, thr_lo=32: el firmware propio del Canny (§16)
+    // UMBRALES = 16'h5A20 -> thr_hi=90, thr_lo=32: el firmware propio del Canny
     soc_mnist_canny_fw_top #(.H(28), .W(28), .CW(9), .UMBRALES(16'h5A20)) CLF (
         .clk(pclk), .reset(reset), .clr(clr),
         .in_valid(w_valid), .in_pix(w_pix),
@@ -3560,7 +3560,7 @@ endmodule
 //   se manda
 // dos veces -los buffers arrancan vacios y la primera pasada trae basura, igual que en
 //   los
-// bancos de las Partes 29-35-: al empezar la segunda hay que poner los contadores en
+// bancos de verificacion-: al empezar la segunda hay que poner los contadores en
 //   cero
 // pero conservar las dos filas ya cargadas. Un `reset` a secas borraria las dos cosas.
 //
@@ -3621,7 +3621,7 @@ module mnist_feat_canny #(
     //   descarta
     // el borde-, asi que la segunda etapa sigue viendo filas de W. Ponerle W-2 le
     //   desalinea el
-    // envolvimiento de fila y ensucia el resultado. Costo de este bug: media hora.
+    // envolvimiento de fila y ensucia el resultado.
     linebuf3x3 #(.W(W),.DW(8)) LBS (
         .clk(clk),.reset(reset),.in_valid(vg),.in_pix(gout),.valid_o(vs),
         .w00(s00),.w01(s01),.w02(s02),.w10(s10),.w11(s11),.w12(s12),
@@ -4213,8 +4213,7 @@ endmodule
 
 ```verilog
 // mnist_top.v — el sistema completo: pixel -> bordes -> formas -> digito.
-// Entra el stream de la imagen, sale el digito reconocido. Es la jerarquia de
-//   3Blue1Brown
+// Entra el stream de la imagen, sale el digito reconocido. Es la jerarquia
 // -pixel, bordes, formas, digito- pero con las dos primeras capas ESCRITAS A MANO
 //   (Sobel de
 // 1968) en vez de aprendidas, y solo la ultima entrenada. Ese es el argumento de la
@@ -4346,7 +4345,7 @@ Carpeta: `Verilog_Repo/canny78/asic/`.
 // la direccion `c-1`. Con desfase dos -como estaba- el trasvase entregaba
 //   fmem[k]=feat[k+1]:
 // se perdia la caracteristica 0 y la 127 entraba dos veces. Lo encontro el banco de la
-//   cadena completa el 23-sep, que compara los tres sitios por separado.
+//   cadena completa que compara los tres sitios por separado.
 // Cuesta 130 ciclos, que sumados a los 647 del clasificador dan 777: siete por debajo
 //   de
 //   los 784 que dura un cuadro.
@@ -4478,7 +4477,7 @@ endmodule
 //   se manda
 // dos veces -los buffers arrancan vacios y la primera pasada trae basura, igual que en
 //   los
-// bancos de las Partes 29-35-: al empezar la segunda hay que poner los contadores en
+// bancos de verificacion-: al empezar la segunda hay que poner los contadores en
 //   cero
 // pero conservar las dos filas ya cargadas. Un `reset` a secas borraria las dos cosas.
 //
@@ -4554,7 +4553,7 @@ module mnist_feat16_mem #(
     //   descarta
     // el borde-, asi que la segunda etapa sigue viendo filas de W. Ponerle W-2 le
     //   desalinea el
-    // envolvimiento de fila y ensucia el resultado. Costo de este bug: media hora.
+    // envolvimiento de fila y ensucia el resultado.
     linebuf3x3 #(.W(W),.DW(8)) LBS (
         .clk(clk),.reset(reset),.in_valid(vg),.in_pix(gout),.valid_o(vs),
         .w00(s00),.w01(s01),.w02(s02),.w10(s10),.w11(s11),.w12(s12),
@@ -4605,7 +4604,7 @@ module mnist_feat16_mem #(
     // traga la propia ausencia de muestras validas; contarlo otra vez lo cuenta dos
     //   veces.
     //
-    // ESTO SE MIDIO, no se dedujo (23-sep): se barrio LATP de 84 a 92 volcando el mapa
+    // ESTO SE MIDIO, no se dedujo: se barrio LATP de 84 a 92 volcando el mapa
     //   de
     // bordes posicion por posicion y comparandolo con el golden. Encaje: 74.7 % a 84,
     //   99.6 %
@@ -4650,7 +4649,7 @@ module mnist_feat16_mem #(
     // escritura de la BRAM y uno de los dos se pierde. Con tiempo muerto entre pixeles
     //   la
     // pelea es segura, porque el trasvase corre a ritmo de reloj y el desague espera la
-    // proxima muestra valida: medido el 23-sep, una casilla de menos en una imagen de
+    // proxima muestra valida: medido, una casilla de menos en una imagen de
     //   cada
     // sesenta y cuatro a partir de GAP=4. No se anuncia un cuadro que aun se esta
     //   escribiendo.
@@ -4687,7 +4686,7 @@ module mnist_feat16_mem #(
     //   de hacia atras- y le sumaba dos de golpe. Sobre una racha de tres o mas pixeles
     // seguidos en la misma casilla -que es lo normal recorriendo un contorno-
     //   descontaba.
-    // Medido el 23-sep: 206 de 238 cuentas, con `n_bordes` perfecto. Otra vez el total
+    // Medido: 206 de 238 cuentas, con `n_bordes` perfecto. Otra vez el total
     //   tapando el error en la distribucion.
     reg [6:0]    p_dir;      // casilla escrita en el flanco anterior
     reg [CW-1:0] p_val;      // ...y el valor que se le escribio
@@ -4700,7 +4699,7 @@ module mnist_feat16_mem #(
     // escriben en `cnt` -el borrado inicial, el incremento, y el vaciado al leer del
     //   trasvase-
     // y si cada una va en su propio `if`, yosys deja de inferir la BRAM y pone los 128
-    // contadores en biestables. Medido el 23-sep, y no es un detalle: 4261 LUT4 y 7
+    // contadores en biestables. Medido, y no es un detalle: 4261 LUT4 y 7
     //   BRAM con
     // tres escrituras sueltas, contra 2001 LUT4 y 9 BRAM con una sola multiplexada.
     //   Son 2260
@@ -4729,8 +4728,7 @@ module mnist_feat16_mem #(
             //   y sigue
             // alineada para siempre. Volver a ponerla a cero -que es lo que hace
             //   `clr`- obliga
-            // a tragarse la latencia otra vez y DESALINEA el cuadro siguiente: medido
-            //   el 23-sep,
+            // a tragarse la latencia otra vez y DESALINEA el cuadro siguiente: medido,
             // el raster tras `clr` encajaba 317/484 contra 484/484 del primero.
             if (reanuda) begin
                 listo <= 1'b0; n_bordes <= 11'd0; q_val <= 1'b0; p_en <= 1'b0; fd_pend <= 1'b0;

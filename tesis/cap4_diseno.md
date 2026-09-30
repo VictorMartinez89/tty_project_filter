@@ -88,7 +88,8 @@ decisión deliberada y conviene declararla como tal.
 
 #### Resumen
 
-El operador de Sobel–Feldman aplica dos núcleos de 3×3 cuyos pesos son `1`, `2` y `4`. Siendo
+El operador de Sobel–Feldman aplica dos núcleos de 3×3 cuyos pesos son `1` y `2` —el `4` aparece en el
+suavizado gaussiano—. Siendo
 potencias de dos, **la multiplicación se implementa como desplazamiento**, y el cálculo entero del
 gradiente se reduce a sumas y restas:
 
@@ -174,7 +175,7 @@ mariposa `butterfly`, la mano y la tarjeta «HOLA», fotografiadas directamente 
 
 #### En silicio
 
-El filtro solo, sin cámara ni pantalla, se llevó a sky130 con OpenLane: **0,167 mm²** y **5 823
+El filtro solo, sin cámara ni pantalla, se llevó a sky130 con OpenLane: **0,167 mm²** y **5 823
 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero (§5.2). Es la versión sin suavizado
 gaussiano, con líneas de 60 píxeles (Anexo G.1). Su plano en KLayout se muestra en la §5.2.2. Es el circuito más pequeño de la
 tabla, y el punto de partida de todos los demás.
@@ -233,8 +234,8 @@ cambiado.](figuras/fig_4_compass_python.jpg)
 El RTL se simula en Icarus Verilog sobre las mismas cinco imágenes. El banco no alimenta píxeles
 seguidos: mete una burbuja (`px_valid` = 0) cada siete píxeles y doce ciclos muertos entre línea y
 línea, como hace la cámara, y compara con el modelo entero **cada una de las 8 magnitudes, la
-magnitud compass, la dirección y la magnitud euclídea** de los 18 644 píxeles interiores de cada
-imagen. El resultado: **93 220 de 93 220 píxeles idénticos**, cinco veces `ALL TESTS PASSED`. Para
+magnitud compass, la dirección y la magnitud euclídea** de los 18 644 píxeles interiores de cada
+imagen. El resultado: **93 220 de 93 220 píxeles idénticos**, cinco veces `ALL TESTS PASSED`. Para
 comprobar que el banco es capaz de fallar, se sembró un error en una copia de cada núcleo —un píxel
 cambiado en el gradiente NE del compass, un peso 2 cambiado por 1 en el Gx del euclídeo— y el banco
 rechazó los dos.
@@ -246,8 +247,8 @@ las de Python porque el hardware satura a 255 y el modelo en punto flotante se e
 
 La dirección tiene un detalle que el hardware hace explícito. Como |S| = |N|, |SW| = |NE|, |W| = |E| y
 |NW| = |SE|, en cada par hay un empate exacto, y el argmax se queda con el **primero**. `dir_o`, por
-tanto, sólo toma los valores 0 a 3: en los 93 220 píxeles, 32 883 salen N, 20 150 NE, 19 003 E,
-21 184 SE y ninguno de S a NW. El circuito entrega la **orientación** del borde, módulo 180°, y no su
+tanto, sólo toma los valores 0 a 3: en los 93 220 píxeles, 32 883 salen N, 20 150 NE, 19 003 E,
+21 184 SE y ninguno de S a NW. El circuito entrega la **orientación** del borde, módulo 180°, y no su
 sentido; para el sentido habría que mirar el signo del gradiente, que el núcleo tiene pero no saca.
 
 ![**Figura 4.8.** La salida `dir_o` del RTL a color, con el brillo dado por la magnitud: rojo N (y S),
@@ -324,6 +325,10 @@ vista:
 > La solución es **empaquetarlas en la misma memoria**, cinco bits que viajan juntos. El punto
 > central de la ventana devuelve entonces las dos cosas del mismo píxel **por construcción**, y no
 > por cuidado de quien escribe. El desfase no se corrige: se vuelve imposible.
+>
+> Los cinco bits son los del front-end tal como lo usa el reconocedor (§6.3.2), que cuenta bordes por
+> orientación. El filtro solo, `canny1_top.v`, no necesita la orientación, y por su tercera memoria de
+> línea viaja únicamente la clase: dos bits, como muestran las figuras que siguen.
 >
 > Y el paso 16 no es un detalle: con la latencia mal puesta el histograma queda corrido dos columnas
 > y las zonas se mezclan. Está anotado como advertencia en el propio archivo, porque costó
@@ -404,7 +409,7 @@ de la pantalla.](figuras/fig_4_canny_placa.jpg)
 
 #### En silicio
 
-Llevado solo a sky130, sin cámara ni pantalla, ocupa **0,360 mm²** y **12 993 celdas** tras el
+Llevado solo a sky130, sin cámara ni pantalla, ocupa **0,360 mm²** y **12 993 celdas** tras el
 emplazamiento, con DRC, LVS y XOR en cero (§5.2): algo más del doble que el Sobel, por el suavizado
 gaussiano y la memoria de clases, dos memorias de línea más. Su plano en KLayout es la Figura 5.6.
 
@@ -459,7 +464,7 @@ muestra en un solo paso:
 > no `3·W`— y un número de barridos **que depende de la imagen**.
 >
 > De ahí salen, como consecuencias de una sola causa, las tres cosas que los Capítulos 4 y 5 miden por
-> separado: que ocupe 65 659 celdas frente a 5 823, que no quepa en un proyecto de mosaicos, y que su
+> separado: que ocupe 65 659 celdas frente a 5 823, que no quepa en un proyecto de mosaicos, y que su
 > latencia no esté acotada. Y en el propio código se reduce a una línea: una transición de vuelta al
 > estado de barrido. **Un lazo cuyo número de vueltas no se conoce al sintetizar es, en hardware, lo
 > más caro que puede escribirse.**
@@ -505,7 +510,7 @@ la pantalla.](figuras/fig_4_trans_placa.jpg)
 
 #### En silicio
 
-Llevado solo a sky130 ocupa **3,13 mm²** y **65 659 celdas** tras el emplazamiento, con DRC, LVS y XOR
+Llevado solo a sky130 ocupa **3,13 mm²** y **65 659 celdas** tras el emplazamiento, con DRC, LVS y XOR
 en cero (§5.2): casi veinte veces el área del Sobel, porque el cuadro que en la FPGA vivía en la SPRAM
 aquí es un banco de biestables. Su plano en KLayout es la Figura 5.1.
 
@@ -563,8 +568,8 @@ bordes.](figuras/fig_4_socsobel_rtl.png)
 flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
 tarjeta.](figuras/fig_4_socsobel_placa.jpg)
 
-En sky130 ocupa **0,37 mm²** y **12 043 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
-(§5.2). Frente al Sobel solo, el procesador y su periférico añaden **6 220 celdas**: es el precio de que
+En sky130 ocupa **0,37 mm²** y **12 043 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
+(§5.2). Frente al Sobel solo, el procesador y su periférico añaden **6 220 celdas**: es el precio de que
 el umbral lo fije un programa, la cifra que la §8.6 compara con la de comprar esa misma robustez en el
 filtro. Su plano en KLayout es la Figura 5.10.
 
@@ -621,7 +626,7 @@ el Canny de un salto: arriba, las cinco imágenes de prueba; abajo, sus bordes.]
 —`monarch`, la flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
 tarjeta.](figuras/fig_4_soccanny_placa.jpg)
 
-En sky130 ocupa **0,67 mm²** y **22 054 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
+En sky130 ocupa **0,67 mm²** y **22 054 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
 (§5.2). Su plano en KLayout es la Figura 5.11.
 
 ### SoC Femto con filtro Canny Framebuffer Transitivo
@@ -636,7 +641,7 @@ funciona con holgura es el motor dedicado, sin procesador.
 
 En silicio, donde el área no la fija un dispositivo, el procesador vuelve a caber junto al motor, y ése
 es este circuito: el FemtoRV32 con su ROM y su periférico, al lado del motor de la §4.3.3. El cuadro de
-62×82 píxeles de dos bits que el motor barre se convierte en unos **10 600 biestables**. En esta
+62×82 píxeles de dos bits que el motor barre se convierte en unos **10 600 biestables**. En esta
 versión el motor recibe el flujo de clases desde fuera del chip.
 
 #### Pseudocódigo
@@ -687,7 +692,7 @@ En la tarjeta corre la versión con la histéresis por software, la única con p
 —`monarch`, la flor, `butterfly`, la mano y la tarjeta «HOLA»—, en fotogramas de los videos de la
 tarjeta.](figuras/fig_4_soctrans_placa.jpg)
 
-En sky130 ocupa **3,42 mm²** y **72 337 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
+En sky130 ocupa **3,42 mm²** y **72 337 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero
 (§5.2): el más grande de los seis bloques de filtrado, y casi todo por el cuadro en biestables. Su plano
 en KLayout es la Figura 5.12.
 
@@ -743,7 +748,7 @@ la Figura 4.42.
 ![**Figura 4.42.** Otras dos escenas de la cadena del Sobel en la iCESugar: una mariposa y la sílaba
 «LA» de la tarjeta, fotografiadas directamente de la pantalla.](figuras/fig_4_sobelcomp_placa.jpg)
 
-En sky130 ocupa **2,45 mm²** y **36 730 celdas** de síntesis, con DRC, LVS y XOR en cero según su ficha
+En sky130 ocupa **2,45 mm²** y **36 730 celdas** de síntesis, con DRC, LVS y XOR en cero según su ficha
 —los informes no se conservaron (§5.3, nota ᵃ)—: unas
 quince veces el Sobel solo. Llegar ahí exigió el framebuffer de un bit: con uno de ocho, el ruteo
 acababa con cerca de un millón de violaciones de DRC. Su plano en KLayout es la Figura 5.13.
@@ -783,7 +788,7 @@ silicio, sin computador de por medio. Aquí no hay `.pcf`: los dieciocho puertos
 y SIOD se parte en dato y habilitación. Hay un solo reloj —`cam_frontend_top` sincroniza las señales de la
 cámara con dos biestables—, así que no hace falta un cruce de dominios. La cámara entra al front-end
 (configuración, captura y conversión a gris), el gris al `canny1_top` de la Figura 4.13, y el borde a un
-*framebuffer* de un bit por píxel —4 800 biestables en lugar de 38 400— que el controlador de la pantalla
+*framebuffer* de un bit por píxel —4 800 biestables en lugar de 38 400— que el controlador de la pantalla
 recorre a 240×320.](figuras/fig_4_cannycomp_pines.png)
 
 Su modelo es el del Canny de un salto (§4.3.2), con los umbrales fijos en 90 y 40.
@@ -795,12 +800,12 @@ tres memorias de línea; la cadena con la cámara emulada es la última columna 
 tarjeta: dos escenas en la pantalla y el montaje entero, con la placa, el cableado y la
 pantalla.](figuras/fig_4_cannycomp_placa.jpg)
 
-En sky130 ocupa **2,90 mm²** —1 687 × 1 686 µm— y **42 581 celdas** de síntesis, con DRC, LVS y XOR en
+En sky130 ocupa **2,90 mm²** —1 687 × 1 686 µm— y **42 581 celdas** de síntesis, con DRC, LVS y XOR en
 cero y sin violaciones de setup ni de hold a 20 ns, según su ficha; los informes no se conservaron (§5.3,
 nota ᵃ). Frente a la cadena del Sobel son un 16 % más de celdas y un 18 % más de dado, lo que cabe
 esperar de tres memorias de línea en lugar de una. Llegar ahí costó dos batallas: un fallo de OpenROAD
 en la optimización de temporizado, que se esquivó desactivándola porque el temporizado ya se cumplía
-con holgura, y la congestión del ruteo, que bajó de 138 684 violaciones a cero al repartir las celdas
+con holgura, y la congestión del ruteo, que bajó de 138 684 violaciones a cero al repartir las celdas
 con una densidad de 0,20. Su plano en KLayout es la Figura 5.16.
 
 ### Visión Sobel
@@ -815,13 +820,13 @@ anillo de pines, y fuera la primitiva de los LED de la iCE40 (§5.1).
 
 Conserva por eso dos rasgos de la FPGA. Tiene **dos dominios de reloj**: la captura, el Sobel y la
 escritura del framebuffer van al ritmo de la cámara, y la configuración y la pantalla al del sistema.
-Y su framebuffer guarda **ocho bits por píxel** aunque sólo escriba bordes: 60×80×8 = **38 400
+Y su framebuffer guarda **ocho bits por píxel** aunque sólo escriba bordes: 60×80×8 = **38 400
 biestables**, ocho veces lo que necesitan las cadenas completas. El gris lo toma directamente del byte
 de luminancia que entrega la cámara, y el umbral es 40.
 
 ![**Figura 4.46.** `vision_top`: la cámara, la captura con submuestreo a 60×80, el Sobel y el
 framebuffer en el dominio del reloj de la cámara; la configuración por SCCB y la pantalla en el del
-sistema; el framebuffer, de unos 38 400 biestables, es el cruce entre los dos.](figuras/fig_4_vision_diagrama.png)
+sistema; el framebuffer, de unos 38 400 biestables, es el cruce entre los dos.](figuras/fig_4_vision_diagrama.png)
 
 #### Pseudocódigo
 
@@ -855,7 +860,7 @@ Su versión para la FPGA, `cam_sobel_display.v`, corrió en la iCESugar con la c
 pantalla— sobre seis objetos: la flor, las mariposas `monarch` y `butterfly`, la mano y las dos mitades
 de la tarjeta, «HO» y «LA».](figuras/fig_4_vision_placa.jpg)
 
-En sky130 ocupa **1,75 mm²** y **35 653 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero según
+En sky130 ocupa **1,75 mm²** y **35 653 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero según
 su ficha (§5.2). Su plano en KLayout es la Figura 5.3.
 
 ### Visión Canny 1-streaming
@@ -892,7 +897,7 @@ Anexo G.10.
 Su modelo es el del Canny de un salto (§4.3.2) sobre el byte de luminancia, con umbrales de 70 y 30.
 
 Tampoco tiene banco propio: parte de un diseño verificado en la tarjeta. Las señales del Canny y la
-cadena con la cámara emulada son las de las Figuras 4.6 y 4.7.
+cadena con la cámara emulada son las de las Figuras 4.19 y 4.20.
 
 ![**Figura 4.49.** El sistema de visión con el Canny de un salto en vivo en la iCESugar, sobre los
 mismos seis objetos que el del Sobel.](figuras/fig_4_visioncanny_vivo.jpg)
@@ -900,7 +905,7 @@ mismos seis objetos que el del Sobel.](figuras/fig_4_visioncanny_vivo.jpg)
 ![**Figura 4.50.** El Canny de un salto con la cámara y la pantalla en la iCESugar, el 22 de julio de
 2026, en fotogramas de los videos de la tarjeta.](figuras/fig_4_visioncanny_placa.jpg)
 
-En sky130 ocupa **2,04 mm²** y **41 925 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero según
+En sky130 ocupa **2,04 mm²** y **41 925 celdas** tras el emplazamiento, con DRC, LVS y XOR en cero según
 su ficha (§5.2). Frente al sistema con el Sobel, el Canny cuesta **0,29 mm²** más y eleva la potencia
 típica estimada por el flujo de 66,9 a 90,9 mW. Su plano en KLayout es la Figura 5.4.
 
@@ -950,14 +955,14 @@ desacoplado de la cámara.](figuras/fig_4_transcomp_pines.png)
 
 Su modelo es el del transitivo (§4.3.3), con umbrales de 110 y 70.
 
-La cadena se ensambló con bloques simulados por separado: el motor en las Figuras 4.10 y 4.11, que lo
+La cadena se ensambló con bloques simulados por separado: el motor en las Figuras 4.24 y 4.25, que lo
 muestran cargando, barriendo y llegando al punto fijo, y la cadena con la cámara emulada en la última
 columna de la Figura 4.26.
 
 ![**Figura 4.53.** El Canny transitivo en vivo en la iCESugar sobre los seis objetos, con umbrales de
 110 y 70.](figuras/fig_4_visiontrans_placa.jpg)
 
-En sky130 es el circuito más grande del trabajo: **9,61 mm²** y **137 092 celdas** de síntesis, con DRC,
+En sky130 es el circuito más grande del trabajo: **9,61 mm²** y **137 092 celdas** de síntesis, con DRC,
 LVS y XOR en cero según su ficha —sólo se conservaron sus fuentes—. Y es uno de los dos que **no cierran
 el temporizado**: a 20 ns le faltan 19,35, de modo que pediría 39,4 ns, unos 25 MHz (§5.3). Su plano en
 KLayout es la Figura 5.14.
@@ -1003,7 +1008,7 @@ umbral discrimine—. Lo corre GitHub en cada cambio, junto con la comprobación
 
 No hay tarjeta: el chip no se ha fabricado. En la FPGA, el mismo Sobel es el de la Figura 4.5.
 
-En los 3×2 mosaicos de sky130 ocupa **0,115 mm²** con un **56 %** de utilización y **3 463 celdas** de
+En los 3×2 mosaicos de sky130 ocupa **0,115 mm²** con un **56 %** de utilización y **3 463 celdas** de
 síntesis, consume unos **4,3 mW** y cierra el temporizado en las nueve esquinas de proceso. La
 comprobación previa de Tiny Tapeout —DRC de Magic y de KLayout, pines, alimentación, capas— pasa
 entera, y el LVS da cero; quedan cuatro redes con aviso de antena. Su plano es la Figura 5.7.
@@ -1039,7 +1044,7 @@ válidos; GitHub lo corre en cada cambio.
 
 Tampoco se ha fabricado. En la FPGA, el mismo Canny es el de la Figura 4.22.
 
-En los 6×2 mosaicos ocupa **0,233 mm²** con un **61 %** de utilización y **7 607 celdas** de síntesis,
+En los 6×2 mosaicos ocupa **0,233 mm²** con un **61 %** de utilización y **7 607 celdas** de síntesis,
 consume unos **9,0 mW** y cierra el temporizado en las nueve esquinas. La comprobación previa pasa entera
 y el LVS da cero; quedan cinco redes con aviso de antena. Su plano es la Figura 5.8.
 
@@ -1141,7 +1146,7 @@ La iCE40UP5K ofrece tres clases de almacenamiento, y el diseño usa las tres con
 
 | Recurso | Cantidad | Uso en este trabajo |
 |---------------------------|--------|-------------------------------------|
-| Celdas lógicas | 5 280 | lógica y registros pequeños |
+| Celdas lógicas | 5 280 | lógica y registros pequeños |
 | Bloques de memoria (4 kbit) | 30 | **memorias de línea** de las ventanas 3×3 |
 | SPRAM (256 kbit) | 4 | **framebuffers** del filtro transitivo |
 
@@ -1207,14 +1212,14 @@ corrección sí lo es.
 ### 4.8.2 Resultado sobre los núcleos aislados
 
 Los tres núcleos son **idénticos bit a bit** a su modelo de referencia. En el caso del Sobel sobre un
-cuadro de 60×80, la comparación arroja **0 píxeles de diferencia sobre 4 800**, y el resultado se
+cuadro de 60×80, la comparación arroja **0 píxeles de diferencia sobre 4 800**, y el resultado se
 sostiene para los tres filtros sobre las cinco imágenes de prueba.
 
 | Núcleo | Imágenes | Píxeles comparados | Diferencias |
 |---|---:|---:|---:|
-| Sobel 3×3 | 5 / 5 | 4 800 por cuadro | **0** |
-| Canny de un salto | 5 / 5 | 4 800 por cuadro | **0** |
-| Canny transitivo | 5 / 5 | 4 800 por cuadro | **0** |
+| Sobel 3×3 | 5 / 5 | 4 800 por cuadro | **0** |
+| Canny de un salto | 5 / 5 | 4 800 por cuadro | **0** |
+| Canny transitivo | 5 / 5 | 4 800 por cuadro | **0** |
 
 Table: Verificación bit a bit de los núcleos aislados contra el modelo de referencia.
 
@@ -1274,7 +1279,7 @@ La implementación física se realizó sobre una **iCE40UP5K** en tarjeta iCESug
 abierto: `yosys` para síntesis, `nextpnr-ice40` para emplazamiento y ruteo, `icepack` para el
 *bitstream*.
 
-La elección del dispositivo no es incidental. La iCE40UP5K ofrece 5 280 celdas lógicas, 30 bloques de
+La elección del dispositivo no es incidental. La iCE40UP5K ofrece 5 280 celdas lógicas, 30 bloques de
 memoria de 4 kbit y **cuatro bloques de SPRAM de 256 kbit** — y son estos últimos los que hacen
 posible el filtro transitivo, porque permiten alojar el cuadro completo sin consumir lógica. Esa
 disponibilidad es exactamente lo que desaparece al pasar a un ASIC sin macro de memoria, y es el
@@ -1307,12 +1312,12 @@ La tabla recoge el **Device utilisation** que informa `nextpnr-ice40` tras el em
 dispositivo. Las cinco filas de una misma columna proceden de **una sola corrida con una sola versión
 de las herramientas**, para que sean comparables entre sí.
 
-| Diseño | LC / 5 280 | BRAM / 30 | SPRAM / 4 | E/S / 39 | *f*máx sistema (MHz) | *f*máx cámara (MHz) |
+| Diseño | LC / 5 280 | BRAM / 30 | SPRAM / 4 | E/S / 39 | *f*máx sistema (MHz) | *f*máx cámara (MHz) |
 |----------------------|-------------:|----------:|---------:|----------:|-----------:|-----------:|
-| Transitivo, motor dedicado **sin procesador** | 2 426 (45 %) | 17 (56 %) | **2 (50 %)** | 18 (46 %) | **28,7** ✓ | 20,6 ✓ |
-| SoC + Sobel | 4 848 (91 %) | 20 (66 %) | 0 | 18 (46 %) | 9,5 ✗ | 20,7 ✓ |
-| SoC + Canny de un salto | 5 234 (**99 %**) | 24 (80 %) | 0 | 18 (46 %) | 9,5 ✗ | 17,7 ✓ |
-| SoC + transitivo **por software** | 5 251 (**99 %**) | 28 (93 %) | 0 | 18 (46 %) | 8,7 ✗ | 20,5 ✓ |
+| Transitivo, motor dedicado **sin procesador** | 2 426 (45 %) | 17 (56 %) | **2 (50 %)** | 18 (46 %) | **28,7** ✓ | 20,6 ✓ |
+| SoC + Sobel | 4 848 (91 %) | 20 (66 %) | 0 | 18 (46 %) | 9,5 ✗ | 20,7 ✓ |
+| SoC + Canny de un salto | 5 234 (**99 %**) | 24 (80 %) | 0 | 18 (46 %) | 9,5 ✗ | 17,7 ✓ |
+| SoC + transitivo **por software** | 5 251 (**99 %**) | 28 (93 %) | 0 | 18 (46 %) | 8,7 ✗ | 20,5 ✓ |
 | SoC + transitivo **como periférico** | no emplaza (≈ 127 %) | — | — | — | — | — |
 
 Table: Utilización de la iCE40UP5K y frecuencias máximas de cada diseño.
@@ -1320,8 +1325,8 @@ Table: Utilización de la iCE40UP5K y frecuencias máximas de cada diseño.
 > **Procedencia.** Las cuatro primeras filas se midieron de nuevo para este documento. Tres de ellas
 > —las filas primera, tercera y cuarta— reprodujeron **exactamente**, celda por celda y bloque por
 > bloque, los informes conservados de las corridas originales de julio y agosto de 2026. La del
-> SoC + Sobel, cuyo informe de emplazamiento no se había conservado, arrojó 4 848 celdas frente a las
-> 4 878 registradas entonces; la diferencia, de treinta celdas sobre cinco mil, proviene
+> SoC + Sobel, cuyo informe de emplazamiento no se había conservado, arrojó 4 848 celdas frente a las
+> 4 878 registradas entonces; la diferencia, de treinta celdas sobre cinco mil, proviene
 > de una versión distinta del sintetizador, que produce doce tablas de consulta menos. La quinta fila
 > no dispone de informe: el emplazamiento no llegó a completarse, y el ≈ 127 % es el valor
 > documentado en su momento.
@@ -1341,7 +1346,7 @@ misma frecuencia, y de hecho una centésima por debajo. La causa está en el inf
 críticos, que en los tres SoC señala el mismo origen: **el registro de instrucción del procesador**.
 El camino va de un flanco de subida a uno de bajada, de modo que dispone de **medio período** en lugar
 de uno entero, y eso divide por dos la frecuencia alcanzable. La síntesis lo confirma por otra vía:
-los tres SoC contienen **2 048 biestables sensibles al flanco de bajada** y el diseño sin procesador
+los tres SoC contienen **2 048 biestables sensibles al flanco de bajada** y el diseño sin procesador
 no contiene **ninguno**. No es un problema de emplazamiento sino una propiedad del procesador
 elegido, y es la razón de fondo de que las tres variantes con CPU necesiten dividir el reloj.
 
@@ -1368,13 +1373,13 @@ procesador y darle el motor de histéresis en hardware como periférico, ya no c
 alcanzó el **127 %** y el emplazamiento no llegó a completarse.
 
 La respuesta fue separar las dos cosas: el motor de histéresis en hardware, como camino de datos en
-Verilog, **sin procesador**. Así implementado, la síntesis reporta **1 728 tablas de consulta** y
-el emplazamiento **2 426 celdas lógicas, el 45 % del dispositivo**, cerrando el temporizado a
+Verilog, **sin procesador**. Así implementado, la síntesis reporta **1 728 tablas de consulta** y
+el emplazamiento **2 426 celdas lógicas, el 45 % del dispositivo**, cerrando el temporizado a
 **28,7 MHz** con holgura.
 
 > Las dos cifras anteriores no son la misma medida, y conviene no confundirlas: la celda lógica de la
 > iCE40 empaqueta una tabla de consulta **y** un biestable, de modo que un diseño con muchos
-> biestables sueltos ocupa más celdas que tablas tiene. Dividir el recuento de tablas entre las 5 280
+> biestables sueltos ocupa más celdas que tablas tiene. Dividir el recuento de tablas entre las 5 280
 > celdas del dispositivo da un 33 % que **subestima la ocupación real en doce puntos**. La cifra
 > válida es la del emplazamiento, no la de la síntesis; esta sección usa sólo la primera.
 
@@ -1392,7 +1397,7 @@ La misma pregunta tiene respuestas opuestas en los dos sustratos.
 
 ### 4.9.5 Umbrales de laboratorio y umbrales de cámara
 
-Las tres filas de la tabla anterior muestran umbrales distintos de los que se usan en simulación. El
+Las tres filas de la Tabla 4.8 muestran umbrales distintos de los que se usan en simulación. El
 transitivo, por ejemplo, pasó de 110/70 en el banco de pruebas a **60/30 en la placa**.
 
 El ajuste no es arbitrario ni es un defecto: una imagen almacenada y un flujo de cámara tienen
@@ -1433,7 +1438,7 @@ milisegundos en hacerlo.
 
 Table: Las dos arquitecturas de procesamiento: flujo y framebuffer.
 
-La razón de la asimetría está en la §4.4: la histéresis transitiva resuelve un **punto fijo** sobre el
+La razón de la asimetría está en la §4.3.3: la histéresis transitiva resuelve un **punto fijo** sobre el
 cuadro completo, y no puede emitir su primer píxel definitivo hasta haber comprobado que ningún píxel
 del cuadro cambia de estado.
 
@@ -1500,9 +1505,9 @@ hasta la señal de terminado:
 
 | Imagen de clases | K | Ciclos totales | A 81 MHz | A 106 MHz |
 |--------------------------------|------:|--------------:|--------:|---------:|
-| Sólo bordes fuertes | **1** | 19 772 | 243 µs | 187 µs |
-| **Bordes típicos** | **2** | **24 859** | **306 µs** | 235 µs |
-| Peor caso: cadena débil de 50 px | **51** | 274 122 | 3,37 ms | 2,59 ms |
+| Sólo bordes fuertes | **1** | 19 772 | 243 µs | 187 µs |
+| **Bordes típicos** | **2** | **24 859** | **306 µs** | 235 µs |
+| Peor caso: cadena débil de 50 px | **51** | 274 122 | 3,37 ms | 2,59 ms |
 
 Table: Número de barridos del Canny transitivo, medido, y su tiempo.
 

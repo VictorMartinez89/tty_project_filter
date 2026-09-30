@@ -151,7 +151,8 @@ final:
   para el reconocimiento. No son una elección arbitraria sino el límite que impone la memoria
   disponible, y ese límite es parte de lo que el trabajo estudia.
 - **El reconocimiento se restringe a dígitos manuscritos**, sobre un conjunto de referencia estándar,
-  con un clasificador lineal sobre descriptores de orientación. No se abordan redes profundas, cuyo
+  con clasificadores lineales sobre descriptores de orientación y, en Canny-98, una sola capa oculta de
+  120 neuronas. No se abordan redes profundas, cuyo
   presupuesto de memoria excede en un orden de magnitud el de este sustrato — y esa imposibilidad es
   ella misma uno de los resultados.
 - **Los algoritmos no son nuevos.** Datan de 1968, 1986 y 1993. La contribución no está en proponer
@@ -182,8 +183,8 @@ pirámide espacial—, el clasificador y su exactitud sobre MNIST; los seis circ
 procesador o sin él, con pantalla o sin ella, Canny-78 y Canny-98—; su verificación contra el modelo y su
 validación en la tarjeta frente a una cámara.
 
-El **Capítulo 7** lleva el reconocedor a silicio: con cada front-end, en Tiny Tapeout y en su versión
-más completa, Canny-78.
+El **Capítulo 7** lleva el reconocedor a silicio: con cada front-end, en Tiny Tapeout y en sus dos
+versiones más completas, Canny-78 y Canny-98.
 
 El **Capítulo 8** discute lo anterior como tesis defendibles, y es donde reside el aporte: que la
 memoria decide qué cabe, y que el front-end y el procesador son alternativas para comprar robustez y

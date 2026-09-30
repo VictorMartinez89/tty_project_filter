@@ -46,8 +46,8 @@ Table: Parámetros de OpenLane y qué controla cada uno.
 
 Table: Recetas de OpenLane empleadas en cada diseño.
 
-> **Veinte recetas, dieciséis circuitos.** La tabla tiene más filas que circuitos declara el
-> Capítulo 9, y la diferencia merece explicarse. Los seis diseños terminados en `_completo` son una
+> **Veinte recetas, dieciséis circuitos.** La tabla tiene más filas que circuitos declara la
+> §5.2, y la diferencia merece explicarse. Los seis diseños terminados en `_completo` son una
 > **segunda vía** hacia el mismo sistema: mientras los `vision_*` se obtuvieron **portando el diseño
 > físicamente verificado en la FPGA**, los `_completo` se **ensamblaron a partir de los bloques
 > reutilizables ya comprobados por separado** —front-end de cámara, filtro, controlador de pantalla—

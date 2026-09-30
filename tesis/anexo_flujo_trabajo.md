@@ -2,7 +2,7 @@
 
 > Si el Anexo E describe **con qué** se trabaja, éste describe **en qué orden**. Recorre el camino
 > completo, desde el primer fichero Verilog hasta comprobar que el circuito que se enviaría a fabricación
-> se comporta como el simulado. Sigue el procedimiento documentado por J. Ruiz (ref. 49), que es el que
+> se comporta como el simulado. Sigue el procedimiento documentado por J. Ruiz [Ruiz], que es el que
 > se adoptó en este trabajo, y anota en cada paso lo que la experiencia posterior añadió.
 
 ## F.1 Compilación y simulación del RTL
@@ -36,8 +36,8 @@ tiende los metales que las conectan, respetando las reglas del proceso. Y el **a
 comprueba que las señales llegan cuando deben.
 
 La ejecución se lanza desde la carpeta local de OpenLane, no desde la del diseño, porque allí están
-los guiones del flujo. La primera vez que se corre un diseño hay que darlo de alta; después, basta
-con reutilizar la misma etiqueta:
+los guiones del flujo. La primera vez que se corre un diseño hay que darlo de alta; después, mientras se itera
+sobre un run que todavía no se ha cerrado, basta con reutilizar su etiqueta:
 
 ```
 make mount
@@ -120,7 +120,7 @@ python3 ../tim_to_pwl.py <fichero .tim>
 ```
 
 El parámetro relevante del guion es el tiempo de subida y bajada que atribuye a los flancos. **Por
-debajo de un nanosegundo el simulador falla a converger**, así que ése es el valor que se usa. Con el
+debajo de un nanosegundo el simulador no converge**, así que ése es el valor que se usa. Con el
 fichero resultante se lanza la simulación, con uno u otro simulador:
 
 ```

@@ -2,8 +2,8 @@
 
 > Este anexo describe cómo se montó el entorno con el que se obtuvieron todos los resultados de
 > silicio de este trabajo. **No reproduce las órdenes**: para eso están las dos guías del grupo de las
-> que parte —el manual del flujo ASIC de J. Ruiz (ref. 49) y las notas de la asignatura de VLSI del
-> director (ref. 50)—. Lo que aquí se describe es qué hace cada paso, qué necesita y dónde falla,
+> que parte —el manual del flujo ASIC de J. Ruiz [Ruiz] y las notas de la asignatura de VLSI del
+> director [Camargo, VLSI]—. Lo que aquí se describe es qué hace cada paso, qué necesita y dónde falla,
 > que es lo que esas guías no pueden decir porque suponen que todo saldrá bien.
 >
 > El orden es el de la documentación de partida. Se conserva a propósito: **las dependencias siguen
@@ -106,7 +106,7 @@ sudo make install
 OpenSTA es el analizador de tiempos estático: dado un circuito ya mapeado a puertas y una
 descripción de sus restricciones temporales, dice si cierra a la frecuencia pedida y cuál es el
 camino que menos margen tiene. Es la herramienta que produce las cifras de holgura que aparecen en
-el capítulo 5.
+el Capítulo 5.
 
 Se construye con CMake en lugar de con el sistema de configuración clásico, y necesita, además del
 compilador y del intérprete de Tcl, el generador de interfaces entre lenguajes con el que expone sus
@@ -242,7 +242,7 @@ las herramientas del flujo juntas.
 En la práctica se acabó usando además un gestor de versiones de kit de diseño, que descarga una
 compilación ya hecha —unos dos gigabytes— y permite fijar exactamente qué versión del proceso se usó
 en cada circuito. Esa trazabilidad no es un lujo: **un cambio de versión del kit cambia las cifras de
-área y de tiempos**, y sin poder nombrar la versión, las tablas del capítulo 5 no serían
+área y de tiempos**, y sin poder nombrar la versión, las tablas del Capítulo 5 no serían
 reproducibles.
 
 **Instalación:**
@@ -257,7 +257,7 @@ sudo make install
 
 ## E.9 Xyce
 
-Xyce es un simulador de circuitos analógicos de alto rendimiento, y es con él con quien se hizo la
+Xyce es un simulador de circuitos analógicos de alto rendimiento, y con él se hizo la
 verificación eléctrica del camino crítico. Se construye mediante un guion de compilación publicado
 por terceros que resuelve por dentro sus dependencias, y se instala en la jerarquía local del
 sistema.
@@ -345,10 +345,10 @@ original— tiene dónde aparecer.
 
 Este trabajo no llegó a explotar ese paso, porque ninguno de sus circuitos ha sido fabricado todavía.
 Se documenta aquí porque el entorno queda montado para hacerlo, y porque la documentación de partida
-(ref. 49) recoge tres defectos en las interfaces serie del procesador que se localizaron exactamente
+[Ruiz] recoge tres defectos en las interfaces serie del procesador que se localizaron exactamente
 por esta vía: dos de ellos quedaban ocultos al simular contra los modelos de las memorias, y sólo
 aparecieron al comparar esa simulación con el comportamiento del dispositivo físico. **Es un ejemplo
-del mismo principio que atraviesa el capítulo 3: un modelo que no puede fallar no está verificando
+del mismo principio que atraviesa el Capítulo 3: un modelo que no puede fallar no está verificando
 nada.**
 
 **Instalación:**

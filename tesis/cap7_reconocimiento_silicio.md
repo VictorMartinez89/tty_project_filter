@@ -12,8 +12,8 @@ de OpenLane hasta la firma del GDS:
 | magnitud | Sobel | Canny 1-salto |
 |---|---:|---:|
 | área del *die* | 0,845 mm² | 0,890 mm² |
-| celdas tras síntesis | 16 718 | 17 373 |
-| celdas emplazadas | 19 949 | 20 921 |
+| celdas tras síntesis | 16 718 | 17 373 |
+| celdas emplazadas | 19 949 | 20 921 |
 | período de reloj | 30 ns (33,3 MHz) | 30 ns (33,3 MHz) |
 | holgura con parásitos (`spef_wns`) | **0,00 ns** | **0,00 ns** |
 | DRC · LVS · XOR | 0 · 0 · 0 | 0 · 0 · 0 |
@@ -29,12 +29,12 @@ camino crítico de aquéllos.
 **Son los primeros circuitos de este trabajo cuya salida no es una imagen.** Los diez presentados en
 las secciones §5.2 y §5.3 procesan; éstos reconocen.
 
-![**Figura 7.1.** Pan Sobel en KLayout: 914×925 µm y 92 857 instancias, contando las celdas de relleno
+![**Figura 7.1.** Pan Sobel en KLayout: 914×925 µm y 92 857 instancias, contando las celdas de relleno
 y de alimentación. A la izquierda el dado completo; a la derecha, una ampliación con las filas de
 celdas estándar. No hay un bloque que destaque: sin *framebuffer*, el área es lógica repartida —el
 procesador, el extractor y el clasificador—.](figuras/fig_7_pansobel_asic.png)
 
-![**Figura 7.2.** Pan Canny en KLayout: 938×949 µm y 97 533 instancias. Es el plano anterior con el
+![**Figura 7.2.** Pan Canny en KLayout: 938×949 µm y 97 533 instancias. Es el plano anterior con el
 tercer *line-buffer* del Canny; la diferencia de área entre ambos, un 5 %, es la de la
 §7.2.](figuras/fig_7_pancanny_asic.png)
 
@@ -46,11 +46,11 @@ directamente comparables entre sí:
 
 | nivel | Sobel | Canny | factor |
 |------------------------------|------:|------:|------:|
-| filtro aislado | 5 823 | 12 993 | **2,23×** |
-| con procesador | 12 043 | 22 054 | 1,83× |
-| sistema de visión completo | 35 653 | 41 925 | 1,18× |
-| reconocedor con procesador | 19 949 | 20 921 | 1,05× |
-| **reconocedor que además muestra** | **38 643** | **39 794** | **1,03×** |
+| filtro aislado | 5 823 | 12 993 | **2,23×** |
+| con procesador | 12 043 | 22 054 | 1,83× |
+| sistema de visión completo | 35 653 | 41 925 | 1,18× |
+| reconocedor con procesador | 19 949 | 20 921 | 1,05× |
+| **reconocedor que además muestra** | **38 643** | **39 794** | **1,03×** |
 
 Table: Costo relativo del front-end según el nivel del sistema.
 
@@ -68,11 +68,11 @@ Sobel conserva, según las §6.2, §6.4 y §6.5— deja de ser determinante.
 Las dos últimas filas de la tabla son los circuitos que además muestran el resultado, los de las
 §6.3.3 y §6.3.4. Son los mayores de los reconocedores, y sus planos lo hacen visible.
 
-![**Figura 7.3.** Visión Sobel MNIST en KLayout: 1 420×1 431 µm, 2,032 mm². Ve, reconoce y muestra:
+![**Figura 7.3.** Visión Sobel MNIST en KLayout: 1 420×1 431 µm, 2,032 mm². Ve, reconoce y muestra:
 la cámara, la ventana de 28×28, el clasificador, el *framebuffer* de la ventana y el controlador de la
 pantalla.](figuras/fig_7_visionsobel_asic.png)
 
-![**Figura 7.4.** Visión Canny MNIST en KLayout: 1 441×1 452 µm, 2,092 mm², con un 2,8 % más de celdas
+![**Figura 7.4.** Visión Canny MNIST en KLayout: 1 441×1 452 µm, 2,092 mm², con un 2,8 % más de celdas
 que el del Sobel. Entre los dos planos apenas se distingue la diferencia: es la de la última fila de la
 tabla.](figuras/fig_7_visioncanny_asic.png)
 
@@ -84,12 +84,12 @@ con la receta de los demás circuitos: reloj de 30 ns, utilización del 30 % y d
 
 | | Canny-78 | Canny-78 recortado |
 |-------------------------------------------|----------------------------:|-----------------------:|
-| dado | 1,122 mm² (1 043 × 1 042 µm) | **0,829 mm²** (−26 %) |
-| celdas tras la síntesis | 29 449 | 21 409 |
+| dado | 1,122 mm² (1 054 × 1 065 µm) | **0,829 mm²** (−26 %) |
+| celdas tras la síntesis | 29 449 | 21 409 |
 | potencia (interna y de conmutación) | 25,3 mW | 18,6 mW |
 | camino crítico, frente a un reloj de 30 ns | 12,66 ns | 11,86 ns |
 | DRC · LVS · XOR · temporizado con parásitos | 0 · 0 · 0 · holgura ≥ 0 | 0 · 0 · 0 · holgura ≥ 0 |
-| veredictos iguales al modelo | 10 000 / 10 000 | 10 000 / 10 000 |
+| veredictos iguales al modelo | 10 000 / 10 000 | 10 000 / 10 000 |
 
 Table: Canny-78 y su variante recortada, firmados en sky130.
 
@@ -99,7 +99,7 @@ cuesta lo mismo lleno que vacío—; en silicio, **un cuarto del dado era memori
 Es la tesis del Capítulo 8 dicha con el número más limpio de todo el trabajo: la memoria se paga por
 los bits que se declaran, no por los que se usan.
 
-![**Figura 7.5.** Canny-78 recortado en KLayout, el dado completo: 905×916 µm, 0,829 mm² y 93 867
+![**Figura 7.5.** Canny-78 recortado en KLayout, el dado completo: 905×916 µm, 0,829 mm² y 93 867
 instancias. Alrededor del borde están los pines del circuito —`in_pix`, `in_valid`, `thr_hi`, `thr_lo`,
 `digito`—, y las franjas horizontales son las tiras de alimentación. No hay un bloque de memoria a la
 vista: la memoria de rasgos, ya recortada a 168 posiciones de 9 bits, son biestables repartidos entre
@@ -118,7 +118,7 @@ enviado a fabricar.
 
 Antes de esa versión se armaron para Tiny Tapeout dos reconocedores de 8×2 mosaicos, uno con cada
 front-end, sin cámara ni procesador: el píxel entra por los pines y el dígito sale por ellos. El del
-Sobel lleva el umbral fijo en 60 y **13 319 celdas**; el del Canny, los umbrales 90 y 32 y **14 970
+Sobel lleva el umbral fijo en 60 y **13 319 celdas**; el del Canny, los umbrales 90 y 32 y **14 970
 celdas**. Los dos firman con DRC y LVS en cero.
 
 ![**Figura 7.7.** El reconocedor con el Sobel en los 8×2 mosaicos de Tiny Tapeout, en el render que
@@ -130,21 +130,22 @@ alimentación.](figuras/fig_7_tt_mnist_sobel.png)
 
 ## 7.4 Canny-98 en silicio
 
-En silicio no hay BRAM ni SPRAM, así que el circuito cambia en dos puntos y en nada más: los 21 360 pesos de
+En silicio no hay BRAM ni SPRAM, así que el circuito cambia en dos puntos y en nada más: los 21 360 pesos de
 4 bits pasan a una **ROM combinacional** —una tabla que el sintetizador convierte en lógica— y las 120
 activaciones, de la SPRAM a un banco de 128 registros de 8 bits. Es `mnist_clf98_asic.v`, generado desde los
 mismos pesos, y se comparó con el modelo entero sobre **200 imágenes de prueba: 200 idénticas** en dígito,
 decisión de rechazo y puntaje. El extractor y el tope son los de la tarjeta. Es el **decimoctavo circuito** de este trabajo.
 
-El primer intento se lanzó con los parámetros de Canny-78 —25 % de utilización del núcleo— y **no ruteó**.
+El primer intento se lanzó con el núcleo al 25 % de utilización —algo por debajo del 30 % de Canny-78— y
+**no ruteó**.
 El ruteo global terminó con desbordamiento: las pistas de metal quedaron ocupadas al 94,5 %, y met1 al
-99,4 %. El ruteo detallado arrancó con 455 280 violaciones y a la sexta pasada seguía en 107 252, bajando un
+99,4 %. El ruteo detallado arrancó con 455 280 violaciones y a la sexta pasada seguía en 107 252, bajando un
 5 % por vuelta. Con el núcleo al 15 % el uso de pistas bajó al 70,9 %, el ruteo detallado cerró y el flujo
 terminó limpio:
 
 | | Canny-78 | **Canny-98** |
 |----------------------------------------------|---------:|----------:|
-| celdas de síntesis | 29 449 | **42 192** |
+| celdas de síntesis | 29 449 | **42 192** |
 | utilización del núcleo | 30 % | **15 %** |
 | área del dado | 1,122 mm² | **2,996 mm²** |
 | camino crítico, con parásitos (reloj de 30 ns) | 12,66 ns | **24,64 ns** |
@@ -155,7 +156,7 @@ terminó limpio:
 
 Table: Canny-98 frente a Canny-78, firmados en sky130.
 
-![**Figura 7.9.** Canny-98 en sky130, visto en KLayout: 1714 × 1714 µm, 42 192 celdas de síntesis,
+![**Figura 7.9.** Canny-98 en sky130, visto en KLayout: 1 726 × 1 736 µm, 42 192 celdas de síntesis,
 DRC, LVS y XOR en cero.](figuras/fig_6_canny98_asic.jpg)
 
 ![**Figura 7.10.** Un acercamiento al interior del mismo dado: las filas de celdas cubiertas casi por
