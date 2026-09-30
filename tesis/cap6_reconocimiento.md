@@ -114,8 +114,6 @@ entrar en la iCE40UP5K y no entrar.
 
 #### Pseudocódigo
 
-\needspace{22\baselineskip}
-
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 14   Pan Sobel: la cámara, el procesador y el clasificador
@@ -186,8 +184,6 @@ los promueve casi todos: la exactitud cae de 92,46 a 89,93 %. El umbral bajo sal
 **puerto declarado** —la lección de la §6.7—.
 
 #### Pseudocódigo
-
-\needspace{12\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
@@ -263,8 +259,6 @@ exige el silicio (§5.1).
 
 #### Pseudocódigo
 
-\needspace{17\baselineskip}
-
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 16   Visión MNIST: ver, reconocer y mostrar
@@ -314,8 +308,6 @@ probado en la tarjeta.
 
 #### Pseudocódigo
 
-\needspace{10\baselineskip}
-
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 17   Visión Canny MNIST
@@ -360,8 +352,6 @@ los umbrales 90/32 del firmware, y pregunta **cuánto más puede reconocer la mi
 amplía el descriptor. El resultado se denomina **Canny-78** por el número de rasgos con que opera.
 
 #### Pseudocódigo
-
-\needspace{20\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
@@ -532,8 +522,6 @@ capas caben juntos en la BRAM que deja libre el extractor: el diseño completo u
 la SPRAM, que no necesita inicializarse.
 
 #### Pseudocódigo
-
-\needspace{18\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────

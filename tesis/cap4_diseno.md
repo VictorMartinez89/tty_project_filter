@@ -116,8 +116,6 @@ buffer y una copia de la imagen, y es el fundamento de toda la arquitectura de f
 El Sobel es el más simple de los tres y fija el esqueleto que los otros dos extienden: suavizado,
 gradiente y un umbral. La notación es la de la §4.4.
 
-\needspace{22\baselineskip}
-
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 1   Front-end Sobel
@@ -301,8 +299,6 @@ ven sus tres `valid`, escalonados.
 El Canny de un salto es el anterior **con una etapa más**, y con una dificultad que no se ve a simple
 vista:
 
-\needspace{18\baselineskip}
-
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 2   Front-end Canny de un salto
@@ -434,8 +430,6 @@ exigencia se derivan casi todos los resultados del Capítulo 8.
 El transitivo, en cambio, **no es un filtro más caro: es otra clase de objeto**, y el enunciado lo
 muestra en un solo paso:
 
-\needspace{20\baselineskip}
-
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 3   Front-end transitivo
@@ -530,8 +524,6 @@ ninguna RAM escribible.
 
 #### Pseudocódigo
 
-\needspace{16\baselineskip}
-
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 4   SoC Femto con filtro Sobel
@@ -586,8 +578,6 @@ Canny, el alto y el bajo. Con ello el doble umbral —la parte del Canny que má
 deja de estar cableado y pasa a manos del programa.
 
 #### Pseudocódigo
-
-\needspace{16\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
@@ -650,8 +640,6 @@ es este circuito: el FemtoRV32 con su ROM y su periférico, al lado del motor de
 versión el motor recibe el flujo de clases desde fuera del chip.
 
 #### Pseudocódigo
-
-\needspace{17\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
@@ -721,8 +709,6 @@ controlador de pantalla y pantalla, en un chip y con un reloj.](figuras/fig_4_so
 
 #### Pseudocódigo
 
-\needspace{18\baselineskip}
-
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 7   Sobel completo: la cadena en un chip
@@ -776,8 +762,6 @@ en un solo pase, con tres memorias de línea —gaussiano, gradiente e histéres
 Sobel.](figuras/fig_4_cannycomp_cauce.png)
 
 #### Pseudocódigo
-
-\needspace{12\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
@@ -841,8 +825,6 @@ sistema; el framebuffer, de unos 38 400 biestables, es el cruce entre los dos.](
 
 #### Pseudocódigo
 
-\needspace{16\baselineskip}
-
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 9   Visión Sobel: la cadena con dos relojes
@@ -890,8 +872,6 @@ pantalla— no cambia; cambia el camino de datos, que pasa de una ventana de 3×
 memorias de línea; `vision_canny_top` con el Canny, tres. Todo lo demás es igual.](figuras/fig_4_visioncanny_cauces.png)
 
 #### Pseudocódigo
-
-\needspace{14\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
@@ -941,8 +921,6 @@ clases, el motor lo barre en bucle hasta el punto fijo y llena el de bordes, y l
 último.](figuras/fig_4_visiontrans_diagrama.png)
 
 #### Pseudocódigo
-
-\needspace{16\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
@@ -1004,8 +982,6 @@ y esta versión lo cumple.
 
 #### Pseudocódigo
 
-\needspace{11\baselineskip}
-
 ```
 ──────────────────────────────────────────────────────────────────────
  Algoritmo 12   Mini Sobel en Tiny Tapeout
@@ -1042,8 +1018,6 @@ ochocientas que el flujo rutea con comodidad. Los dos umbrales van fijos, 90 y 4
 de línea usan el generador de ventana con reinicio explícito.
 
 #### Pseudocódigo
-
-\needspace{11\baselineskip}
 
 ```
 ──────────────────────────────────────────────────────────────────────
