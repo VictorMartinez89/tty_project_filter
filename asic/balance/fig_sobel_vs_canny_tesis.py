@@ -96,19 +96,19 @@ ax.axis("off")
 ax.set_title("D · Las otras tres balanzas", fontsize=11.5, loc="left")
 ax.text(0, .98,
         "CAMINO CRÍTICO  -> gana el CANNY\n"
-        "   pan_sobel   12.23 ns\n"
-        "   pan_canny    9.89 ns  ← 19 % más corto\n"
+        "   pan_sobel   12,23 ns\n"
+        "   pan_canny    9,89 ns  ← 19 % más corto\n"
         "   (y el mismo signo en IHP)\n"
         "   Reparte el trabajo en más etapas, así\n"
         "   que su camino es más CORTO pese a\n"
         "   tener más lógica.\n\n"
         "EXACTITUD       -> EMPATE\n"
-        "   entre filtros: 0.38 pp\n"
+        "   entre filtros: 0,38 pp\n"
         "   El Canny no reconoce mejor.\n\n"
-        "ROBUSTEZ        -> gana el CANNY, y goleada\n"
+        "ROBUSTEZ        -> gana el CANNY con amplitud\n"
         "   mover el umbral cambia el resultado\n"
-        "      Sobel   5.79 pp   (4.4 sigma)\n"
-        "      Canny   0.90 pp   (0.7 sigma)\n"
+        "      Sobel   5,79 pp   (4,4 sigma)\n"
+        "      Canny   0,90 pp   (0,7 sigma)\n"
         "   El Sobel vive en un pico angosto;\n"
         "   el Canny, en una meseta.",
         va="top", family="monospace", fontsize=8.7, linespacing=1.45)

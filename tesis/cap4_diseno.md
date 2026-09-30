@@ -166,7 +166,8 @@ referencia, el núcleo RTL —idéntico al modelo píxel a píxel— y la cadena
 emulada, que concuerda salvo un desfase fijo en el borde del cuadro (§4.8).](figuras/fig_4_sobel_rtl.png)
 
 Grabado en la iCE40UP5K, el filtro procesa en vivo la imagen de la cámara OV7670 y la muestra en la
-pantalla TFT, sin intervención de ningún computador. La Figura 4.56 reúne las seis escenas.
+pantalla TFT, sin intervención de ningún computador. La Figura 4.47 reúne seis escenas más, con el sistema
+de visión completo.
 
 ![**Figura 4.4.** De los pines a las cajas: el Sobel en la iCESugar, sin computador de por medio. Es el módulo `cam_sobel_display.v` que corrió en la tarjeta: la configuración de la cámara por SCCB y el controlador de la pantalla en el dominio del sistema; el submuestreo a 60×80, las dos líneas de retardo, el Sobel y el umbral —90— en el de la cámara. Cada flecha lleva el pin de la iCE40UP5K según el `.pcf` que funcionó en la tarjeta —el del Anexo C—; el recuadro azul es el dominio del reloj del sistema, el naranja el del reloj de píxel de la cámara, y el *framebuffer* es el cruce entre los dos.](figuras/fig_4_sobel_pines.png)
 
@@ -489,10 +490,10 @@ Sobre la misma imagen de 16×12, el motor ya no procesa un flujo: carga el cuadr
 `load_ready` e `in_valid` bajan, `state` pasa de 001 (carga) a 010 (barrido) y las direcciones de la
 memoria (`mem_ra`, `a1`, `a2`) empiezan a recorrer el cuadro.](figuras/fig_4_trans_gtkwave.jpg)
 
-![**Figura 4.25.** La misma simulación, dibujada entera desde el VCD. Tras cargar el cuadro (estado
-1), el motor encadena barridos (estado 2) mientras `changed` sube; en este cuadro son seis, cinco con
-cambios y uno sin ellos. Ese último es el punto fijo: el motor pasa a la lectura (estado 4) y salen
-`eng_out_valid` y los bordes.](figuras/fig_4_trans_motor.png)
+![**Figura 4.25.** El mismo motor sobre un cuadro de 60×80, dibujado entero desde el VCD de su banco
+—reloj de 10 ns, unos 450 µs de simulación—. Tras borrar y cargar el cuadro, el motor encadena barridos
+mientras `changed` sube; en este cuadro son seis, cinco con cambios y uno sin ellos. Ese último es el
+punto fijo: el motor pasa a la lectura y salen `eng_out_valid` y los bordes.](figuras/fig_4_trans_motor.png)
 
 Como los otros dos, el RTL se compara píxel a píxel con el modelo (§4.8).
 
@@ -1301,11 +1302,8 @@ Los tres funcionan sobre la placa con cámara y pantalla en vivo. El transitivo 
 **conectados y completos** —una letra cerrada aparece cerrada— frente a los bordes locales de los
 otros dos, que es precisamente lo que su punto fijo debe conseguir.
 
-![**Figura 4.56.** El filtro Sobel corriendo en vivo sobre la iCESugar, fotografiado directamente de
-la pantalla. Seis escenas distintas —una flor, dos mariposas, una mano y dos letras— recorren la
-cadena completa cámara → filtro → pantalla sin intervención de ningún computador. Son capturas del
-montaje físico, no reconstrucciones: la propia tarjeta y el cableado del módulo aparecen en el
-encuadre.](figuras/fig_5_1_sobel_en_vivo.jpg)
+Las seis escenas del Sobel en vivo, con la cadena completa cámara → filtro → pantalla, están en la
+Figura 4.47.
 
 ### 4.9.3 Utilización del dispositivo
 
@@ -1494,7 +1492,7 @@ filtros en flujo procesan entre 106 y 130 millones de píxeles por segundo con u
 3 µs; el transitivo, con dos barridos —lo típico en una imagen real—, entre 16 y 20 millones, con 235 a
 306 µs por cuadro. Son de seis a ocho veces menos caudal y de ochenta a trescientas veces más latencia.
 
-![**Figura 4.57.** Caudal y latencia de los seis filtros, medidos en simulación. A la izquierda, el
+![**Figura 4.56.** Caudal y latencia de los seis filtros, medidos en simulación. A la izquierda, el
 caudal en millones de píxeles por segundo; a la derecha, la latencia hasta el primer píxel utilizable, en
 escala logarítmica: los cuatro filtros en flujo quedan en microsegundos y los dos transitivos, en
 cientos.](figuras/fig_4_caudal_latencia.png)
