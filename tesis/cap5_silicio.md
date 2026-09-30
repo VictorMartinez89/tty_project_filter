@@ -155,8 +155,8 @@ Un circuito se puede contar en dos momentos del flujo, y las dos cifras son leg�
 
 Table: Las dos definiciones de «celda» y dónde se usa cada una.
 
-Durante la redacción, la columna «celdas» de este capítulo **mezclaba las dos**, porque las fichas del
-cuaderno habían registrado en cada momento el campo que la herramienta ofrecía. **Se rehízo el
+Durante la redacción, la columna «celdas» de este capítulo **mezclaba las dos**, porque en cada momento
+se había registrado el campo que la herramienta ofrecía. **Se rehízo el
 recuento**: se contaron las instancias de celda estándar directamente sobre el **netlist posterior al
 ruteado** de cada circuito archivado, descartando las celdas sin función lógica —relleno, contactos de
 pozo, desacoplo y diodos de antena—, con un único criterio para los dieciséis.
@@ -219,8 +219,8 @@ Los seis son la cadena completa —cámara, filtro, memoria y pantalla—; los t
 procesador FemtoRV32. Sus directorios se llaman `sobel_completo`, `canny1_completo` y `trans_completo`,
 y `soc_sobel_completo`, `soc_canny1_completo` y `soc_trans_completo` los que llevan procesador.
 
-ᵃ Estos dos se archivaron sin el directorio de reportes; sus cifras provienen de la ficha del cuaderno
-y no de un `metrics.csv` del flujo. Se marcan porque en una tabla de resultados debe poder decirse de
+ᵃ Estos dos se archivaron sin el directorio de reportes; sus cifras provienen de lo registrado en su
+momento y no de un `metrics.csv` del flujo. Se marcan porque en una tabla de resultados debe poder decirse de
 dónde sale cada número.
 
 ᵇ Su ficha registra el **WNS nominal** —0,00 ns, sin violaciones— pero no quedó registrado el setup ya

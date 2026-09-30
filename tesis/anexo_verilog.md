@@ -12,8 +12,8 @@ líneas de código demasiado largas se parten entre dos sentencias, dos argument
 comentarios al final de ellas suben a la línea anterior. En Verilog un salto de línea equivale a un
 espacio, de modo que el circuito descrito es el mismo; se comprobó fichero por fichero, comparando el
 código sin espacios ni comentarios. Por la misma razón pudieron tocarse los comentarios en un segundo
-sentido: los que remitían a la numeración interna del cuaderno de trabajo («Parte 152», «fase 7») se
-retiraron, o se cambiaron por la sección equivalente de esta tesis.
+sentido: los que remitían a documentos internos de trabajo se retiraron, o se cambiaron por la sección
+equivalente de esta tesis.
 
 ## G.1 Filtro Sobel (§4.3.1)
 
@@ -2782,7 +2782,7 @@ endmodule
 //   y sin
 //   CPU identicos pixel a pixel-; lo que cambia es QUIEN elige el numero.
 //
-// La §12 del cuaderno 2 midio en Python cuanto vale eso: -1.67 pp sobre MNIST limpio y
+// Se midio en Python cuanto vale eso: -1.67 pp sobre MNIST limpio y
 //   +27.27 pp con ruido severo. Esta es la version en hardware de ese experimento.
 //
 //   FUENTE_THR permite comparar las dos situaciones en el MISMO banco:
@@ -3479,7 +3479,7 @@ endmodule
 //     UMBRALES = 16'h5A00  ->  thr_hi=90  thr_lo=0    (el firmware ORIGINAL, del Sobel)
 //     UMBRALES = 16'h5A20  ->  thr_hi=90  thr_lo=32   (el firmware propio del Canny)
 //
-// La §16 del cuaderno 2 midio que la diferencia son 2.10 puntos de exactitud sobre las
+// Se midio que la diferencia son 2.10 puntos de exactitud sobre las
 //   10 000 imagenes. Este banco la muestra sobre once escenas, en hardware simulado.
 `default_nettype none
 module soc_mnist_canny_fw_top #(
@@ -3528,7 +3528,7 @@ endmodule
 //
 // Es `mnist_feat.v` con una tercera etapa: doble umbral (clase 2/1/0) + histeresis de
 //   un salto.
-// Motivado por la §6 del cuaderno 2, donde se midio en simulacion que este front-end
+// Motivado por lo que se midio en simulacion: este front-end
 //   aguanta
 //   +17 pp mejor la iluminacion despareja y -16 pp peor el ruido de sensor.
 //
@@ -4446,7 +4446,7 @@ endmodule
 //
 // Es `mnist_feat.v` con una tercera etapa: doble umbral (clase 2/1/0) + histeresis de
 //   un salto.
-// Motivado por la §6 del cuaderno 2, donde se midio en simulacion que este front-end
+// Motivado por lo que se midio en simulacion: este front-end
 //   aguanta
 //   +17 pp mejor la iluminacion despareja y -16 pp peor el ruido de sensor.
 //

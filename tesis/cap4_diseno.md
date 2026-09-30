@@ -1347,7 +1347,7 @@ Table: Utilización de la iCE40UP5K y frecuencias máximas de cada diseño.
 > —las filas primera, tercera y cuarta— reprodujeron **exactamente**, celda por celda y bloque por
 > bloque, los informes conservados de las corridas originales de julio y agosto de 2026. La del
 > SoC + Sobel, cuyo informe de emplazamiento no se había conservado, arrojó 4 848 celdas frente a las
-> 4 878 anotadas entonces en el cuaderno; la diferencia, de treinta celdas sobre cinco mil, proviene
+> 4 878 registradas entonces; la diferencia, de treinta celdas sobre cinco mil, proviene
 > de una versión distinta del sintetizador, que produce doce tablas de consulta menos. La quinta fila
 > no dispone de informe: el emplazamiento no llegó a completarse, y el ≈ 127 % es el valor
 > documentado en su momento.
