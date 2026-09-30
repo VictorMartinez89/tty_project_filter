@@ -1,4 +1,4 @@
-// mnist_cam98.v — ESCRIBI UN DIGITO Y LA FPGA TE DICE CUAL ES, con Canny-98 (98,45 %).
+// mnist_cam98_sinvista.v — (plan B, sin vista previa) ESCRIBI UN DIGITO Y LA FPGA TE DICE CUAL ES, con Canny-98 (98,45 %).
 //   Es mnist_cam78.v con DOS cambios: cam98_cadena (Canny-98) en lugar de cam78_cadena, y la vista
 //   previa de la pantalla reducida a 7x7 y 1 BIT por celda, en logica. Canny-98 usa los 30 bloques
 //   de BRAM de la iCE40UP5K (21 de pesos): el framebuffer de 28x28x8 pedia 2 mas (32 de 30). A 28x28x1
@@ -265,7 +265,7 @@ module top #(
     wire [2:0] ix = xcol[7:5];                 // /32: la vista es de 7x7
     wire [2:0] iy = ycol[7:5];
     wire [5:0] fbaddr = iy*7 + ix;
-    always @(posedge clk) fb_rd <= fb[fbaddr];
+    always @(posedge clk) fb_rd <= 1'b0;          // SIN vista previa: solo el marco y el digito
 
     wire en_marco = en_img && ((xcol < BORDE) || (xcol >= IMG-BORDE) ||
                                (ycol < BORDE) || (ycol >= IMG-BORDE));
