@@ -1,8 +1,10 @@
 // mnist_cam98.v — ESCRIBI UN DIGITO Y LA FPGA TE DICE CUAL ES, con Canny-98 (98,45 %).
 //   Es mnist_cam78.v con DOS cambios: cam98_cadena (Canny-98) en lugar de cam78_cadena, y la vista
-//   previa de 28x28 en la pantalla guardada a 1 BIT por pixel, en logica. Canny-98 usa los 30 bloques
-//   de BRAM de la iCE40UP5K (21 de pesos); el framebuffer de 8 bits pedia 2 mas y no cabia (32 de 30).
-//   La vista previa sirve para ENCUADRAR el digito; el clasificador sigue recibiendo los 8 bits.
+//   previa de la pantalla reducida a 14x14 y 1 BIT por celda, en logica. Canny-98 usa los 30 bloques
+//   de BRAM de la iCE40UP5K (21 de pesos): el framebuffer de 28x28x8 pedia 2 mas (32 de 30). A 28x28x1
+//   en logica si cabia la BRAM pero no las celdas: 6 572 LC de 5 280. A 14x14 son 196 bits.
+//   Cada celda de la vista es el O de un bloque de 2x2 pixeles. La vista sirve para ENCUADRAR el
+//   digito; el clasificador sigue recibiendo la ventana completa de 28x28 a 8 bits.
 //   Es mnist_cam_canny.v con UNA pieza cambiada: el clasificador. Donde estaba la cadena de 4
 //   cuadrantes y 40 caracteristicas (92 %) va cam78_cadena: 16 zonas, 78 caracteristicas
 //   elegidas, verificada 10000/10000 contra el golden y probada en placa por UART el 23-sep.
@@ -173,15 +175,19 @@ module top #(
         hubo_s1 <= hubo;     hubo_clk <= hubo_s1;
     end
 
-    // ======== framebuffer de las 28x28: 1 bit por pixel, en logica (no queda BRAM) ========
-    (* ram_style = "logic" *) reg fb [0:783];
-    reg [9:0]  wadr = 10'd0;
+    // ======== vista previa 14x14, 1 bit por celda, en logica (no queda BRAM ni sobran LC) ========
+    (* ram_style = "logic" *) reg fb [0:195];
+    reg [4:0]  wc = 5'd0, wr = 5'd0;            // columna y fila del pixel que llega, 0..27
+    wire [7:0] widx = wr[4:1]*14 + wc[4:1];     // su celda de 2x2
+    wire       wbit = (w_pix >= 8'd64);         // trazo (ya invertido) o fondo
     always @(posedge cam_pclk) begin
         if (w_valid) begin
-            fb[wadr] <= (w_pix >= 8'd64);      // trazo (ya invertido) o fondo
-            wadr <= (wadr == 10'd783) ? 10'd0 : wadr + 10'd1;
+            // el primer pixel de cada bloque 2x2 escribe; los otros tres acumulan con O
+            fb[widx] <= (wr[0] == 1'b0 && wc[0] == 1'b0) ? wbit : (fb[widx] | wbit);
+            if (wc == 5'd27) begin wc <= 5'd0; wr <= (wr == 5'd27) ? 5'd0 : wr + 5'd1; end
+            else wc <= wc + 5'd1;
         end
-        if (w_fin) wadr <= 10'd0;
+        if (w_fin) begin wc <= 5'd0; wr <= 5'd0; end
     end
     reg       fb_rd = 1'b0;
 
@@ -255,9 +261,9 @@ module top #(
     // -que estan fuera de la imagen- caian en el marco derecho y pintaban una franja verde de
     // 19 px en vez de 3. Se veia clarito en la placa.
     wire en_img  = (ycol < IMG) && (xcol < IMG);
-    wire [4:0] ix = xcol[7:3];                 // /8
-    wire [4:0] iy = ycol[7:3];
-    wire [9:0] fbaddr = iy*28 + ix;
+    wire [3:0] ix = xcol[7:4];                 // /16: la vista es de 14x14
+    wire [3:0] iy = ycol[7:4];
+    wire [7:0] fbaddr = iy*14 + ix;
     always @(posedge clk) fb_rd <= fb[fbaddr];
 
     wire en_marco = en_img && ((xcol < BORDE) || (xcol >= IMG-BORDE) ||
