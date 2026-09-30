@@ -27,8 +27,9 @@ escrito a mano, uno buscado y uno aprendido.
 Cada núcleo se verificó bit a bit contra el modelo de referencia, se integró físicamente en una FPGA
 iCE40UP5K con cámara y pantalla, y se llevó a ASIC: dieciocho circuitos con GDSII firmado, dieciséis en
 sky130 con OpenLane y dos en IHP SG13G2 con LibreLane. El sistema completo —procesador, front-end
-Canny y clasificador— reconoce nueve de cada diez dígitos manuscritos captados por la cámara sobre la
-FPGA física, coincidiendo con lo que la simulación predecía.
+Canny y clasificador—, en un ensayo con diez dígitos manuscritos ante la cámara sobre la FPGA física,
+reconoció nueve, lo mismo que predecía la simulación; en ensayos más largos la exactitud frente a la
+cámara cae, y la causa medida es la adquisición de la imagen, no el reconocedor.
 
 Dos reconocedores llegan a silicio firmado. El de cuarenta rasgos alcanza **94,20 %** sobre las diez
 mil imágenes de prueba de MNIST y cabe en ocho por dos tiles de **Tiny Tapeout**, listo para la
@@ -65,8 +66,9 @@ handwritten, one that is searched for, and one that is learned.
 Each core was verified bit-exact against the reference model, integrated physically on an iCE40UP5K
 FPGA with camera and display, and taken to ASIC: eighteen signed-off GDSII layouts, sixteen in sky130
 with OpenLane and two in IHP SG13G2 with LibreLane. The complete system —processor, Canny front-end
-and classifier— recognises nine out of ten handwritten digits captured by the camera on the physical
-FPGA, matching what simulation had predicted.
+and classifier—, in a trial with ten handwritten digits in front of the camera on the physical FPGA,
+recognised nine, as simulation had predicted; in longer trials the accuracy in front of the camera
+drops, and the measured cause is image acquisition, not the recogniser.
 
 Two recognisers reach signed-off silicon. The forty-feature one reaches **94.20 %** over the full
 ten-thousand-image MNIST test set and fits in eight by two **Tiny Tapeout** tiles, ready for the
