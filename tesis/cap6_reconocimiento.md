@@ -623,6 +623,56 @@ La regla de rechazo de Canny-98 no se calibró todavía: decide sólo por la den
 responde el 90,47 % de las veces con un 98,30 % de acierto al responder, y no se compara con el 99,92 % de Canny-78, que
 sí lleva el margen calibrado. La exactitud no depende de esa regla.
 
+#### Con la cámara y la pantalla
+
+La versión con cámara OV7670 y pantalla TFT es la de Canny-78 con el clasificador cambiado: la misma ventana de
+448×448 píxeles promediada en bloques de 16×16, el mismo realineo de cuadros y el mismo controlador de la
+pantalla. Con la cámara emulada en el banco de pruebas —los diez dígitos, dos cuadros cada uno, sin reinicio
+entre escenas— los **20 veredictos coinciden con el modelo entero**.
+
+Lo que no coincide es el presupuesto. Canny-98 usa los 30 bloques de BRAM de la iCE40UP5K, y la vista previa
+que la pantalla muestra para encuadrar el dígito —28×28 píxeles de 8 bits en la versión de Canny-78— pedía dos
+más: **32 de 30**. Guardarla en lógica liberó la BRAM pero llevó el problema a las celdas, y se fue reduciendo
+hasta que el diseño cupo:
+
+| vista previa en la pantalla | síntesis | BRAM | celdas lógicas | emplaza |
+|---|---|---:|---:|---|
+| 28×28, 8 bits, en BRAM (la de Canny-78) | — | 32 de 30 | — | no |
+| 28×28, 1 bit, en lógica | — | 30 de 30 | 6 572 (124 %) | no |
+| 14×14, 1 bit | — | 30 de 30 | 5 066 (96 %) | no |
+| 14×14, 1 bit, submuestreada | con DSP | 30 de 30 | 4 733 (89 %) | no: las cadenas de acarreo |
+| **7×7, 1 bit, submuestreada** | **con DSP** | **30 de 30** | **4 302 (81 %)** | **sí** |
+
+Table: Lo que costó meter la vista previa junto a Canny-98 en la iCE40UP5K.
+
+«Con DSP» quiere decir que uno de los dos multiplicadores del clasificador pasa a un bloque SB_MAC16, de los
+ocho que la iCE40UP5K trae y que ningún otro diseño de este trabajo usaba. La fila del 89 % enseña que el límite
+no es sólo el número de celdas: Canny-78 con cámara emplazó con 4 748, pero aquí, con la BRAM llena y un DSP,
+las cadenas de acarreo de los contadores ya no encontraron columnas libres contiguas. El diseño final cierra
+con holgura en tiempo —22,1 MHz en el reloj de la cámara y 22,9 MHz en el del sistema, frente a los 12 que se
+exigen— y el clasificador no pierde nada: sigue recibiendo la ventana completa de 28×28 a 8 bits. Lo que se
+empobrece es sólo lo que ve la persona que sostiene el papel: una rejilla de 7×7 que dice **dónde** hay trazo.
+
+> Es la misma tesis del Capítulo 8 vista desde dentro de la FPGA: cuando el clasificador se queda con toda la
+> memoria dedicada, lo siguiente que hay que guardar se construye con lógica, y 784 bits de una vista previa
+> desbordaron el dispositivo en 1 292 celdas.
+
+Frente al papel —cada dígito escrito con marcador en una hoja, varias respuestas por escena—, Canny-98 acertó **5 de 47 respuestas (10,6 %)**, lo que no se distingue del azar, y respondió «2» en
+17 de ellas. Es el mismo cuadro que Canny-78 frente a la cámara, seis de treinta y seis (§6.3.5). La vista previa
+muestra por qué: en la mayoría de los cuadros la ventana no contiene un trazo sino **manchas que ocupan media
+ventana o más** —sombras de la mano y del teléfono, y la luz desigual sobre la hoja—, y en varios aparece la
+costura horizontal que ya se había visto con Canny-78.
+
+![**Figura 6.25.** Canny-98 frente al papel, en la iCESugar, el 29 de septiembre de 2026. A la izquierda, la
+hoja con el dígito, tal como la ve el teléfono que graba; a la derecha, tres momentos de la pantalla: la
+vista previa de 7×7 —en blanco lo que la cámara ve más oscuro que gris medio— y, debajo, el veredicto. Lo que
+llega al clasificador son manchas de sombra y de luz, no el trazo; la raya es la
+abstención.](figuras/fig_6_canny98_camara.jpg)
+
+> La prueba no mide el reconocedor —que en la tarjeta reproduce el modelo en diez mil de diez mil imágenes y, con
+> la cámara emulada, en veinte de veinte cuadros— sino **lo que la cámara le entrega**. Cerrar esa brecha pide
+> iluminación controlada y el normalizador del dígito que la §6.3.5 ya midió, no un clasificador mejor.
+
 #### En silicio
 
 En silicio no hay BRAM ni SPRAM, así que el circuito cambia en dos puntos y en nada más: los 21 360 pesos de
@@ -649,10 +699,10 @@ terminó limpio:
 
 Table: Canny-98 frente a Canny-78 en sky130.
 
-![**Figura 6.25.** Canny-98 en sky130, visto en KLayout: 1714 × 1714 µm, 42 192 celdas de síntesis,
+![**Figura 6.26.** Canny-98 en sky130, visto en KLayout: 1714 × 1714 µm, 42 192 celdas de síntesis,
 DRC, LVS y XOR en cero.](figuras/fig_6_canny98_asic.jpg)
 
-![**Figura 6.26.** Un acercamiento al interior del mismo dado: las filas de celdas cubiertas casi por
+![**Figura 6.27.** Un acercamiento al interior del mismo dado: las filas de celdas cubiertas casi por
 completo por el cableado. Es el cuello de botella que obligó a bajar la utilización del 25 al
 15 %.](figuras/fig_6_canny98_asic_zoom.jpg)
 
@@ -733,7 +783,7 @@ predicción con la del modelo.
 
 Table: El RTL del clasificador contra el modelo, sobre las diez mil imágenes de prueba.
 
-![**Figura 6.27.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
+![**Figura 6.28.** La ventana de 28×28 entrando al extractor, vista en el simulador. La señal
 `w_valid` marca cada píxel válido y `w_pix` lleva su valor —`FF FD 2B 3A C1 A4`…—; los 784 de la
 ventana pasan uno a uno antes de que `done` presente un dígito. Es el nivel al que se hizo la
 comparación contra el modelo: no se compararon porcentajes, se compararon
@@ -756,7 +806,7 @@ incluye la decisión de rechazo, que es lógica de comparación y no de aritmét
 La validación sobre la placa se realizó en dos ensayos distintos, que miden cosas distintas y cuyos
 resultados no deben confundirse.
 
-![**Figura 6.28.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
+![**Figura 6.29.** La cadena completa —cámara, procesador, filtro y clasificador— en señales, sobre
 la escena del dígito 3. El panel A muestra los 19 ms de dos cuadros: el veredicto sale en el primero
 y no cambia en el segundo. El panel B captura el instante en que **el procesador sustituye el umbral
 por omisión del RTL, 110, por el 90 que escribe el firmware**, con el camino de datos todavía en
@@ -775,7 +825,7 @@ completo. Ninguno de los diez cambió de respuesta a lo largo de unas treinta re
 > **cierra el último eslabón de la traducción**: el diseño sintetizado, emplazado, ruteado y cargado
 > en silicio se comporta como el RTL verificado, errores incluidos.
 
-![**Figura 6.29.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
+![**Figura 6.30.** La tarjeta durante ese primer ensayo, con el mapa de bits cargado. El diodo verde
 está cableado a la señal de configuración terminada; el azul parpadea con el latido del sistema. Los
 diez veredictos salen por el puerto serie del mismo conector que alimenta la tarjeta. A la derecha,
 el mismo montaje con el cableado del módulo de pantalla ya
