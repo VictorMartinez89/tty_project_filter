@@ -1,10 +1,10 @@
 #!/bin/sh
 # compilar_pdflatex.sh — compila la tesis con pdfLaTeX, como Overleaf, dentro de Docker (imagen texlive/texlive).
-#   bash tesis/maqueta/compilar_pdflatex.sh            -> ~/UN/Tesis_Final_1/pdf_local/0000.pdf
+#   bash tesis/maqueta/compilar_pdflatex.sh            -> ~/UN/Tesis/Tesis_Final_1/pdf_local/0000.pdf
 # Trabaja sobre una COPIA del clon de Overleaf: no toca el repositorio. Hace falta Docker Desktop abierto.
 set -e
-ORIG="$HOME/UN/Tesis_Final_1/overleaf"
-DEST="$HOME/UN/Tesis_Final_1/pdf_local"
+ORIG="$HOME/UN/Tesis/Tesis_Final_1/overleaf"
+DEST="$HOME/UN/Tesis/Tesis_Final_1/pdf_local"
 mkdir -p "$DEST"
 rsync -a --delete --exclude .git --exclude '*.pdf' "$ORIG/" "$DEST/"
 docker info >/dev/null 2>&1 || { open -a Docker; for i in $(seq 1 40); do docker info >/dev/null 2>&1 && break; sleep 3; done; }
